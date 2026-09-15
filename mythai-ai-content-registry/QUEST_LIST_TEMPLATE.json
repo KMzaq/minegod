@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "questListId": "namespace:quest_list_name",
+  "progressTrackId": "namespace:progress_track_name",
+  "displayName": "퀘스트 목록 표시명",
+  "quests": [
+    {
+      "questId": "namespace:quest_name",
+      "title": "플레이어에게 보일 퀘스트 이름",
+      "content": "NPC가 설명할 퀘스트의 배경과 목적",
+      "objectives": [
+        {
+          "type": "collect_item",
+          "description": "대상 아이템 1개를 구한다.",
+          "parameters": {
+            "itemId": "minecraft:example_item",
+            "count": 1
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "item",
+          "description": "보상 아이템 1개를 받는다.",
+          "parameters": {
+            "itemId": "minecraft:example_reward",
+            "count": 1
+          }
+        }
+      ],
+      "acceptanceConditions": [
+        {
+          "type": "world_quest_progress_range",
+          "description": "서버 전역 퀘스트 진행도가 0 이상 20 이하일 때 수주할 수 있다.",
+          "parameters": {
+            "progressTrackId": "namespace:progress_track_name",
+            "minimum": 0,
+            "maximum": 20
+          }
+        }
+      ],
+      "progressOnClear": 10
+    }
+  ]
+}

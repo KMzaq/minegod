@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "description": "공용 LLM 예시 대화 사전. 각 JSON은 한 축의 태도/말투 신호를 분리해 보여주는 few-shot 예시입니다.",
+  "exampleSchemaVersion": 2,
+  "knownByPolicy": "공용 예시는 known_by: []",
+  "categories": {
+    "relationship_state": [
+      {
+        "label": "극도의 적대",
+        "tag": "R_EXTREME_HOSTILE",
+        "path": "relationship_state/r_extreme_hostile",
+        "exampleCount": 4
+      },
+      {
+        "label": "적대적",
+        "tag": "R_HOSTILE",
+        "path": "relationship_state/r_hostile",
+        "exampleCount": 4
+      },
+      {
+        "label": "불쾌/반감",
+        "tag": "R_DISLIKE",
+        "path": "relationship_state/r_dislike",
+        "exampleCount": 4
+      },
+      {
+        "label": "비호감/경계",
+        "tag": "R_WARY",
+        "path": "relationship_state/r_wary",
+        "exampleCount": 4
+      },
+      {
+        "label": "중립",
+        "tag": "R_NEUTRAL",
+        "path": "relationship_state/r_neutral",
+        "exampleCount": 4
+      },
+      {
+        "label": "관심/호의",
+        "tag": "R_FAVORABLE",
+        "path": "relationship_state/r_favorable",
+        "exampleCount": 4
+      },
+      {
+        "label": "호감",
+        "tag": "R_FRIENDLY",
+        "path": "relationship_state/r_friendly",
+        "exampleCount": 4
+      },
+      {
+        "label": "강한 호감",
+        "tag": "R_TRUSTED",
+        "path": "relationship_state/r_trusted",
+        "exampleCount": 4
+      },
+      {
+        "label": "극도의 호감/애정",
+        "tag": "R_DEEP_BOND",
+        "path": "relationship_state/r_deep_bond",
+        "exampleCount": 4
+      }
+    ],
+    "relationship_type": [
+      {
+        "label": "부신",
+        "tag": "RT_FATHER",
+        "path": "relationship_type/r_father",
+        "exampleCount": 4
+      },
+      {
+        "label": "모신",
+        "tag": "RT_MOTHER",
+        "path": "relationship_type/r_mother",
+        "exampleCount": 4
+      },
+      {
+        "label": "자식",
+        "tag": "RT_CHILD",
+        "path": "relationship_type/r_child",
+        "exampleCount": 4
+      },
+      {
+        "label": "형제",
+        "tag": "RT_BROTHER",
+        "path": "relationship_type/r_brother",
+        "exampleCount": 4
+      },
+      {
+        "label": "자매",
+        "tag": "RT_SISTER",
+        "path": "relationship_type/r_sister",
+        "exampleCount": 4
+      },
+      {
+        "label": "쌍둥이",
+        "tag": "RT_TWIN",
+        "path": "relationship_type/r_twin",
+        "exampleCount": 4
+      },
+      {
+        "label": "부부",
+        "tag": "RT_SPOUSE",
+        "path": "relationship_type/r_spouse",
+        "exampleCount": 4
+      },
+      {
+        "label": "연인",
+        "tag": "RT_LOVER",
+        "path": "relationship_type/r_lover",
+        "exampleCount": 4
+      },
+      {
+        "label": "주종(종속자 관점)",
+        "tag": "RT_SERVANT",
+        "path": "relationship_type/r_master_servant",
+        "exampleCount": 4
+      },
+      {
+        "label": "숙적",
+        "tag": "RT_NEMESIS",
+        "path": "relationship_type/r_nemesis",
+        "exampleCount": 4
+      },
+      {
+        "label": "라이벌",
+        "tag": "RT_RIVAL",
+        "path": "relationship_type/r_rival",
+        "exampleCount": 4
+      },
+      {
+        "label": "동료",
+        "tag": "RT_COMRADE",
+        "path": "relationship_type/r_comrade",
+        "exampleCount": 4
+      },
+      {
+        "label": "적대",
+        "tag": "RT_ENEMY",
+        "path": "relationship_type/r_enemy",
+        "exampleCount": 4
+      },
+      {
+        "label": "혈연",
+        "tag": "RT_BLOOD_RELATION",
+        "path": "relationship_type/r_blood_relation",
+        "exampleCount": 4
+      },
+      {
+        "label": "창조자",
+        "tag": "RT_CREATOR",
+        "path": "relationship_type/r_creator",
+        "exampleCount": 4
+      },
+      {
+        "label": "피조물",
+        "tag": "RT_CREATION",
+        "path": "relationship_type/r_creation",
+        "exampleCount": 4
+      }
+    ],
+    "personality": [
+      {
+        "label": "온화",
+        "tag": "P_GENTLE",
+        "path": "personality/p_gentle",
+        "exampleCount": 4
+      },
+      {
+        "label": "자비",
+        "tag": "P_MERCIFUL",
+        "path": "personality/p_merciful",
+        "exampleCount": 4
+      },
+      {
+        "label": "엄격",
+        "tag": "P_STRICT",
+        "path": "personality/p_strict",
+        "exampleCount": 4
+      },
+      {
+        "label": "냉정",
+        "tag": "P_COLD",
+        "path": "personality/p_cold",
+        "exampleCount": 4
+      },
+      {
+        "label": "오만",
+        "tag": "P_ARROGANT",
+        "path": "personality/p_arrogant",
+        "exampleCount": 4
+      },
+      {
+        "label": "호전적",
+        "tag": "P_BELLIGERENT",
+        "path": "personality/p_belligerent",
+        "exampleCount": 4
+      },
+      {
+        "label": "잔혹",
+        "tag": "P_CRUEL",
+        "path": "personality/p_cruel",
+        "exampleCount": 4
+      },
+      {
+        "label": "교활",
+        "tag": "P_CUNNING",
+        "path": "personality/p_cunning",
+        "exampleCount": 4
+      },
+      {
+        "label": "장난기",
+        "tag": "P_PLAYFUL",
+        "path": "personality/p_playful",
+        "exampleCount": 4
+      },
+      {
+        "label": "변덕",
+        "tag": "P_FICKLE",
+        "path": "personality/p_fickle",
+        "exampleCount": 4
+      },
+      {
+        "label": "충동적",
+        "tag": "P_IMPULSIVE",
+        "path": "personality/p_impulsive",
+        "exampleCount": 4
+      },
+      {
+        "label": "침착",
+        "tag": "P_CALM",
+        "path": "personality/p_calm",
+        "exampleCount": 4
+      },
+      {
+        "label": "지혜로움",
+        "tag": "P_WISE",
+        "path": "personality/p_wise",
+        "exampleCount": 4
+      },
+      {
+        "label": "광기",
+        "tag": "P_MAD",
+        "path": "personality/p_mad",
+        "exampleCount": 4
+      },
+      {
+        "label": "집착",
+        "tag": "P_OBSESSIVE",
+        "path": "personality/p_obsessive",
+        "exampleCount": 4
+      },
+      {
+        "label": "복수심",
+        "tag": "P_VENGEFUL",
+        "path": "personality/p_vengeful",
+        "exampleCount": 4
+      },
+      {
+        "label": "탐욕",
+        "tag": "P_GREEDY",
+        "path": "personality/p_greedy",
+        "exampleCount": 4
+      },
+      {
+        "label": "쾌락주의",
+        "tag": "P_HEDONISTIC",
+        "path": "personality/p_hedonistic",
+        "exampleCount": 4
+      },
+      {
+        "label": "금욕",
+        "tag": "P_ASCETIC",
+        "path": "personality/p_ascetic",
+        "exampleCount": 4
+      },
+      {
+        "label": "명예중시",
+        "tag": "P_HONOR_BOUND",
+        "path": "personality/p_honor_bound",
+        "exampleCount": 4
+      },
+      {
+        "label": "허무주의",
+        "tag": "P_NIHILISTIC",
+        "path": "personality/p_nihilistic",
+        "exampleCount": 4
+      }
+    ],
+    "emotion": [
+      {
+        "label": "분노",
+        "tag": "E_ANGRY",
+        "path": "emotion/e_angry",
+        "exampleCount": 4
+      },
+      {
+        "label": "행복",
+        "tag": "E_HAPPY",
+        "path": "emotion/e_happy",
+        "exampleCount": 4
+      },
+      {
+        "label": "짜증",
+        "tag": "E_ANNOYED",
+        "path": "emotion/e_annoyed",
+        "exampleCount": 4
+      },
+      {
+        "label": "호기심",
+        "tag": "E_CURIOUS",
+        "path": "emotion/e_curious",
+        "exampleCount": 4
+      },
+      {
+        "label": "슬픔",
+        "tag": "E_SAD",
+        "path": "emotion/e_sad",
+        "exampleCount": 4
+      },
+      {
+        "label": "감사",
+        "tag": "E_GRATEFUL",
+        "path": "emotion/e_grateful",
+        "exampleCount": 4
+      },
+      {
+        "label": "실망",
+        "tag": "E_DISAPPOINTED",
+        "path": "emotion/e_disappointed",
+        "exampleCount": 4
+      },
+      {
+        "label": "두려움",
+        "tag": "E_AFRAID",
+        "path": "emotion/e_afraid",
+        "exampleCount": 4
+      }
+    ]
+  },
+  "totalExampleFiles": 216
+}

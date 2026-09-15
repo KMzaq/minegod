@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "questListId": "mythictrpg:quest_list_fortuna",
+  "progressTrackId": "mythictrpg:progress_fortuna",
+  "displayName": "포르투나 퀘스트",
+  "quests": [
+    {
+      "questId": "mythictrpg:fortuna_deep_sea_heart",
+      "title": "포르투나의 시험: 깊은 바다의 심장",
+	      "content": "깊은 바다에서 바다의 심장 2개를 찾아 포르투나에게 가져온다.",
+      "objectives": [
+        {
+          "type": "collect_item",
+	          "description": "바다의 심장 2개를 구한다.",
+          "parameters": {
+            "itemId": "minecraft:heart_of_the_sea",
+	            "count": 2
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "item",
+          "description": "불사의 토템 1개를 받는다.",
+          "parameters": {
+            "itemId": "minecraft:totem_of_undying",
+            "count": 1
+          }
+        }
+      ],
+      "acceptanceConditions": [
+        {
+          "type": "world_quest_progress_range",
+          "description": "포르투나 전역 진행도가 0일 때 수주할 수 있다.",
+          "parameters": {
+            "progressTrackId": "mythictrpg:progress_fortuna",
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      ],
+      "progressOnClear": 10
+    }
+  ]
+}

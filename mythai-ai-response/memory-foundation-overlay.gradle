@@ -1,0 +1,143 @@
+// Small, checked attachment after the restored LP overlay. Legacy source remains untouched.
+ext.patchMemoryFoundationAdapter = { String source ->
+    def patch = { String before, String after ->
+        if (source.indexOf(before) < 0 || source.indexOf(before) != source.lastIndexOf(before)) {
+            throw new GradleException('Memory attachment target missing/ambiguous: ' + before.take(100))
+        }
+        source = source.replace(before, after)
+    }
+    patch('package com.sande.mythictrpg.ai;', '''package com.sande.mythictrpg.ai;
+
+import com.sande.mythai.response.memory.DialogueMemoryBridge;
+import com.sande.mythai.response.memory.MemoryRecallPolicy;''')
+    patch('        private boolean pending;', '''        private boolean pending;
+        private DialogueMemoryBridge.Turn memoryTurn = DialogueMemoryBridge.EMPTY;''')
+    patch('''        long turn = ++session.turn;
+        session.history.add(new Transcript("PLAYER",''', '''        long turn = ++session.turn;
+        session.memoryTurn = DialogueMemoryBridge.begin(player, session.speaker(), text, turn,
+                session.history.stream().map(Transcript::text).collect(java.util.stream.Collectors.toSet()),
+                session.history.stream().filter(t -> "PLAYER".equals(t.role())).map(Transcript::text).toList());
+        session.history.add(new Transcript("PLAYER",''')
+    patch('''        if (isDirectSocialTurn(socialPlan.directive())) {
+            completeDirectSocialResponse''', '''        if (isDirectSocialTurn(socialPlan.directive())) {
+            if (session.memoryTurn.hasRumors()) {
+                submitGeneration(player, session, turn, text, contents, ConversationIntent.heuristicFallback(), null);
+                return;
+            }
+            completeDirectSocialResponse''')
+    patch('''                examples + "\\nSPEAKER=" + session.speaker()''', '''                session.memoryTurn.prompt() + examples + "\\nSPEAKER=" + session.speaker()''')
+    patch('''        StringBuilder context = new StringBuilder();''', '''        StringBuilder context = new StringBuilder(session.memoryTurn.prompt());''')
+    patch('''        return List.of(new AiDialogueModels.OllamaMessage("system", system),
+                new AiDialogueModels.OllamaMessage("user", bounded(context.toString(), 12_000)));''', '''        return List.of(new AiDialogueModels.OllamaMessage("system",
+                        MemoryRecallPolicy.generationSystem(system, !session.memoryTurn.prompt().isEmpty())),
+                new AiDialogueModels.OllamaMessage("user", bounded(context.toString(), 12_000)));''')
+    patch('''        logs.append(player.server, player.getUUID(), "PLAYER", text);''', '''        logs.append(player.server, player.getUUID(), "PLAYER", text);
+        logs.append(player.server, player.getUUID(), "MEMORY_RECALL",
+                "bound=" + (session.memoryTurn.context() != null)
+                        + "; selected=" + session.memoryTurn.selected().stream().map(e -> e.id().toString()).toList()
+                        + "; chars=" + session.memoryTurn.prompt().length());''')
+    patch('''        return sessions.get(player.getUUID()) == session && session.turn == turn;''', '''        boolean sameTurn = sessions.get(player.getUUID()) == session && session.turn == turn;
+        if (sameTurn && !DialogueMemoryBridge.current(player, session.memoryTurn)) {
+            session.pending = false;
+            return false;
+        }
+        return sameTurn;''')
+    patch('''            }
+        }
+    }
+
+    private static List<String> dialoguePages''', '''            }
+        }
+        DialogueMemoryBridge.delivered(player, godId, text);
+    }
+
+    private static List<String> dialoguePages''')
+    patch('''        List<AiDialogueModels.Proposal> proposals = plan.directive().proposalsAllowed()
+                ? normalizeProposals''', '''        List<AiDialogueModels.Proposal> proposals = plan.directive().proposalsAllowed()
+                && (session.memoryTurn.context() == null || !session.memoryTurn.context().readOnly())
+                ? normalizeProposals''')
+    // A rejected /ai_test start must not detach an already-running production memory session.
+    patch('''        try {
+            AiTestContentRegistryBridge.ContentSnapshot content = contentRegistry.load(godId, "R_NEUTRAL", List.of(godId));''', '''        DialogueMemoryBridge.unbind(player.getUUID());
+        try {
+            AiTestContentRegistryBridge.ContentSnapshot content = contentRegistry.load(godId, "R_NEUTRAL", List.of(godId));''')
+    for (String signature : ['public boolean stop(ServerPlayer player)',
+                             'public void onPlayerLoggedOut(ServerPlayer player)']) {
+        patch(signature + ' {', signature + ' {\n        DialogueMemoryBridge.unbind(player.getUUID());')
+    }
+    patch('public void discardPlayer(UUID playerId) {', 'public void discardPlayer(UUID playerId) {\n        DialogueMemoryBridge.unbind(playerId);')
+    patch('''        session.memoryTurn = DialogueMemoryBridge.begin(player, session.speaker(), text, turn,''',
+          '''        var memoryFuture = DialogueMemoryBridge.beginAsync(player, session.speaker(), text, turn,''')
+    patch('''        logs.append(player.server, player.getUUID(), "MEMORY_RECALL",
+                "bound=" + (session.memoryTurn.context() != null)
+                        + "; selected=" + session.memoryTurn.selected().stream().map(e -> e.id().toString()).toList()
+                        + "; chars=" + session.memoryTurn.prompt().length());
+        updatePlayActivity(session, text);
+
+        Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;''', '''        updatePlayActivity(session, text);
+        if (memoryFuture.isDone()) {
+            continueAfterMemory(player, session, turn, text, memoryFuture.join());
+        } else {
+            memoryFuture.thenAccept(memory -> player.server.execute(() ->
+                    continueAfterMemory(player, session, turn, text, memory)));
+        }
+    }
+
+    private void continueAfterMemory(ServerPlayer player, Session session, long turn, String text,
+            DialogueMemoryBridge.Turn memory) {
+        if (sessions.get(player.getUUID()) != session || session.turn != turn) return;
+        if (!DialogueMemoryBridge.accept(player, memory)) { session.pending = false; return; }
+        session.memoryTurn = memory;
+        logs.append(player.server, player.getUUID(), "MEMORY_RECALL",
+                "bound=" + (session.memoryTurn.context() != null)
+                        + "; selected=" + session.memoryTurn.selected().stream().map(e -> e.id().toString()).toList()
+                        + "; chars=" + session.memoryTurn.prompt().length()
+                        + "; diagnostic=" + MemoryRecallPolicy.diagnostic(session.memoryTurn.recall()));
+        Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;''')
+    patch('session.memoryTurn.prompt() + examples + "\\nSPEAKER="',
+            'session.memoryTurn.referenceContext() + examples + "\\nSPEAKER="')
+    patch('StringBuilder context = new StringBuilder(session.memoryTurn.prompt());',
+            'StringBuilder context = new StringBuilder(session.memoryTurn.referenceContext());')
+    patch('MemoryRecallPolicy.generationSystem(system, !session.memoryTurn.prompt().isEmpty())',
+            'MemoryRecallPolicy.recallSystem(MemoryRecallPolicy.generationSystem(system, !session.memoryTurn.prompt().isEmpty()), session.memoryTurn.recall())')
+    patch('new AiDialogueModels.OllamaMessage("user", bounded(context.toString(), 12_000))',
+            'new AiDialogueModels.OllamaMessage("user", MemoryRecallPolicy.fitContext(context.toString(), session.memoryTurn.recall() != null))')
+    patch('''        DialogueTurnDirective directive = DialogueTurnDirective.plan(text,
+                session.history.stream().map(Transcript::text).toList(), session.participants.size(), intent);''',
+          '''        intent = MemoryRecallPolicy.effectiveIntent(intent, session.memoryTurn.recalling());
+        DialogueTurnDirective directive = session.memoryTurn.recalling() ? DialogueTurnDirective.recall()
+                : DialogueTurnDirective.plan(text,
+                    session.history.stream().map(Transcript::text).toList(), session.participants.size(), intent);''')
+    patch('''        GenerationPlan plan = generationPlan(session, text, intent, contents);
+        AiTestContentRegistryBridge.ContentSnapshot primary''', '''        intent = MemoryRecallPolicy.effectiveIntent(intent, session.memoryTurn.recalling());
+        GenerationPlan plan = generationPlan(session, text, intent, contents);
+        AiTestContentRegistryBridge.ContentSnapshot primary''')
+    patch('''        List<AiDialogueModels.OllamaMessage> messages = generationMessages(player, session, text, contents, plan, tags,
+                lore, dynamics);''', '''        List<AiDialogueModels.OllamaMessage> messages;
+        try { messages = generationMessages(player, session, text, contents, plan, tags, lore, dynamics); }
+        catch (IllegalArgumentException oversized) { finishFailure(player, session, turn, oversized.getMessage()); return; }
+        logs.append(player.server, player.getUUID(), "MEMORY_RECALL_EFFECTIVE",
+                "intent=" + intent.conversationAct() + "; directive=" + plan.directive().mode()
+                        + "; evidence_reselected=false; " + MemoryRecallPolicy.diagnostic(session.memoryTurn.recall()));''')
+    patch('''        List<AiDialogueModels.OllamaMessage> messages = new ArrayList<>(generationMessages(player, session, text, contents,
+                plan, tags, lore, dynamics));''', '''        List<AiDialogueModels.OllamaMessage> messages;
+        try { messages = new ArrayList<>(generationMessages(player, session, text, contents, plan, tags, lore, dynamics)); }
+        catch (IllegalArgumentException oversized) { finishFailure(player, session, turn, oversized.getMessage()); return; }''')
+    return source
+}
+
+ext.patchRecallDirective = { String source ->
+    String target = '    static DialogueTurnDirective plan(String playerText, List<String> history, int divineCount,'
+    if (source.indexOf(target) < 0 || source.indexOf(target) != source.lastIndexOf(target))
+        throw new GradleException('Recall directive target missing/ambiguous')
+    source.replace(target, '''    static DialogueTurnDirective recall() {
+        return new DialogueTurnDirective(Mode.INFORMATION,
+                "Answer the player's request about earlier words using RECALL_REQUEST and authorized evidence.",
+                List.of("Preserve persona and actual relationship; this is recall, not a new event or NPC-question answer.",
+                        "Ambiguous/missing evidence needs a brief clarification, not invented history or hostility.",
+                        "Statements and plans do not establish completed game actions. Return proposals as an empty array."),
+                false, 1, 120);
+    }
+
+''' + target)
+}

@@ -1,0 +1,368 @@
+SECTIONS=1 TABLES=24 PARAGRAPHS=287
+P0001 [Normal] MYTHIC TRPG
+P0002 [Normal] Minecraft AI TRPG 서버 기획·기술 통합 문서
+P0003 [Normal] 기획 기준 버전 0.1 · 2026-08-25
+T0004 rows=1 cols=1
+  R001 | 문서 목적 지금까지 논의·확정한 세계관, 진행 구조, 신/NPC 상호작용, 데이터 설계, AI 방향, 레이드·퀘스트·거점 시스템과 실제 NeoForge 구현 진행 상황을 하나의 기준 문서로 통합한다. 관찰한 원본 서버의 동작과 신규 프로젝트의 채택 사항을 구분하여 기록한다.
+P0006 [Normal] 상태 표기
+P0007 [Normal] [확정] 신규 프로젝트에서 채택한 원칙/구조
+P0008 [Normal] [방향] 우선 채택 방향이나 플레이테스트 후 조정 가능
+P0009 [Normal] [참고] 원본 서버에서 관찰했거나 재현 후보인 요소
+P0010 [Normal] [미정] 추가 설계 또는 실제 플레이 검증이 필요한 요소
+P0012 [Heading 1] 목차
+P0013 [Normal] 1. 프로젝트 정의와 핵심 원칙
+P0014 [Normal] 2. 목표 플레이 경험
+P0015 [Normal] 3. 세계관과 진행 구조
+P0016 [Normal] 4. 진영·권력·전투력 구조
+P0017 [Normal] 5. 캐릭터 / God Definition 모델
+P0018 [Normal] 6. 해금·출현·조우·식별 시스템
+P0019 [Normal] 7. 세계 공용 / 플레이어 개인 데이터
+P0020 [Normal] 8. 플레이어 카테고리·평판·언어
+P0021 [Normal] 9. 호감도·관계·공물·퀘스트
+P0022 [Normal] 10. 신전·거점·물리 NPC
+P0023 [Normal] 11. 레이드·전투·세계 안정성
+P0024 [Normal] 12. 경제·UI·BGM·접근성
+P0025 [Normal] 13. AI·기억·대화 시스템 방향
+P0026 [Normal] 14. 상호작용 파이프라인과 성능 원칙
+P0027 [Normal] 15. 현재 기술 구현 현황
+P0028 [Normal] 16. 데이터 예시
+P0029 [Normal] 17. 미확정 사항과 설계 리스크
+P0030 [Normal] 18. 로드맵 및 다음 단계
+T0031 rows=1 cols=1
+  R001 | 읽는 법 게임 기획 내용과 기술 구현 내용을 함께 다루지만, 기술 구현이 게임 규칙을 대신하지 않는다. 서버 규칙이 먼저 후보와 허용 범위를 결정하고, AI는 허용된 범위 안에서 대화·해석·연출을 담당하는 것을 기본 철학으로 한다.
+P0033 [Heading 1] 1. 프로젝트 정의와 핵심 원칙
+P0034 [Normal] [확정] 프로젝트 기본 정의
+T0035 rows=9 cols=2
+  R001 | 항목 || 현재 기준
+  R002 | 장르 || Minecraft 기반 멀티플레이 AI TRPG / RPG
+  R003 | 플랫폼 || Minecraft Java 1.21.1 + NeoForge 21.1.248
+  R004 | 프로젝트 ID || mythictrpg / Mythic TRPG
+  R005 | 운영 형태 || 친구 중심 private multiplayer server
+  R006 | 캐릭터 규모 || 장기 목표 약 800명. 수량보다 상호작용 깊이를 우선
+  R007 | 핵심 콘텐츠 || 신화·역사·전설·요괴·악마·영웅·오리지널·서브컬처 캐릭터와의 동적 관계
+  R008 | 대화 방식 || 중앙 HUD 기반. 일반 채팅 전체를 곧바로 AI에 전달하지 않음
+  R009 | AI 비용 정책 || 서버 규칙으로 후보를 먼저 줄이고 필요한 경우에만 소수 후보로 LLM 호출
+P0037 [Normal] [확정] 핵심 설계 원칙
+P0038 [List Bullet] 세계 규칙과 AI를 분리한다. 해금, 출현 가능성, 식별, 진영 상태, 호감도 등 authoritative state는 서버가 결정한다.
+P0039 [List Bullet] 신/NPC 수가 수백 명이어도 매 tick 전체를 순회하거나 800명 전부를 LLM Context에 넣지 않는다.
+P0040 [List Bullet] 데이터 기반(Data-driven)을 우선한다. 신규 캐릭터는 가능한 한 Java 재컴파일 없이 JSON/datapack으로 추가한다.
+P0041 [List Bullet] 세계 공용 상태와 플레이어 개인 상태를 분리한다. 같은 세계에서 상반된 개인 루트가 동시에 존재할 수 있다.
+P0042 [List Bullet] 구현 단계마다 정상 상태를 Git commit으로 보존한다. 새로운 PHASE는 이전 기준점이 clean한 상태에서 시작한다.
+P0043 [List Bullet] 테스트용 설정을 production God 데이터에 섞지 않는다. GameTest fixture와 실제 콘텐츠를 분리한다.
+P0044 [List Bullet] 원본 서버의 불편함을 그대로 복제하지 않는다. 발견의 재미는 유지하되 UI·명령어·운영 도구로 조사 가능성을 제공한다.
+P0045 [Heading 1] 2. 목표 플레이 경험
+P0046 [Normal] [확정] 핵심 플레이 판타지
+P0047 [Normal] 플레이어가 일반 Minecraft 생활을 하면서도, 보이지 않는 신·요괴·영웅·악마들이 행동을 관찰하고 관계를 형성하며 특정 순간에 개입하는 세계를 목표로 한다. 플레이어가 메뉴에서 NPC를 선택해 대화하는 구조가 아니라, 행동·장소·세계 상태·과거 관계가 조합되어 “누가 지금 나를 보고 있는가”가 달라지는 TRPG 감각을 만든다.
+T0048 rows=1 cols=1
+  R001 | 대표 경험 농사를 오래 지은 플레이어가 어느 날 농경 신의 주목을 받고, 다른 플레이어는 악업과 악마 계열 관계 때문에 전혀 다른 존재와 연결된다. 같은 서버에 있어도 각자의 관계와 식별 상태가 달라 서로 다른 이름과 대사를 경험할 수 있다.
+P0050 [Normal] [방향] 플레이 템포
+P0051 [List Bullet] 초반은 일반 Minecraft의 탐험·채집·건축을 유지하되, 원본 서버처럼 지나치게 오랫동안 AI 상호작용이 거의 없는 상태로 두지 않는다.
+P0052 [List Bullet] 해금과 출현은 숨겨진 조건을 유지하지만, 단서·기록·Codex·관리자 디버그를 통해 “조사 가능한 미스터리”로 만든다.
+P0053 [List Bullet] 자발적 상호작용은 희소성을 유지한다. 조건이 맞는 신이 여러 명이어도 모두 동시에 말하지 않고 후보 선택 계층을 거친다.
+P0054 [List Bullet] 친밀한 관계가 쌓이면 더 자주 말하거나 퀘스트·개입·물리 현현 같은 고급 상호작용으로 확장한다.
+P0055 [Heading 1] 3. 세계관과 진행 구조
+P0056 [Normal] [방향] 세계 진행도
+P0057 [Normal] 세계 진행도는 선악 수치가 아니라 “이 세계의 신화적 사건이 얼마나 진행되었는가”를 나타낸다. 선신의 성장뿐 아니라 악마 각성, 봉인 해제, 신화 세력 붕괴 같은 부정적 사건도 진행도를 올릴 수 있다. 특정 진행도와 세력 상태가 고위 존재의 해금 조건에 사용될 수 있다.
+P0058 [Normal] [방향] 가이아 전/후 신화권 확장
+P0059 [Normal] 진행 구조의 큰 게이트로 가이아 조우를 둔다. 가이아 이전에는 그리스·이집트 등 대중적이고 중심적인 신화권을 먼저 접하게 하고, 가이아 이후에는 더 다양한 신화권과 상호 교류가 열리는 방식이다. 최종 신화권 목록과 정확한 분할은 별도 콘텐츠 테이블에서 확정한다.
+P0060 [Normal] [참고→신규 채택 후보] 세계의 과거
+P0061 [List Bullet] 과거에 선신 계열과 악신 계열, 신들의 세력과 천군 계열 사이에 대규모 전쟁이 있었던 세계사를 활용한다.
+P0062 [List Bullet] 천군은 패배하여 천마 등 여러 강자가 봉인되었고, 이 역사 때문에 일부 요괴·영웅·신이 기존 신들에게 원한을 가질 수 있다.
+P0063 [List Bullet] 세력 우위는 실제 상호작용과 보스 강도, 봉인·지원 관계에 영향을 줄 수 있다.
+P0064 [Normal] [미정] 엔딩과 후반 진행
+P0065 [Normal] 엔더 드래곤, 특정 진영 선택, 타워 진행 등 여러 엔딩 후보가 존재한다. 엔딩 이후에도 세계와 관계가 지속되는 구조를 우선하며, 특정 엔딩이 대량 콘텐츠를 영구 삭제하는 방식은 피한다.
+P0066 [Heading 1] 4. 진영·권력·전투력 구조
+P0067 [Normal] [방향] 진영 분류
+T0068 rows=5 cols=2
+  R001 | 진영 || 개념 / 예시
+  R002 | 선신 계열 || 그리스·로마·이집트·켈트 등 다양한 신계 및 천사 계열. 고정 도덕성이라기보다 큰 세력 축
+  R003 | 천군 || 천마를 중심으로 한 강자 세력. 멸룡루브라스, 타마모노마에, 이바라키도지 등 이질적인 존재를 포함 가능
+  R004 | 악신 계열 || 솔로몬 72악마, 성경계 악마 등. 세계의 위협이자 플레이어 루트가 될 수도 있음
+  R005 | 중립 || 아서왕·관우 같은 영웅/위인, 독립적인 신격이나 세력
+P0070 [Normal] 진영은 “신화권”과 분리한다. 같은 신화권 내부에서도 정치적·개인적 관계가 다를 수 있고, 플레이어는 서버 공유 세계 안에서 서로 다른 진영과 개인 관계를 발전시킬 수 있다.
+P0071 [Normal] [확정] 강함의 범주
+P0072 [List Bullet] 요괴와 위인은 신보다 약하다는 전제를 두지 않는다. 설정과 개체에 따라 신과 동급 또는 그 이상일 수 있다.
+P0073 [List Bullet] 숫자 단계와 서사적 계급을 분리한다. 하급/중급/상급/최상급/초월자 같은 계급은 서사·위계용이고, 상세 숫자 스테이지는 별도 밸런스 축이 될 수 있다.
+P0074 [List Bullet] 강한 관계의 신은 다른 신과의 첫 만남, 레이드, 봉인/전투 상황에 실제 영향력을 행사할 수 있다.
+P0075 [Normal] [참고] 세력 독주 이벤트
+P0076 [Normal] 특정 신화권의 주요 신 퀘스트가 많이 진행되고 다른 세력의 영향력이 약하면 독주 이벤트가 발생할 수 있다. 신규 서버에서는 세력 독주가 다른 콘텐츠의 영구 삭제로 이어지지 않도록 봉인·억제·복구 가능한 변화로 설계한다.
+P0077 [Heading 1] 5. 캐릭터 / God Definition 모델
+P0078 [Normal] [확정] 정적 정의와 동적 상태 분리
+T0079 rows=1 cols=1
+  R001 | GodDefinition (datapack JSON) id / displayName / origin / faction / divineRank / stage categories / personality / speechStyle likes / dislikes / offering metadata unlock_conditions / appearance_conditions / identification_conditions relationships / abilities / manifestation metadata bgm sound id / quest metadata World & Player Runtime State unlock / seal / affinity / encounter / identification / flags ...
+P0081 [Normal] GodDefinition은 캐릭터의 정적 설정이고 플레이어 호감도나 서버 봉인 상태 같은 변화값을 저장하지 않는다. 내부 ID는 ResourceLocation 기반으로 관리하며 표시 이름과 분리한다.
+P0082 [Normal] [확정] 테스트 기준 캐릭터
+T0083 rows=4 cols=3
+  R001 | ID || 표시/역할 || 현재 사용 목적
+  R002 | mythictrpg:demeter || Demeter / 농경 계열 || 데이터 구조 테스트
+  R003 | mythictrpg:aphrodite || Aphrodite / 사랑·미·바다 계열 || 데이터 구조 테스트
+  R004 | mythictrpg:lubras || 멸룡루브라스 / 용·전투·천군 계열 || 핵심 오리지널 캐릭터 및 대화/식별 테스트
+P0085 [Normal] [확정] 멸룡루브라스 핵심 모티브
+P0086 [List Bullet] 묵시록의 붉은 용 모티브. 최고위권 전투력을 가진 신격/존재로 설정한다.
+P0087 [List Bullet] 본체는 용, 인간형 현현은 붉은 머리 여성 분신체 형태를 사용할 수 있다.
+P0088 [List Bullet] 천군 소속이지만 강한 중립성 때문에 모든 세력에게 단순 적대 대상으로 취급되지는 않는다.
+P0089 [List Bullet] 친밀한 플레이어에게는 사회적·전투적 영향력을 제공하며 다른 신과의 상호작용에서 동행자의 존재 자체가 변수로 작동할 수 있다.
+P0090 [Heading 1] 6. 해금·출현·조우·식별 시스템
+P0091 [Normal] [확정] 네 단계는 독립 상태
+T0092 rows=5 cols=3
+  R001 | 단계 || 범위 || 의미
+  R002 | Unlock || 서버 공용 || 그 존재가 세계에서 시스템적으로 접근 가능한가
+  R003 | Appearance Eligibility || 실시간 개인 계산 || 지금 이 플레이어에게 등장 가능한 환경/관계 조건인가
+  R004 | Encounter || 플레이어 개인 영구 || 해당 존재의 실제 개입/현현을 경험했는가
+  R005 | Identification || 플레이어 개인 영구 || 그 존재의 정체/이름을 알고 있는가
+T0094 rows=1 cols=1
+  R001 | 중요 Unlocked ≠ Appeared ≠ Encountered ≠ Identified. 출현 조건이 맞았다고 조우가 기록되지 않고, 조우했다고 이름을 자동으로 아는 것도 아니다. 반대로 다른 신의 정보나 언어·문헌으로 직접 만나기 전에 이름을 알 수도 있다.
+P0096 [Normal] [확정] 조건 없음 정책
+P0097 [List Bullet] `unlock_conditions` 없음 → 해금 자체가 필요 없는 존재(UnlockPolicy.NOT_REQUIRED).
+P0098 [List Bullet] `appearance_conditions` 없음 → 일반 자동 출현 대상이 아니며 명시적 퀘스트/소환/스크립트 경로만 허용(EXPLICIT_ONLY).
+P0099 [List Bullet] `identification_conditions` 없음 → 조건 엔진 기반 자동 식별은 없고 자기소개·언어·아이템·타 신의 정보 등 명시적 경로로 식별.
+P0100 [Normal] [확정] 미식별 표시
+P0101 [Normal] GodDefinition의 실제 이름을 변경하지 않는다. 플레이어에게 보여줄 이름은 GodIdentityService가 개인 식별 상태를 기준으로 결정하며, 미식별 상태에서는 `???`를 사용한다. 향후 `??? → 붉은 용 → 멸룡루브라스` 같은 부분 식별 단계도 동일 서비스에서 확장 가능하다.
+P0102 [Heading 1] 7. 세계 공용 / 플레이어 개인 데이터
+P0103 [Normal] [확정] 세계 공용 상태
+P0104 [List Bullet] 세계 진행도, 시대/챕터, 신 해금, 봉인, 약화, 처치, 세력 상태, 주요 사건, 월드 플래그는 서버 공용이다.
+P0105 [List Bullet] 개인의 행동이 서버 공용 조건을 만족시켜 신을 해금할 수 있다. 한 번 해금된 존재는 기본적으로 자동 재잠금하지 않는다.
+P0106 [List Bullet] World Shared Data는 `MythicWorldState extends SavedData` 기반으로 관리한다.
+P0107 [Normal] [확정] 플레이어 개인 상태
+P0108 [List Bullet] 신별 호감도, 조우, 식별, 개인 평판/카테고리, 언어, 가호/저주, 개인 퀘스트, 개인 기억은 플레이어별로 분리한다.
+P0109 [List Bullet] canonical source-of-truth는 `PlayerMythDataRepository` SavedData이며, 온라인 Attachment는 비영구 runtime view 역할만 한다.
+P0110 [List Bullet] ACTIVE / ARCHIVED participation 상태를 두며 ARCHIVED 데이터는 보존하되 서버 전체 자동 조건 모집단에서는 제외한다.
+P0111 [List Bullet] 장기 대화 원문이나 무한히 증가하는 행동 로그는 이 Repository에 넣지 않는다. bounded 상태·플래그·요약 수치만 저장한다.
+P0112 [Normal] [확정] 오프라인 플레이어 조건
+P0113 [Normal] `ANY_PLAYER`/`ALL_PLAYERS`는 ACTIVE 상태라면 오프라인 플레이어도 포함한다. 누군가 로그아웃했다는 이유만으로 세계 해금 조건이 다시 불충족되어서는 안 된다. 반면 `ANY_ONLINE_PLAYER`는 현재 접속자만 본다.
+P0114 [Heading 1] 8. 플레이어 카테고리·평판·언어
+P0115 [Normal] [방향] 플레이어 카테고리
+P0116 [Normal] 플레이어 외형·행동·업적에 따라 카테고리/태그를 가질 수 있고, 이것이 신의 호감도·출현·관계 가능성에 영향을 준다. 범용 확장을 위해 카테고리는 ResourceLocation 기반 데이터 ID를 우선한다.
+P0117 [List Bullet] 외형/스킨 기반 예: 여성, 물, 유기물 등. 실제 적용 방식은 서버 운영정책과 기술 구현을 다시 검토한다.
+P0118 [List Bullet] 행동 기반 예: 악업, 악인, 특정 농업/사냥/건축 성향.
+P0119 [List Bullet] 특수 장비·밈 아이템에 의해 팬티맨 같은 평판이 생성될 수 있다.
+P0120 [List Bullet] 평판은 단순 삭제보다 더 큰 업적·사건에 의해 덮이거나 재해석되는 방향을 고려한다.
+P0122 [Normal] [참고] 언어 시스템
+T0123 rows=5 cols=2
+  R001 | 언어 || 역할
+  R002 | 천계어 || 천계·천사·신격 정보/이름 이해
+  R003 | 악마어 || 악마 계열의 정보·대화 해석
+  R004 | 요괴어 || 요괴/영물 계열의 정보·대화 해석
+  R005 | 고대어 || 고대 기록·신화 문헌·특수 조건 해독
+P0125 [Normal] 언어를 모르면 텍스트가 암호화되어 보일 수 있으며, 고대도시 상자 같은 탐험 보상에서 언어 단서를 얻어 특정 신에게 해독을 부탁하는 루트를 고려한다.
+P0126 [Heading 1] 9. 호감도·관계·공물·퀘스트
+P0127 [Normal] [확정] 호감도와 관계의 개인화
+P0128 [List Bullet] 호감도는 플레이어 개인별로 누적한다. 같은 신에 대해 플레이어 A와 B의 관계는 완전히 다를 수 있다.
+P0129 [List Bullet] 높은 호감도는 선제 대화, 퀘스트, 레이드 지원, 물리 현현, 동거/신전 정착 등 고급 상호작용의 가능성을 높인다.
+P0130 [List Bullet] 한 신과의 강한 관계는 다른 신의 태도와 대사에도 영향을 줄 수 있다.
+P0131 [List Bullet] 연인·부부·제자 등 관계는 고정 단계표보다 누적 사건과 AI 대화 결과에 의해 발전하는 방향을 고려한다.
+P0132 [Normal] [방향] 공물
+T0133 rows=8 cols=2
+  R001 | 대상 예시 || 선호 공물 방향
+  R002 | 멸룡루브라스 || 용 모티브 → 보석류
+  R003 | 슈텐도지 || 술 계열 → Minecraft에서는 포션 등 대체 표현
+  R004 | 타마모노마에 || 열대어·달콤한 열매 등 동물/요괴 이미지
+  R005 | 아르테미스 || 사냥 전리품
+  R006 | 데메테르 || 농작물
+  R007 | 메데이아 || 황금양털 같은 신화 고유 아이템
+  R008 | 히프노스 || 베개/수면 모티브 아이템
+P0135 [Normal] 공물 선호는 종족·상징·신화적 서사와 연결한다. 보상은 버프·무기·장비·정보 등 상황에 따라 제시할 수 있으나, AI가 수량과 보상을 무제한 결정하지 않고 서버 Validator가 허용 범위로 변환한다.
+P0136 [Normal] [확정] 퀘스트 설계 원칙
+P0137 [List Bullet] AI는 퀘스트의 이야기/의도/맥락을 만들 수 있으나 실제 목표 수량, 지급 아이템, 능력치 변경은 서버가 검증한다.
+P0138 [List Bullet] 한 신의 퀘스트가 다른 신의 해금·상호작용으로 연결되는 연쇄 퀘스트를 지원한다.
+P0139 [List Bullet] 여러 플레이어가 각각 다른 재료를 가져오는 협동 퀘스트를 지원할 수 있다.
+P0140 [List Bullet] 실제 시간 제한 퀘스트와 실패 기록은 가능하되, 패널티와 관계 변화는 명시적으로 검증 가능한 시스템이어야 한다.
+P0141 [Heading 1] 10. 신전·거점·물리 NPC
+P0142 [Normal] [방향] 개인 거점과 보호
+P0143 [List Bullet] 플레이어 개인 거점은 분리되며, 비콘 계열 아이템으로 텔레포트와 보호구역 기능을 결합할 수 있다.
+P0144 [List Bullet] 보호구역은 1인 약 2~3개를 우선안으로 둔다: 본거점 / 신전 / 농장.
+P0145 [List Bullet] 가격만으로 무제한 보호를 허용하기보다 활성 개수 상한을 함께 두는 방향이 안전하다.
+P0146 [List Bullet] 신전은 공물 상자와 신별 구역을 가질 수 있고, 한 건물 안에 여러 신을 모시는 방식도 허용 가능하다.
+P0147 [Normal] [참고→방향] 신전의 비동기 공물
+P0148 [Normal] 플레이어가 직접 전달하거나 지정 공물 상자에 넣을 수 있다. 플레이어가 없을 때도 신이 공물을 가져간 것으로 처리하고, 다음 접속/상호작용 때 보상을 회수하는 비동기 구조를 고려한다.
+P0149 [Normal] [방향] 물리 NPC 현현
+P0150 [List Bullet] 물리 NPC는 신의 본체가 아니라 현현/분신으로 취급한다. 진정한 신격은 다른 세계/영역에 존재할 수 있다.
+P0151 [List Bullet] 원본 서버의 “전 서버 1 NPC 슬롯”은 신규 서버의 하드 규칙으로 채택하지 않는다. 개인 거점/플레이어 단위 슬롯으로 확장 가능하게 한다.
+P0152 [List Bullet] 거점 NPC는 단순 추종자가 아니라 도서관·정원·창가 등 POI 기반 생활 행동을 갖는 것을 목표로 한다.
+P0153 [List Bullet] 호감도 높은 플레이어의 공격은 대련 제안으로 이어질 수 있고, 타 플레이어의 공격은 스트레스/적대 반응을 낳을 수 있다.
+P0154 [Normal] [참고] 거점 평가 수치
+P0155 [Normal] 스트레스, 안정/편안함, 허기 같은 수치와 집의 블록·구조에 따른 선호 평가가 존재했던 것으로 보인다. 신규 서버에서 도입할 경우 단순 블록 수가 아니라 POI·공간·신별 선호를 결합하는 별도 설계가 필요하다.
+P0156 [Heading 1] 11. 레이드·전투·세계 안정성
+P0157 [Normal] [방향] 레이드 유형
+P0158 [Normal] 1. 친밀한 신과의 대련/시험: 비교적 안전하며 관계·시험 중심 보상.
+P0159 [Normal] 2. 소환권 레이드: 네더 신전/요새 상자, 상점 등에서 획득한 티켓으로 특정 계열 적을 소환.
+P0160 [Normal] 3. 필드 보스 레이드: 특정 바이옴/조건에서 출현하며 영웅·요괴·서브컬처 캐릭터도 포함 가능.
+P0161 [Normal] 필드 보스는 자동 공격보다 중앙 메시지로 “누군가 당신을 주시합니다. 레이드를 시작하시겠습니까?” 같은 사전 선택을 제공하는 방향이 적합하다.
+P0162 [Normal] [참고] 전투 기믹
+P0163 [List Bullet] 돌진 연속기에서 방패 타이밍 요구, 실패 시 치명적 피해.
+P0164 [List Bullet] 궁극기 경고와 색상 파티클을 통해 안/밖 이동 기믹 제공.
+P0165 [List Bullet] 친밀한 신이 치명타/즉사기 직전에 개입해 막아주는 관계 기반 전투 지원.
+P0166 [List Bullet] 레이드 기여도는 피해뿐 아니라 기믹 수행, 지원, 사망 등을 포함해 보상을 분배.
+P0167 [Normal] [확정 방향] 전체 월드 리셋 폐기
+P0168 [Normal] 원본의 세계 목숨 0 → 전체 월드 초기화 방식은 대규모 건축·자원 수집 부담 때문에 신규 서버에서는 사용하지 않는다.
+P0169 [Normal] [방향] 세계 붕괴/회복 대안
+P0170 [List Bullet] 건축물·아이템·보호구역은 유지한다.
+P0171 [List Bullet] 세계 진행도 또는 현재 챕터를 소폭 후퇴시키고 일부 봉인/불안정 이벤트를 발생시킨다.
+P0172 [List Bullet] 개인 관계/개인 퀘스트 전체를 초기화하지 않는다.
+P0173 [List Bullet] 바깥 탐험 청크는 시즌/붕괴 시 재생성하여 희귀 구조물이 지나치게 멀어지는 문제를 완화할 수 있다.
+P0174 [List Bullet] 적 진영이 자동 강화되는 패널티는 사용하지 않는다.
+P0175 [List Bullet] 회복용 대형 퀘스트로 세계 안정성을 되돌릴 수 있게 한다.
+P0176 [Heading 1] 12. 경제·UI·BGM·접근성
+P0177 [Normal] [방향] 상점/경제
+P0178 [List Bullet] `/상점` GUI 또는 명령 기반 상점을 제공한다.
+P0179 [List Bullet] 크레딧은 신 상호작용, 광물·전리품·농작물 판매 등으로 획득할 수 있다.
+P0180 [List Bullet] 주요 구매 후보: 레이드 소환권, 포션, 보호/텔레포트 비콘, 신 단서, 공물 도구.
+P0181 [List Bullet] 특정 신과 교류하면 상점 품목이 확장되는 구조를 고려한다.
+P0182 [Normal] [확정] 중앙 Dialogue HUD
+P0183 [Normal] 일반 Minecraft 채팅과 분리된 중앙 하단 HUD에 `[화자] + 대사`를 표시한다. 미식별 신은 `???`, 식별 신은 실제 표시 이름을 사용한다. 메시지는 bounded queue로 순차 재생하며 NORMAL / IMPORTANT / CRITICAL 우선순위를 지원한다.
+P0184 [Normal] [확정] Hidden Identity
+P0185 [Normal] 미식별 신의 실제 God ID와 실제 이름은 클라이언트 Dialogue payload에 보내지 않는다. 서버가 플레이어별 Presentation을 만든 뒤 표시용 데이터만 전송한다.
+P0186 [Normal] [확정] BGM 필요
+P0187 [Normal] 신 상호작용·밈 이벤트·중요 스크립트 시작 시 BGM을 재생하는 기능은 필수 방향이다. 다만 대사 한 줄마다 음악을 재시작하지 않고 Interaction 단위에서 시작/중지하는 구조로 설계한다. PHASE 3-C 기준 아직 구현하지 않았다.
+P0188 [Normal] [확정 방향] 접근성 개선
+P0189 [List Bullet] 플레이어용 Codex/기록장: 해금된 정보, 단서, 관계, 언어, 퀘스트를 단계적으로 노출.
+P0190 [List Bullet] 관리자용 `/mythadmin` 명령: 실제 조건, 상태, 평가 이유, 후보, 디버그를 확인.
+P0191 [List Bullet] 숨겨진 조건을 유지하더라도 운영자가 서버 파일을 직접 열어야만 힌트를 줄 수 있는 구조는 피한다.
+P0192 [Heading 1] 13. AI·기억·대화 시스템 방향
+P0193 [Normal] [확정] AI의 역할 경계
+T0194 rows=1 cols=1
+  R001 | 권한 분리 AI는 “세계 규칙을 결정하는 시스템”이 아니라, 서버가 허용한 캐릭터와 상황에 대해 자연어 대화·해석·서사 콘텐츠를 생성하는 계층이다. 신의 해금·출현 legality·서버 상태·보상 수량·능력치 변경은 AI가 임의로 결정하지 않는다.
+P0196 [Normal] [확정] Provider 추상화
+P0197 [Normal] 향후 OpenAI / Claude / Gemini / OpenRouter / Local 모델 등을 교체할 수 있도록 `AiProvider` 계층을 둔다. API Key는 소스와 Git에 저장하지 않는다. 첫 AI 테스트는 Provider 1개 + 단일 God + 한국어 단일 응답으로 시작하는 것이 목표다.
+P0198 [Normal] [방향] 장기 기억 계층
+T0199 rows=1 cols=1
+  R001 | RAW LOG 전체 원문/이벤트 저장소 EVENT MEMORY 중요한 사건 RELATIONSHIP MEMORY 관계 변화와 신별 주요 사건 SUMMARY MEMORY 장기 압축 요약 RETRIEVED CONTEXT 현재 대화에 필요한 기억만 검색
+P0201 [Normal] 전체 과거 대화를 매 요청마다 LLM에 넣지 않는다. 저장 공간보다 Prompt 크기와 API 비용이 더 큰 병목이므로, 전체 로그는 별도 저장소에 보존하고 대화 시 필요한 기억만 검색·요약해 전달한다.
+P0202 [Normal] [확정 방향] Candidate-first AI
+T0203 rows=1 cols=1
+  R001 | Gameplay Signal ↓ Server Rule / Appearance ↓ Candidate Selector ↓ 0~8명 shortlist ↓ Interaction Director / Plan ↓ 선택된 participant만 AI Context에 포함 ↓ AI Content Preparation ↓ Start Revalidation ↓ Commit + HUD
+P0205 [Normal] [향후 참고] RisuAI
+P0206 [Normal] AI/LLM PHASE에서 RisuAI를 참고 구현체로 조사한다. 참고 대상은 multi-provider 구조, 캐릭터 프롬프트 조립, Lorebook/world info retrieval, 장기 기억/Context 압축, 그룹 채팅, 플러그인 확장성이다. 코드를 그대로 복사/포함하는 것은 기본적으로 하지 않고 Java/NeoForge 환경에 맞게 독립 구현한다.
+P0207 [Heading 1] 14. 상호작용 파이프라인과 성능 원칙
+P0208 [Normal] [확정] 현재 Interaction 파이프라인
+T0209 rows=1 cols=1
+  R001 | InteractionSignal ↓ InteractionContext ↓ interaction_rules seed / Explicit target ↓ Filter ↓ Score + Rank ↓ GodCandidateSelector (shortlist ≤ 8) ↓ GodInteractionDirector ↓ InteractionPlan ↓ InteractionContentPreparer ↓ PreparedInteractionContent ↓ Final Revalidation ↓ Runtime slot reserve ↓ Interaction ID ↓ Encounter commit ↓ Runtime cooldown ↓ DialoguePresentationService ↓ Client HUD
+P0211 [Normal] [확정] Spontaneous vs Explicit
+T0212 rows=7 cols=3
+  R001 | 구분 || Spontaneous || Explicit
+  R002 | 시작점 || Signal relevance rule || 특정 God target
+  R003 | Appearance || 자동 출현 legality 필수 || 기본 player explicit는 appearance 불필요
+  R004 | Unlock || 필수 || 필수
+  R005 | Rule seed || interaction_rules 사용 || 직접 target이면 rule generation 비의존 가능
+  R006 | Cooldown || 개발 기준 player global 200 ticks || 기본 spontaneous cooldown 미적용
+  R007 | 응답 보장 || 아님 || 이름을 불러도 응답 보장 아님
+P0214 [Normal] [확정] 성능 방어
+P0215 [List Bullet] God JSON은 reload 시 메모리에 캐시하고 평가마다 재파싱하지 않는다.
+P0216 [List Bullet] 해금은 dependency 역인덱스를 사용한다. 800개 fixture에서 관련 1개만 평가한 테스트가 통과했다.
+P0217 [List Bullet] Interaction은 signal → God/category seed index를 먼저 사용한다. 800개 fixture에서 관련 3개만 deep evaluation한 테스트가 통과했다.
+P0218 [List Bullet] unmapped high-frequency spontaneous signal은 전체 스캔 fallback 없이 NO_CANDIDATE로 종료한다.
+P0219 [List Bullet] 플레이어 SavedData를 조건 판정마다 디스크에서 읽지 않는다.
+P0220 [List Bullet] 행동 기록도 per-tick raw position log 같은 무한 데이터 생성을 피한다.
+P0221 [Heading 1] 15. 현재 기술 구현 현황
+P0222 [Normal] [확정/검증됨] 환경
+T0223 rows=8 cols=2
+  R001 | 항목 || 상태
+  R002 | 프로젝트 경로 || E:\mine
+  R003 | Minecraft || 1.21.1
+  R004 | NeoForge || 21.1.248
+  R005 | Java || JDK 21.0.11 (프로젝트 전용). 전역 Java 8은 유지
+  R006 | Gradle || ModDevGradle / wrapper 정상 동작
+  R007 | 모드 ID || mythictrpg
+  R008 | 패키지 || com.sande.mythictrpg
+P0226 [Normal] [확정/검증됨] 구현 PHASE 요약
+T0227 rows=11 cols=2
+  R001 | PHASE || 핵심 결과
+  R002 | 0 || NeoForge 프로젝트/실행 환경 정상 구축
+  R003 | 1-A || World/Player/God 데이터 아키텍처, JSON 로딩, persistence 기반
+  R004 | 2-A || Condition Engine + canonical Player Repository
+  R005 | 2-B || 실제 Leaf Condition + item history
+  R006 | 2-C || dependency 기반 자동 God unlock pipeline
+  R007 | 2-D || Appearance / Encounter / Identification / Identity service
+  R008 | 3-A || 중앙 Dialogue HUD + S2C network + hidden identity
+  R009 | 3-B || InteractionSignal / Candidate Selector / Director / interaction_rules
+  R010 | 3-C || Content preparation / start revalidation / commit / Encounter / HUD full loop
+  R011 | 4-A || Player Action Statistics / Gameplay Signal Ingress 작업 착수(세부 완료 상태는 최신 채팅 기준 확인 필요)
+P0229 [Normal] [기록상 확인된 Git 기준점]
+T0230 rows=7 cols=2
+  R001 | 단계 || 커밋
+  R002 | PHASE 2-A || c25b1ba33068145364d14cf0db31a7fa4d244005
+  R003 | PHASE 2-C || 61ef86a9a62e275b7a3b8b75f7c255d119d991fa
+  R004 | PHASE 2-D || fe76deccba46b0b70e8ef82d41196984de0599a8
+  R005 | PHASE 3-A || 900d46005f6e17e1593706f26fb9131a40989a89
+  R006 | PHASE 3-B || 96516019585fe32dc13114b92ad0c9c40e22170b
+  R007 | PHASE 3-C || 구현/검증 완료 보고까지 확인. 최종 커밋 해시는 최신 저장소에서 재확인 필요
+P0232 [Normal] [검증됨] PHASE 3-C 시점 주요 테스트
+P0233 [List Bullet] 전체 GameTest 46/46 통과.
+P0234 [List Bullet] 미식별 `[???]` → Interaction 후 encountered=true, identified=false 유지.
+P0235 [List Bullet] identify 후 실제 이름 `멸룡루브라스` 표시 확인.
+P0236 [List Bullet] 네트워크 전송 실패를 주입해도 서버 Interaction은 STARTED로 유지하고 Encounter를 rollback하지 않는 정책 검증.
+P0237 [List Bullet] Prepared content가 오래된 Plan에 기반하면 generation/appearance/runtime 상태를 Start 직전 재검증하도록 구조화.
+P0238 [Normal] [참고] 외부 환경 경고
+P0239 [Normal] 간헐적으로 `apache-23.pom: Content is not allowed in prolog`가 발생했으며, NeoForged Maven CDN에서 0-byte POM이 반환되는 외부 캐시/서버 문제로 판단했다. 빌드/런타임을 지속적으로 막지 않아 repository/cache를 인위적으로 수정하지 않는 방침이다.
+P0240 [Heading 1] 16. 데이터 예시
+P0241 [Normal] [예시] God ID / Definition
+T0242 rows=1 cols=1
+  R001 | mythictrpg:demeter mythictrpg:aphrodite mythictrpg:lubras origin / faction / category는 가능한 한 ResourceLocation ID 사용 예: mythictrpg:greek, mythictrpg:agriculture
+P0244 [Normal] [예시] Condition Tree
+T0245 rows=1 cols=1
+  R001 | { "type": "mythictrpg:all", "conditions": [ { "type": "mythictrpg:item_ever_obtained", "scope": "player", "item": "minecraft:nautilus_shell" }, { "type": "mythictrpg:biome", "scope": "player", "biome": "minecraft:cherry_grove" } ] }
+P0247 [Normal] [예시] Interaction Rule
+T0248 rows=1 cols=1
+  R001 | { "schema_version": 1, "signal": "mythictrpg:farming_action", "bindings": [ { "god_category": "mythictrpg:agriculture", "score": 30, "reason": "mythictrpg:signal_category_match" } ] }
+P0250 [Normal] 상기 JSON은 구조를 설명하기 위한 예시다. production Demeter/Aphrodite/Lubras에 실제 조건이나 점수를 임의 적용하는 것은 현재 보류되어 있다.
+P0251 [Heading 1] 17. 미확정 사항과 설계 리스크
+P0252 [Normal] [미정] 콘텐츠/게임 규칙
+P0253 [List Bullet] 가이아 이전/이후 실제 신화권 목록과 각 신화권 오픈 조건.
+P0254 [List Bullet] production God 3명의 실제 unlock / appearance / identification / interaction rule.
+P0255 [List Bullet] 세계 진행도 수치 체계와 챕터/엔딩 연결.
+P0256 [List Bullet] 세력 영향력 공식, 독주 이벤트, 봉인/복구 규칙.
+P0257 [List Bullet] 최종 레이드 난이도, 보상 기여도 공식, 부활 제한.
+P0258 [List Bullet] 영웅 시스템 대체안과 세계 안정성 감소 조건.
+P0259 [List Bullet] 신전 다중 입주 시 진영 충돌/동거 규칙.
+P0260 [Normal] [미정] Inventory Acquisition Coverage
+P0261 [Normal] 현재 자동 item history 기록은 지상 아이템 pickup, crafting, smelting, 명시적 API만 지원한다. 아래 획득 경로를 최종 progression으로 인정할지와 기술적 감지 방식은 실제 God unlock 콘텐츠 적용 전에 별도로 결정해야 한다.
+P0262 [List Bullet] 상자/container 이동
+P0263 [List Bullet] /give
+P0264 [List Bullet] Creative inventory
+P0265 [List Bullet] 거래/특수 container result
+P0266 [List Bullet] 외부 모드의 직접 inventory insert
+P0267 [Normal] [미정] AI
+P0268 [List Bullet] 첫 실제 Provider 선택과 API 키 관리 방식.
+P0269 [List Bullet] God 캐릭터 프롬프트 schema, 말투/금지 표현/관계 Context 조립.
+P0270 [List Bullet] 단기 대화 Context와 장기 기억 검색의 경계.
+P0271 [List Bullet] RisuAI 구조를 어느 정도까지 참고할지.
+P0272 [List Bullet] 그룹 대화에서 Primary/Secondary 발언권, 최대 participant, 메모리 저장 방식.
+P0273 [List Bullet] AI 생성 퀘스트를 서버 Validator가 어떤 템플릿/범위로 변환할지.
+P0274 [Normal] [리스크] 규모와 운영
+P0275 [List Bullet] 800명 캐릭터 정의 자체보다 캐릭터 간 관계·카테고리·기억의 조합 폭발이 더 큰 위험이다.
+P0276 [List Bullet] 조건/상호작용 규칙을 너무 범용적으로 만들면 관리가 어려워지고, 반대로 하드코딩이 많으면 800명 확장이 불가능해진다.
+P0277 [List Bullet] AI 원문 로그를 플레이어 SavedData에 넣으면 파일이 비정상적으로 커질 수 있다. 별도 로그/DB가 필요하다.
+P0278 [List Bullet] 클라이언트가 알 필요 없는 숨겨진 정보를 네트워크로 보내지 않는 현재 원칙을 portrait/BGM에서도 유지해야 한다.
+P0279 [List Bullet] 세력/관계 변화가 콘텐츠 영구 삭제로 이어지지 않게 복구 경로를 항상 설계해야 한다.
+P0280 [Heading 1] 18. 로드맵 및 다음 단계
+P0281 [Normal] [현재] 권장 단기 순서
+P0282 [Normal] 1. PHASE 4-A Player Action Statistics / Gameplay Signal Ingress 완료 및 Git 기준점 확정.
+P0283 [Normal] 2. 최소 실제 AI Smoke Test: 실제 Provider 1개, 단일 God, 한국어 단일 응답을 기존 InteractionContentPreparer 경계에 연결.
+P0284 [Normal] 3. 행동 통계 요약을 AI Context에 제한적으로 넣어 “플레이어가 실제로 한 행동을 보고 반응”하는지 검증.
+P0285 [Normal] 4. God Character Prompt / 단기 대화 Context 구조 확정.
+P0286 [Normal] 5. Lorebook / 세계관 검색 / 장기 기억 계층 설계.
+P0287 [Normal] 6. Secondary participant 및 다중 God 대화 도입.
+P0288 [Normal] 7. BGM/portrait 등 Interaction 단위 Presentation 확장.
+P0289 [Normal] 8. Production God 조건/콘텐츠 작성과 실제 플레이테스트.
+P0290 [Normal] [PHASE 4-A 목표]
+P0291 [List Bullet] Minecraft Statistics로 얻을 수 있는 값은 우선 재사용하고 custom event counter는 필요한 항목만 추가한다.
+P0292 [List Bullet] 추적 후보: 블록 채굴, 이동 거리, 동물 먹이/번식, 몹/주민 처치, 농사, 접속 시간, AFK, notable item acquisition, death.
+P0293 [List Bullet] per-tick 위치 원문 같은 무한 로그는 저장하지 않고 bounded counter/요약을 사용한다.
+P0294 [List Bullet] 고빈도 사건을 곧바로 InteractionSignal로 변환하지 않고 cheap ingress gate / threshold / relevance 정책을 둔다.
+P0295 [Normal] [AI Smoke Test의 성공 기준]
+T0296 rows=1 cols=1
+  R001 | /mythadmin interaction ai <player> <god> <message> ↓ AiProvider 1회 호출 ↓ 한국어 단일 God 응답 ↓ 기존 Start Revalidation ↓ Encounter / HUD 미식별: [???] 식별: [멸룡루브라스]
+P0298 [Heading 1] 부록 A. 설계 의사결정 체크리스트
+P0299 [List Bullet] 새 기능이 World Shared인지 Player Personal인지 먼저 결정했는가?
+P0300 [List Bullet] 정적 GodDefinition과 동적 상태를 섞지 않았는가?
+P0301 [List Bullet] 새 조건이 매 tick 전체 God scan을 유발하지 않는가?
+P0302 [List Bullet] 신규 Signal이 interaction_rules seed 없이 전체 후보 fallback을 만들지 않는가?
+P0303 [List Bullet] AI가 authoritative rule을 변경하거나 허용되지 않은 participant를 추가할 수 없는가?
+P0304 [List Bullet] Interaction commit 이전에 Encounter/cooldown/HUD가 발생하지 않는가?
+P0305 [List Bullet] Post-commit network failure를 억지 rollback하지 않는가?
+P0306 [List Bullet] 미식별 정보가 client payload에 불필요하게 노출되지 않는가?
+P0307 [List Bullet] 저장 데이터가 무한히 증가하지 않는가?
+P0308 [List Bullet] Production 콘텐츠와 GameTest fixture가 분리되어 있는가?
+P0309 [List Bullet] PHASE 완료 후 Git 기준점이 clean하게 보존되었는가?
+T0310 rows=1 cols=1
+  R001 | 문서 유지 원칙 이 문서는 “최종 확정 기획서”가 아니라 현재까지의 설계 기준점이다. 플레이테스트나 기술 검증으로 규칙이 변경되면 항목별 상태([확정]/[방향]/[참고]/[미정])와 Git 기준점을 함께 갱신한다.
