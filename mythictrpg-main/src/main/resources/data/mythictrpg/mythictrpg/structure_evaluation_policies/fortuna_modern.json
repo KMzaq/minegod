@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "mythictrpg:fortuna_modern",
+  "godId": "mythictrpg:fortuna",
+  "region": { "maxWidth": 48, "maxDepth": 48 },
+  "limits": {
+    "maxTrackedBlocks": 30000,
+    "minimumPlayerPlacedBlocks": 80,
+    "maxSnapshotCells": 300000,
+    "maxFloodFillCells": 180000,
+    "maxEnvironmentSamples": 80,
+    "environmentHorizontalRadius": 5,
+    "environmentVerticalRadius": 4
+  },
+  "buildWeight": 90,
+  "environmentWeight": 10,
+  "allowDerived": true,
+  "allowReuse": false,
+  "visualProfile": {
+    "preferredStyles": ["modern", "contemporary", "minimalist", "clean geometric"],
+    "favoredTypes": ["HOUSE", "TEMPLE", "TOWER", "PUBLIC_BUILDING"],
+    "guidance": "포르투나는 현대적이고 정돈된 기하학, 의도적인 비대칭 또는 균형, 넓은 유리면, 밝고 개방적인 공간, 절제된 재료 팔레트, 기능과 장식이 자연스럽게 결합된 설계를 높게 평가한다. 단순히 흰 블록과 유리를 많이 사용했다는 이유만으로 현대 건축으로 판정하지 말고 전체 형태와 비례, 입면, 공간 구성을 함께 보라.",
+    "visualWeight": 30,
+    "minimumConfidence": 0.68
+  },
+  "criteria": [
+    { "id": "modern_materials", "scope": "BUILD", "type": "tag_ratio", "tag": "mythictrpg:fortuna_modern_materials", "weight": 22, "minimum": 0.05, "target": 0.42, "maximum": 1.0, "curve": "sqrt" },
+    { "id": "glass_facade", "scope": "BUILD", "type": "tag_ratio", "tag": "mythictrpg:modern_glazing", "weight": 13, "minimum": 0.01, "target": 0.18, "maximum": 0.5 },
+    { "id": "clean_palette", "scope": "BUILD", "type": "palette_cohesion", "weight": 12, "minimum": 0.2, "target": 0.8, "maximum": 1.0 },
+    { "id": "geometric_balance", "scope": "BUILD", "type": "symmetry", "weight": 13, "minimum": 0.15, "target": 0.78, "maximum": 1.0 },
+    { "id": "open_plan", "scope": "BUILD", "type": "open_space", "weight": 12, "minimum": 8, "target": 120, "maximum": 1000, "curve": "sqrt" },
+    { "id": "finished_interior", "scope": "BUILD", "type": "interior_quality", "weight": 14, "minimum": 0.1, "target": 0.75, "maximum": 1.0 },
+    { "id": "architectural_lighting", "scope": "BUILD", "type": "lighting", "weight": 7, "minimum": 1, "target": 16, "maximum": 64 },
+    { "id": "functional_living", "scope": "BUILD", "type": "functional_block_count", "tag": "mythictrpg:functional_interior", "weight": 7, "minimum": 1, "target": 12, "maximum": 40 },
+    { "id": "daylight_access", "scope": "ENVIRONMENT", "type": "sky_visibility", "weight": 65, "minimum": 0.1, "target": 0.7, "maximum": 1.0 },
+    { "id": "site_integration", "scope": "ENVIRONMENT", "type": "ground_contact", "weight": 35, "minimum": 0.1, "target": 0.65, "maximum": 1.0 }
+  ]
+}

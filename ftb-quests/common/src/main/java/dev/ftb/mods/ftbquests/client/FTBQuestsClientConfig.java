@@ -1,0 +1,83 @@
+package dev.ftb.mods.ftbquests.client;
+
+import dev.ftb.mods.ftblibrary.config.manager.ConfigManager;
+import dev.ftb.mods.ftblibrary.snbt.config.*;
+import dev.ftb.mods.ftblibrary.util.PanelPositioning;
+import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
+import dev.ftb.mods.ftbquests.client.config.LocaleValue;
+import dev.ftb.mods.ftbquests.client.gui.QuestsClientConfigScreen;
+import net.minecraft.network.chat.Component;
+
+public interface FTBQuestsClientConfig {
+    String KEY = FTBQuestsAPI.MOD_ID + "-client";
+    SNBTConfig CONFIG = SNBTConfig.create(KEY);
+
+    SNBTConfig UI = CONFIG.addGroup("ui", 0);
+    BooleanValue OLD_SCROLL_WHEEL = UI.addBoolean("old_scroll_wheel", false);
+    BooleanValue SHOW_LOCK_ICON = UI.addBoolean("show_lock_icon", true);
+    BooleanValue BACKSPACE_HISTORY = UI.addBoolean("backspace_history", true);
+    BooleanValue CHAPTER_PANEL_PINNED = UI.addBoolean("chapter_panel_pinned", false);
+
+    SNBTConfig NOTIFICATIONS = CONFIG.addGroup("notifications", 1);
+    EnumValue<NotificationStyle> COMPLETION_STYLE = NOTIFICATIONS.addEnum("completion_style", NotificationStyle.NAME_MAP);
+    EnumValue<NotificationStyle> REWARD_STYLE = NOTIFICATIONS.addEnum("reward_style", NotificationStyle.NAME_MAP);
+    BooleanValue COMPLETION_SOUNDS = NOTIFICATIONS.addBoolean("completion_sounds", true);
+
+    SNBTConfig PINNED = CONFIG.addGroup("pinned", 2);
+    EnumValue<AutoPinTarget> AUTO_PIN_FOLLOWS = PINNED.addEnum("auto_pin_follows", AutoPinTarget.NAME_MAP, AutoPinTarget.CHAPTER);
+    EnumValue<PanelPositioning> PINNED_QUESTS_POS = PINNED.addEnum("pinned_quests_pos", PanelPositioning.NAME_MAP, PanelPositioning.RIGHT);
+    IntValue PINNED_QUESTS_INSET_X = PINNED.addInt("pinned_quests_inset_x", 2);
+    IntValue PINNED_QUESTS_INSET_Y = PINNED.addInt("pinned_quests_inset_y", 2);
+    DoubleValue PINNED_QUESTS_SCALE = PINNED.addDouble("pinned_quests_scale", 0.75, 0.25, 2.0);
+    BooleanValue PINNED_EXCLUDE_FLEXIBLE = PINNED.addBoolean("pinned_exclude_flexible", true);
+    EnumValue<PinnedTrackerVisibility> PINNED_VISIBILITY = PINNED.addEnum("pinned_visibility", PinnedTrackerVisibility.NAME_MAP);
+
+    SNBTConfig XLATE = CONFIG.addGroup("xlate", 3);
+    StringValue EDITING_LOCALE = XLATE.add(new LocaleValue(XLATE,"editing_locale", ""));
+    StringValue FALLBACK_LOCALE = XLATE.add(new LocaleValue(XLATE,"fallback_locale", ""));
+    BooleanValue HILITE_MISSING = XLATE.addBoolean("hilite_missing", true);
+
+    SNBTConfig CHANGELOG = CONFIG.addGroup("changelog", 4);
+    BooleanValue CHANGELOG_ALWAYS_SHOW = CHANGELOG.addBoolean("always_show", false);
+    IntValue CHANGELOG_MAX_LINES = CHANGELOG.addInt("max_lines", 10, 1, 50);
+    DoubleValue CHANGELOG_SHOW_TIME = CHANGELOG.addDouble("show_time", 3.5, 1.0, 100.0);
+    DoubleValue CHANGELOG_FONT_SCALE = CHANGELOG.addDouble("font_scale", 0.75, 0.25, 2.0);
+
+    // TODO migrate chapter-pinned and pinned-quests data out of per-player team data into here
+
+    static void openSettings(boolean pauseGame) {
+        ConfigManager.getInstance().createConfigGroup(KEY)
+                .ifPresent(group -> new QuestsClientConfigScreen(group, pauseGame).openGui());
+    }
+
+    static void setChapterPanelPinned(boolean pinned) {
+        if (pinned != CHAPTER_PANEL_PINNED.get()) {
+            CHAPTER_PANEL_PINNED.set(pinned);
+            ConfigManager.getInstance().save(KEY);
+        }
+    }
+
+    static void onEdited(boolean ignoredClientSide) {
+        ClientQuestFile.INSTANCE.clearCachedData();
+        PinnedQuestsTracker.INSTANCE.refresh();
+    }
+
+    static void setAlwaysShowChangelog(boolean show) {
+        if (show != CHANGELOG_ALWAYS_SHOW.get()) {
+            CHANGELOG_ALWAYS_SHOW.set(show);
+            ConfigManager.getInstance().save(KEY);
+        }
+    }
+
+    static void cyclePinnedTrackerVisibility() {
+        PINNED_VISIBILITY.set(PINNED_VISIBILITY.get().next());
+        ConfigManager.getInstance().save(KEY);
+        PinnedQuestsTracker.INSTANCE.refresh();
+        FTBQuestsClient.getClientPlayer().displayClientMessage(
+                Component.translatable("key.ftbquests.cycle_pinned_tracker")
+                        .append(": ")
+                        .append(PinnedTrackerVisibility.NAME_MAP.getDisplayName(PINNED_VISIBILITY.get())),
+                true
+        );
+    }
+}

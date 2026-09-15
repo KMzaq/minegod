@@ -1,0 +1,19 @@
+diff --git a/src/ts/bootstrap.ts b/src/ts/bootstrap.ts
+--- a/src/ts/bootstrap.ts
++++ b/src/ts/bootstrap.ts
+@@ -44,6 +44,7 @@ import {
+ } from "./globalApi.svelte";
+ import { isTauri } from "./platform";
+ import { registerModelDynamic } from "./model/modellist";
++import { startMinecraftDialogueWorker } from "./minecraft/minecraftWorker";
+ import { convertFileSrc } from "@tauri-apps/api/core";
+ import { appDataDir, join } from "@tauri-apps/api/path";
+ 
+@@ -253,6 +254,7 @@ export async function loadData() {
+             startObserveDom()
+             assignIds()
+             registerModelDynamic()
++            void startMinecraftDialogueWorker()
+             saveDb()
+             moduleUpdate()
+             cleanChunks()

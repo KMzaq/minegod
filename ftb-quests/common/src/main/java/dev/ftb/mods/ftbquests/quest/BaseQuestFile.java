@@ -1,0 +1,1754 @@
+package dev.ftb.mods.ftbquests.quest;
+
+import dev.architectury.utils.Env;
+import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.config.ItemStackConfig;
+import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.math.MathUtils;
+import dev.ftb.mods.ftblibrary.snbt.SNBT;
+import dev.ftb.mods.ftblibrary.snbt.SNBTCompoundTag;
+import dev.ftb.mods.ftblibrary.util.NetworkHelper;
+import dev.ftb.mods.ftbquests.FTBQuests;
+import dev.ftb.mods.ftbquests.api.QuestFile;
+import dev.ftb.mods.ftbquests.client.FTBQuestsClient;
+import dev.ftb.mods.ftbquests.client.config.LocaleConfig;
+import dev.ftb.mods.ftbquests.client.config.VisualPresetsConfig;
+import dev.ftb.mods.ftbquests.events.*;
+import dev.ftb.mods.ftbquests.integration.RecipeModHelper;
+import dev.ftb.mods.ftbquests.net.DeleteObjectResponseMessage;
+import dev.ftb.mods.ftbquests.quest.loot.EntityWeight;
+import dev.ftb.mods.ftbquests.quest.loot.LootCrate;
+import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
+import dev.ftb.mods.ftbquests.quest.preset.VisualPresets;
+import dev.ftb.mods.ftbquests.quest.reward.*;
+import dev.ftb.mods.ftbquests.quest.task.*;
+import dev.ftb.mods.ftbquests.quest.theme.property.ThemeProperties;
+import dev.ftb.mods.ftbquests.quest.translation.TranslationKey;
+import dev.ftb.mods.ftbquests.quest.translation.TranslationManager;
+import dev.ftb.mods.ftbquests.util.FileUtils;
+import dev.ftb.mods.ftbquests.util.TextUtils;
+import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
+import dev.ftb.mods.ftbteams.api.Team;
+import dev.ftb.mods.ftbteams.api.client.ClientTeamManager;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.*;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.LongFunction;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+public abstract class BaseQuestFile extends QuestObject implements QuestFile {
+	public static int VERSION = 13;
+
+	public static final StreamCodec<RegistryFriendlyByteBuf,BaseQuestFile> STREAM_CODEC = new StreamCodec<>() {
+		@Override
+		public BaseQuestFile decode(RegistryFriendlyByteBuf buf) {
+			return Util.make(FTBQuestsClient.createClientQuestFile(), file -> file.readNetDataFull(buf));
+		}
+
+		@Override
+		public void encode(RegistryFriendlyByteBuf buf, BaseQuestFile file) {
+			file.writeNetDataFull(buf);
+		}
+	};
+
+	private final DefaultChapterGroup defaultChapterGroup;
+	final List<ChapterGroup> chapterGroups;
+	private final List<RewardTable> rewardTables;
+	protected final Map<UUID, TeamData> teamDataMap;
+
+	private final Long2ObjectOpenHashMap<QuestObjectBase> questObjectMap;
+
+	protected final Int2ObjectOpenHashMap<TaskType> taskTypeIds;
+	protected final Int2ObjectOpenHashMap<RewardType> rewardTypeIds;
+
+	private final TranslationManager translationManager;
+
+	private final List<ItemStack> emergencyItems;
+	private int emergencyItemsCooldown;
+	private int fileVersion;
+
+	private boolean defaultPerTeamReward;
+	private boolean defaultTeamConsumeItems;
+	private RewardAutoClaim defaultRewardAutoClaim;
+	private String defaultQuestShape;
+	private boolean defaultQuestDisableJEI;
+	private boolean hideExcludedQuests;
+	private boolean dropLootCrates;
+	private final EntityWeight lootCrateNoDrop;
+	private boolean disableGui;
+	private double gridScale;
+	private boolean pauseGame;
+	protected String lockMessage;
+	private ProgressionMode progressionMode;
+	private int detectionDelay;
+	private boolean showLockIcons;
+	private boolean dropBookOnDeath;
+	private String fallbackLocale;
+	private boolean verifyOnLoad;
+	private boolean suppressAllAutoclaiming;
+	protected VisualPresets allPresets;
+	private String presetName;
+
+	private List<Quest> allQuests;
+	private List<Task> allTasks;
+	private List<Task> submitTasks;
+	private List<Task> craftingTasks;
+
+	public BaseQuestFile() {
+		super(1L);
+
+		fileVersion = 0;
+		defaultChapterGroup = new DefaultChapterGroup(this);
+		chapterGroups = new ArrayList<>();
+		chapterGroups.add(defaultChapterGroup);
+		rewardTables = new ArrayList<>();
+		teamDataMap = new HashMap<>();
+
+		questObjectMap = new Long2ObjectOpenHashMap<>();
+		taskTypeIds = new Int2ObjectOpenHashMap<>();
+		rewardTypeIds = new Int2ObjectOpenHashMap<>();
+
+		emergencyItems = new ArrayList<>();
+		emergencyItemsCooldown = 300;
+
+		defaultPerTeamReward = false;
+		defaultTeamConsumeItems = false;
+		defaultRewardAutoClaim = RewardAutoClaim.DISABLED;
+		defaultQuestShape = "circle";
+		defaultQuestDisableJEI = false;
+		dropLootCrates = false;
+		lootCrateNoDrop = new EntityWeight();
+		lootCrateNoDrop.passive = 4000;
+		lootCrateNoDrop.monster = 600;
+		lootCrateNoDrop.boss = 0;
+		disableGui = false;
+		gridScale = 0.5D;
+		pauseGame = false;
+		lockMessage = "";
+		progressionMode = ProgressionMode.LINEAR;
+		detectionDelay = 20;
+		dropBookOnDeath = false;
+		hideExcludedQuests = false;
+		verifyOnLoad = false;
+
+		allPresets = VisualPresets.EMPTY;
+		presetName = "";
+
+		allTasks = null;
+		allQuests = null;
+
+		translationManager = new TranslationManager();
+		fallbackLocale = TranslationManager.DEFAULT_FALLBACK_LOCALE;
+	}
+
+	public abstract Env getSide();
+
+	public abstract HolderLookup.Provider holderLookup();
+
+	public boolean isServerSide() {
+		return getSide() == Env.SERVER;
+	}
+
+	@Override
+	public BaseQuestFile getQuestFile() {
+		return this;
+	}
+
+	@Override
+	public QuestObjectType getObjectType() {
+		return QuestObjectType.FILE;
+	}
+
+	public boolean isLoading() {
+		return false;
+	}
+
+	@Override
+	public boolean canEdit() {
+		return false;
+	}
+
+	public Path getFolder() {
+		throw new IllegalStateException("This quest file doesn't have a folder!");
+	}
+
+	public TranslationManager getTranslationManager() {
+		return translationManager;
+	}
+
+	@Override
+	public int getRelativeProgressFromChildren(TeamData data) {
+		MutableInt progress = new MutableInt(0);
+		MutableInt chapters = new MutableInt(0);
+
+		forAllChapters(chapter -> {
+			progress.add(data.getRelativeProgress(chapter));
+			chapters.increment();
+		});
+
+		return getRelativeProgressFromChildren(progress.intValue(), chapters.intValue());
+	}
+
+	@Override
+	public void onStarted(QuestProgressEventData<?> data) {
+		data.setStarted(id);
+		ObjectStartedEvent.FILE.invoker().act(new ObjectStartedEvent.FileEvent(data.withObject(this)));
+	}
+
+	@Override
+	public void onCompleted(QuestProgressEventData<?> data) {
+		data.setCompleted(id);
+		ObjectCompletedEvent.FILE.invoker().act(new ObjectCompletedEvent.FileEvent(data.withObject(this)));
+
+		if (!disableToast) {
+			data.notifyPlayers(id);
+		}
+	}
+
+	@Override
+	public void deleteSelf() {
+		invalidate();
+
+		List<Chapter> allChapters = new ArrayList<>();
+		forAllChapters(allChapters::add);
+		allChapters.forEach(Chapter::deleteSelf);
+
+		defaultChapterGroup.clearChapters();
+		chapterGroups.clear();
+		chapterGroups.add(defaultChapterGroup);
+
+		List.copyOf(rewardTables).forEach(RewardTable::deleteSelf);
+	}
+
+	@Nullable
+	public QuestObjectBase getBase(long id) {
+		if (id <= 0) {
+			return null;
+		} else if (id == 1) {
+			return this;
+		}
+
+		QuestObjectBase object = questObjectMap.get(id);
+		return object == null || !object.isValid() ? null : object;
+	}
+
+	@Nullable
+	public QuestObject get(long id) {
+		return getBase(id) instanceof QuestObject qo ? qo : null;
+	}
+
+	/**
+	 * Remove the quest object from the ID map. Only to be called from {@link QuestObjectBase#deleteSelf()} !
+	 *
+	 * @param id the quest id
+	 * @return the removed quest, or null if the quest isn't in the map
+	 */
+	@Nullable
+	QuestObjectBase removeFromMap(long id) {
+		QuestObjectBase object = questObjectMap.remove(id);
+
+		if (object != null) {
+			FTBQuests.LOGGER.debug("remove mapping for {} quest object {}", object.getObjectType(), id);
+
+			if (object instanceof QuestObject qo) {
+				forAllQuests(quest -> quest.removeDependency(qo));
+			}
+			object.invalidate();
+			return object;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Add the quest to the map. Only to be called from {@link BaseQuestFile#onCreated()} !
+	 * @param qo the quest object to add
+	 * @return the quest object already in the map (hopefully null)
+	 */
+	@Nullable
+	QuestObjectBase addtoMap(QuestObjectBase qo) {
+		FTBQuests.LOGGER.debug("add mapping for {} quest object {}", qo.getObjectType(), qo);
+
+		return questObjectMap.put(qo.id, qo);
+	}
+
+	@Nullable
+	public Chapter getChapter(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof Chapter ? (Chapter) object : null;
+	}
+
+	@NotNull
+	public Chapter getChapterOrThrow(long id) {
+		if (getBase(id) instanceof Chapter c) return c;
+		throw new IllegalArgumentException("Unknown chapter ID: c");
+	}
+
+	@Nullable
+	public Quest getQuest(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof Quest ? (Quest) object : null;
+	}
+
+	@Nullable
+	public Task getTask(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof Task ? (Task) object : null;
+	}
+
+	@Nullable
+	public Reward getReward(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof Reward ? (Reward) object : null;
+	}
+
+	@Nullable
+	public RewardTable getRewardTable(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof RewardTable ? (RewardTable) object : null;
+	}
+
+	@Nullable
+	public LootCrate getLootCrate(String id) {
+		if (!id.startsWith("#")) {
+			for (RewardTable table : rewardTables) {
+				if (table.getLootCrate() != null && table.getLootCrate().getStringID().equals(id)) {
+					return table.getLootCrate();
+				}
+			}
+		}
+
+		RewardTable table = getRewardTable(getID(id));
+		return table == null ? null : table.getLootCrate();
+	}
+
+	public ChapterGroup getChapterGroup(long id) {
+		QuestObjectBase object = getBase(id);
+		return object instanceof ChapterGroup ? (ChapterGroup) object : defaultChapterGroup;
+	}
+
+	/**
+	 * Rebuild the id -> quest object map after some object has been added or removed. Also clears all cached data for
+	 * all known objects, forcing a re-cache on the next access.
+	 */
+	protected void refreshIDMap() {
+		questObjectMap.clear();
+
+		chapterGroups.forEach(group -> questObjectMap.put(group.id, group));
+		rewardTables.forEach(table -> questObjectMap.put(table.id, table));
+
+		forAllChapters(chapter -> {
+			questObjectMap.put(chapter.id, chapter);
+
+			for (Quest quest : chapter.getQuests()) {
+				questObjectMap.put(quest.id, quest);
+				quest.getTasks().forEach(task -> questObjectMap.put(task.id, task));
+				quest.getRewards().forEach(reward -> questObjectMap.put(reward.id, reward));
+			}
+
+			chapter.getQuestLinks().forEach(link -> questObjectMap.put(link.id, link));
+			chapter.getImages().forEach(image -> questObjectMap.put(image.id, image));
+		});
+
+		refreshRewardTableRewardIDs();
+	}
+
+	public void refreshRewardTableRewardIDs() {
+		rewardTables.forEach(table -> table.getWeightedRewards().forEach(wr -> questObjectMap.put(wr.getReward().id, wr.getReward())));
+	}
+
+	private <T extends QuestObjectBase> T requireQuestObject(long id, LongFunction<T> getter) {
+		T res = getter.apply(id);
+		if (res == null) {
+			throw new IllegalArgumentException("Quest object " + id + " not found!");
+		}
+		return res;
+	}
+
+	public QuestObjectBase create(long id, QuestObjectType type, long parent, CompoundTag extra) {
+		return switch (type) {
+			case CHAPTER -> new Chapter(id,this, getChapterGroup(extra.getLong("group")));
+			case QUEST -> new Quest(id, requireQuestObject(parent, this::getChapter));
+			case QUEST_LINK -> new QuestLink(id, requireQuestObject(parent, this::getChapter), 0L);
+			case TASK -> {
+				Quest quest = requireQuestObject(parent, this::getQuest);
+				yield TaskType.requireCreateTask(id, quest, extra.getString("type"));
+			}
+			case REWARD -> {
+				String rewardType = extra.getString("type");
+				if (RewardTable.isFakeQuestId(parent)) {
+					yield RewardTable.createRewardForTable(id, rewardType, this);
+				} else {
+					Quest quest = requireQuestObject(parent, this::getQuest);
+					Reward reward = RewardType.createReward(id, quest, rewardType);
+					Validate.isTrue(reward != null, "Unknown reward type: " + rewardType);
+					yield reward;
+				}
+			}
+			case REWARD_TABLE -> new RewardTable(id, this);
+			case CHAPTER_GROUP -> new ChapterGroup(id, this);
+			case IMAGE -> {
+				Chapter chapter = requireQuestObject(parent, this::getChapter);
+				yield new ChapterImage(id, chapter);
+			}
+			default ->
+					throw new IllegalArgumentException("Unknown/unsupported type: " + type);
+		};
+	}
+
+	@Override
+	public final void writeData(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.writeData(nbt, provider);
+		nbt.putBoolean("default_reward_team", defaultPerTeamReward);
+		nbt.putBoolean("default_consume_items", defaultTeamConsumeItems);
+		nbt.putString("default_autoclaim_rewards", defaultRewardAutoClaim.id);
+		nbt.putString("default_quest_shape", defaultQuestShape);
+		nbt.putBoolean("default_quest_disable_jei", defaultQuestDisableJEI);
+
+		if (!emergencyItems.isEmpty()) {
+			nbt.put("emergency_items", Util.make(new ListTag(), l -> {
+				for (ItemStack stack : emergencyItems) {
+					l.add(stack.save(provider));
+				}
+			}));
+		}
+
+		nbt.putInt("emergency_items_cooldown", emergencyItemsCooldown);
+		nbt.putBoolean("drop_loot_crates", dropLootCrates);
+
+		SNBTCompoundTag lootCrateNoDropTag = new SNBTCompoundTag();
+		lootCrateNoDrop.writeData(lootCrateNoDropTag);
+		nbt.put("loot_crate_no_drop", lootCrateNoDropTag);
+		nbt.putBoolean("disable_gui", disableGui);
+		nbt.putDouble("grid_scale", gridScale);
+		nbt.putBoolean("pause_game", pauseGame);
+		nbt.putString("lock_message", lockMessage);
+		nbt.putString("progression_mode", progressionMode.getId());
+		nbt.putInt("detection_delay", detectionDelay);
+		nbt.putBoolean("show_lock_icons", showLockIcons);
+		nbt.putBoolean("drop_book_on_death", dropBookOnDeath);
+		nbt.putBoolean("hide_excluded_quests", hideExcludedQuests);
+		nbt.putString("fallback_locale", fallbackLocale);
+		nbt.putBoolean("verify_on_load", verifyOnLoad);
+		if (suppressAllAutoclaiming) nbt.putBoolean("suppress_all_autoclaiming", true);
+		nbt.put("presets", allPresets.serialize());
+		if (!presetName.isEmpty()) nbt.putString("preset", presetName);
+	}
+
+	@Override
+	public final void readData(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.readData(nbt, provider);
+
+		defaultPerTeamReward = nbt.getBoolean("default_reward_team");
+		defaultTeamConsumeItems = nbt.getBoolean("default_consume_items");
+		defaultRewardAutoClaim = RewardAutoClaim.NAME_MAP_NO_DEFAULT.get(nbt.getString("default_autoclaim_rewards"));
+		defaultQuestShape = nbt.getString("default_quest_shape");
+
+		if (defaultQuestShape.equals("default")) {
+			defaultQuestShape = "";
+		}
+
+		defaultQuestDisableJEI = nbt.getBoolean("default_quest_disable_jei");
+		emergencyItems.clear();
+
+		ListTag emergencyItemsTag = nbt.getList("emergency_items", Tag.TAG_COMPOUND);
+		for (Tag tag : emergencyItemsTag) {
+			emergencyItems.add(itemOrMissingFromNBT(tag, provider));
+		}
+
+		emergencyItemsCooldown = nbt.getInt("emergency_items_cooldown");
+		dropLootCrates = nbt.getBoolean("drop_loot_crates");
+
+		if (nbt.contains("loot_crate_no_drop")) {
+			lootCrateNoDrop.readData(nbt.getCompound("loot_crate_no_drop"));
+		}
+
+		disableGui = nbt.getBoolean("disable_gui");
+		gridScale = nbt.contains("grid_scale") ? nbt.getDouble("grid_scale") : 0.5D;
+		pauseGame = nbt.getBoolean("pause_game");
+		lockMessage = nbt.getString("lock_message");
+		progressionMode = ProgressionMode.NAME_MAP_NO_DEFAULT.get(nbt.getString("progression_mode"));
+		if (nbt.contains("detection_delay")) {
+			detectionDelay = nbt.getInt("detection_delay");
+		}
+		showLockIcons = !nbt.contains("show_lock_icons") || nbt.getBoolean("show_lock_icons");
+		dropBookOnDeath = nbt.getBoolean("drop_book_on_death");
+		hideExcludedQuests = nbt.getBoolean("hide_excluded_quests");
+		fallbackLocale = nbt.getString("fallback_locale");
+		verifyOnLoad = nbt.getBoolean("verify_on_load");
+		suppressAllAutoclaiming = nbt.getBoolean("suppress_all_autoclaiming");
+
+        allPresets = isServerSide() && !nbt.contains("presets") ?
+				VisualPresets.makeDefaults() :
+				VisualPresets.deserialize(nbt.getCompound("presets"));
+		presetName = nbt.getString("preset");
+	}
+
+	public final void writeDataFull(Path folder, HolderLookup.Provider provider) {
+		boolean prev = false;
+		try {
+			// Sorting keys ensure consistent sort order in the saved quest file
+			// Since questbook data is commonly stored under version control, this minimizes extraneous
+			//  version control changes stemming from unpredictable hashmap key ordering
+			prev = SNBT.setShouldSortKeysOnWrite(true);
+
+			SNBTCompoundTag fileNBT = new SNBTCompoundTag();
+			fileNBT.putInt("version", VERSION);
+			writeData(fileNBT, provider);
+			SNBT.write(folder.resolve("data.snbt"), fileNBT);
+
+			writeChapterFiles(folder, provider);
+			writeRewardTableFiles(folder, provider);
+			writeChapterGroupFile(folder, provider);
+		} finally {
+			SNBT.setShouldSortKeysOnWrite(prev);
+		}
+	}
+
+	private void writeChapterFiles(Path folder, HolderLookup.Provider provider) {
+		for (ChapterGroup group : chapterGroups) {
+			for (int ci = 0; ci < group.getChapters().size(); ci++) {
+				Chapter chapter = group.getChapters().get(ci);
+				SNBTCompoundTag chapterNBT = new SNBTCompoundTag();
+				chapterNBT.putString("id", chapter.getCodeString());
+				chapterNBT.putString("group", group.isDefaultGroup() ? "" : group.getCodeString());
+				chapterNBT.putInt("order_index", ci);
+				chapter.writeData(chapterNBT, provider);
+
+				ListTag questList = new ListTag();
+				for (Quest quest : chapter.getQuests()) {
+					if (quest.isValid()) {
+						SNBTCompoundTag questNBT = new SNBTCompoundTag();
+						quest.writeData(questNBT, provider);
+						questNBT.putString("id", quest.getCodeString());
+						if (!quest.getTasks().isEmpty()) {
+							quest.writeTasks(questNBT, provider);
+						}
+						if (!quest.getRewards().isEmpty()) {
+							quest.writeRewards(questNBT, provider);
+						}
+						questList.add(questNBT);
+					}
+				}
+				chapterNBT.put("quests", questList);
+
+				ListTag linkList = new ListTag();
+				for (QuestLink link : chapter.getQuestLinks()) {
+					if (link.getQuest().isPresent()) {
+						SNBTCompoundTag linkNBT = new SNBTCompoundTag();
+						link.writeData(linkNBT, provider);
+						linkNBT.putString("id", link.getCodeString());
+						linkList.add(linkNBT);
+					}
+				}
+				chapterNBT.put("quest_links", linkList);
+
+				chapterNBT.put("images", Util.make(new ListTag(), list -> {
+					for (ChapterImage image : chapter.getImages()) {
+						list.add(Util.make(new CompoundTag(), imageNBT -> {
+							image.writeData(imageNBT, provider);
+							imageNBT.putString("id", image.getCodeString());
+						}));
+					}
+				}));
+
+				SNBT.write(folder.resolve(chapter.getPath().orElseThrow()), chapterNBT);
+			}
+		}
+	}
+
+	private void writeRewardTableFiles(Path folder, HolderLookup.Provider provider) {
+		for (int ri = 0; ri < rewardTables.size(); ri++) {
+			RewardTable table = rewardTables.get(ri);
+			SNBTCompoundTag tableNBT = new SNBTCompoundTag();
+			tableNBT.putString("id", table.getCodeString());
+			tableNBT.putInt("order_index", ri);
+			table.writeData(tableNBT, provider);
+			SNBT.write(folder.resolve(table.getPath().orElseThrow()), tableNBT);
+		}
+	}
+
+	private void writeChapterGroupFile(Path folder, HolderLookup.Provider provider) {
+		ListTag chapterGroupTag = new ListTag();
+
+		for (ChapterGroup group : chapterGroups) {
+			if (!group.isDefaultGroup()) {
+				SNBTCompoundTag groupTag = new SNBTCompoundTag();
+				groupTag.singleLine();
+				groupTag.putString("id", group.getCodeString());
+				group.writeData(groupTag, provider);
+				chapterGroupTag.add(groupTag);
+			}
+		}
+
+		SNBTCompoundTag groupNBT = new SNBTCompoundTag();
+		groupNBT.put("chapter_groups", chapterGroupTag);
+		SNBT.write(folder.resolve("chapter_groups.snbt"), groupNBT);
+	}
+
+	public final void readDataFull(Path folder, HolderLookup.Provider provider) {
+		clearCachedData();
+		questObjectMap.clear();
+		defaultChapterGroup.clearChapters();
+		chapterGroups.clear();
+		chapterGroups.add(defaultChapterGroup);
+		rewardTables.clear();
+
+		MutableInt chapterCounter = new MutableInt();
+		MutableInt questCounter = new MutableInt();
+
+		final Long2ObjectOpenHashMap<CompoundTag> dataCache = new Long2ObjectOpenHashMap<>();
+		CompoundTag fileNBT = SNBT.read(folder.resolve("data.snbt"));
+
+		if (fileNBT != null) {
+			fileVersion = fileNBT.getInt("version");
+			questObjectMap.put(1, this);
+			readData(fileNBT, provider);
+			handleLegacyFileNBT(fileNBT);
+		}
+
+		translationManager.loadFromNBT(this, folder.resolve("lang"));
+
+		readChapterGroupsFile(folder, dataCache);
+
+		Long2IntOpenHashMap objectOrderMap = new Long2IntOpenHashMap();
+		objectOrderMap.defaultReturnValue(-1);
+
+		Path chaptersFolder = folder.resolve("chapters");
+		if (Files.exists(chaptersFolder)) {
+			checkAndFixFileCase(chaptersFolder);
+			try (Stream<Path> s = Files.list(chaptersFolder)) {
+				s.filter(path -> path.toString().endsWith(".snbt")).forEach(path -> {
+					CompoundTag chapterNBT = SNBT.read(path);
+
+					if (chapterNBT != null) {
+						Chapter chapter = new Chapter(readID(chapterNBT.get("id")),this,
+								getChapterGroup(getID(chapterNBT.get("group"))),
+								path.getFileName().toString().replace(".snbt", "")
+						);
+
+						handleLegacyChapterNBT(chapterNBT, chapter);
+
+						objectOrderMap.put(chapter.id, chapterNBT.getInt("order_index"));
+						questObjectMap.put(chapter.id, chapter);
+						dataCache.put(chapter.id, chapterNBT);
+						chapter.getGroup().addChapter(chapter);
+						chapterCounter.increment();
+
+						ListTag questList = chapterNBT.getList("quests", Tag.TAG_COMPOUND);
+						readQuestsFromNBT(questList, chapter, dataCache);
+						questCounter.add(questList.size());
+
+						ListTag questLinks = chapterNBT.getList("quest_links", Tag.TAG_COMPOUND);
+						readQuestLinksFromNBT(questLinks, chapter, dataCache);
+
+						ListTag images = chapterNBT.getList("images", Tag.TAG_COMPOUND);
+						readImagesFromNBT(images, chapter, dataCache);
+					}
+				});
+			} catch (IOException e) {
+				FTBQuests.LOGGER.error("Failed to read chapters folder.", e);
+			}
+		}
+
+		Path rewardTableFolder = folder.resolve("reward_tables");
+		if (Files.exists(rewardTableFolder)) {
+			checkAndFixFileCase(rewardTableFolder);
+			try (Stream<Path> s = Files.list(rewardTableFolder)) {
+				s.filter(path -> path.toString().endsWith(".snbt"))
+						.forEach(path -> loadRewardTableFile(path, objectOrderMap, dataCache));
+			} catch (Exception ex) {
+				FTBQuests.LOGGER.error("failed to load reward table data: {}", ex.getMessage());
+			}
+		}
+
+		for (QuestObjectBase object : questObjectMap.values()) {
+			CompoundTag data = dataCache.get(object.id);
+			if (data != null) {
+				try {
+					object.readData(data, provider);
+				} catch (Exception ex) {
+					FTBQuests.LOGGER.error("failed to read data for {} {}: {}", object.getClass().getSimpleName(), object.id, ex.getMessage());
+				}
+			}
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			group.sortChapters(Comparator.comparingInt(c -> objectOrderMap.get(c.id)));
+
+			for (Chapter chapter : group.getChapters()) {
+				for (Quest quest : chapter.getQuests()) {
+					quest.removeInvalidDependencies();
+				}
+			}
+		}
+
+		rewardTables.sort(Comparator.comparingInt(c -> objectOrderMap.get(c.id)));
+		updateLootCrates();
+
+		refreshRewardTableRewardIDs();
+
+		if (verifyOnLoad) {
+			forAllQuests(q -> q.verifyDependencies(false));
+		}
+
+		for (QuestObjectBase object : getAllObjects()) {
+			if (object instanceof CustomTask) {
+				CustomTaskEvent.EVENT.invoker().act(new CustomTaskEvent((CustomTask) object));
+			}
+		}
+
+		if (fileVersion != VERSION) {
+			markDirty();
+		}
+
+		FTBQuests.LOGGER.info("Loaded {} chapter groups, {} chapters, {} quests, {} reward tables", chapterGroups.size(), chapterCounter, questCounter, rewardTables.size());
+	}
+
+    private void checkAndFixFileCase(Path folder) {
+		try (Stream<Path> s = Files.list(folder)) {
+			Map<String, List<Path>> fileMap = new HashMap<>();
+			s.filter(path -> path.toString().endsWith(".snbt"))
+					.forEach(path -> {
+						String key = path.getFileName().toString().toLowerCase();
+						fileMap.computeIfAbsent(key, k -> new ArrayList<>()).add(path);
+					});
+			fileMap.forEach((key, paths) -> {
+				if (paths.size() > 1) {
+					// multiple files means a case-clash
+					// keep the most recent file, move the others to a .OLD extension
+
+					FileUtils.sortPathsByModificationTime(key, paths);
+
+					// most recent file is now last, move the others out of the way
+					for (int i = 0; i < paths.size() - 1; i++) {
+						Path oldPath = paths.get(i);
+						Path newPath = oldPath.resolveSibling(oldPath.getFileName() + ".OLD");
+						FileUtils.tryRename(oldPath, newPath);
+                    }
+
+					// and make sure the most recent filename is in canonical lowercased form
+					Path latest = paths.getLast();
+					Path newPath = latest.resolveSibling(latest.getFileName().toString().toLowerCase(Locale.ROOT));
+					FileUtils.tryRename(latest, newPath);
+				} else if (paths.size() == 1) {
+					// just one path so no clash
+					// but let's still check in case filename needs to be lowercased
+					Path newPath = paths.getFirst().resolveSibling(paths.getFirst().getFileName().toString().toLowerCase(Locale.ROOT));
+					FileUtils.tryRename(paths.getFirst(), newPath);
+				}
+			});
+		} catch (Exception ex) {
+			FTBQuests.LOGGER.error("failed to read folder {}: {}", folder, ex.getMessage());
+		}
+    }
+
+	private void loadRewardTableFile(Path path, Long2IntOpenHashMap objectOrderMap, Long2ObjectOpenHashMap<CompoundTag> dataCache) {
+		CompoundTag tableNBT = SNBT.read(path);
+
+		if (tableNBT != null) {
+			String filename = path.getFileName().toString().replace(".snbt", "");
+			RewardTable table = new RewardTable(readID(tableNBT.get("id")), this, filename);
+			objectOrderMap.put(table.id, tableNBT.getInt("order_index"));
+			questObjectMap.put(table.id, table);
+			dataCache.put(table.id, tableNBT);
+			rewardTables.add(table);
+		}
+	}
+
+	private void readChapterGroupsFile(Path folder, Long2ObjectOpenHashMap<CompoundTag> dataCache) {
+		Path groupsFile = folder.resolve("chapter_groups.snbt");
+		if (Files.exists(groupsFile)) {
+			CompoundTag chapterGroupsTag = SNBT.read(groupsFile);
+
+			if (chapterGroupsTag != null) {
+				ListTag groupListTag = chapterGroupsTag.getList("chapter_groups", Tag.TAG_COMPOUND);
+
+				for (int i = 0; i < groupListTag.size(); i++) {
+					CompoundTag groupNBT = groupListTag.getCompound(i);
+					ChapterGroup chapterGroup = new ChapterGroup(readID(groupNBT.get("id")), this);
+
+					handleLegacyChapterGroupNBT(groupNBT, chapterGroup);
+
+					questObjectMap.put(chapterGroup.id, chapterGroup);
+					dataCache.put(chapterGroup.id, groupNBT);
+					chapterGroups.add(chapterGroup);
+				}
+			}
+		}
+	}
+
+	private void readQuestsFromNBT(ListTag questList, Chapter chapter, Long2ObjectOpenHashMap<CompoundTag> dataCache) {
+		for (int i = 0; i < questList.size(); i++) {
+			CompoundTag questNBT = questList.getCompound(i);
+			Quest quest = new Quest(readID(questNBT.get("id")), chapter);
+
+			handleLegacyQuestNBT(quest, questNBT);
+
+			questObjectMap.put(quest.id, quest);
+			dataCache.put(quest.id, questNBT);
+			chapter.addQuest(quest);
+
+			ListTag taskList = questNBT.getList("tasks", Tag.TAG_COMPOUND);
+
+			for (int j = 0; j < taskList.size(); j++) {
+				CompoundTag taskNBT = taskList.getCompound(j);
+				long taskId = readID(taskNBT.get("id"));
+				Task task = TaskType.createTask(taskId, quest, taskNBT.getString("type"));
+
+				handleLegacyTaskNBT(task, taskNBT);
+
+				if (task == null) {
+					task = new CustomTask(taskId, quest);
+					task.setRawTitle("Unknown type: " + taskNBT.getString("type"));
+				}
+
+				questObjectMap.put(task.id, task);
+				dataCache.put(task.id, taskNBT);
+				quest.addTask(task);
+			}
+
+			ListTag rewardList = questNBT.getList("rewards", Tag.TAG_COMPOUND);
+
+			for (int j = 0; j < rewardList.size(); j++) {
+				CompoundTag rewardNBT = rewardList.getCompound(j);
+				long rewardId = readID(rewardNBT.get("id"));
+				Reward reward = RewardType.createReward(rewardId, quest, rewardNBT.getString("type"));
+				if (reward == null) {
+					reward = new CustomReward(rewardId, quest);
+					reward.setRawTitle("Unknown type: " + rewardNBT.getString("type"));
+				}
+
+				questObjectMap.put(reward.id, reward);
+				dataCache.put(reward.id, rewardNBT);
+				quest.addReward(reward);
+			}
+		}
+	}
+
+	private void readQuestLinksFromNBT(ListTag questLinks, Chapter chapter, Long2ObjectOpenHashMap<CompoundTag> dataCache) {
+		for (int i = 0; i < questLinks.size(); i++) {
+			CompoundTag linkNBT = questLinks.getCompound(i);
+			QuestLink link = new QuestLink(readID(linkNBT.get("id")), chapter, readID(linkNBT.get("linked_quest")));
+			chapter.addQuestLink(link);
+			questObjectMap.put(link.id, link);
+			dataCache.put(link.id, linkNBT);
+		}
+	}
+
+	private void readImagesFromNBT(ListTag images, Chapter chapter, Long2ObjectOpenHashMap<CompoundTag> dataCache) {
+		for (int i = 0; i < images.size(); i++) {
+			CompoundTag imgNBT = images.getCompound(i);
+			// readID() will generate a new id if the "id" field is missing, good for loading older data
+			ChapterImage image = new ChapterImage(readID(imgNBT.get("id")), chapter);
+			chapter.addImage(image);
+			questObjectMap.put(image.id, image);
+			dataCache.put(image.id, imgNBT);
+		}
+	}
+
+	private void handleLegacyFileNBT(CompoundTag fileNBT) {
+		if (fileNBT.contains("title", Tag.TAG_STRING)) {
+			translationManager.addTranslation(this, "en_us", TranslationKey.TITLE, fileNBT.getString("title"));
+			markDirty();
+		}
+	}
+
+	private void handleLegacyChapterGroupNBT(CompoundTag groupNBT, ChapterGroup chapterGroup) {
+		if (groupNBT.contains("title", Tag.TAG_STRING)) {
+			translationManager.addTranslation(chapterGroup, "en_us", TranslationKey.TITLE, groupNBT.getString("title"));
+			markDirty();
+		}
+	}
+
+	private void handleLegacyChapterNBT(CompoundTag chapterNBT, Chapter chapter) {
+		if (chapterNBT.contains("title", Tag.TAG_STRING)) {
+			translationManager.addTranslation(chapter, "en_us", TranslationKey.TITLE, chapterNBT.getString("title"));
+			markDirty();
+		}
+		if (chapterNBT.contains("subtitle", Tag.TAG_LIST)) {
+			translationManager.addTranslation(chapter, "en_us", TranslationKey.CHAPTER_SUBTITLE, TextUtils.fromListTag(chapterNBT.getList("subtitle", Tag.TAG_STRING)));
+			markDirty();
+		}
+	}
+
+	private void handleLegacyQuestNBT(Quest quest, CompoundTag questNBT) {
+		if (questNBT.contains("title", Tag.TAG_STRING)) {
+			translationManager.addTranslation(quest, "en_us", TranslationKey.TITLE, questNBT.getString("title"));
+			markDirty();
+		}
+		if (questNBT.contains("subtitle", Tag.TAG_STRING)) {
+			translationManager.addTranslation(quest, "en_us", TranslationKey.QUEST_SUBTITLE, questNBT.getString("subtitle"));
+			markDirty();
+		}
+		if (questNBT.contains("description", Tag.TAG_LIST)) {
+			translationManager.addTranslation(quest, "en_us", TranslationKey.QUEST_DESC, TextUtils.fromListTag(questNBT.getList("description", Tag.TAG_STRING)));
+			markDirty();
+		}
+	}
+
+	private void handleLegacyTaskNBT(Task task, CompoundTag taskNBT) {
+		if (taskNBT.contains("title", Tag.TAG_STRING)) {
+			translationManager.addTranslation(task, "en_us", TranslationKey.TITLE, taskNBT.getString("title"));
+			markDirty();
+		}
+	}
+
+	public void updateLootCrates() {
+		Map<String, LootCrate> lootCrates = LootCrate.getLootCrates(!isServerSide());
+		Set<String> prevCrateNames = new HashSet<>(lootCrates.keySet());
+		Collection<ItemStack> oldStacks = LootCrate.allCrateStacks(!isServerSide());
+
+		lootCrates.clear();
+		for (RewardTable table : rewardTables) {
+			if (table.getLootCrate() != null) {
+				lootCrates.put(table.getLootCrate().getStringID(), table.getLootCrate());
+			}
+		}
+
+		if (!isServerSide() && !prevCrateNames.equals(lootCrates.keySet())) {
+			FTBQuestsClient.rebuildCreativeTabs();
+			FTBQuests.getRecipeModHelper().updateItemsDynamic(oldStacks, LootCrate.allCrateStacks(!isServerSide()));
+		}
+
+		FTBQuests.LOGGER.debug("Updated loot crates (was {}, now {})", prevCrateNames.size(), lootCrates.size());
+	}
+
+	public void markDirty() {
+	}
+
+	@Override
+	public final void writeNetData(RegistryFriendlyByteBuf buffer) {
+		super.writeNetData(buffer);
+		ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, emergencyItems);
+		buffer.writeVarInt(emergencyItemsCooldown);
+		buffer.writeBoolean(defaultPerTeamReward);
+		buffer.writeBoolean(defaultTeamConsumeItems);
+		RewardAutoClaim.NAME_MAP_NO_DEFAULT.write(buffer, defaultRewardAutoClaim);
+		buffer.writeUtf(defaultQuestShape, Short.MAX_VALUE);
+		buffer.writeBoolean(defaultQuestDisableJEI);
+		buffer.writeBoolean(dropLootCrates);
+		lootCrateNoDrop.writeNetData(buffer);
+		buffer.writeBoolean(disableGui);
+		buffer.writeDouble(gridScale);
+		buffer.writeBoolean(pauseGame);
+		buffer.writeUtf(lockMessage, Short.MAX_VALUE);
+		ProgressionMode.NAME_MAP_NO_DEFAULT.write(buffer, progressionMode);
+		buffer.writeVarInt(detectionDelay);
+		buffer.writeBoolean(showLockIcons);
+		buffer.writeBoolean(dropBookOnDeath);
+		buffer.writeBoolean(hideExcludedQuests);
+		buffer.writeUtf(fallbackLocale);
+		buffer.writeBoolean(suppressAllAutoclaiming);
+		VisualPresets.STREAM_CODEC.encode(buffer, allPresets);
+	}
+
+	@Override
+	public final void readNetData(RegistryFriendlyByteBuf buffer) {
+		super.readNetData(buffer);
+
+		emergencyItems.clear();
+		emergencyItems.addAll(ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer));
+		emergencyItemsCooldown = buffer.readVarInt();
+		defaultPerTeamReward = buffer.readBoolean();
+		defaultTeamConsumeItems = buffer.readBoolean();
+		defaultRewardAutoClaim = RewardAutoClaim.NAME_MAP_NO_DEFAULT.read(buffer);
+		defaultQuestShape = buffer.readUtf(Short.MAX_VALUE);
+		defaultQuestDisableJEI = buffer.readBoolean();
+		dropLootCrates = buffer.readBoolean();
+		lootCrateNoDrop.readNetData(buffer);
+		disableGui = buffer.readBoolean();
+		gridScale = buffer.readDouble();
+		pauseGame = buffer.readBoolean();
+		lockMessage = buffer.readUtf(Short.MAX_VALUE);
+		progressionMode = ProgressionMode.NAME_MAP_NO_DEFAULT.read(buffer);
+		detectionDelay = buffer.readVarInt();
+		showLockIcons = buffer.readBoolean();
+		dropBookOnDeath = buffer.readBoolean();
+		hideExcludedQuests = buffer.readBoolean();
+		fallbackLocale = buffer.readUtf();
+		suppressAllAutoclaiming = buffer.readBoolean();
+		allPresets = VisualPresets.STREAM_CODEC.decode(buffer);
+	}
+
+	public final void writeNetDataFull(RegistryFriendlyByteBuf buffer) {
+		int pos = buffer.writerIndex();
+
+		buffer.writeVarInt(TaskTypes.TYPES.size());
+		for (TaskType type : TaskTypes.TYPES.values()) {
+			buffer.writeResourceLocation(type.getTypeId());
+			buffer.writeVarInt(type.internalId);
+		}
+
+		buffer.writeVarInt(RewardTypes.TYPES.size());
+		for (RewardType type : RewardTypes.TYPES.values()) {
+			buffer.writeResourceLocation(type.getTypeId());
+			buffer.writeVarInt(type.internalId);
+		}
+
+		writeNetData(buffer);
+
+		buffer.writeVarInt(rewardTables.size());
+		for (RewardTable table : rewardTables) {
+			buffer.writeLong(table.id);
+		}
+
+		buffer.writeVarInt(chapterGroups.size() - 1);
+		for (ChapterGroup group : chapterGroups) {
+			if (!group.isDefaultGroup()) {
+				buffer.writeLong(group.id);
+			}
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			buffer.writeVarInt(group.getChapters().size());
+
+			for (Chapter chapter : group.getChapters()) {
+				buffer.writeLong(chapter.id);
+				buffer.writeVarInt(chapter.getQuests().size());
+
+				for (Quest quest : chapter.getQuests()) {
+					buffer.writeLong(quest.id);
+
+					buffer.writeVarInt(quest.getTasks().size());
+					quest.getTasks().forEach(task -> {
+						buffer.writeVarInt(task.getType().internalId);
+						buffer.writeLong(task.id);
+					});
+
+					buffer.writeVarInt(quest.getRewards().size());
+					quest.getRewards().forEach(reward -> {
+						buffer.writeVarInt(reward.getType().internalId);
+						buffer.writeLong(reward.id);
+					});
+				}
+
+				buffer.writeVarInt(chapter.getQuestLinks().size());
+				for (QuestLink questLink : chapter.getQuestLinks()) {
+					buffer.writeLong(questLink.id);
+				}
+
+				buffer.writeVarInt(chapter.getImages().size());
+				for (ChapterImage img : chapter.getImages()) {
+					buffer.writeLong(img.id);
+				}
+			}
+		}
+
+		for (RewardTable table : rewardTables) {
+			table.writeNetData(buffer);
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			if (!group.isDefaultGroup()) {
+				group.writeNetData(buffer);
+			}
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			for (Chapter chapter : group.getChapters()) {
+				chapter.writeNetData(buffer);
+
+				chapter.getQuests().forEach(quest -> {
+					quest.writeNetData(buffer);
+					quest.getTasks().forEach(task -> task.writeNetData(buffer));
+					quest.getRewards().forEach(reward -> reward.writeNetData(buffer));
+				});
+
+				chapter.getQuestLinks().forEach(questLink -> questLink.writeNetData(buffer));
+				chapter.getImages().forEach(image -> image.writeNetData(buffer));
+			}
+		}
+
+		FTBQuests.LOGGER.debug("Wrote {} bytes, {} objects", buffer.writerIndex() - pos, questObjectMap.size());
+	}
+
+	public final void readNetDataFull(RegistryFriendlyByteBuf buffer) {
+		int pos = buffer.readerIndex();
+
+		taskTypeIds.clear();
+		rewardTypeIds.clear();
+
+		for (TaskType type : TaskTypes.TYPES.values()) {
+			type.internalId = 0;
+		}
+
+		for (RewardType type : RewardTypes.TYPES.values()) {
+			type.internalId = 0;
+		}
+
+		int taskTypesSize = buffer.readVarInt();
+		for (int i = 0; i < taskTypesSize; i++) {
+			TaskType type = TaskTypes.TYPES.get(buffer.readResourceLocation());
+			int id = buffer.readVarInt();
+
+			if (type != null) {
+				type.internalId = id;
+				taskTypeIds.put(type.internalId, type);
+			}
+		}
+
+		int rewardTypesSize = buffer.readVarInt();
+		for (int i = 0; i < rewardTypesSize; i++) {
+			RewardType type = RewardTypes.TYPES.get(buffer.readResourceLocation());
+			int id = buffer.readVarInt();
+
+			if (type != null) {
+				type.internalId = id;
+				rewardTypeIds.put(type.internalId, type);
+			}
+		}
+
+		readNetData(buffer);
+
+		rewardTables.clear();
+
+		int rewardTableSize = buffer.readVarInt();
+		for (int i = 0; i < rewardTableSize; i++) {
+			RewardTable table = new RewardTable(buffer.readLong(), this);
+			rewardTables.add(table);
+		}
+
+		chapterGroups.clear();
+		chapterGroups.add(defaultChapterGroup);
+
+		int chapterGroupsSize = buffer.readVarInt();
+		for (int i = 0; i < chapterGroupsSize; i++) {
+			ChapterGroup group = new ChapterGroup(buffer.readLong(), this);
+			chapterGroups.add(group);
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			int chapterCount = buffer.readVarInt();
+			for (int i = 0; i < chapterCount; i++) {
+				Chapter chapter = new Chapter(buffer.readLong(), this, group);
+				group.addChapter(chapter);
+
+				int questCount = buffer.readVarInt();
+				for (int j = 0; j < questCount; j++) {
+					Quest quest = new Quest(buffer.readLong(), chapter);
+					chapter.addQuest(quest);
+
+					int taskCount = buffer.readVarInt();
+					for (int k = 0; k < taskCount; k++) {
+						int typeId = buffer.readVarInt();
+						TaskType type = taskTypeIds.get(typeId);
+						long id = buffer.readLong();
+						if (type == null) {
+							throw new IllegalStateException("Received quest sync data for an unrecognized task type (internal id "
+									+ typeId + ") - client and server likely have a mismatched set of mods that register quest task/reward types");
+						}
+						quest.addTask(type.createTask(id, quest));
+					}
+
+					int rewardCount = buffer.readVarInt();
+					for (int k = 0; k < rewardCount; k++) {
+						int typeId = buffer.readVarInt();
+						RewardType type = rewardTypeIds.get(typeId);
+						long id = buffer.readLong();
+						if (type == null) {
+							throw new IllegalStateException("Received quest sync data for an unrecognized reward type (internal id "
+									+ typeId + ") - client and server likely have a mismatched set of mods that register quest task/reward types");
+						}
+						quest.addReward(type.createReward(id, quest));
+					}
+				}
+
+				int questLinkCount = buffer.readVarInt();
+				for (int j = 0; j < questLinkCount; j++) {
+					QuestLink questLink = new QuestLink(buffer.readLong(), chapter, 0L);
+					chapter.addQuestLink(questLink);
+				}
+
+				int imageCount = buffer.readVarInt();
+				for (int j = 0; j < imageCount; j++) {
+					ChapterImage image = new ChapterImage(buffer.readLong(), chapter);
+					chapter.addImage(image);
+				}
+			}
+		}
+
+		for (RewardTable table : rewardTables) {
+			table.readNetData(buffer);
+		}
+
+		refreshIDMap();
+
+		for (ChapterGroup group : chapterGroups) {
+			if (!group.isDefaultGroup()) {
+				group.readNetData(buffer);
+			}
+		}
+
+		for (ChapterGroup group : chapterGroups) {
+			for (Chapter chapter : group.getChapters()) {
+				chapter.readNetData(buffer);
+
+				for (Quest quest : chapter.getQuests()) {
+					quest.readNetData(buffer);
+					quest.getTasks().forEach(task -> task.readNetData(buffer));
+					quest.getRewards().forEach(reward -> reward.readNetData(buffer));
+				}
+
+				for (QuestLink questLink : chapter.getQuestLinks()) {
+					questLink.readNetData(buffer);
+				}
+
+				for (ChapterImage image : chapter.getImages()) {
+					image.readNetData(buffer);
+				}
+			}
+		}
+
+		FTBQuests.LOGGER.info("Read {} bytes, {} objects", buffer.readerIndex() - pos, questObjectMap.size());
+	}
+
+	@Override
+	public long getParentID() {
+		return 0L;
+	}
+
+	@Override
+	@Nullable
+	public TeamData getNullableTeamData(UUID id) {
+		return teamDataMap.get(id);
+	}
+
+	@Override
+	public TeamData getOrCreateTeamData(UUID teamId) {
+		return teamDataMap.computeIfAbsent(teamId, k -> new TeamData(teamId, this));
+	}
+
+	@Override
+	public TeamData getOrCreateTeamData(Team team) {
+		return getOrCreateTeamData(Objects.requireNonNull(team, "Non-null team required!").getId());
+	}
+
+	@Override
+	public TeamData getOrCreateTeamData(Entity player) {
+		return FTBTeamsAPI.api().getManager().getTeamForPlayerID(player.getUUID())
+				.map(this::getOrCreateTeamData)
+				.orElse(null);
+	}
+
+	@Override
+	public Optional<TeamData> getTeamData(Player player) {
+		return player.level().isClientSide ?
+				getClientTeamData(player) :
+				FTBTeamsAPI.api().getManager().getTeamForPlayerID(player.getUUID())
+						.map(this::getOrCreateTeamData);
+	}
+
+	private Optional<TeamData> getClientTeamData(Player player) {
+		ClientTeamManager mgr = FTBTeamsAPI.api().getClientManager();
+		return mgr.getKnownPlayer(player.getUUID())
+				.map(kcp -> mgr.getTeamByID(kcp.teamId()))
+				.flatMap(team -> team.map(this::getOrCreateTeamData));
+	}
+
+	@Override
+	public Collection<TeamData> getAllTeamData() {
+		return Collections.unmodifiableCollection(teamDataMap.values());
+	}
+
+	public abstract boolean deleteObjects(List<Long> ids);
+
+	@Override
+	public MutableComponent getAltTitle() {
+		return Component.translatable("ftbquests.file");
+	}
+
+	@Override
+	@Environment(EnvType.CLIENT)
+	public Icon getAltIcon() {
+		return ThemeProperties.MODPACK_ICON.get(this);
+	}
+
+	@Override
+	@Environment(EnvType.CLIENT)
+	public void fillConfigGroup(ConfigGroup config) {
+		super.fillConfigGroup(config);
+		config.addList("emergency_items", emergencyItems, new ItemStackConfig(false, false), ItemStack.EMPTY);
+		config.addInt("emergency_items_cooldown", emergencyItemsCooldown, v -> emergencyItemsCooldown = v, 300, 0, Integer.MAX_VALUE);
+		config.addBool("drop_loot_crates", dropLootCrates, v -> dropLootCrates = v, false);
+		config.addBool("disable_gui", disableGui, v -> disableGui = v, false);
+		config.addDouble("grid_scale", gridScale, v -> gridScale = v, 0.5D, 1D / 32D, 8D);
+		config.addString("lock_message", lockMessage, v -> lockMessage = v, "");
+		config.addEnum("progression_mode", progressionMode, v -> progressionMode = v, ProgressionMode.NAME_MAP_NO_DEFAULT);
+		config.addInt("detection_delay", detectionDelay, v -> detectionDelay = v, 20, 0, 200);
+		config.addBool("pause_game", pauseGame, v -> pauseGame = v, false);
+		config.addBool("show_lock_icons", showLockIcons, v -> showLockIcons = v, true).setNameKey("ftbquests.ui.show_lock_icon");
+		config.addBool("drop_book_on_death", dropBookOnDeath, v -> dropBookOnDeath = v, true);
+		config.addBool("hide_excluded_quests", hideExcludedQuests, v -> hideExcludedQuests = v, false);
+		config.addBool("suppress_all_autoclaiming", suppressAllAutoclaiming, v -> suppressAllAutoclaiming = v, false);
+		config.add("fallback_locale", new LocaleConfig(), fallbackLocale, v -> fallbackLocale = v, "");
+		config.add("presets", new VisualPresetsConfig(), allPresets, v -> allPresets = v, VisualPresets.EMPTY);
+
+		ConfigGroup defaultsGroup = config.getOrCreateSubgroup("defaults");
+		defaultsGroup.addBool("reward_team", defaultPerTeamReward, v -> defaultPerTeamReward = v, false);
+		defaultsGroup.addBool("consume_items", defaultTeamConsumeItems, v -> defaultTeamConsumeItems = v, false);
+		defaultsGroup.addEnum("autoclaim_rewards", defaultRewardAutoClaim, v -> defaultRewardAutoClaim = v, RewardAutoClaim.NAME_MAP_NO_DEFAULT);
+		defaultsGroup.addEnum("quest_shape", defaultQuestShape, v -> defaultQuestShape = v, QuestShape.idMap);
+		defaultsGroup.addBool("quest_disable_jei", defaultQuestDisableJEI, v -> defaultQuestDisableJEI = v, false);
+		defaultsGroup.addEnum("default_preset", presetName, v -> presetName = v, getQuestFile().getPresets().nameMap());
+
+		ConfigGroup d = config.getOrCreateSubgroup("loot_crate_no_drop");
+		d.addInt("passive", lootCrateNoDrop.passive, v -> lootCrateNoDrop.passive = v, 0, 0, Integer.MAX_VALUE).setNameKey("ftbquests.loot.entitytype.passive");
+		d.addInt("monster", lootCrateNoDrop.monster, v -> lootCrateNoDrop.monster = v, 0, 0, Integer.MAX_VALUE).setNameKey("ftbquests.loot.entitytype.monster");
+		d.addInt("boss", lootCrateNoDrop.boss, v -> lootCrateNoDrop.boss = v, 0, 0, Integer.MAX_VALUE).setNameKey("ftbquests.loot.entitytype.boss");
+	}
+
+	@Override
+	public void clearCachedData() {
+		super.clearCachedData();
+
+		allQuests = null;
+		allTasks = null;
+		submitTasks = null;
+		craftingTasks = null;
+
+		for (ChapterGroup group : chapterGroups) {
+			group.clearCachedData();
+		}
+
+		clearCachedProgress();
+
+		ClearFileCacheEvent.EVENT.invoker().accept(this);
+	}
+
+	public void clearCachedProgress() {
+		getAllTeamData().forEach(TeamData::clearCachedProgress);
+	}
+
+	public long newID() {
+		return readID(0L);
+	}
+
+	public long readID(long id) {
+		while (id == 0L || id == 1L || questObjectMap.get(id) != null) {
+			id = Math.abs(MathUtils.RAND.nextLong());
+			markDirty();
+		}
+
+		return id;
+	}
+
+	public long readID(@Nullable Tag tag) {
+		if (tag instanceof NumericTag) {
+			markDirty();
+			return readID(((NumericTag) tag).getAsLong());
+		} else if (tag instanceof StringTag) {
+			try {
+				String id = tag.getAsString();
+				return readID(Long.parseLong(id.charAt(0) == '#' ? id.substring(1) : id, 16));
+			} catch (Exception ignored) {
+			}
+		}
+
+		return newID();
+	}
+
+	public long getID(@Nullable Object obj) {
+		switch (obj) {
+			case null -> {
+				return 0L;
+			}
+			case Number n -> {
+				return n.longValue();
+			}
+			case NumericTag nt -> {
+				return nt.getAsLong();
+			}
+			case StringTag st -> {
+				return getID(st.getAsString());
+			}
+			default -> {
+			}
+		}
+
+		String idStr = obj.toString();
+		long id = parseCodeString(idStr);
+		if (id == 0L && idStr.length() >= 2 && idStr.charAt(0) == '#') {
+			String tagVal = idStr.substring(1);
+			return questObjectMap.values().stream()
+					.filter(qob -> qob.hasTag(tagVal))
+					.findFirst()
+					.map(qob -> qob.id)
+					.orElse(id);
+		}
+
+		return id;
+	}
+
+	public Optional<LootCrate> makeRandomLootCrate(Entity entity, RandomSource random) {
+		int totalWeight = lootCrateNoDrop.getWeight(entity);
+
+		for (RewardTable table : rewardTables) {
+			if (table.getLootCrate() != null) {
+				totalWeight += table.getLootCrate().getDrops().getWeight(entity);
+			}
+		}
+
+		if (totalWeight <= 0) {
+			return Optional.empty();
+		}
+
+		int number = random.nextInt(totalWeight) + 1;
+		int currentWeight = lootCrateNoDrop.getWeight(entity);
+
+		if (currentWeight < number) {
+			for (RewardTable table : rewardTables) {
+				if (table.getLootCrate() != null) {
+					currentWeight += table.getLootCrate().getDrops().getWeight(entity);
+					if (currentWeight >= number) {
+						return Optional.ofNullable(table.getLootCrate());
+					}
+				}
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	@Override
+	public Set<RecipeModHelper.Components> componentsToRefresh() {
+		return EnumSet.allOf(RecipeModHelper.Components.class);
+	}
+
+	public final Collection<QuestObjectBase> getAllObjects() {
+		return Collections.unmodifiableCollection(questObjectMap.values());
+	}
+
+	@Override
+	public boolean isVisible(TeamData data) {
+		return chapterGroups.stream().anyMatch(group -> group.isVisible(data));
+	}
+
+	public List<Chapter> getAllChapters() {
+		List<Chapter> list = new ArrayList<>();
+
+		for (ChapterGroup g : chapterGroups) {
+			list.addAll(g.getChapters());
+		}
+
+		return list;
+	}
+
+	public List<Task> getAllTasks() {
+		if (allTasks == null) {
+			allTasks = new ArrayList<>();
+			forAllQuests(q -> allTasks.addAll(q.getTasks()));
+		}
+		return allTasks;
+	}
+
+	public List<Task> getSubmitTasks() {
+		if (submitTasks == null) {
+			submitTasks = getAllTasks().stream().filter(Task::submitItemsOnInventoryChange).toList();
+		}
+		return submitTasks;
+	}
+
+	public List<Task> getCraftingTasks() {
+		if (craftingTasks == null) {
+			craftingTasks = getAllTasks().stream().filter(task -> task instanceof ItemTask i && i.isOnlyFromCrafting()).toList();
+		}
+		return craftingTasks;
+	}
+
+	public List<Chapter> getVisibleChapters(TeamData data) {
+		List<Chapter> list = new ArrayList<>();
+
+		for (ChapterGroup group : chapterGroups) {
+			list.addAll(group.getVisibleChapters(data));
+		}
+
+		return list;
+	}
+
+	@Nullable
+	public Chapter getFirstVisibleChapter(TeamData data) {
+		for (ChapterGroup group : chapterGroups) {
+			Chapter c = group.getFirstVisibleChapter(data);
+
+			if (c != null) {
+				return c;
+			}
+		}
+
+		return null;
+	}
+
+	public <T extends QuestObjectBase> List<T> collect(Class<T> cls, Predicate<T> filter) {
+		List<T> list = new ArrayList<>();
+
+		for (QuestObjectBase base : getAllObjects()) {
+			if (cls.isAssignableFrom(base.getClass())) {
+				T casted = cls.cast(base);
+				if (filter.test(casted)) {
+					list.add(casted);
+				}
+			}
+		}
+
+		if (list.isEmpty()) {
+			return Collections.emptyList();
+		} else if (list.size() == 1) {
+			return Collections.singletonList(list.getFirst());
+		}
+
+		return list;
+	}
+
+	public <T extends QuestObjectBase> List<T> collect(Class<T> clazz) {
+		return collect(clazz, o -> true);
+	}
+
+	public String getDefaultQuestShape() {
+		return defaultQuestShape;
+	}
+
+	public void addData(TeamData data, boolean override) {
+		if (override || !teamDataMap.containsKey(data.getTeamId())) {
+			teamDataMap.put(data.getTeamId(), data);
+		}
+	}
+
+	public void refreshGui() {
+		clearCachedData();
+	}
+
+	@Override
+	public Collection<? extends QuestObjectBase> getChildren() {
+		return chapterGroups;
+	}
+
+	@Override
+	public boolean hasUnclaimedRewardsRaw(TeamData teamData, UUID player) {
+		for (ChapterGroup group : chapterGroups) {
+			if (teamData.hasUnclaimedRewards(player, group)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public ProgressionMode getProgressionMode() {
+		return progressionMode;
+	}
+
+	public int getDetectionDelay() {
+		return detectionDelay;
+	}
+
+	public boolean isPauseGame() {
+		return pauseGame;
+	}
+
+	public boolean isDisableGui() {
+		return disableGui;
+	}
+
+	public double getGridScale() {
+		return gridScale;
+	}
+
+	public boolean isDropLootCrates() {
+		return dropLootCrates;
+	}
+
+	public boolean isHideExcludedQuests() {
+		return hideExcludedQuests;
+	}
+
+	public boolean isDefaultPerTeamReward() {
+		return defaultPerTeamReward;
+	}
+
+	public boolean isDefaultTeamConsumeItems() {
+		return defaultTeamConsumeItems;
+	}
+
+	public RewardAutoClaim getDefaultRewardAutoClaim() {
+		return defaultRewardAutoClaim;
+	}
+
+	public boolean showLockIcons() {
+		return showLockIcons;
+	}
+
+	public List<ItemStack> getEmergencyItems() {
+		return Collections.unmodifiableList(emergencyItems);
+	}
+
+	public int getEmergencyItemsCooldown() {
+		return emergencyItemsCooldown;
+	}
+
+	public boolean isDefaultQuestDisableJEI() {
+		return defaultQuestDisableJEI;
+	}
+
+	public abstract boolean isPlayerOnTeam(Player player, TeamData teamData);
+
+	public TaskType getTaskType(int typeId) {
+		return taskTypeIds.get(typeId);
+	}
+
+	public RewardType getRewardType(int typeId) {
+		return rewardTypeIds.get(typeId);
+	}
+
+	public DefaultChapterGroup getDefaultChapterGroup() {
+		return defaultChapterGroup;
+	}
+
+	public List<RewardTable> getRewardTables() {
+		return Collections.unmodifiableList(rewardTables);
+	}
+
+	public void addRewardTable(RewardTable rewardTable) {
+		rewardTables.add(rewardTable);
+	}
+
+	public void removeRewardTable(RewardTable rewardTable) {
+		rewardTables.remove(rewardTable);
+	}
+
+	public int removeEmptyRewardTables(CommandSourceStack source) {
+		List<RewardTable> toRemove = rewardTables.stream().filter(table -> table.getWeightedRewards().isEmpty()).toList();
+		List<Long> idsToRemove = new ArrayList<>();
+		toRemove.forEach(table -> {
+			table.deleteSelf();
+			FileUtils.delete(ServerQuestFile.INSTANCE.getFolder().resolve(table.getPath().orElseThrow()).toFile());
+			idsToRemove.add(table.id);
+		});
+
+		if (!idsToRemove.isEmpty()) {
+			NetworkHelper.sendToAll(source.getServer(), new DeleteObjectResponseMessage(idsToRemove));
+			markDirty();
+		}
+
+		return toRemove.size();
+	}
+
+	public List<ChapterGroup> getChapterGroups() {
+		return Collections.unmodifiableList(chapterGroups);
+	}
+
+	public void forAllChapterGroups(Consumer<ChapterGroup> consumer) {
+		chapterGroups.forEach(consumer);
+	}
+
+	@Override
+	public void forAllChapters(Consumer<Chapter> consumer) {
+		forAllChapterGroups(g -> g.getChapters().forEach(consumer));
+	}
+
+	@Override
+	public void forAllQuests(Consumer<Quest> consumer) {
+		if (allQuests == null) {
+			allQuests = new ArrayList<>();
+			forAllChapters(c -> allQuests.addAll(c.getQuests()));
+		}
+		allQuests.forEach(consumer);
+	}
+
+	@Override
+	public void forAllQuestLinks(Consumer<QuestLink> consumer) {
+		forAllChapters(c -> c.getQuestLinks().forEach(consumer));
+	}
+
+	public boolean moveChapterGroup(long id, boolean movingUp) {
+		ChapterGroup group = getChapterGroup(id);
+
+		if (!group.isDefaultGroup()) {
+			int index = chapterGroups.indexOf(group);
+			if (index != -1 && (movingUp ? (index > 1) : (index < chapterGroups.size() - 1))) {
+				chapterGroups.remove(index);
+				chapterGroups.add(movingUp ? index - 1 : index + 1, group);
+				group.clearCachedData();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public EntityWeight getLootCrateNoDrop() {
+		return lootCrateNoDrop;
+	}
+
+	public abstract String getLocale();
+
+	public String getFallbackLocale() {
+		return fallbackLocale.isEmpty() ? TranslationManager.DEFAULT_FALLBACK_LOCALE : fallbackLocale;
+	}
+
+	public boolean dropBookOnDeath() {
+		return dropBookOnDeath;
+	}
+
+	public boolean shouldSuppressAllAutoclaiming() {
+		return suppressAllAutoclaiming;
+	}
+
+    public String getPresetName() {
+        return presetName;
+    }
+
+    public VisualPresets getPresets() {
+        return allPresets;
+    }
+
+	/**
+	 * Allows allocating multiple new quest object ids with no risk of collision. Intended to be a short-lived object,
+	 * do not persist across multiple ticks!
+	 */
+	public static class UniqueIdAllocator {
+		private final BaseQuestFile file;
+		private final LongSet allocated = new LongOpenHashSet();
+
+		public UniqueIdAllocator(BaseQuestFile file) {
+			this.file = file;
+		}
+
+		public long newId() {
+			long newId;
+			do {
+				newId = file.newID();
+			} while (allocated.contains(newId));
+			allocated.add(newId);
+
+			return newId;
+		}
+	}
+}

@@ -1,0 +1,57 @@
+modLoader = "javafml"
+loaderVersion = "[${neoforgeloaderversion},)"
+issueTrackerURL = "https://github.com/FTBTeam/FTB-Mods-Issues/issues"
+license = "All Rights Reserved"
+
+[[mixins]]
+config = "ftbquests-common.mixins.json"
+
+[[mods]]
+modId = "ftbquests"
+version = "${version}"
+displayName = "FTB Quests"
+authors = "FTB Team"
+description = '''
+Lets you easily create and play with quests
+'''
+
+[[dependencies.ftbquests]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforgeversionrange}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbquests]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${mcversion},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbquests]]
+modId = "architectury"
+type = "required"
+versionRange = "[${archversion},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbquests]]
+modId = "ftblibrary"
+type = "required"
+versionRange = "[${ftblibraryversion},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.ftbquests]]
+modId = "ftbteams"
+type = "required"
+versionRange = "[${ftbteamsversion},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.ftbquests]]
+modId = "ftbxmodcompat"
+type = "optional"
+versionRange = "[21.1.7,)"
+side = "BOTH"
