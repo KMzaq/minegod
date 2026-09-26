@@ -1,0 +1,134 @@
+{
+  "mode": "extract-gemma",
+  "at": "2026-09-20T08:03:34.838118800Z",
+  "settings": "MemoryIndexSettings[enabled\u003dtrue, semanticMode\u003dON, consolidate\u003dtrue, maxStorageBytes\u003d268435456, maxEntries\u003d12000, endpoint\u003dhttp://127.0.0.1:11434, embeddingModel\u003dbge-m3:latest, modelRevision\u003d7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab, dimensions\u003d1024, extractionModel\u003dgemma4:12b, extractionRevision\u003d4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c, queryTimeoutMs\u003d1500, backgroundTimeoutMs\u003d30000, execution\u003dExecution[embeddingCpu\u003dfalse, embeddingThreads\u003d4, embeddingKeepAliveSeconds\u003d30, extractionCpu\u003dfalse, extractionThreads\u003d4, extractionContext\u003d8192, extractionMaxTokens\u003d512, extractionKeepAliveSeconds\u003d30, minimumSimilarity\u003d0.65, skipSemanticWhenFound\u003dtrue]]",
+  "before": {
+    "models": []
+  },
+  "after": {
+    "models": [
+      {
+        "name": "gemma4:12b",
+        "model": "gemma4:12b",
+        "size": 8372921302,
+        "digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "gemma4",
+          "families": [
+            "gemma4"
+          ],
+          "parameter_size": "11.9B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-09-20T17:04:04.8343947+09:00",
+        "size_vram": 8372921302,
+        "context_length": 8192
+      }
+    ]
+  },
+  "results": [
+    {
+      "case": 0,
+      "texts": [
+        "내일 바다에 가겠다고 약속할게."
+      ],
+      "expectedKind": "PLAN_OR_PROMISE",
+      "expectedRelation": "NONE",
+      "error": "IllegalArgumentException: relation order",
+      "ms": 6845.1135
+    },
+    {
+      "case": 1,
+      "texts": [
+        "나는 수영을 못해.",
+        "이제 수영을 배웠어."
+      ],
+      "expectedKind": "SELF_CLAIM",
+      "expectedRelation": "CORRECTS",
+      "kind": "REPORTED",
+      "relation": "NONE",
+      "match": false,
+      "ms": 856.6804
+    },
+    {
+      "case": 2,
+      "texts": [
+        "내일 바다에 갈게.",
+        "바다에 가려던 약속은 취소할게."
+      ],
+      "expectedKind": "PLAN_OR_PROMISE",
+      "expectedRelation": "CANCELS",
+      "kind": "CONDITIONAL",
+      "relation": "NONE",
+      "match": false,
+      "ms": 1142.5965
+    },
+    {
+      "case": 3,
+      "texts": [
+        "내일 바다에 갈게.",
+        "친구가 바다에 갔다고 했어."
+      ],
+      "expectedKind": "REPORTED",
+      "expectedRelation": "NONE",
+      "kind": "REPORTED",
+      "relation": "NONE",
+      "match": true,
+      "ms": 947.9593
+    },
+    {
+      "case": 4,
+      "texts": [
+        "내일 바다에 갈게.",
+        "비가 그치면 바다에 갈 수도 있어."
+      ],
+      "expectedKind": "CONDITIONAL",
+      "expectedRelation": "NONE",
+      "kind": "CONDITIONAL",
+      "relation": "NONE",
+      "match": true,
+      "ms": 921.2387
+    },
+    {
+      "case": 5,
+      "texts": [
+        "내일 바다에 갈게.",
+        "모레 산에도 갈 거야."
+      ],
+      "expectedKind": "PLAN_OR_PROMISE",
+      "expectedRelation": "ALSO_PLANNED",
+      "kind": "SELF_CLAIM",
+      "relation": "NONE",
+      "match": false,
+      "ms": 794.484
+    },
+    {
+      "case": 6,
+      "texts": [
+        "내일 바다에 가겠다고 약속할게.",
+        "약속대로 바다에 다녀왔어."
+      ],
+      "expectedKind": "SELF_CLAIM",
+      "expectedRelation": "REPORTS_FULFILLMENT",
+      "kind": "REPORTED",
+      "relation": "NONE",
+      "match": false,
+      "ms": 981.6609
+    },
+    {
+      "case": 7,
+      "texts": [
+        "내일 바다에 갈게.",
+        "바다에 가기로 했어."
+      ],
+      "expectedKind": "PLAN_OR_PROMISE",
+      "expectedRelation": "NONE",
+      "kind": "REPORTED",
+      "relation": "NONE",
+      "match": false,
+      "ms": 914.1589
+    }
+  ]
+}

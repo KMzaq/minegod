@@ -1,0 +1,109 @@
+{
+  "mode": "extract-qwen-validation",
+  "at": "2026-09-20T08:07:57.218201900Z",
+  "settings": "MemoryIndexSettings[enabled\u003dtrue, semanticMode\u003dON, consolidate\u003dtrue, maxStorageBytes\u003d268435456, maxEntries\u003d12000, endpoint\u003dhttp://127.0.0.1:11434, embeddingModel\u003dbge-m3:latest, modelRevision\u003d7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab, dimensions\u003d1024, extractionModel\u003dqwen2.5:7b, extractionRevision\u003d845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e, queryTimeoutMs\u003d1500, backgroundTimeoutMs\u003d30000, execution\u003dExecution[embeddingCpu\u003dfalse, embeddingThreads\u003d4, embeddingKeepAliveSeconds\u003d30, extractionCpu\u003dtrue, extractionThreads\u003d4, extractionContext\u003d8192, extractionMaxTokens\u003d512, extractionKeepAliveSeconds\u003d30, minimumSimilarity\u003d0.65, skipSemanticWhenFound\u003dtrue]]",
+  "before": {
+    "models": [
+      {
+        "name": "gemma4:12b",
+        "model": "gemma4:12b",
+        "size": 8372921302,
+        "digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "gemma4",
+          "families": [
+            "gemma4"
+          ],
+          "parameter_size": "11.9B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-09-20T17:07:43.9705937+09:00",
+        "size_vram": 8372921302,
+        "context_length": 8192
+      }
+    ]
+  },
+  "after": {
+    "models": [
+      {
+        "name": "qwen2.5:7b",
+        "model": "qwen2.5:7b",
+        "size": 5455793356,
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-09-20T17:08:27.211684+09:00",
+        "size_vram": 0,
+        "context_length": 8192
+      }
+    ]
+  },
+  "results": [
+    {
+      "case": 0,
+      "texts": [
+        "내일 제단에 철괴를 가져다 놓을게.",
+        "철괴를 가져오려던 계획은 취소할게. 대신 돌을 모으겠어."
+      ],
+      "expectedKind": "PLAN_OR_PROMISE",
+      "expectedRelation": "CANCELS",
+      "kind": "CONDITIONAL",
+      "relation": "NONE",
+      "match": false,
+      "ms": 15627.1573
+    },
+    {
+      "case": 1,
+      "texts": [
+        "나는 복숭아를 싫어해.",
+        "싫다는 말은 정정할게. 먹고 싶지만 알레르기가 있어서 못 먹는 거야."
+      ],
+      "expectedKind": "SELF_CLAIM",
+      "expectedRelation": "CORRECTS",
+      "kind": "SELF_CLAIM",
+      "relation": "CORRECTS",
+      "match": true,
+      "ms": 6879.2237
+    },
+    {
+      "case": 2,
+      "texts": [
+        "내일 신전에 갈게.",
+        "친구가 \u0027나는 벌써 신전에 다녀왔어\u0027라고 하더라."
+      ],
+      "expectedKind": "REPORTED",
+      "expectedRelation": "NONE",
+      "kind": "REPORTED",
+      "relation": "NONE",
+      "match": true,
+      "ms": 5947.6452
+    },
+    {
+      "case": 3,
+      "texts": [
+        "제단 수리를 끝내겠다고 약속할게.",
+        "오늘 하늘은 맑았어.",
+        "마을에서 빵을 먹었어.",
+        "숲에서 나무를 모았어.",
+        "도끼는 집에 두고 왔어.",
+        "제단을 고치겠다는 약속을 지켰어. 수리를 끝냈어."
+      ],
+      "expectedKind": "SELF_CLAIM",
+      "expectedRelation": "REPORTS_FULFILLMENT",
+      "kind": "SELF_CLAIM",
+      "relation": "REPORTS_FULFILLMENT",
+      "match": true,
+      "ms": 8703.8857
+    }
+  ]
+}

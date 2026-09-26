@@ -9,6 +9,10 @@ public final class AiConversationHudController {
     private boolean conversationActive;
     private boolean visible = true;
     private Component godDisplayName = Component.literal("-");
+    private com.sande.mythictrpg.network.ConversationRoomsPayload rooms = new com.sande.mythictrpg.network.ConversationRoomsPayload(java.util.List.of(), java.util.Optional.empty());
+
+    public void receiveRooms(com.sande.mythictrpg.network.ConversationRoomsPayload payload) { rooms=payload; }
+    public com.sande.mythictrpg.network.ConversationRoomsPayload rooms() { return rooms; }
 
     private AiConversationHudController() {
     }
@@ -26,6 +30,7 @@ public final class AiConversationHudController {
     public void reset() {
         conversationActive = false;
         godDisplayName = Component.literal("-");
+        rooms = new com.sande.mythictrpg.network.ConversationRoomsPayload(java.util.List.of(), java.util.Optional.empty());
     }
 
     public boolean conversationActive() {

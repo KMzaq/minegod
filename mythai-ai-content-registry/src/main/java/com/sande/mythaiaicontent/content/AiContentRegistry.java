@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Datapack-backed registry for immutable AI content only.  It intentionally has no dependency on MythicTRPG: God IDs
@@ -99,6 +100,25 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
         }).filter(java.util.Objects::nonNull).toList();
     }
 
+    /**
+     * Prompt-facing contract. The caller MUST supply the complete actual audience from the game, not an AI guess
+     * or a recording-enabled subset. The raw ownership queries above are not audience disclosure authorization.
+     */
+    public Optional<AudienceGodContent> audienceContentFor(ResourceLocation mythicGodId, String relationshipTier,
+            boolean publicRoom, List<ResourceLocation> participantGodIds, Set<UUID> audiencePlayerIds) {
+        return audienceContentFor(mythicGodId, relationshipTier, publicRoom, participantGodIds, audiencePlayerIds,
+                participantGodIds);
+    }
+
+    /** Evidence revalidation only: relation reference targets are historical, but disclosure audience is current. */
+    public Optional<AudienceGodContent> audienceContentFor(ResourceLocation mythicGodId, String relationshipTier,
+            boolean publicRoom, List<ResourceLocation> participantGodIds, Set<UUID> audiencePlayerIds,
+            List<ResourceLocation> relationReferenceGodIds) {
+        Snapshot current = snapshot;
+        return ContentAudienceResolver.resolve(current, RelationshipTier.fromTag(relationshipTier),
+                new ContentAudience(mythicGodId, publicRoom, participantGodIds, audiencePlayerIds), relationReferenceGodIds);
+    }
+
     /** Returns candidate examples; scoring and prompt limits remain the AI Response Module's responsibility. */
     public List<DialogueExample> dialogueExamplesAvailableTo(ResourceLocation mythicGodId) {
         return snapshot.examplesById().values().stream().filter(example -> example.availableTo(mythicGodId)).toList();
@@ -129,6 +149,19 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             }
         }
         return List.copyOf(unique.values());
+    }
+
+    /** Prompt-safe quest text for the game's complete actual audience; availability remains a game concern. */
+    public List<QuestCandidateDefinition> audienceQuestCandidatesFor(ResourceLocation godId, boolean publicRoom,
+            List<ResourceLocation> godIds, Set<java.util.UUID> playerIds) {
+        var audience = new ContentAudience(godId, publicRoom, godIds, playerIds);
+        return questCandidatesFor(godId).stream().filter(candidate -> candidate.quest().disclosure().permits(audience)).toList();
+    }
+
+    /** Legacy consumers without an explicit complete audience can only receive unrestricted public text. */
+    public List<QuestCandidateDefinition> publicQuestCandidatesFor(ResourceLocation godId) {
+        return questCandidatesFor(godId).stream().filter(candidate -> candidate.quest().disclosure().mode() == ContentDisclosure.Mode.PUBLIC
+                && candidate.quest().disclosure().allowedGodIds().isEmpty()).toList();
     }
 
     /** Resolves only content explicitly referenced by the profile, useful for bounded initial AI context construction. */
@@ -227,7 +260,7 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
                 situationGuidelines(json), repetitionGuidelines(json), strings(json, "restrictions"),
                 optionalStrings(json, "characterTags"), loreKnowledge, optionalIds(json, "questListIds"),
                 ids(json, "signatureExampleIds"),
-                relationshipGuidelines(json));
+                relationshipGuidelines(json), fieldDisclosure(json));
     }
 
     private static QuestListDefinition parseQuestList(ResourceLocation contentId, JsonObject json) {
@@ -245,7 +278,7 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             quests.add(new QuestDefinition(id(required(quest, "questId")), required(quest, "title"),
                     required(quest, "content"), questNodes(quest, "objectives", false),
                     questNodes(quest, "rewards", false), questNodes(quest, "acceptanceConditions", true),
-                    boundedInt(quest, "progressOnClear", 0, 100)));
+                    boundedInt(quest, "progressOnClear", 0, 100), disclosure(quest, "disclosure", ContentDisclosure.PUBLIC)));
         }
         return new QuestListDefinition(contentId, id(required(json, "progressTrackId")),
                 required(json, "displayName"), quests);
@@ -255,7 +288,7 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
         int schemaVersion = schema(json);
         LoreSecrecy secrecy = LoreSecrecy.valueOf(optional(json, "secrecy", "PUBLIC").toUpperCase(Locale.ROOT));
         List<LoreKnowledgeLevel> levels = schemaVersion == LEGACY_SCHEMA_VERSION
-                ? List.of(new LoreKnowledgeLevel(1, required(json, "content"), false))
+                ? List.of(new LoreKnowledgeLevel(1, required(json, "content"), false, disclosure(json, "disclosure", null)))
                 : knowledgeLevels(json, "knowledgeLevels");
         return new LoreEntry(id, required(json, "title"), levels, secrecy, strings(json, "keywords"));
     }
@@ -272,7 +305,8 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             turns.add(new DialogueExampleTurn(DialogueExampleTurn.Role.parse(required(turn, "role")),
                     required(turn, "text")));
         }
-        return new DialogueExample(id, Set.copyOf(strings(json, "tags")), Set.copyOf(ids(json, "known_by")), turns);
+        return new DialogueExample(id, Set.copyOf(strings(json, "tags")), Set.copyOf(ids(json, "known_by")), turns,
+                disclosure(json, "disclosure", ContentDisclosure.PUBLIC));
     }
 
     private static SocialRelation parseSocialRelation(ResourceLocation contentId, JsonObject json) {
@@ -606,9 +640,34 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             }
             JsonObject object = entry.getAsJsonObject();
             levels.add(new LoreKnowledgeLevel(positiveInt(object, "level"), required(object, "content"),
-                    bool(object, "revealKnowledgeHolders", false)));
+                    bool(object, "revealKnowledgeHolders", false), disclosure(object, "disclosure", null)));
         }
         return List.copyOf(levels);
+    }
+
+    private static Map<String, ContentDisclosure> fieldDisclosure(JsonObject json) {
+        if (!json.has("fieldDisclosure")) return Map.of();
+        if (!json.get("fieldDisclosure").isJsonObject())
+            throw new IllegalArgumentException("fieldDisclosure must be an object");
+        var object = json.getAsJsonObject("fieldDisclosure");
+        var result = new LinkedHashMap<String, ContentDisclosure>();
+        for (String field : object.keySet()) {
+            if (!GodContentProfile.DISCLOSURE_FIELDS.contains(field))
+                throw new IllegalArgumentException("Unsupported fieldDisclosure field: " + field);
+            result.put(field, disclosure(object, field, ContentDisclosure.NEVER));
+        }
+        return Map.copyOf(result);
+    }
+
+    /** Reject malformed/unknown permission fields instead of ignoring typos that could broaden disclosure. */
+    private static ContentDisclosure disclosure(JsonObject parent, String field, ContentDisclosure fallback) {
+        if (!parent.has(field)) return fallback;
+        if (!parent.get(field).isJsonObject()) throw new IllegalArgumentException(field + " must be an object");
+        var object = parent.getAsJsonObject(field);
+        if (!Set.of("mode", "allowedGodIds").containsAll(object.keySet()))
+            throw new IllegalArgumentException("Unknown " + field + " permission field");
+        var mode = ContentDisclosure.Mode.valueOf(required(object, "mode"));
+        return new ContentDisclosure(mode, Set.copyOf(optionalIds(object, "allowedGodIds")));
     }
 
     private static int positiveInt(JsonObject json, String field) {

@@ -103,7 +103,7 @@ Optional<ResolvedLoreKnowledge> loreFor(ResourceLocation godId, ResourceLocation
 List<ResolvedLoreKnowledge> loreAvailableTo(ResourceLocation godId)
 ```
 
-`ResolvedLoreKnowledge`는 해당 God ID의 지식 단계까지만 포함한다. AI 응답 모드는 LLM 프롬프트에 반드시 이 타입을 사용해야 한다.
+`ResolvedLoreKnowledge`는 해당 God ID의 지식 단계까지만 포함한다. **이 조회만으로 청중 공개 허가가 증명되지는 않는다.** 대화방 프롬프트는 3.8의 `audienceContentFor` 결과만 사용한다.
 
 ```text
 ResolvedLoreKnowledge
@@ -220,6 +220,43 @@ QuestDefinition
 
 서버 전역 진행도는 MythicTRPG의 `MythicWorldState.questProgress`가 authoritative source다. 키는 신 ID가 아니라 `progressTrackId`이므로 신 전용·세력 공용 진행도를 모두 지원한다. 누락된 트랙은 0이고 최대값은 100이다. 누군가 진행도를 올리면 모든 플레이어의 수주 후보가 같은 값으로 바뀌며, 지난 구간 퀘스트는 다른 플레이어도 새로 받을 수 없다. 퀘스트 완료가 authoritative하게 한 번 커밋된 뒤에만 `applyQuestClearProgress(progressTrackId, progressOnClear)`를 호출한다. 콘텐츠 레지스트리와 LLM은 이 값을 직접 변경할 수 없다. 누가 어떤 퀘스트를 수주했는지는 별도의 수주 상태이며 전역 진행도와 혼동하지 않는다.
 
+### 3.8 대화방 공개 계약 보충 (2026-09-23)
+
+```java
+Optional<AudienceGodContent> audienceContentFor(
+    ResourceLocation mythicGodId, String relationshipTier,
+    boolean publicRoom, List<ResourceLocation> participantGodIds, Set<UUID> audiencePlayerIds);
+```
+
+`AudienceGodContent`는 `profile`, `lore`, `examples`, `relationshipGuidance`, `socialRelationTags`, `generation`을 반환한다. `profile`은 원본 정의가 아닌 안전한 문자열/목록/맵 투영이며 숨겨진 `loreKnowledge` 참조 목록을 포함하지 않는다. 원본 지식 보유는 프로필 `loreKnowledge`로 제한하고, 공개 여부는 각 로어 단계의 선택 `disclosure`, 예시의 선택 `disclosure`, 프로필 선택 `fieldDisclosure`로 사전에 제한한다.
+
+`audiencePlayerIds`는 기록 ON/OFF와 무관한 **실제 전체 전달 대상**이다. 비공개 방은 최대 64플레이어/16신이며 공개 방의 실제 전달 대상은 64명보다 많을 수 있다. 호출자는 게임이 만든 Snapshot을 사용해야 한다. 레지스트리는 참가자를 감지하거나 추가하지 않는다. 반환된 `SECRET` 분류 로어가 있을 수 있으므로 소비자가 다시 `secrecy == PUBLIC`만 허용하면 안 된다. 허가는 분류명이 아니라 이미 적용한 작성자 정책의 결과다.
+
+AI `RoomKnowledgeContext`가 이 계약을 읽고 분류·생성·보조 반응용 기존 DTO로 변환한다. 새 조회 메서드가 없는 구 registry에서는 raw 프로필/로어로 돌아가지 않고 실패 처리한다. 현재 세대와 다른 지연 응답은 기존 엔진의 generation 검증으로 취소한다.
+
+기억 재검증용 동일 메서드의 여섯 번째 인수 `List<ResourceLocation> relationReferenceGodIds`는 원래 사용한 정적 관계 조회 대상을 재현한다. 이 인수는 청중이 아니며 공개 정책은 항상 현재 `participantGodIds`/`audiencePlayerIds`로 평가한다. 회상 원화자가 현재 방을 떠났어도 원화자의 지식과 현재 청중의 공개 권한을 별개로 검사할 수 있다.
+
+`RoomEvidenceReference(kind="CONTENT_DISCLOSURE_V1", payload=...)`에는 원화자 ID, 조회에 사용한 관계 태그, 원래 정적 관계 참조 대상과 안전한 콘텐츠 전체 SHA-256만 기록한다. 비밀 원문은 들어가지 않는다. 현재 정책으로 새 청중을 필터한 결과 지문이 같아야 다시 사용한다. 영속 증거는 재시작에 따라 달라지는 reload generation을 비교하지 않는다. 지금은 전체 콘텐츠 지문이므로 관련 없는 콘텐츠 추가도 보수적으로 옛 대화를 사용 불가로 만들 수 있다. 실제 사용 항목 단위 증거로 정교화하는 것은 별도 개선이다.
+
+이 절은 기존 raw API 호환을 제거하지 않는다. `findGod`/`staticContentFor`/`loreAvailableTo`는 관리·지식소유 조회용으로 계속 존재하지만 대화방 공개의 근거로 사용할 수 없다.
+
+### 3.9 정적 퀘스트 후보 공개와 기억 증거 (2026-09-23)
+
+```java
+List<QuestCandidateDefinition> audienceQuestCandidatesFor(
+    ResourceLocation sourceGodId, boolean publicRoom,
+    List<ResourceLocation> participantGodIds, Set<UUID> audiencePlayerIds);
+List<QuestCandidateDefinition> publicQuestCandidatesFor(ResourceLocation sourceGodId);
+```
+
+`QuestDefinition.disclosure`는 선택 공용 `ContentDisclosure`이며 미지정은 기존 호환 `PUBLIC`이다. `audienceQuestCandidatesFor`는 원 신의 프로필 `questListIds` 소유권과 현재 실제 전체 청중의 공개권을 검사한 후보만 반환한다. 제목·내용·목표·보상 설명은 하나의 후보 단위로 필터한다. 수주 가능 여부나 실제 완료·보상 지급은 이 API가 판정하지 않는다. 기존 raw `questCandidatesFor`와 `questDefinitionsFor`는 게임/관리 조회용으로 보존한다.
+
+AI `AiQuestContentBridge.candidatesFor(Request, ServerPlayer)`는 전체 실제 청중의 공개 필터와 기존 게임 수주 후보 검사를 적용한다. 퀘스트 참여자 판정은 방 참가 플레이어를 계속 사용하므로 공개 방송 수신자를 자동 수주자로 확장하지 않는다. 전체 청중을 명시할 수 없는 legacy 후보/완료/리마인더는 `publicQuestCandidatesFor`로 무제한 PUBLIC만 읽으며 새 계약이 없으면 raw 비밀 본문으로 fallback하지 않는다.
+
+각 후보의 `fingerprint()`는 해당 정적 후보의 목록/진행트랙 ID, 본문·목표/보상·조건·진행 증가량과 작성자 공개정책을 포함한다. reload generation과 현재 게임 진행도는 포함하지 않는다. AI는 한 번 조회한 후보 객체를 프롬프트와 `QuestCandidate.evidenceReferences()` 양쪽에 사용한다. `QUEST_CONTENT_DISCLOSURE_V1` payload에는 원화자 ID, quest ID, 항목별 SHA-256만 기록하고 원문은 넣지 않는다.
+
+`RoomQuestKnowledge.validEvidence`는 원화자 소유권과 새 전체 청중에 대한 필터를 다시 적용해 같은 항목 지문인지 확인한다. 원화자가 현재 방에 없어도 검증 가능하다. 정의/정책 변경·삭제·원화자 참조 제거는 이전 발언의 재사용을 차단하며, 무관한 후보 추가·서버 재시작·퀘스트 완료 때문에 과거의 허용된 발언 자체가 무효화되지는 않는다. 이 증거는 실행 성공이나 현재 수주 가능성의 근거가 아니다. FTB 등 게임 UI의 별도 퀘스트 공개권은 이 정적 AI 프롬프트 계약의 범위가 아니다.
+
 ## 4. 모드 간 관계 단계 입출력 규격
 
 관계 수치는 MythicTRPG가 소유한다. 콘텐츠 레지스트리는 수치를 받거나 저장하지 않고, AI 응답 모드가 판정 결과 태그로 정적 지침을 조회할 때만 사용된다.
@@ -301,13 +338,15 @@ AI 응답 모드는 관계 지침을 사용해 생성한 대사와, 필요할 �
 
 ## 5. 공개 판단
 
-지식 단계는 NPC가 **아는 범위**를 제한한다. `secrecy`는 콘텐츠 분류일 뿐이므로, NPC가 실제로 말할지 여부는 AI 응답 모드가 다음 입력과 함께 판단한다.
+지식 단계는 NPC가 **아는 범위**를 제한한다. 프롬프트에 넣을 수 있는지는 작성자의 공개 정책과 게임의 실제 전체 청중으로 먼저 제한한다. 성격·감정·관계는 허용된 내용 중 무엇을 자연스럽게 말할지 결정할 수 있지만 금지된 사실을 새로 허가하지 않는다.
 
 ```text
-ResolvedLoreKnowledge + 관계 + 감정 + ACTIVE/LISTENER 청중 + 현재 사건/진행도
+원본 profile/lore → 신별 보유단계 → 명시 disclosure + 전체 실제 청중 → AudienceGodContent → LLM
 ```
 
-따라서 NPC는 상위 지식을 아는 척할 수 없으며, 알고 있는 내용도 비밀·관계·청중 때문에 공개를 거절할 수 있다.
+`PUBLIC`은 공개/비공개 전체 플레이어 청중, `PRIVATE_ROOM`은 비공개 전체 플레이어 청중, `NEVER`는 프롬프트 공급 금지를 뜻한다. 선택 `allowedGodIds`가 비어 있지 않으면 화자 외 현재 신 전원이 포함되어야 한다. 미지정 로어는 `secrecy: PUBLIC`만 허용하고 기존 비PUBLIC은 차단한다. 기존 프로필 필드와 예시는 공개 persona/말투 자료로 호환하므로 **기존 identity/description/예시에 비밀을 써 놓았다면 작성자가 명시 정책을 추가해야 한다.** 자동 비밀 분류나 친밀도 기반 공개권한 부여는 없다.
+
+필드별 양식과 예제는 [콘텐츠 작성 가이드](../mythai-ai-content-registry/AI_CONTENT_REGISTRY_CONTENT_AUTHORING_GUIDE.md) 및 [적용되지 않는 로어 예제](../mythai-ai-content-registry/examples/lore_disclosure.example.json)를 참고한다.
 
 ## 6. 오류·재로딩 동작
 

@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -259,22 +260,22 @@ public final class StoryEventService {
         }
         EventInstance committed = decided.withAppliedEffects(applied, EventStatus.COMMITTED);
         state.putEvent(committed);
-        for (Effect.RelationTransition relation : externalRelations) {
-            var transition = GodRelationTransitionManager.INSTANCE.find(relation.transitionId()).orElse(null);
-            if (transition == null || !GodRelationService.INSTANCE.apply(server, transition).succeeded()) {
-                state.putEvent(committed.withAppliedEffects(applied, EventStatus.EXTERNAL_EFFECT_PENDING));
-                state.addAudit(gameTime, "EXTERNAL_EFFECT_FAILED",
-                        committed.instanceId() + ": " + relation.transitionId());
-                return;
-            }
-            applied.add(relation.effectId());
+        var external = applyExternalEffects(server, committed, externalRelations, false);
+        if (!external.complete()) {
+            state.putEvent(state.eventInstance(committed.instanceId()).orElseThrow()
+                    .withAppliedEffects(external.applied(), EventStatus.EXTERNAL_EFFECT_PENDING));
+            state.addAudit(gameTime, "EXTERNAL_EFFECT_FAILED",
+                    committed.instanceId() + ": " + external.failedEffectId().orElseThrow());
+            return;
         }
-        EventInstance resolved = committed.withAppliedEffects(applied, EventStatus.RESOLVED);
+        EventInstance resolved = state.eventInstance(committed.instanceId()).orElseThrow()
+                .withAppliedEffects(external.applied(), EventStatus.RESOLVED);
         state.putEvent(resolved);
         state.addAudit(gameTime, "EVENT_RESOLVED", resolved.instanceId() + " -> " + outcome.id());
         pending.add(new StorySignal(UUID.randomUUID(), StorySignalTypes.EVENT_RESOLVED,
                 resolved.initiatingPlayerId(), Optional.of(definition.id()), Optional.empty(),
                 Optional.of(resolved.instanceId()), gameTime));
+        dispatchResolvedPresentations(server, resolved.instanceId());
         reevaluateLatched(server);
     }
 
@@ -315,8 +316,6 @@ public final class StoryEventService {
                         instance.instanceId(), instance.revision(), value.presentationId(), playerId,
                         PresentationStatus.PENDING, gameTime);
                 state.putPresentation(opportunity);
-                com.sande.mythictrpg.story.presentation.StoryPresentationService.INSTANCE
-                        .dispatch(server, opportunity);
             }
         }
     }
@@ -551,30 +550,40 @@ public final class StoryEventService {
                 state.putEvent(instance.withStatus(EventStatus.RECOVERY_REQUIRED));
                 continue;
             }
-            Set<ResourceLocation> applied = new LinkedHashSet<>(instance.appliedEffectIds());
-            boolean failed = false;
-            for (Effect effect : outcome.effects()) {
-                if (!(effect instanceof Effect.RelationTransition relation)
-                        || applied.contains(relation.effectId())) continue;
-                var transition = GodRelationTransitionManager.INSTANCE.find(relation.transitionId()).orElse(null);
-                boolean alreadyAppliedAfterRestart = recoveryAfterRestart && transition != null
-                        && transition.maxApplications() == 1
-                        && DynamicGodRelationState.get(server).applicationCount(transition.id()) >= 1;
-                if (!alreadyAppliedAfterRestart
-                        && (transition == null || !GodRelationService.INSTANCE.apply(server, transition).succeeded())) {
-                    failed = true;
-                    break;
-                }
-                applied.add(relation.effectId());
-            }
-            if (failed) continue;
-            EventInstance resolved = instance.withAppliedEffects(applied, EventStatus.RESOLVED);
+            var relations = outcome.effects().stream().filter(Effect.RelationTransition.class::isInstance)
+                    .map(Effect.RelationTransition.class::cast).toList();
+            var external = applyExternalEffects(server, instance, relations, recoveryAfterRestart);
+            if (!external.complete()) continue;
+            EventInstance resolved = state.eventInstance(instance.instanceId()).orElseThrow()
+                    .withAppliedEffects(external.applied(), EventStatus.RESOLVED);
             state.putEvent(resolved);
             state.addAudit(now, "EXTERNAL_EFFECT_RECOVERED", resolved.instanceId());
             pending.add(new StorySignal(UUID.randomUUID(), StorySignalTypes.EVENT_RESOLVED,
                     resolved.initiatingPlayerId(), Optional.of(resolved.eventId()), Optional.empty(),
                     Optional.of(resolved.instanceId()), now));
+            dispatchResolvedPresentations(server, resolved.instanceId());
         }
+    }
+
+    private StoryExternalEffectReceipts.Result<ResourceLocation> applyExternalEffects(MinecraftServer server,
+            EventInstance instance, List<Effect.RelationTransition> relations, boolean recoveryAfterRestart) {
+        var state = StoryRuntimeState.get(server);
+        Map<ResourceLocation, Effect.RelationTransition> byId = new LinkedHashMap<>();
+        relations.forEach(relation -> byId.put(relation.effectId(), relation));
+        return StoryExternalEffectReceipts.apply(new ArrayList<>(byId.keySet()), instance.appliedEffectIds(), effectId -> {
+            var transition = GodRelationTransitionManager.INSTANCE.find(byId.get(effectId).transitionId()).orElse(null);
+            boolean alreadyAppliedAfterRestart = recoveryAfterRestart && transition != null
+                    && transition.maxApplications() == 1
+                    && DynamicGodRelationState.get(server).applicationCount(transition.id()) >= 1;
+            return alreadyAppliedAfterRestart || transition != null && GodRelationService.INSTANCE.apply(server, transition).succeeded();
+        }, applied -> state.putEvent(state.eventInstance(instance.instanceId()).orElseThrow()
+                .withAppliedEffects(applied, EventStatus.EXTERNAL_EFFECT_PENDING)));
+    }
+
+    private void dispatchResolvedPresentations(MinecraftServer server, String instanceId) {
+        StoryRuntimeState.get(server).presentations().values().stream()
+                .filter(value -> value.eventInstanceId().equals(instanceId) && value.status() == PresentationStatus.PENDING)
+                .forEach(value -> com.sande.mythictrpg.story.presentation.StoryPresentationService.INSTANCE.dispatch(server, value));
     }
 
     private void enqueueSchedule(ScheduledSignal schedule) {

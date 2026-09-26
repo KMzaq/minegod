@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "narrativeRole": "SIDE",
+  "scope": "SERVER",
+  "triggers": [
+    {"signal": "mythictrpg:admin_triggered", "subject": "mythictrpg:demo_release_wanderer", "mode": "IMMEDIATE"}
+  ],
+  "prerequisites": {"type": "mythictrpg:always"},
+  "actors": [{"role": "wanderer", "actor": "mythictrpg:sealed_wanderer"}],
+  "repeatPolicy": {"type": "ONCE"},
+  "resolutionPolicy": "FIXED",
+  "outcomes": [{
+    "id": "mythictrpg:released",
+    "effects": [
+      {"effectId": "mythictrpg:activate_wanderer", "type": "SET_ACTOR_STATE", "actor": "mythictrpg:sealed_wanderer", "existence": "ACTIVE", "availability": "ABSENT"},
+      {"effectId": "mythictrpg:set_released", "type": "SET_FACT", "fact": "mythictrpg:wanderer_released", "scope": "SERVER", "value": true},
+      {"effectId": "mythictrpg:schedule_occupation", "type": "SCHEDULE_EVENT", "event": "mythictrpg:demo_wanderer_occupies_base", "delayTicks": 20}
+    ]
+  }],
+  "failurePolicy": "BLOCK_AND_REPORT"
+}

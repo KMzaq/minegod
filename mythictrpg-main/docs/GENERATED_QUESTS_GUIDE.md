@@ -1,5 +1,7 @@
 # AI 즉석 SIDE 퀘스트 가이드
 
+> 2026-09-20 범위 구분: [참여 유형](QUEST_PARTICIPATION_GUIDE.md)의 4종 설정은 등록된 FTB 바인딩/`quest_offer` 경로에 추가됐다. 이 문서의 `GeneratedQuestTemplate`/`generated_quest_offer` 즉석 생성 경로는 기존 개인형 그대로이며 다인 생성 지원으로 해석하지 않는다.
+
 ## 책임과 안전 경계
 
 AI는 현재 대화에 맞는 등록 템플릿과 제목·요약만 제안한다. MythicTRPG 서버가 월드 진행도,
@@ -9,7 +11,9 @@ AI는 현재 대화에 맞는 등록 템플릿과 제목·요약만 제안한다
 
 FTB Quests에는 고유 퀘스트와 `custom` 진행 태스크를 런타임에 만들어 표시하지만, FTB 완료
 이벤트나 FTB 보상은 실제 완료의 원본이 아니다. `GeneratedQuestState`의 관찰 진행도가 목표에
-도달해야 `NpcRewardGrantService`가 대상 플레이어에게 한 번 지급한다.
+도달해야 `RewardClaimService`가 고유 퀘스트 instance ID를 근거로 대상 플레이어에게 지급권을 만들고 기존 단계의 자동 보상을 처리한다. 게임 1.0.8부터 등록형 퀘스트와 동일한 주시 보상 경로를 사용하지만 즉석 템플릿에 선택 보상 정의를 새로 추가한 것은 아니다. 실제 보상/콘텐츠를 자동 추가하지 않는다.
+
+> 1.0.8의 `block_broken` 보상 목표는 성공 제거에서 출처를 검사한 `ELIGIBLE_BLOCK_MINED`를 사용한다. 직접 설치 재파괴·확인된 생성기는 제외하며 기존 비보상 관찰 소비자는 유지한다. 수주/목표 완료/만료/완료는 원장 opt-in 시 중요 전환으로 기록한다. [지원 범위와 미검증](../../docs/MEMORY_POLICY_IMPLEMENTATION_20260920.md)을 함께 확인한다.
 
 ## 템플릿
 

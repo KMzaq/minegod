@@ -66,3 +66,18 @@ neoForge.ideSyncTask generateModMetadata
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+tasks.named('test', Test).configure { failOnNoDiscoveredTests = false }
+tasks.register('contentDisclosureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythaiaicontent.content.ContentDisclosureTest'
+}
+tasks.named('check') { dependsOn 'contentDisclosureTest' }
+tasks.register('questDisclosureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythaiaicontent.content.QuestDisclosureTest'
+}
+tasks.named('check') { dependsOn 'questDisclosureTest' }

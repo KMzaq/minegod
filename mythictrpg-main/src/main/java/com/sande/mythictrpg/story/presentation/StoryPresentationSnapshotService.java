@@ -105,8 +105,10 @@ public final class StoryPresentationSnapshotService {
                 hookOffers.add(new HookOffer(alias, title, summary));
             }
         }
+        // Never transfer knowledge for statements silently dropped by the model context budget.
+        if (statements.size() > 8) return BuildResult.blocked("Canonical statements exceed the presentation budget");
         Snapshot snapshot = new Snapshot(requestId, player.getUUID(), godId, kind, generationPolicy,
-                statements.stream().limit(8).toList(), directives, hookOffers, maximumTurns);
+                statements, directives, hookOffers, maximumTurns);
         return new BuildResult(Optional.of(snapshot), List.copyOf(transfers), "");
     }
 

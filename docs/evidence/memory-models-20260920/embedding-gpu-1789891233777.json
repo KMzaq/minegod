@@ -1,0 +1,138 @@
+{
+  "mode": "embedding-gpu",
+  "at": "2026-09-20T08:00:40.668209500Z",
+  "settings": "MemoryIndexSettings[enabled\u003dtrue, semanticMode\u003dON, consolidate\u003dtrue, maxStorageBytes\u003d268435456, maxEntries\u003d12000, endpoint\u003dhttp://127.0.0.1:11434, embeddingModel\u003dbge-m3:latest, modelRevision\u003d7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab, dimensions\u003d1024, extractionModel\u003dgemma4:12b, extractionRevision\u003d4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c, queryTimeoutMs\u003d1500, backgroundTimeoutMs\u003d30000, execution\u003dExecution[embeddingCpu\u003dfalse, embeddingThreads\u003d4, embeddingKeepAliveSeconds\u003d30, extractionCpu\u003dfalse, extractionThreads\u003d4, extractionContext\u003d8192, extractionMaxTokens\u003d512, extractionKeepAliveSeconds\u003d30, minimumSimilarity\u003d0.65, skipSemanticWhenFound\u003dtrue]]",
+  "before": {
+    "models": []
+  },
+  "after": {
+    "models": [
+      {
+        "name": "bge-m3:latest",
+        "model": "bge-m3:latest",
+        "size": 664000265,
+        "digest": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "bert",
+          "families": [
+            "bert"
+          ],
+          "parameter_size": "566.70M",
+          "quantization_level": "F16"
+        },
+        "expires_at": "2026-09-20T17:01:10.6692097+09:00",
+        "size_vram": 664000265,
+        "context_length": 8192
+      }
+    ]
+  },
+  "results": [
+    {
+      "text": "나는 수영을 못해서 깊은 물에 들어가기 무서워.",
+      "ms": 2507.7272,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "내일 바닷가 신전에 다시 찾아가겠다고 약속할게.",
+      "ms": 50.0682,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "나는 복숭아를 먹으면 두드러기가 나.",
+      "ms": 74.9536,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "채굴하다가 다이아몬드 세 개를 발견했어.",
+      "ms": 41.1355,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "친구 민수가 드래곤을 쓰러뜨렸다고 말했어.",
+      "ms": 39.387,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "나는 검보다 활을 쓰는 게 편해.",
+      "ms": 2524.9328,
+      "dimensions": 1024,
+      "background": true,
+      "kind": "embedding"
+    },
+    {
+      "text": "물놀이를 꺼리는 이유를 말했었지?",
+      "ms": 34.7837,
+      "dimensions": 1024,
+      "background": false,
+      "kind": "embedding"
+    },
+    {
+      "kind": "ranking",
+      "query": "물놀이를 꺼리는 이유를 말했었지?",
+      "expected": 0,
+      "top": 0,
+      "scores": [
+        0.6701357135358775,
+        0.47349007411770067,
+        0.4814251677289635,
+        0.3316670091160558,
+        0.42816864228792906,
+        0.4499350755084107
+      ]
+    },
+    {
+      "text": "전에 해변 성소에 가겠다고 했던 계획 기억해?",
+      "ms": 37.3634,
+      "dimensions": 1024,
+      "background": false,
+      "kind": "embedding"
+    },
+    {
+      "kind": "ranking",
+      "query": "전에 해변 성소에 가겠다고 했던 계획 기억해?",
+      "expected": 1,
+      "top": 1,
+      "scores": [
+        0.4515765695303122,
+        0.6710549969964803,
+        0.3583607644230112,
+        0.3864112848191376,
+        0.37841006865684773,
+        0.37796956303393936
+      ]
+    },
+    {
+      "text": "내가 피해야 하는 과일을 기억해?",
+      "ms": 56.8049,
+      "dimensions": 1024,
+      "background": false,
+      "kind": "embedding"
+    },
+    {
+      "kind": "ranking",
+      "query": "내가 피해야 하는 과일을 기억해?",
+      "expected": 2,
+      "top": 2,
+      "scores": [
+        0.47735493722941963,
+        0.4160297619057647,
+        0.5555971243881297,
+        0.4053466400330643,
+        0.40061159409099073,
+        0.4324304598434423
+      ]
+    }
+  ]
+}

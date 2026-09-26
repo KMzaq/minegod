@@ -22,10 +22,25 @@ public final class MemoryJournal implements AutoCloseable {
             if (god == null || !god.matches("[a-z0-9_.-]+:[a-z0-9_./-]+")) throw new IllegalArgumentException("Invalid God ID"); }
     }
     public record Entry(UUID id, Key key, UUID session, long turn, Source source, Set<UUID> audience,
-            long occurredAt, String text, boolean important) {
+            long occurredAt, String text, boolean important, Set<String> godAudience, String speakerGodId) {
+        public Entry(UUID id, Key key, UUID session, long turn, Source source, Set<UUID> audience,
+                long occurredAt, String text, boolean important, Set<String> godAudience) {
+            this(id, key, session, turn, source, audience, occurredAt, text, important, godAudience, null);
+        }
+        public Entry(UUID id, Key key, UUID session, long turn, Source source, Set<UUID> audience,
+                long occurredAt, String text, boolean important) {
+            this(id, key, session, turn, source, audience, occurredAt, text, important, Set.of(key.god()), null);
+        }
         public Entry {
             Objects.requireNonNull(id); Objects.requireNonNull(key); Objects.requireNonNull(session); Objects.requireNonNull(source);
             audience = Set.copyOf(audience);
+            // Old JSON has no NPC audience. Its only proven listener is the owning God.
+            godAudience = validatedGodAudience(key, godAudience);
+            // The memory owner may be a listener, not the God who spoke. Old entries only proved self speech.
+            boolean npc = source == Source.NPC_UTTERANCE || source == Source.HEARSAY_NPC;
+            speakerGodId = speakerGodId == null ? (npc ? key.god() : "") : speakerGodId;
+            if (npc ? !godAudience.contains(speakerGodId) : !speakerGodId.isEmpty())
+                throw new IllegalArgumentException("Invalid memory speaker attribution");
             if (turn < 0 || occurredAt < 0 || audience.isEmpty() || audience.size() > 16 || !audience.contains(key.player())
                     || text == null || text.isBlank() || text.length() > 1200) throw new IllegalArgumentException("Invalid memory entry");
         }
@@ -34,15 +49,32 @@ public final class MemoryJournal implements AutoCloseable {
         public View { entries = List.copyOf(entries); retired = Set.copyOf(retired); }
     }
     public record ReadView(Key key, Set<UUID> audience, List<Entry> entries, Set<UUID> pending,
-            boolean ready, boolean failed) {
-        public ReadView { audience = Set.copyOf(audience); entries = List.copyOf(entries); pending = Set.copyOf(pending); }
+            boolean ready, boolean failed, Set<String> godAudience) {
+        public ReadView(Key key, Set<UUID> audience, List<Entry> entries, Set<UUID> pending,
+                boolean ready, boolean failed) {
+            this(key, audience, entries, pending, ready, failed, Set.of(key.god()));
+        }
+        public ReadView {
+            audience = Set.copyOf(audience); entries = List.copyOf(entries); pending = Set.copyOf(pending);
+            godAudience = validatedGodAudience(key, godAudience);
+        }
+    }
+    private static Set<String> validatedGodAudience(Key key, Set<String> gods) {
+        Set<String> result = gods == null ? Set.of(key.god()) : Set.copyOf(gods);
+        if (result.isEmpty() || result.size() > 16 || !result.contains(key.god())
+                || result.stream().anyMatch(g -> !g.matches("[a-z0-9_.-]+:[a-z0-9_./-]+")))
+            throw new IllegalArgumentException("Invalid memory God audience");
+        return result;
     }
     private record Published(Map<Key, List<Entry>> index, View view) {}
     private record Checkpoint(int version, long sequence, List<Entry> entries, Set<UUID> retired) {}
     private record Operation(int version, long sequence, String type, Entry entry, UUID target) {}
     private static final Gson JSON = new Gson();
-    private static final int MAX_ENTRIES = 12_000, MAX_BUCKET = 2_000, MAX_RETIRED = 50_000;
-    private static final long MAX_DISK = 64L * 1024 * 1024;
+    private static final int MAX_RETIRED = 50_000;
+    private volatile MemoryRetentionSettings retention = MemoryRetentionSettings.DEFAULT;
+    private volatile long diskBytes;
+    public record Capacity(long usedBytes,long limitBytes,int entries,int limitEntries) { }
+    public Capacity capacity() { return new Capacity(diskBytes,retention.maxStorageBytes(),view.entries().size(),retention.maxEntries()); }
     private static final long CASUAL_LIFETIME = Duration.ofDays(30).toMillis();
     private static final java.util.regex.Pattern NON_WORD = java.util.regex.Pattern.compile("[^\\p{L}\\p{N}]+");
     private static final java.util.regex.Pattern SPACES = java.util.regex.Pattern.compile(" +");
@@ -65,6 +97,13 @@ public final class MemoryJournal implements AutoCloseable {
 
     public MemoryJournal(Path directory) { this(directory, 256); }
     public MemoryJournal(Path directory, int queueCapacity) {
+        this(directory,queueCapacity,()->MemoryRetentionSettings.DEFAULT);
+    }
+    public MemoryJournal(Path directory, Path config) {
+        this(directory,256,()->MemoryRetentionSettings.load(config));
+    }
+    MemoryJournal(Path directory,MemoryRetentionSettings settings) { this(directory,256,()->settings); }
+    private MemoryJournal(Path directory,int queueCapacity,java.util.function.Supplier<MemoryRetentionSettings> settings) {
         this.directory = directory.toAbsolutePath().normalize();
         writer = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(queueCapacity), r -> {
             Thread thread = new Thread(r, "mythai-memory-journal"); thread.setDaemon(true); return thread;
@@ -79,7 +118,7 @@ public final class MemoryJournal implements AutoCloseable {
             }
         };
         writer.execute(() -> {
-            try { load(); ready = true; } catch (Exception error) { fail(error); }
+            try { retention = settings.get(); load(); refreshDiskBytes(); ready = true; } catch (Exception error) { fail(error); }
         });
     }
     public boolean ready() { return ready && !failed && !closed; }
@@ -89,23 +128,28 @@ public final class MemoryJournal implements AutoCloseable {
     public View view() { return view; }
     /** Immutable permission-scoped read-your-writes input; pending is NOT a durability acknowledgement. */
     public ReadView readView(Key key, Set<UUID> audience) {
+        return readView(key, audience, Set.of(key.god()));
+    }
+    public ReadView readView(Key key, Set<UUID> audience, Set<String> godAudience) {
+        Set<String> gods = validatedGodAudience(key, godAudience);
         Published state = published;
         Map<UUID,Entry> allowed = new LinkedHashMap<>();
         if (!audience.isEmpty() && audience.contains(key.player())) {
             for (Entry e : state.index().getOrDefault(key, List.of()))
-                if (e.audience().containsAll(audience)) allowed.put(e.id(), e);
+                if (e.audience().containsAll(audience) && e.godAudience().containsAll(gods)) allowed.put(e.id(), e);
             for (Entry e : pending.values())
-                if (e.key().equals(key) && e.audience().containsAll(audience) && !state.view().retired().contains(e.id()))
+                if (e.key().equals(key) && e.audience().containsAll(audience) && e.godAudience().containsAll(gods)
+                        && !state.view().retired().contains(e.id()))
                     allowed.putIfAbsent(e.id(), e);
         }
         Set<UUID> waiting = new HashSet<>(allowed.keySet());
         waiting.removeAll(state.index().getOrDefault(key, List.of()).stream().map(Entry::id).toList());
-        return new ReadView(key, audience, List.copyOf(allowed.values()), waiting, ready(), failed());
+        return new ReadView(key, audience, List.copyOf(allowed.values()), waiting, ready(), failed(), gods);
     }
     /** Same-bucket additions/corrections invalidate a lookup, except this accepted turn's own transcript. */
     public boolean stillCurrent(ReadView expected, UUID session, long turn) {
         if (!expected.ready()) return true; // no historical claim was made
-        ReadView current = readView(expected.key(), expected.audience());
+        ReadView current = readView(expected.key(), expected.audience(), expected.godAudience());
         java.util.function.Predicate<Entry> prior = e -> !(e.session().equals(session) && e.turn() == turn
                 && (e.source() == Source.PLAYER_STATEMENT || e.source() == Source.NPC_UTTERANCE || e.source() == Source.HEARSAY_NPC));
         return current.ready() && new HashSet<>(expected.entries().stream().filter(prior).toList())
@@ -125,7 +169,7 @@ public final class MemoryJournal implements AutoCloseable {
         }
         CompletableFuture<Result> result = enqueue(() -> {
             if (entries.containsKey(entry.id()) || retired.contains(entry.id())) return Result.DUPLICATE;
-            if (entries.size() >= MAX_ENTRIES || index.getOrDefault(entry.key(), List.of()).size() >= MAX_BUCKET) return Result.FULL;
+            if (!retention.accepts(entries.size(),index.getOrDefault(entry.key(),List.of()).size(),entry)) return Result.FULL;
             return persist(new Operation(1, sequence + 1, "ADD", entry, null));
         });
         result.whenComplete((value, failure) -> pending.remove(entry.id(), entry));
@@ -136,7 +180,9 @@ public final class MemoryJournal implements AutoCloseable {
         return enqueue(() -> {
             Entry old = entries.get(oldId);
             if (sequence != expectedRevision || old == null || !old.key().equals(replacement.key())
-                    || !old.audience().equals(replacement.audience()) || old.source() != replacement.source()
+                    || !old.audience().equals(replacement.audience()) || !old.godAudience().equals(replacement.godAudience())
+                    || !old.speakerGodId().equals(replacement.speakerGodId())
+                    || old.source() != replacement.source()
                     || entries.containsKey(replacement.id()) || retired.contains(replacement.id())) return Result.STALE;
             if (retired.size() >= MAX_RETIRED) return Result.FULL;
             return persist(new Operation(1, sequence + 1, "REPLACE", replacement, oldId));
@@ -153,7 +199,8 @@ public final class MemoryJournal implements AutoCloseable {
         return enqueue(() -> {
             Entry old = entries.get(id);
             if (sequence != expectedRevision || old == null) return Result.STALE;
-            Entry changed = new Entry(old.id(), old.key(), old.session(), old.turn(), old.source(), old.audience(), old.occurredAt(), old.text(), important);
+            Entry changed = new Entry(old.id(), old.key(), old.session(), old.turn(), old.source(), old.audience(),
+                    old.occurredAt(), old.text(), important, old.godAudience(), old.speakerGodId());
             return persist(new Operation(1, sequence + 1, "PIN", changed, id));
         });
     }
@@ -170,11 +217,12 @@ public final class MemoryJournal implements AutoCloseable {
     private Result persist(Operation operation) throws IOException {
         Path journal = directory.resolve("journal.jsonl");
         byte[] bytes = (JSON.toJson(operation) + "\n").getBytes(StandardCharsets.UTF_8);
-        if (Files.exists(journal) && Files.size(journal) + bytes.length > MAX_DISK) { checkpoint(); }
+        if (diskBytes + bytes.length > retention.maxStorageBytes()) { checkpoint(); }
+        if (diskBytes + bytes.length > retention.maxStorageBytes()) return Result.FULL;
         try (FileChannel channel = FileChannel.open(journal, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
             ByteBuffer buffer = ByteBuffer.wrap(bytes); while (buffer.hasRemaining()) channel.write(buffer); channel.force(false);
         }
-        apply(operation); publish();
+        apply(operation); publish(); refreshDiskBytes();
         if (++sinceCheckpoint >= 128) checkpoint();
         return Result.STORED;
     }
@@ -188,18 +236,21 @@ public final class MemoryJournal implements AutoCloseable {
             case "REPLACE" -> {
                 Entry old = entries.get(op.target());
                 if (old == null || op.entry() == null || !old.key().equals(op.entry().key()) || !old.audience().equals(op.entry().audience())
+                        || !old.godAudience().equals(op.entry().godAudience())
+                        || !old.speakerGodId().equals(op.entry().speakerGodId())
                         || old.source() != op.entry().source() || entries.containsKey(op.entry().id()) || retired.contains(op.entry().id())) throw new IllegalArgumentException("Invalid correction");
                 entries.remove(op.target()); retired.add(op.target()); entries.put(op.entry().id(), op.entry());
             }
             case "DELETE" -> { if (entries.remove(op.target()) == null) throw new IllegalArgumentException("Missing deletion target"); retired.add(op.target()); }
             case "PIN" -> {
                 Entry old = entries.get(op.target()); Entry changed = op.entry();
-                if (old == null || changed == null || !new Entry(old.id(), old.key(), old.session(), old.turn(), old.source(), old.audience(), old.occurredAt(), old.text(), changed.important()).equals(changed)) throw new IllegalArgumentException("Invalid pin");
+                if (old == null || changed == null || !new Entry(old.id(), old.key(), old.session(), old.turn(), old.source(), old.audience(),
+                        old.occurredAt(), old.text(), changed.important(), old.godAudience(), old.speakerGodId()).equals(changed)) throw new IllegalArgumentException("Invalid pin");
                 entries.put(op.target(), changed);
             }
             default -> throw new IllegalArgumentException("Unknown memory operation");
         }
-        if (entries.size() > MAX_ENTRIES || retired.size() > MAX_RETIRED) throw new IllegalArgumentException("Memory capacity exceeded");
+        if (entries.size() > retention.maxEntries() || retired.size() > MAX_RETIRED) throw new IllegalArgumentException("Memory capacity exceeded");
         sequence = op.sequence();
     }
     private void load() throws IOException {
@@ -209,9 +260,9 @@ public final class MemoryJournal implements AutoCloseable {
         if (lease == null) throw new IOException("Another memory writer owns this directory");
         Path checkpoint = directory.resolve("snapshot.json");
         if (Files.exists(checkpoint)) {
-            if (Files.size(checkpoint) > MAX_DISK) throw new IOException("Oversized snapshot");
+            if (Files.size(checkpoint) > retention.maxStorageBytes()) throw new IOException("Oversized snapshot");
             Checkpoint stored = JSON.fromJson(Files.readString(checkpoint), Checkpoint.class);
-            if (stored == null || stored.version() != 1 || stored.sequence() < 0 || stored.entries().size() > MAX_ENTRIES || stored.retired().size() > MAX_RETIRED) throw new IOException("Invalid snapshot");
+            if (stored == null || stored.version() != 1 || stored.sequence() < 0 || stored.entries().size() > retention.maxEntries() || stored.retired().size() > MAX_RETIRED) throw new IOException("Invalid snapshot");
             for (Entry entry : stored.entries()) if (entries.putIfAbsent(entry.id(), entry) != null) throw new IOException("Duplicate snapshot entry");
             retired.addAll(stored.retired());
             if (entries.keySet().stream().anyMatch(retired::contains)) throw new IOException("Retired entry resurrected");
@@ -219,7 +270,7 @@ public final class MemoryJournal implements AutoCloseable {
         }
         Path journal = directory.resolve("journal.jsonl");
         if (Files.exists(journal)) {
-            if (Files.size(journal) > MAX_DISK) throw new IOException("Oversized journal");
+            if (Files.size(journal) > retention.maxStorageBytes()) throw new IOException("Oversized journal");
             try (var reader = Files.newBufferedReader(journal)) {
                 String line; while ((line = reader.readLine()) != null) {
                     if (line.isBlank() || line.length() > 32768) throw new IOException("Invalid journal row");
@@ -234,7 +285,7 @@ public final class MemoryJournal implements AutoCloseable {
     private void publish() {
         Map<Key, List<Entry>> buckets = new HashMap<>();
         for (Entry entry : entries.values()) buckets.computeIfAbsent(entry.key(), ignored -> new ArrayList<>()).add(entry);
-        if (buckets.values().stream().anyMatch(list -> list.size() > MAX_BUCKET)) throw new IllegalStateException("Oversized memory bucket");
+        if (buckets.values().stream().anyMatch(list -> list.size() > retention.maxPerScope())) throw new IllegalStateException("Oversized memory bucket");
         buckets.replaceAll((key, value) -> List.copyOf(value));
         index = Map.copyOf(buckets); active = Map.copyOf(entries); view = new View(sequence, List.copyOf(entries.values()), retired);
         published = new Published(index, view);
@@ -242,7 +293,14 @@ public final class MemoryJournal implements AutoCloseable {
     private void checkpoint() throws IOException {
         Path target = directory.resolve("snapshot.json"), temporary = directory.resolve("snapshot.next");
         byte[] bytes = JSON.toJson(new Checkpoint(1, sequence, List.copyOf(entries.values()), Set.copyOf(retired))).getBytes(StandardCharsets.UTF_8);
-        if (bytes.length > MAX_DISK) throw new IOException("Snapshot capacity exceeded");
+        Path previous=directory.resolve("snapshot.previous.json");
+        long targetSize=Files.exists(target)?Files.size(target):0;
+        long previousSize=Files.exists(previous)?Files.size(previous):0;
+        long nextSize=Files.exists(temporary)?Files.size(temporary):0;
+        // Budget the peak including the staged snapshot and previous-copy replacement. Keep the
+        // durable journal unchanged when there is insufficient compaction headroom; never delete raw data.
+        long peak=diskBytes-nextSize+bytes.length+Math.max(0,targetSize-previousSize);
+        if (peak > retention.maxStorageBytes()) { sinceCheckpoint=0; return; }
         try (FileChannel channel = FileChannel.open(temporary, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)) {
             ByteBuffer buffer = ByteBuffer.wrap(bytes); while (buffer.hasRemaining()) channel.write(buffer); channel.force(true);
         }
@@ -253,6 +311,13 @@ public final class MemoryJournal implements AutoCloseable {
             channel.truncate(0); channel.force(true);
         }
         sinceCheckpoint = 0;
+        refreshDiskBytes();
+    }
+    private void refreshDiskBytes() throws IOException {
+        long total=0;for(String name:List.of("snapshot.json","snapshot.previous.json","journal.jsonl","snapshot.next")) {
+            Path file=directory.resolve(name);if(Files.exists(file))total+=Files.size(file);
+        }
+        diskBytes=total;
     }
     /** Bounded local lexical retrieval. No network, disk read, embedding or LLM call. */
     public List<Entry> search(Key key, Set<UUID> audience, String query, Set<String> recentTexts, long now, int maximum, long budgetNanos) {
@@ -262,20 +327,31 @@ public final class MemoryJournal implements AutoCloseable {
     /** One bounded scan; context never widens the world/God/player/audience permission boundary. */
     public List<Entry> searchConversation(Key key, Set<UUID> audience, String query, Set<String> recentTexts,
             List<String> recentPlayerTexts, UUID currentSession, long now, int maximum, long budgetNanos) {
+        return searchConversation(key, audience, query, recentTexts, recentPlayerTexts, currentSession, now,
+                maximum, budgetNanos, Set.of(key.god()));
+    }
+    public List<Entry> searchConversation(Key key, Set<UUID> audience, String query, Set<String> recentTexts,
+            List<String> recentPlayerTexts, UUID currentSession, long now, int maximum, long budgetNanos,
+            Set<String> godAudience) {
+        Set<String> gods = validatedGodAudience(key, godAudience);
         if (!ready() || audience.isEmpty() || maximum < 1 || budgetNanos <= 0) return List.of();
-        String normalized = normalize(query); Set<String> terms = terms(normalized);
+        String normalized = normalize(RecallQuery.explicitRecall(query) ? RecallSourceScope.lexicalQuery(query) : query);
+        Set<String> terms = terms(normalized);
         if (normalized.length() < 3 || terms.isEmpty()) return List.of();
         long start = System.nanoTime();
         Set<String> recent = new HashSet<>(); recentTexts.forEach(text -> recent.add(normalize(text)));
         List<String> context = MemoryRecallPolicy.contextQueries(query, recentPlayerTexts).stream().map(MemoryJournal::normalize).toList();
         List<Set<String>> contextTerms = context.stream().map(MemoryJournal::terms).toList();
         boolean returning = currentSession != null && MemoryRecallPolicy.returning(query);
+        var sourceScope = RecallSourceScope.resolve(query);
+        boolean explicit = RecallQuery.explicitRecall(query);
         Entry recentEpisode = null;
         record Match(Entry entry, double score) {}
         List<Match> matches = new ArrayList<>();
         for (Entry entry : index.getOrDefault(key, List.of())) {
             if (System.nanoTime() - start > budgetNanos) return List.of();
-            if (!entry.audience().containsAll(audience) || entry.source() == Source.HEARSAY_NPC
+            if (!entry.audience().containsAll(audience) || !entry.godAudience().containsAll(gods) || entry.source() == Source.HEARSAY_NPC
+                    || explicit && !sourceScope.allows(entry)
                     || (!entry.important() && now - entry.occurredAt() > CASUAL_LIFETIME)) continue;
             String candidate = normalize(entry.text());
             if (recent.contains(candidate) || candidate.equals(normalized)) continue;
@@ -302,7 +378,7 @@ public final class MemoryJournal implements AutoCloseable {
                 .thenComparing(Comparator.comparingLong((Match m) -> m.entry().occurredAt()).reversed())
                 .thenComparing(m -> m.entry().id()));
         List<Entry> result = new ArrayList<>(); Set<String> seen = new HashSet<>();
-        for (Match match : matches) { if (seen.add(normalize(match.entry().text()))) result.add(match.entry()); if (result.size() >= Math.min(3, maximum)) break; }
+        for (Match match : matches) { if (seen.add(retrievalIdentity(match.entry()))) result.add(match.entry()); if (result.size() >= Math.min(3, maximum)) break; }
         // Preserve time order among selected evidence, particularly corrections.
         result.sort(Comparator.comparingLong(Entry::occurredAt).thenComparing(Entry::id));
         return System.nanoTime() - start > budgetNanos ? List.of() : List.copyOf(result);
@@ -313,6 +389,10 @@ public final class MemoryJournal implements AutoCloseable {
         return (overlap >= 2 || candidate.contains(query)) && score >= 0.2 ? score : 0;
     }
     private static String normalize(String text) { return NON_WORD.matcher(Normalizer.normalize(text == null ? "" : text, Normalizer.Form.NFKC).toLowerCase(Locale.ROOT)).replaceAll(" ").trim(); }
+    /** Repeated words by one speaker are one retrieval slot; different speakers are different attributed evidence. */
+    public static String retrievalIdentity(Entry entry) {
+        return entry.source() + "/" + entry.speakerGodId() + "/" + normalize(entry.text());
+    }
     private static Set<String> terms(String text) {
         Set<String> terms = new HashSet<>();
         for (String word : SPACES.split(text)) { if (word.length() < 2) continue; terms.add(word); for (int i = 0; i + 1 < word.length(); i++) terms.add(word.substring(i, i + 2)); }

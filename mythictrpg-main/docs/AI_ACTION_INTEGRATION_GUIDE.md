@@ -1,5 +1,11 @@
 # MythicTRPG AI 액션 연동 가이드
 
+> 2026-09-23 개발 게임1.0.15/AI0.1.16(미배포): 새 방은 ambient 단일 세션 대신 명시적 `submitRoom`/generation을 사용한다. 등록된 신간 관계 전이와 Story Hook의 방별 연결을 복구했다. Hook 자동 제안은 플레이어1·신1 PRIVATE 일반방에 제한하며 확인 시 재검증한다. 플레이어1·신2에서 Primary 이후 생성하는 Secondary는 모든 Proposal·방 제어 권한이 없다. 시험방/RUMOR_TEST의 게임 행동 차단을 유지한다. [재통합 결과와 한계](../../docs/ORIGINAL_GOALS_REINTEGRATION_20260923.md)를 우선한다.
+
+> 2026-09-20: 게임 1.0.7/AI 0.1.8에 [퀘스트 참여 유형](QUEST_PARTICIPATION_GUIDE.md)을 추가했다(미배포). `quest_offer.parameters.recipient_id`는 현재 대화의 적격 참가자 UUID만 허용한다. `WAITING_FOR_PARTICIPANTS`는 모집 질문 실행이지 수주/완료가 아니다. `mythtalk join`의 청중·interaction/generation은 게임이 발급하며 AI는 발언을 공유할 뿐 참가자를 추가하지 않는다. 같은 NPC 식별자로 서로 다른 세션을 합치지 않는다.
+
+> 2026-09-15 최신 개발: 게임 1.0.5/AI 0.1.5에 [4단계 관찰→대화 읽기 계약](../../docs/EXPERIENCE_STAGE04_20260915.md)을 연결했다. 미배포로 실제 서버는 게임 1.0.2/AI 0.1.3이다. ExperienceLease는 현재 신·플레이어·청중에 허용된 과거 관찰의 읽기 권한일 뿐, 퀘스트·보상·아이템 실행 권한이 아니다. 최종 대사/Proposal의 세션·근거 검증과 기존 Gateway/Validator/Executor를 유지했다. 퀘스트 완료/평가 **대사 턴**의 이전 기억 재사용을 차단했으며 실제 판정·지급/FTB 소유권은 변경하지 않았다. 아래 버전 언급은 각 변경 당시의 이력이다.
+
 ## 1. 원칙
 
 AI 응답은 대사와 비권위적인 액션 제안만 생성한다. 실제 게임 상태 변경은
@@ -167,3 +173,15 @@ Minecraft 동적 `DamageType` 레지스트리에 실제 등록되어 있어야 �
 
 AI 응답 프롬프트에도 위 템플릿의 정확한 ID와 고정된 기계적 조건만 노출된다. 현재 월드
 진행도에 맞지 않거나 보상표가 바뀐 제안은 실행 직전 Validator에서 거절된다.
+
+## 9. 2026-09-16 상세 기록 부착 (5단계, 기본 OFF·미배포)
+
+게임 1.0.6은 기존 퀘스트 완료 commit 성공과 평가 미달/완료 후 issue 결과를 읽어 관리자 행동 원장에 남긴다. 기존 조건·FTB·보상 실행 순서와 횟수는 변경하지 않았으며 원장 재생이 퀘스트를 다시 실행하지 않는다. 완료자/수주자/FTB 팀, 완료/issue 수락/선택 대기/지급 실패는 다른 의미다. 새 기록을 Proposal 권한이나 신의 목격으로 사용하지 않는다.
+
+이동·채굴·근접 공격·피해 등 새 원본도 관리자 전용이며 AI가 전역 검색하지 않는다. AI 개발 0.1.6의 파생 저장/검색-only 기반은 기존 ExperienceLease 공개 경계를 유지한다. 실제 지원 지점·수집 누락 범위·미연결 기능과 검사 결과는 [5단계 기록](../../docs/MEMORY_STAGE05_20260916.md)을 따른다. 4단계 실제 인게임 검증과 5B 운영 의미 검색은 남았고 배포하지 않았다.
+
+## 10. 대화방 명시적 액션 범위 (2026-09-21, 게임 1.0.12 개발판)
+
+공개방/복수 비밀방이 병행되므로 새 방의 액션은 `AiActionGateway.submitRoom(player, roomId, revision, godId, type, title, summary, parameters, playerDeclaredItemReady)`를 사용한다. 게임이 방 멤버십·신·revision으로 발급한 `AiActionScope`만 인정하며, 현재 선택된 비밀방 또는 구 player 단일 세션으로 fallback하지 않는다. 확인 대기에도 방 출처를 보관하고 실행 직전에 다시 검증한다. 시험 방/RUMOR_TEST는 실행 불가다.
+
+퀘스트 모집/동의/제출은 `offerRoom`, `handleRoomAnswer`, `contextForRoom`, `confirmRoom` 경로를 사용한다. 실제 완료·정산·FTB 반영은 기존 게임 서비스가 담당한다. 같은 플레이어의 다른 방 동의와 validation feedback을 재사용하지 않는다. 기존 `cancelForPlayer`는 구 세션 모집만 취소하며 로그아웃은 `cancelAllForPlayer`를 사용한다. 상세 계약과 남은 자동 연출 연결 범위는 [대화방 가이드](../../docs/CONVERSATION_ROOMS.md)를 따른다.

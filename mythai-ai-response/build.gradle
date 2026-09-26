@@ -13,10 +13,15 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 def legacyCombinedJar = file('../mine/mine/build/libs/mythictrpg-1.0.0.jar')
-def currentMythicTrpgJar = file('../mythictrpg-main/build/libs/mythictrpg-1.0.2.jar')
+// Quest participation adds game-owned conversation/quest APIs. Keep the matching game build.
+def currentMythicTrpgJar = file(providers.gradleProperty('mythicTrpgApiJar')
+        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.16.jar').get())
 def legacyAiSourceDir = file('../mine/mine/src/main/java/com/sande/mythictrpg/ai')
 def patchedAiSourceDir = layout.buildDirectory.dir('generated/sources/patchedAi/java')
 apply from: 'memory-foundation-overlay.gradle'
+apply from: 'quest-participation-overlay.gradle'
+apply from: 'dialogue-test-overlay.gradle'
+apply from: 'room-conversation-overlay.gradle'
 
 neoForge {
     version = project.neo_version
@@ -42,6 +47,93 @@ dependencies {
     testImplementation files(currentMythicTrpgJar)
 }
 
+tasks.register('roomConversationEngineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomConversationEngineTest'
+    args layout.buildDirectory.dir('room-engine-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'roomConversationEngineTest' }
+tasks.register('roomReactionPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomReactionPromptTest'
+}
+tasks.register('roomKnowledgeContextTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomKnowledgeContextTest'
+}
+tasks.named('check') { dependsOn 'roomKnowledgeContextTest', 'roomReactionPromptTest', 'storyPresentationProviderTest' }
+tasks.register('roomQuestKnowledgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomQuestKnowledgeTest'
+}
+tasks.named('check') { dependsOn 'roomQuestKnowledgeTest' }
+tasks.register('storyPresentationProviderTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.StoryPresentationProviderTest'
+}
+tasks.named('check') { dependsOn 'roomReactionPromptTest', 'storyPresentationProviderTest' }
+tasks.register('godRelationCapabilityBridgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.GodRelationCapabilityBridgeTest'
+}
+tasks.named('check') { dependsOn 'godRelationCapabilityBridgeTest' }
+
+tasks.register('dialogueTestArgumentsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.DialogueTestArgumentsTest'
+}
+tasks.register('aiCallArgumentsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.AiCallArgumentsTest'
+}
+tasks.named('check') { dependsOn 'aiCallArgumentsTest' }
+tasks.register('aiCallRoutingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.AiCallRoutingTest'
+    args file('..').absolutePath,
+            layout.buildDirectory.dir('ai-call-routing-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'aiCallRoutingTest' }
+tasks.register('dialogueTestSpeakerPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.DialogueTestSpeakerPolicyTest'
+}
+tasks.register('dialogueTestSessionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueTestSessionTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath,
+            layout.buildDirectory.dir('dialogue-session-test-artifacts').get().asFile.absolutePath
+}
+tasks.register('memoryAudienceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryAudienceTest'
+    def artifacts = layout.buildDirectory.dir('memory-audience-test-artifacts')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'dialogueTestArgumentsTest', 'dialogueTestSpeakerPolicyTest', 'dialogueTestSessionTest', 'memoryAudienceTest' }
+
+tasks.register('dialogueMemoryRecordingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.DialogueMemoryRecordingTest'
+    args file('src/main/java/com/sande/mythai/response/memory/DialogueMemoryBridge.java').absolutePath,
+            layout.buildDirectory.dir('dialogue-memory-recording-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'dialogueMemoryRecordingTest' }
+
 tasks.register('memoryFoundationTest', JavaExec) {
     dependsOn testClasses
     // ModDev's provided Minecraft libraries (including Gson) are compile-only outside a game run.
@@ -51,6 +143,25 @@ tasks.register('memoryFoundationTest', JavaExec) {
     doFirst { artifacts.get().asFile.mkdirs() }
     args artifacts.get().asFile.absolutePath
 }
+
+tasks.register('questParticipationDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.QuestParticipationDialogueTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath,
+            layout.buildDirectory.dir('quest-participation-dialogue-tests').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'questParticipationDialogueTest' }
+tasks.register('socialReviewTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.SocialReviewTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+    def artifacts = layout.buildDirectory.dir('social-review-test-artifacts')
+    workingDir artifacts
+    doFirst { artifacts.get().asFile.mkdirs() }
+}
+tasks.named('check') { dependsOn 'socialReviewTest' }
 
 tasks.register('memoryRecallTest', JavaExec) {
     dependsOn testClasses
@@ -76,6 +187,58 @@ tasks.register('recallStageTest', JavaExec) {
 tasks.named('test', Test).configure { failOnNoDiscoveredTests = false }
 tasks.named('compileTestJava', JavaCompile).configure { classpath += sourceSets.main.compileClasspath }
 tasks.named('check').configure { dependsOn('memoryFoundationTest', 'memoryRecallTest', 'recallStageTest') }
+tasks.register('experienceDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.experiencecontract.ExperienceDialogueTest'
+    args layout.buildDirectory.dir('experience-dialogue-test-artifacts').get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('experienceDialogueTest') }
+tasks.register('rumorDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RumorDialogueTest'
+}
+tasks.named('check').configure { dependsOn('rumorDialogueTest') }
+
+tasks.register('derivedMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.DerivedMemoryTest'
+    args layout.buildDirectory.dir('derived-memory-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('derivedMemoryTest') }
+
+tasks.register('memoryIndexRuntimeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryIndexRuntimeTest'
+    args layout.buildDirectory.dir('memory-index-test-artifacts').get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/LocalLlmRequestScheduler.java').asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('memoryIndexRuntimeTest') }
+
+// Requires fresh explicit permission; never a dependency of build, check or a server task.
+tasks.register('memoryModelBenchmark', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryModelBenchmark'
+    doFirst {
+        if (project.findProperty('memoryLiveApproved') != 'true')
+            throw new GradleException('Live synthetic model calls require explicit user approval and -PmemoryLiveApproved=true')
+        args project.findProperty('memoryBenchmarkMode') ?: 'embedding-cpu',
+                layout.buildDirectory.dir('memory-model-benchmark').get().asFile.absolutePath
+    }
+}
+
+tasks.register('naturalMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.NaturalMemoryTest'
+    args layout.buildDirectory.dir('natural-memory-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('naturalMemoryTest') }
 
 // Opt-in only: never attached to build/check; no server boot and no live-world mutations.
 tasks.register('memoryRecallReplay', JavaExec) {
@@ -91,8 +254,11 @@ tasks.register('memoryRecallReplay', JavaExec) {
 }
 
 def generatePatchedAiSources = tasks.register('generatePatchedAiSources') {
+    inputs.file('quest-participation-overlay.gradle')
+    inputs.file('dialogue-test-overlay.gradle')
+    inputs.file('room-conversation-overlay.gradle')
     inputs.files(file("${legacyAiSourceDir}/AiTestDialogueAdapter.java"),
-            file("${legacyAiSourceDir}/DialogueTurnDirective.java"), file('memory-foundation-overlay.gradle'))
+            file("${legacyAiSourceDir}/DialogueTurnDirective.java"), file("${legacyAiSourceDir}/LocalLlmRequestScheduler.java"), file('memory-foundation-overlay.gradle'))
     outputs.dir(patchedAiSourceDir)
     doLast {
         def outputPackage = patchedAiSourceDir.get().file('com/sande/mythictrpg/ai').asFile
@@ -647,6 +813,10 @@ def generatePatchedAiSources = tasks.register('generatePatchedAiSources') {
     private void submitGeneration(ServerPlayer player, Session session, long turn, String text,''',
                 'AI-generated evaluation quest narration')
         adapter = patchMemoryFoundationAdapter(adapter)
+        adapter = patchQuestParticipationAdapter(adapter)
+        adapter = patchSocialAdapter(adapter)
+        adapter = patchDialogueTestAdapter(adapter)
+        adapter = patchRoomConversationAdapter(adapter)
         file("${outputPackage}/AiTestDialogueAdapter.java").write(adapter, 'UTF-8')
 
         String directive = file("${legacyAiSourceDir}/DialogueTurnDirective.java").getText('UTF-8')
@@ -737,6 +907,20 @@ def generatePatchedAiSources = tasks.register('generatePatchedAiSources') {
                 'request priority helper')
         directive = patchRecallDirective(directive)
         file("${outputPackage}/DialogueTurnDirective.java").write(directive, 'UTF-8')
+
+        // Patch the real scheduler, not an unused helper. Keep legacy source/JAR immutable.
+        String scheduler = file("${legacyAiSourceDir}/LocalLlmRequestScheduler.java").getText('UTF-8')
+        scheduler = replaceRequired(scheduler,
+                '''        try {
+            executorFor(settings).execute(() -> execute(requestId, submittedAt, request, completion));''',
+                '''        var admission = com.sande.mythai.response.memory.ModelAdmission.foreground();
+        completion.whenComplete((value, failure) -> admission.close());
+        try {
+            executorFor(settings).execute(() -> execute(requestId, submittedAt,
+                    () -> com.sande.mythai.response.memory.ModelAdmission.run(admission,
+                            settings.maxConcurrentLlmRequests(), settings.requestTimeoutSeconds() * 1000L, request), completion));''',
+                'common dialogue/classification/spontaneous model admission')
+        file("${outputPackage}/LocalLlmRequestScheduler.java").write(scheduler, 'UTF-8')
     }
 }
 
@@ -760,6 +944,16 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
     into 'build/generated/sources/modMetadata'
 }
 sourceSets.main.resources.srcDir generateModMetadata
+// A namespaced test template lets the combined-module test run independently of game-only fixtures.
+// Reuse Minecraft's existing empty test structure from the build's local runtime resources.
+tasks.named('processResources', ProcessResources) {
+    dependsOn 'createMinecraftArtifacts'
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_room_full_path/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+}
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar).configure {
@@ -771,6 +965,7 @@ tasks.named('jar', Jar).configure {
         exclude 'com/sande/mythictrpg/ai/GodAiDialogueService*'
         exclude 'com/sande/mythictrpg/ai/AiTestDialogueAdapter*'
         exclude 'com/sande/mythictrpg/ai/DialogueTurnDirective*'
+        exclude 'com/sande/mythictrpg/ai/LocalLlmRequestScheduler*'
         exclude 'com/sande/mythictrpg/ai/*Commands*'
         exclude 'com/sande/mythictrpg/ai/*Events*'
         exclude 'com/sande/mythictrpg/ai/**/*GameTests*'

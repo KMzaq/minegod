@@ -30,7 +30,8 @@ public final class RecallSearch {
         List<MemoryJournal.Entry> raw = new ArrayList<>();
         MemoryJournal.Entry returning = null;
         List<String> context = MemoryRecallPolicy.contextQueries(query.text(), recentPlayers);
-        var queryTerms = MemoryJournal.lexical(query.text());
+        var queryTerms = MemoryJournal.lexical(RecallSourceScope.lexicalQuery(query.text()));
+        var sourceScope = RecallSourceScope.resolve(query.text());
         var contextTerms = context.stream().map(MemoryJournal::lexical).toList();
         boolean planQuestion = query.planQuestion();
         LocalDate target = query.planQuestion() ? date(query.text(), query.askedAt(), settings.timeBasis()) : null;
@@ -38,8 +39,8 @@ public final class RecallSearch {
         for (var entry : allowed) {
             if (System.nanoTime() - start > budgetNanos) return unavailable(query, "search_budget");
             if (entry.source() == MemoryJournal.Source.HEARSAY_NPC || entry.occurredAt() > now
-                    || (!entry.important() && now - entry.occurredAt() > Duration.ofDays(30).toMillis())) continue;
-            if (query.explicit() && entry.source() != MemoryJournal.Source.PLAYER_STATEMENT) continue;
+                    || !MemorySalience.searchable(entry,now,query.explicit())) continue;
+            if (query.explicit() && !sourceScope.allows(entry)) continue;
             if (!query.explicit() && (recent.contains(entry.text()) || entry.text().equals(query.text()))) continue;
             if (!query.explicit() && MemoryRecallPolicy.returning(query.text())
                     && entry.source() == MemoryJournal.Source.PLAYER_STATEMENT
@@ -53,6 +54,9 @@ public final class RecallSearch {
             if (saidOn != null && !day(entry.occurredAt()).equals(saidOn)) continue;
             var candidateTerms = MemoryJournal.lexical(entry.text());
             boolean lexical = MemoryJournal.related(queryTerms, candidateTerms);
+            // Heard NPC words are retrievable as attributed words, never a recent-raw/plan fallback for the player.
+            boolean npc = entry.source() == MemoryJournal.Source.NPC_UTTERANCE;
+            if (query.explicit() && npc && !lexical) continue;
             boolean contextual = contextTerms.stream().anyMatch(t -> MemoryJournal.related(t, candidateTerms));
             LocalDate eventDate = plan ? date(entry.text(), entry.occurredAt(), settings.timeBasis()) : null;
             // A recording-date condition must not turn 'yesterday's tomorrow' into tomorrow from today.
@@ -60,14 +64,14 @@ public final class RecallSearch {
             boolean timeMatch = expected != null && expected.equals(eventDate);
             boolean wrongDate = expected != null && eventDate != null && !expected.equals(eventDate);
             if (wrongDate) continue;
-            if (query.explicit()) raw.add(entry);
+            if (query.explicit() && !npc) raw.add(entry);
             int score = lexical ? 40 : contextual ? 20 : 0;
             String reason = lexical ? "lexical" : "player_context";
-            if (query.explicit() && query.planQuestion() && plan) {
+            if (query.explicit() && query.planQuestion() && plan && !npc) {
                 score += timeMatch ? 100 : 50;
                 reason = timeMatch ? "plan_time" : "plan_raw";
             }
-            if (score > 0) matches.add(new Match(entry, score, reason));
+            if (score > 0) matches.add(new Match(entry, Math.max(1,score+MemorySalience.adjustment(entry,now)), reason));
         }
         if (returning != null) {
             var anchor = returning;
@@ -83,7 +87,10 @@ public final class RecallSearch {
         matches.sort(Comparator.comparingInt(Match::score).reversed()
                 .thenComparing(Comparator.comparingLong((Match m) -> m.entry().occurredAt()).reversed())
                 .thenComparing(m -> m.entry().id()));
-        var top = matches.stream().limit(12).limit(3).toList();
+        // Repetition and NPC echoes cannot occupy all three evidence slots or increase importance.
+        var unique = new LinkedHashMap<String,Match>();
+        for(var match:matches)unique.putIfAbsent(MemoryJournal.retrievalIdentity(match.entry()),match);
+        var top = unique.values().stream().limit(3).toList();
         var selected = top.stream().map(Match::entry).sorted(Comparator.comparingLong(MemoryJournal.Entry::occurredAt)
                 .thenComparing(MemoryJournal.Entry::id)).toList();
         Map<UUID,String> reasons = new LinkedHashMap<>();
@@ -96,7 +103,19 @@ public final class RecallSearch {
                 query.explicit() ? "raw_recall" : "association");
     }
     public static boolean looksLikePlan(String text) {
-        return PLAN.matcher(text).find();
+        return PLAN.matcher(text).find() || !MemorySalience.daylightCondition(text).isEmpty();
+    }
+    static boolean semanticEligible(MemoryJournal.Entry entry,RecallQuery query,RecallSettings settings,long now) {
+        if(entry==null||entry.source()!=MemoryJournal.Source.PLAYER_STATEMENT||entry.occurredAt()>now
+                ||!RecallSourceScope.resolve(query.text()).allows(entry)
+                ||!MemorySalience.searchable(entry,now,query.explicit())
+                ||RecallQuery.explicitRecall(entry.text())||RecallQuery.bareFollowUp(entry.text()))return false;
+        if(query.planQuestion()&&!looksLikePlan(entry.text()))return false;
+        LocalDate said=recordedDate(query.text(),query.askedAt(),settings.timeBasis());
+        if(said!=null&&!day(entry.occurredAt()).equals(said))return false;
+        LocalDate expected=said==null?(query.planQuestion()?date(query.text(),query.askedAt(),settings.timeBasis()):null):relativeToDay(query.text(),said,settings.timeBasis(),true);
+        LocalDate event=looksLikePlan(entry.text())?date(entry.text(),entry.occurredAt(),settings.timeBasis()):null;
+        return expected==null||event==null||expected.equals(event);
     }
     private static boolean uncertainClaim(String text) {
         return text.matches(".*(말고|취소|변경|아니라|농담|장난|라면|다면|일지도|라고 했|다고 말했|다고 했|가 말|가 얘기).*");
@@ -105,7 +124,7 @@ public final class RecallSearch {
         return relativeToDay(text, day(utteredAt), basis, false);
     }
     private static LocalDate relativeToDay(String text, LocalDate base, RecallSettings.TimeBasis basis, boolean ignoreReported) {
-        if (basis != RecallSettings.TimeBasis.REAL_KST || text.matches(".*(게임|마크|잠자|아침이 되면).*") ) return null;
+        if (basis != RecallSettings.TimeBasis.REAL_KST) return null;
         // Exclude the recording-date phrase before interpreting the event date.
         String value = ignoreReported ? text.replaceFirst("(그제|어제|오늘)\\s*(말한|얘기한|이야기한)", "") : text;
         if (value.contains("모레")) return base.plusDays(2);

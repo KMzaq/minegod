@@ -15,13 +15,15 @@ import com.sande.mythictrpg.shop.ShopService;
 import com.sande.mythictrpg.shop.ShopTransactionService;
 
 public final class DialogueNetwork {
-    public static final String PROTOCOL_VERSION = "5";
+    public static final String PROTOCOL_VERSION = "6";
 
     private DialogueNetwork() {
     }
 
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
+        registrar.playToClient(ConversationRoomsPayload.TYPE, ConversationRoomsPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> ClientConversationRoomsBridge.accept(payload)));
         registrar.playToClient(ClientDialoguePayload.TYPE, ClientDialoguePayload.STREAM_CODEC,
                 DialogueNetwork::handleClientDialogue);
         registrar.playToClient(AiConversationStatePayload.TYPE, AiConversationStatePayload.STREAM_CODEC,

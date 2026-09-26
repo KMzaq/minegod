@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "enabled": true,
+  "semanticMode": "ON",
+  "consolidate": true,
+  "maxStorageBytes": 268435456,
+  "maxEntries": 12000,
+  "endpoint": "http://127.0.0.1:11434",
+  "embeddingModel": "bge-m3:latest",
+  "modelRevision": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+  "dimensions": 1024,
+  "extractionModel": "gemma4:12b",
+  "extractionRevision": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c",
+  "queryTimeoutMs": 350,
+  "backgroundTimeoutMs": 30000,
+  "execution": {
+    "embeddingCpu": true,
+    "embeddingThreads": 4,
+    "embeddingKeepAliveSeconds": 600,
+    "extractionCpu": false,
+    "extractionThreads": 4,
+    "extractionContext": 8192,
+    "extractionMaxTokens": 512,
+    "extractionKeepAliveSeconds": 60,
+    "minimumSimilarity": 0.60,
+    "skipSemanticWhenFound": true
+  }
+}

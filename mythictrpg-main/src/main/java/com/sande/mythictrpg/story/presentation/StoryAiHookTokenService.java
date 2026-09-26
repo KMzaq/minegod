@@ -1,6 +1,8 @@
 package com.sande.mythictrpg.story.presentation;
 
 import com.sande.mythictrpg.ai.action.AiActionProposal;
+import com.sande.mythictrpg.ai.server.AiConversationRuntimeService;
+import com.sande.mythictrpg.ai.server.ConversationRooms;
 import com.sande.mythictrpg.story.definition.StoryDefinitionManager;
 import com.sande.mythictrpg.story.runtime.StoryHookService;
 import com.sande.mythictrpg.story.runtime.StoryTeamResolver;
@@ -12,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /** One-use, session-bound aliases. Raw Story Hook IDs are never sent to a model. */
@@ -24,6 +27,23 @@ public final class StoryAiHookTokenService {
 
     public String issue(ServerPlayer player, UUID snapshotId, ResourceLocation hookId,
             ResourceLocation speakerActorId, ResourceLocation speakerGodId, UUID sessionId, int index) {
+        return issue(player, snapshotId, hookId, speakerActorId, speakerGodId, sessionId, index, Optional.empty());
+    }
+
+    public String issueRoom(ServerPlayer player, UUID snapshotId, ResourceLocation hookId,
+            ResourceLocation speakerActorId, ResourceLocation speakerGodId, UUID roomId, long revision, int index) {
+        requireThread(player);
+        var scope = ConversationRooms.INSTANCE.actionScope(player, roomId, revision, speakerGodId).orElseThrow();
+        Set<UUID> audience = StoryRoomConversationService.INSTANCE.roomAudience(player, roomId, revision, speakerGodId);
+        if (!StoryRoomConversationService.INSTANCE.hookAudienceCurrent(player, roomId, revision, speakerGodId, hookId, audience))
+            throw new IllegalArgumentException("Story Hook audience is not authorized");
+        return issue(player, snapshotId, hookId, speakerActorId, speakerGodId, scope.sessionId(), index,
+                Optional.of(new RoomBinding(roomId, revision, audience)));
+    }
+
+    private String issue(ServerPlayer player, UUID snapshotId, ResourceLocation hookId,
+            ResourceLocation speakerActorId, ResourceLocation speakerGodId, UUID sessionId, int index,
+            Optional<RoomBinding> room) {
         requireThread(player);
         cleanup(player.server.overworld().getGameTime());
         UUID opaque = UUID.randomUUID();
@@ -39,7 +59,7 @@ public final class StoryAiHookTokenService {
         long expectedRevision = current.map(value -> value.revision()).orElse(0L);
         Token token = new Token(opaque, player.getUUID(), sessionId, hookId, speakerActorId, speakerGodId,
                 player.server.overworld().getGameTime() + TTL_TICKS, targetScope, expectedInstance,
-                expectedRevision);
+                expectedRevision, StoryDefinitionManager.INSTANCE.snapshot().generation(), room);
         tokens.put(opaque, token);
         aliasesBySnapshot.computeIfAbsent(snapshotId, ignored -> new HashMap<>()).put(alias, opaque);
         return alias;
@@ -51,7 +71,18 @@ public final class StoryAiHookTokenService {
         UUID opaque = aliasesBySnapshot.getOrDefault(snapshotId, Map.of()).get(alias);
         if (opaque == null) return Optional.empty();
         Token token = tokens.get(opaque);
-        return token != null && token.matches(player, actingGodId) ? Optional.of(opaque) : Optional.empty();
+        return token != null && token.room.isEmpty() && token.matches(player, actingGodId)
+                && token.scopeCurrent(player) ? Optional.of(opaque) : Optional.empty();
+    }
+
+    public Optional<UUID> resolveRoomAlias(ServerPlayer player, UUID snapshotId, String alias,
+            ResourceLocation actingGodId, UUID roomId, long revision) {
+        requireThread(player);
+        UUID opaque = aliasesBySnapshot.getOrDefault(snapshotId, Map.of()).get(alias);
+        Token token = opaque == null ? null : tokens.get(opaque);
+        return token != null && token.room.filter(value -> value.roomId.equals(roomId) && value.revision == revision).isPresent()
+                && token.matches(player, actingGodId) && token.scopeCurrent(player)
+                ? Optional.of(opaque) : Optional.empty();
     }
 
     public Validation validate(ServerPlayer player, AiActionProposal proposal) {
@@ -65,8 +96,19 @@ public final class StoryAiHookTokenService {
         if (!token.playerId.equals(player.getUUID()) || !token.sessionId.equals(proposal.sessionId())
                 || !token.speakerGodId.equals(proposal.actingGodId()))
             return Validation.reject("Story Hook token does not belong to this player, session, and speaker");
+        // Recheck even for legacy sessions/direct callers: another event may seal or remove the
+        // speaker without changing this room or the offered Hook's target event revision.
+        if (!StoryRoomConversationService.INSTANCE.speakerAvailable(player, token.speakerGodId))
+            return Validation.reject("Story Hook speaker is no longer available");
+        if (!token.scopeCurrent(player)) return Validation.reject("Story Hook conversation or definition changed");
         var hook = StoryDefinitionManager.INSTANCE.hook(token.hookId).orElse(null);
         if (hook == null) return Validation.reject("Story Hook definition is no longer available");
+        StoryScopeKey currentScope = switch (hook.targetScope()) {
+            case SERVER -> StoryScopeKey.server();
+            case PLAYER -> StoryScopeKey.player(player.getUUID());
+            case TEAM -> StoryScopeKey.team(StoryTeamResolver.resolve(player).stableTeamId());
+        };
+        if (!token.targetScope.equals(currentScope)) return Validation.reject("Story Hook target team changed");
         var current = StoryRuntimeState.get(player.server).latestEvent(hook.targetEventId(), token.targetScope);
         String currentInstance = current.map(value -> value.instanceId()).orElse("");
         long currentRevision = current.map(value -> value.revision()).orElse(0L);
@@ -92,15 +134,33 @@ public final class StoryAiHookTokenService {
         aliasesBySnapshot.values().forEach(map -> map.entrySet().removeIf(entry -> !tokens.containsKey(entry.getValue())));
     }
 
-    private void cleanup(long now) { tokens.values().removeIf(value -> value.expiresAt <= now); }
+    public void clear() { tokens.clear(); aliasesBySnapshot.clear(); }
+    private void cleanup(long now) {
+        tokens.values().removeIf(value -> value.expiresAt <= now);
+        aliasesBySnapshot.values().forEach(map -> map.values().removeIf(id -> !tokens.containsKey(id)));
+        aliasesBySnapshot.values().removeIf(Map::isEmpty);
+    }
     private static void requireThread(ServerPlayer player) {
         if (!player.server.isSameThread()) throw new IllegalStateException("Story AI tokens require server thread");
     }
+    private record RoomBinding(UUID roomId, long revision, Set<UUID> audience) {
+        private RoomBinding { audience = Set.copyOf(audience); }
+    }
     private record Token(UUID opaque, UUID playerId, UUID sessionId, ResourceLocation hookId,
             ResourceLocation speakerActorId, ResourceLocation speakerGodId, long expiresAt,
-            StoryScopeKey targetScope, String expectedInstanceId, long expectedRevision) {
+            StoryScopeKey targetScope, String expectedInstanceId, long expectedRevision,
+            long definitionGeneration, Optional<RoomBinding> room) {
         boolean matches(ServerPlayer player, ResourceLocation godId) {
             return playerId.equals(player.getUUID()) && speakerGodId.equals(godId) && expiresAt > player.server.overworld().getGameTime();
+        }
+        boolean scopeCurrent(ServerPlayer player) {
+            if (definitionGeneration != StoryDefinitionManager.INSTANCE.snapshot().generation()) return false;
+            return room.map(binding -> StoryRoomConversationService.INSTANCE.hookAudienceCurrent(player, binding.roomId,
+                    binding.revision, speakerGodId, hookId, binding.audience)
+                    && ConversationRooms.INSTANCE.actionScope(player, binding.roomId, binding.revision, speakerGodId)
+                    .filter(scope -> scope.sessionId().equals(sessionId)).isPresent()).orElseGet(() ->
+                    AiConversationRuntimeService.INSTANCE.currentActionScope(player)
+                            .filter(scope -> scope.sessionId().equals(sessionId) && scope.actingGodId().equals(speakerGodId)).isPresent());
         }
     }
     public record Validation(boolean accepted, String reason, Optional<Token> token) {

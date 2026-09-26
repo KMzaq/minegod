@@ -2,6 +2,7 @@ package com.sande.mythictrpg.ai.action;
 
 import com.sande.mythictrpg.MythicTrpg;
 import com.sande.mythictrpg.ai.server.AiConversationRuntimeService;
+import com.sande.mythictrpg.ai.server.ConversationRooms;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -40,6 +41,22 @@ public final class AiActionGateway {
             String protocolActionType, String title, String summary, Map<String, String> parameters,
             boolean playerDeclaredItemReady) {
         requireServerThread(player);
+        return submitScoped(player, AiConversationRuntimeService.INSTANCE.currentActionScope(player), false,
+                actingGodId, protocolActionType, title, summary, parameters, playerDeclaredItemReady);
+    }
+
+    /** Explicit room ingress. The room/revision is game transport data, never a model parameter. */
+    public static AiActionResult submitRoom(ServerPlayer player, UUID roomId, long revision,
+            ResourceLocation actingGodId, String protocolActionType, String title, String summary,
+            Map<String, String> parameters, boolean playerDeclaredItemReady) {
+        requireServerThread(player);
+        return submitScoped(player, ConversationRooms.INSTANCE.actionScope(player, roomId, revision, actingGodId), true,
+                actingGodId, protocolActionType, title, summary, parameters, playerDeclaredItemReady);
+    }
+
+    private static AiActionResult submitScoped(ServerPlayer player, Optional<AiActionScope> scope,
+            boolean roomAction, ResourceLocation actingGodId, String protocolActionType, String title,
+            String summary, Map<String, String> parameters, boolean playerDeclaredItemReady) {
         ResourceLocation actionType;
         try {
             actionType = AiActionTypes.fromProtocolName(protocolActionType);
@@ -51,10 +68,10 @@ public final class AiActionGateway {
                 == com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST) {
             return rejected(UUID.randomUUID(), actionType, "Memory rumor test mode is dialogue-only; game proposals are disabled");
         }
-        Optional<AiActionScope> scope = AiConversationRuntimeService.INSTANCE.currentActionScope(player);
         if (scope.isEmpty()) {
             return rejected(UUID.randomUUID(), actionType,
-                    "No server-authorized AI conversation is active for this player");
+                    roomAction ? "The requested room revision does not authorize this game action"
+                            : "No server-authorized AI conversation is active for this player");
         }
         if (!scope.orElseThrow().actingGodId().equals(actingGodId)) {
             return rejected(UUID.randomUUID(), actionType,
@@ -73,7 +90,7 @@ public final class AiActionGateway {
         } catch (IllegalArgumentException exception) {
             return rejected(UUID.randomUUID(), actionType, exception.getMessage());
         }
-        return validateAndDispatch(player, proposal);
+        return validateAndDispatch(player, proposal, roomAction);
     }
 
     /** Revalidates and executes one previously pending action after explicit player confirmation. */
@@ -85,9 +102,7 @@ public final class AiActionGateway {
             return rejected(proposalId, fallbackType(), "Pending AI action was not found for this player");
         }
         PENDING.remove(proposalId);
-        Optional<AiActionScope> scope = AiConversationRuntimeService.INSTANCE.currentActionScope(player);
-        if (scope.isEmpty() || !scope.orElseThrow().sessionId().equals(pending.proposal().sessionId())
-                || !scope.orElseThrow().actingGodId().equals(pending.proposal().actingGodId())) {
+        if (!current(player, pending.proposal(), pending.roomAction())) {
             return rejected(proposalId, pending.proposal().actionType(),
                     "The conversation that created this action is no longer active");
         }
@@ -95,7 +110,7 @@ public final class AiActionGateway {
         if (definition == null) {
             return rejected(proposalId, pending.proposal().actionType(), "AI action type is no longer registered");
         }
-        return validateAndExecute(player, pending.proposal(), definition);
+        return validateAndExecute(player, pending.proposal(), definition, pending.roomAction());
     }
 
     public static boolean cancel(ServerPlayer player, UUID proposalId) {
@@ -122,7 +137,9 @@ public final class AiActionGateway {
         EXECUTION_STATE.clear();
     }
 
-    private static AiActionResult validateAndDispatch(ServerPlayer player, AiActionProposal proposal) {
+    private static AiActionResult validateAndDispatch(ServerPlayer player, AiActionProposal proposal, boolean roomAction) {
+        if (!current(player, proposal, roomAction)) return rejected(proposal.proposalId(), proposal.actionType(),
+                "The conversation that created this action is no longer active");
         AiActionDefinition definition = AiActionRegistry.INSTANCE.find(proposal.actionType()).orElse(null);
         if (definition == null) {
             return rejected(proposal.proposalId(), proposal.actionType(),
@@ -133,7 +150,7 @@ public final class AiActionGateway {
             return rejected(proposal.proposalId(), proposal.actionType(),
                     executionRejection);
         }
-        AiActionValidation validation = validate(player, proposal, definition);
+        AiActionValidation validation = validate(player, proposal, definition, roomAction);
         if (!validation.accepted()) {
             return rejected(proposal.proposalId(), proposal.actionType(), validation.reason());
         }
@@ -149,33 +166,34 @@ public final class AiActionGateway {
                         "Too many AI actions are already waiting for player confirmation");
             }
             long expiresAt = gameTime + CONFIRMATION_TIMEOUT_TICKS;
-            PENDING.put(proposal.proposalId(), new PendingAction(proposal, expiresAt));
+            PENDING.put(proposal.proposalId(), new PendingAction(proposal, expiresAt, roomAction));
             PacketDistributor.sendToPlayer(player, new AiActionConfirmationPayload(
                     proposal.proposalId(), proposal.actionType(), proposal.title(), proposal.summary(),
                     (int) (CONFIRMATION_TIMEOUT_TICKS / 20L)));
             return result(proposal, AiActionResult.Status.PENDING_CONFIRMATION,
                     "Explicit player confirmation is required", Map.of());
         }
-        return execute(player, proposal, definition);
+        return execute(player, proposal, definition, roomAction);
     }
 
     private static AiActionResult validateAndExecute(ServerPlayer player, AiActionProposal proposal,
-            AiActionDefinition definition) {
+            AiActionDefinition definition, boolean roomAction) {
         String executionRejection = executionRejection(player, proposal);
         if (executionRejection != null) {
             return rejected(proposal.proposalId(), proposal.actionType(),
                     executionRejection);
         }
-        AiActionValidation validation = validate(player, proposal, definition);
-        return validation.accepted() ? execute(player, proposal, definition)
+        AiActionValidation validation = validate(player, proposal, definition, roomAction);
+        return validation.accepted() ? execute(player, proposal, definition, roomAction)
                 : rejected(proposal.proposalId(), proposal.actionType(), validation.reason());
     }
 
     private static AiActionValidation validate(ServerPlayer player, AiActionProposal proposal,
-            AiActionDefinition definition) {
+            AiActionDefinition definition, boolean roomAction) {
+        if (!current(player, proposal, roomAction)) return AiActionValidation.reject("Action conversation is no longer current");
         try {
             AiActionValidation validation = definition.validator().validate(
-                    new AiActionContext(player.server, player), proposal);
+                    context(player, proposal, roomAction), proposal);
             return validation == null ? AiActionValidation.reject("AI action validator returned no result")
                     : validation;
         } catch (RuntimeException exception) {
@@ -185,10 +203,12 @@ public final class AiActionGateway {
     }
 
     private static AiActionResult execute(ServerPlayer player, AiActionProposal proposal,
-            AiActionDefinition definition) {
+            AiActionDefinition definition, boolean roomAction) {
+        if (!current(player, proposal, roomAction)) return rejected(proposal.proposalId(), proposal.actionType(),
+                "Action conversation changed before execution");
         try {
             AiActionExecution execution = definition.executor().execute(
-                    new AiActionContext(player.server, player), proposal);
+                    context(player, proposal, roomAction), proposal);
             if (execution == null) {
                 return failed(proposal, "AI action executor returned no result");
             }
@@ -239,7 +259,7 @@ public final class AiActionGateway {
                 proposal.parameters().getOrDefault("quest_id",
                         proposal.parameters().getOrDefault("transition_id",
                                 proposal.parameters().getOrDefault("token", proposal.actionType().toString()))));
-        return new ExecutionKey(proposal.sessionId(), proposal.targetPlayerId(),
+        return new ExecutionKey(proposal.sessionId(), proposal.targetPlayerId(), proposal.actingGodId(),
                 proposal.actionType(), discriminator);
     }
 
@@ -283,10 +303,26 @@ public final class AiActionGateway {
         }
     }
 
-    private record PendingAction(AiActionProposal proposal, long expiresAtGameTick) {
+    private static AiActionContext context(ServerPlayer player, AiActionProposal proposal, boolean roomAction) {
+        return new AiActionContext(player.server, player, roomAction
+                ? Optional.of(new AiActionScope(proposal.sessionId(), proposal.actingGodId())) : Optional.empty());
     }
 
-    private record ExecutionKey(UUID sessionId, UUID playerId, ResourceLocation actionType,
+    private static boolean current(ServerPlayer player, AiActionProposal proposal, boolean roomAction) {
+        if (!proposal.targetPlayerId().equals(player.getUUID())
+                || com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
+                    == com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST) return false;
+        // Never substitute an ambient legacy session when an explicit room lease has expired.
+        if (roomAction) return ConversationRooms.INSTANCE.actionCurrent(player, proposal.sessionId(), proposal.actingGodId());
+        return AiConversationRuntimeService.INSTANCE.currentActionScope(player)
+                .filter(scope -> scope.sessionId().equals(proposal.sessionId())
+                        && scope.actingGodId().equals(proposal.actingGodId())).isPresent();
+    }
+
+    private record PendingAction(AiActionProposal proposal, long expiresAtGameTick, boolean roomAction) {
+    }
+
+    private record ExecutionKey(UUID sessionId, UUID playerId, ResourceLocation actingGodId, ResourceLocation actionType,
             String discriminator) {
     }
 

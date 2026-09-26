@@ -25,6 +25,23 @@ public final class AiConversationHudRenderer {
             return;
         }
         Font font = minecraft.font;
+        if (!controller.rooms().rooms().isEmpty()) {
+            int x=graphics.guiWidth()-230;
+            int y=TOP;
+            for(var room:controller.rooms().rooms().stream().limit(6).toList()) {
+                boolean chosen=controller.rooms().selectedPrivate().filter(room.id()::equals).isPresent();
+                graphics.fill(x-4,y-2,graphics.guiWidth()-8,y+23,0xB0101010);
+                graphics.drawString(font,(chosen?"▶ ":"")+"["+room.code()+"] "+(room.isPrivate()?"비밀":"공개"),x,y,room.color(),true);
+                graphics.drawString(font,font.plainSubstrByWidth(room.gods(),210),x,y+11,0xFFFFFFFF,true);y+=28;
+            }
+            graphics.drawString(font,"H: 방 선택 / G: UI 숨기기",x,y,0xFFAAAAAA,false);
+            if(minecraft.screen instanceof net.minecraft.client.gui.screens.ChatScreen) {
+                String destination=controller.rooms().rooms().stream().filter(r->controller.rooms().selectedPrivate().filter(r.id()::equals).isPresent())
+                        .map(r->"/s → ["+r.code()+"] "+r.gods()).findFirst().orElse("/s: 비밀대화 선택 필요 (H)");
+                graphics.drawString(font,destination,4,graphics.guiHeight()-30,0xFFFFCC66,true);
+            }
+            return;
+        }
         int left = graphics.guiWidth() - RIGHT_MARGIN - WIDTH;
         int right = left + WIDTH;
         int bottom = TOP + HEIGHT;

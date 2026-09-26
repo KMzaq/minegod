@@ -25,10 +25,19 @@ public final class MythAiResponseMod {
                 AiInteractionContentProvider.INSTANCE);
         AiConversationEngineRouter.INSTANCE.configureProductionEngine(
                 MythAiConversationEngine.INSTANCE);
+        com.sande.mythictrpg.ai.api.RoomConversationEngineRouter.INSTANCE.install(
+                com.sande.mythictrpg.ai.MythAiRoomConversationEngine.INSTANCE);
+        com.sande.mythictrpg.story.presentation.StoryAiPresentationRouter.INSTANCE.configureProductionProvider(
+                com.sande.mythictrpg.ai.StoryOllamaPresentationProvider.INSTANCE);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.ai.StoryOllamaPresentationProvider::stopped);
         StructureVisualEvaluationGateway.INSTANCE.configureProductionProvider(
                 OllamaStructureVisionProvider.INSTANCE);
+        NeoForge.EVENT_BUS.addListener(AiCallCommands::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(AiTestCommands::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.MemoryCommands::register);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.DialogueMemoryBridge::onTick);
+        com.sande.mythictrpg.rumor.SocialReview.configure(com.sande.mythai.response.memory.SocialReviewProvider.INSTANCE);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.SocialReviewProvider::stopped);
         NeoForge.EVENT_BUS.addListener(AiTestChatEvents::onServerChat);
         NeoForge.EVENT_BUS.addListener(AiTestChatEvents::onPlayerLoggedOut);
         LOGGER.info("MythAI response engine ready (Ollama={}, model={})",

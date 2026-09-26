@@ -173,6 +173,7 @@ mythaiaicontent:olympus_demeter
 | `questListIds` | 아니오 | 이 NPC가 제안할 수 있는 퀘스트 목록 ID 배열 |
 | `signatureExampleIds` | 예 | 이 NPC가 특별히 참조할 예시대화 ID 배열 |
 | `relationshipGuidelines` | 아니오 | 관계 단계별 말투와 태도 지침 |
+| `fieldDisclosure` | 아니오 | 필드별 전체 청중 공개 규칙. 미지정 필드는 기존 공개 persona로 유지 |
 
 ## 5. 퀘스트 목록 연결
 
@@ -227,3 +228,20 @@ R_DEEP_BOND
 - 대화 지침이 게임 기능을 실행했다고 주장하게 만들지 않는가?
 - JSON 문법상 마지막 항목 뒤에 불필요한 쉼표가 없는가?
 
+## 9. 프로필 지식의 선택적 공개 규칙
+
+프로필 문장에 비밀 정체나 과거사가 포함되면 해당 필드에 선택 `fieldDisclosure`를 작성할 수 있다. 기존 자료에는 필수 변경이 없으며 자동으로 비밀 여부를 추측하거나 정식 설정을 다시 쓰지 않는다.
+
+```json
+"fieldDisclosure": {
+  "description": { "mode": "PRIVATE_ROOM", "allowedGodIds": ["mythictrpg:demeter"] },
+  "identity": { "mode": "NEVER" },
+  "examples": { "mode": "PUBLIC" }
+}
+```
+
+지원 키는 `displayName`, `identity`, `description`, `personality`, `values`, `speechStyles`, `dialogueGuidelines`, `situationGuidelines`, `repetitionGuidelines`, `restrictions`, `characterTags`, `relationshipGuidelines`, `examples`, `socialRelationTags`다. 정의되지 않은 키나 공개규칙 내부의 오타 필드는 reload를 거부한다. `mode`와 `allowedGodIds`의 정확한 뜻은 [콘텐츠 작성 가이드](AI_CONTENT_REGISTRY_CONTENT_AUTHORING_GUIDE.md#대화방-공개-규칙--선택-필드-기존-자료-호환)를 따른다.
+
+금지된 문자열은 빈 문자열, 목록/맵은 빈 값으로 사전 투영하며 다른 성격·가치·말투는 그대로 보존한다. 예를 들어 비밀 과거사인 `description`을 차단해도 공개 `personality`를 친절한 성격으로 바꾸지 않는다. `identity`를 숨기는 필터는 AI 프롬프트용이고 실제 게임의 신 ID/표시명/등장 판정 원본을 바꾸지 않는다. 정체 공개 자체는 게임의 식별 정책도 함께 설정해야 한다.
+
+한 필드에 공개 성격과 비밀 사건을 섞으면 필드 전체를 숨겨야 한다. 구체적인 비밀 사실은 단계형 로어로 분리하고 `loreKnowledge`로 보유수준을 지정하는 편이 좋다. `PRIVATE_ROOM`은 **현재 비공개 방의 플레이어 전원**에게 허용한다는 작성자의 명시 권한이므로, “친밀한 플레이어 한 명만 알 수 있음”과 혼동하지 않는다. 그런 조건은 별도 게임 권한/공개 정책이 필요하며 현재 자동 부여하지 않는다.

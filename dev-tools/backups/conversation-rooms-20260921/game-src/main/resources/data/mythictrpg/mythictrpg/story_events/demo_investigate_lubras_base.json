@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "narrativeRole": "SIDE",
+  "scope": "PLAYER",
+  "triggers": [
+    {"signal": "mythictrpg:story_hook_accepted", "subject": "mythictrpg:investigate_lubras_base", "mode": "IMMEDIATE"}
+  ],
+  "prerequisites": {"type": "mythictrpg:story_fact", "fact": "mythictrpg:wanderer_occupies_lubras_base", "scope": "SERVER", "expected": true},
+  "actors": [{"role": "speaker", "actor": "mythictrpg:aphrodite"}],
+  "repeatPolicy": {"type": "ONCE"},
+  "resolutionPolicy": "FIXED",
+  "outcomes": [{
+    "id": "mythictrpg:clue_learned",
+    "effects": [
+      {"effectId": "mythictrpg:aphrodite_knows_clue", "type": "GRANT_KNOWLEDGE", "holder": "ACTOR", "actor": "mythictrpg:aphrodite", "fact": "mythictrpg:wanderer_occupies_lubras_base", "level": 1, "disclosurePolicy": "mythictrpg:full"},
+      {"effectId": "mythictrpg:grant_clue", "type": "GRANT_KNOWLEDGE", "holder": "TRIGGER_PLAYER", "fact": "mythictrpg:wanderer_occupies_lubras_base", "level": 1, "disclosurePolicy": "mythictrpg:full"},
+      {"effectId": "mythictrpg:clue_line", "type": "EMIT_PRESENTATION", "presentation": "mythictrpg:lubras_investigation_clue", "audience": "TRIGGER_PLAYER"}
+    ]
+  }],
+  "failurePolicy": "BLOCK_AND_REPORT"
+}

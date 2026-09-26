@@ -79,6 +79,26 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft"
         }
 
+        questParticipationGameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file(providers.gradleProperty('questTestDirectory')
+                    .orElse('build/quest-participation-gametest-runtime').get())
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'mythictrpg_quest_participation,minecraft'
+        }
+
+        dialogueTestGameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file('build/dialogue-test-gametest-runtime')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'mythictrpg_dialogue_test,minecraft'
+        }
+        roomIntegrationGameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file(providers.gradleProperty('roomTestDirectory')
+                    .getOrElse('build/room-integration-gametest-runtime'))
+            systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('roomTestNamespaces')
+                    .getOrElse('mythictrpg_room_integration,minecraft')
+        }
+
         data {
             data()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
@@ -100,7 +120,8 @@ neoForge {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            logLevel = org.slf4j.event.Level.DEBUG
+            logLevel = name in ['questParticipationGameTestServer', 'dialogueTestGameTestServer', 'roomIntegrationGameTestServer']
+                    ? org.slf4j.event.Level.INFO : org.slf4j.event.Level.DEBUG
         }
     }
 
@@ -136,6 +157,11 @@ dependencies {
             '../external-mods/ftb-library-neoforge-2101.1.35.jar',
             '../external-mods/ftb-teams-neoforge-2101.1.11.jar',
             '../external-mods/ftb-quests-neoforge-2101.1.34.jar')
+    // Opt-in combined-module GameTest. Never changes the installed test server or uses the legacy combined JAR.
+    if (providers.gradleProperty('roomAiIntegration').getOrElse('false') == 'true') {
+        localRuntime files('../mythai-ai-response/build/libs/mythai_ai_response-0.1.17.jar',
+                '../mythai-ai-content-registry/build/libs/mythaiaicontent-0.1.1.jar')
+    }
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -207,8 +233,172 @@ tasks.register('memoryFoundationTest', JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.sande.mythictrpg.rumor.RumorLedgerTest'
 }
+tasks.register('courierStageTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.rumor.CourierStageTest'
+}
+tasks.named('check') { dependsOn 'courierStageTest', 'memoryFoundationTest' }
+tasks.register('reputationStageTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.rumor.ReputationStageTest'
+    def artifacts = layout.buildDirectory.dir('reputation-stage07-test-artifacts')
+    workingDir artifacts
+    doFirst { artifacts.get().asFile.mkdirs() }
+}
+tasks.named('check') { dependsOn 'reputationStageTest' }
+tasks.register('socialPipelineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.rumor.SocialPipelineTest'
+    def artifacts = layout.buildDirectory.dir('social-pipeline-test-artifacts')
+    workingDir artifacts
+    doFirst { artifacts.get().asFile.mkdirs() }
+}
+tasks.named('check') { dependsOn 'socialPipelineTest' }
+
+tasks.register('dialogueTestScopeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.server.TestConversationScopeTest'
+}
+tasks.named('check') { dependsOn 'dialogueTestScopeTest' }
+
+tasks.register('questParticipationTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.quest.QuestParticipationTest'
+}
+tasks.named('check') { dependsOn 'questParticipationTest' }
+
+// Reuse already-provided NeoForge/Minecraft Gson and ASM for server-free file/bytecode tests.
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+
+tasks.register('actionLedgerTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.ledger.ActionLedgerTest'
+    args layout.buildDirectory.dir('action-ledger-test-artifacts').get().asFile.absolutePath
+}
+
+tasks.named('check') { dependsOn 'actionLedgerTest' }
+
+tasks.register('godWatchTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.watch.GodWatchTest'
+    args layout.buildDirectory.dir('god-watch-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'godWatchTest' }
+tasks.register('experienceStageTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.experiencecontract.ExperienceStageTest'
+    args layout.buildDirectory.dir('experience-stage-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'experienceStageTest' }
+
+tasks.register('actionDetailTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.ledger.detail.ActionDetailTest'
+    args layout.buildDirectory.dir('action-detail-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'actionDetailTest' }
+
+tasks.register('watchRewardTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.quest.reward.WatchRewardTest'
+}
+tasks.named('check') { dependsOn 'watchRewardTest' }
+tasks.register('latestWatchPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.watch.LatestWatchPolicyTest'
+    args layout.buildDirectory.dir('latest-policy-test-artifacts').get().asFile.absolutePath
+}
+tasks.register('miningPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.metric.MiningPolicyTest'
+}
+tasks.named('check') { dependsOn 'latestWatchPolicyTest', 'miningPolicyTest' }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+tasks.register('conversationRoomTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.room.ConversationRoomLedgerTest'
+}
+tasks.register('roomActionGatewayTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.action.AiActionGatewayRoomTest'
+    args projectDir.absolutePath
+}
+tasks.register('connectedBiomeRegionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.region.ConnectedBiomeRegionsTest'
+}
+tasks.register('roomHudTextTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.room.RoomHudTextTest'
+}
+tasks.register('questParticipationRoomTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.quest.QuestParticipationRoomTest'
+    args projectDir.absolutePath
+}
+tasks.named('check') { dependsOn 'conversationRoomTest', 'connectedBiomeRegionTest', 'roomActionGatewayTest', 'roomHudTextTest', 'questParticipationRoomTest' }
+
+tasks.register('roomDialoguePublisherTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.room.RoomDialoguePublisherTest'
+}
+tasks.named('check') { dependsOn 'roomDialoguePublisherTest' }
+tasks.register('godRelationRoomContextTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.relation.GodRelationRoomContextTest'
+}
+tasks.register('roomTurnSequenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.room.RoomTurnSequenceTest'
+}
+tasks.named('check') { dependsOn 'godRelationRoomContextTest', 'roomTurnSequenceTest' }
+tasks.register('storyHookTokenRoomTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.story.presentation.StoryHookTokenRoomTest'
+    args projectDir.absolutePath, layout.buildDirectory.dir('story-hook-fixture').get().asFile.absolutePath
+}
+tasks.register('storyExternalEffectReceiptsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.story.runtime.StoryExternalEffectReceiptsTest'
+}
+tasks.register('watchExactEvidenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.gameplay.watch.WatchExactEvidenceTest'
+    args layout.buildDirectory.dir('watch-exact-evidence-tests').get().asFile.absolutePath
+}
+tasks.register('experiencePortableEvidenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.experiencecontract.ExperiencePortableEvidenceTest'
+}
+// Offline suites have main entry points, not JUnit methods.
+tasks.named('test', Test) { failOnNoDiscoveredTests = false }
+tasks.named('check') { dependsOn 'storyHookTokenRoomTest', 'storyExternalEffectReceiptsTest',
+        'watchExactEvidenceTest', 'experiencePortableEvidenceTest' }
 idea {
     module {
         downloadSources = true

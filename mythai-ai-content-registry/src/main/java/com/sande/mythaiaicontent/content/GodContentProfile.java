@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /** Immutable base content for one existing God ID. It contains no relationship, quest progress, memory, or runtime state. */
 public record GodContentProfile(ResourceLocation contentId, ResourceLocation godId, String displayName,
@@ -15,7 +16,23 @@ public record GodContentProfile(ResourceLocation contentId, ResourceLocation god
         Map<String, List<String>> repetitionGuidelines,
         List<String> restrictions, List<String> characterTags, List<LoreKnowledge> loreKnowledge,
         List<ResourceLocation> questListIds,
-        List<ResourceLocation> signatureExampleIds, Map<RelationshipTier, List<String>> relationshipGuidelines) {
+        List<ResourceLocation> signatureExampleIds, Map<RelationshipTier, List<String>> relationshipGuidelines,
+        Map<String, ContentDisclosure> fieldDisclosure) {
+    public static final Set<String> DISCLOSURE_FIELDS = Set.of("displayName", "identity", "description", "personality",
+            "values", "speechStyles", "dialogueGuidelines", "situationGuidelines", "repetitionGuidelines",
+            "restrictions", "characterTags", "relationshipGuidelines", "examples", "socialRelationTags");
+
+    /** Source/binary-compatible construction for profiles that predate optional field disclosure. */
+    public GodContentProfile(ResourceLocation contentId, ResourceLocation godId, String displayName,
+            String identity, String description, List<String> personality, List<String> values,
+            List<String> speechStyles, List<String> dialogueGuidelines, Map<String, List<String>> situationGuidelines,
+            Map<String, List<String>> repetitionGuidelines, List<String> restrictions, List<String> characterTags,
+            List<LoreKnowledge> loreKnowledge, List<ResourceLocation> questListIds,
+            List<ResourceLocation> signatureExampleIds, Map<RelationshipTier, List<String>> relationshipGuidelines) {
+        this(contentId, godId, displayName, identity, description, personality, values, speechStyles,
+                dialogueGuidelines, situationGuidelines, repetitionGuidelines, restrictions, characterTags,
+                loreKnowledge, questListIds, signatureExampleIds, relationshipGuidelines, Map.of());
+    }
     public GodContentProfile {
         Objects.requireNonNull(contentId, "contentId");
         Objects.requireNonNull(godId, "godId");
@@ -34,6 +51,9 @@ public record GodContentProfile(ResourceLocation contentId, ResourceLocation god
         questListIds = immutableIds(questListIds);
         signatureExampleIds = immutableIds(signatureExampleIds);
         relationshipGuidelines = immutableRelationshipGuidelines(relationshipGuidelines);
+        fieldDisclosure = fieldDisclosure == null ? Map.of() : Map.copyOf(fieldDisclosure);
+        if (!DISCLOSURE_FIELDS.containsAll(fieldDisclosure.keySet()))
+            throw new IllegalArgumentException("Unknown profile fieldDisclosure key");
     }
 
     private static String required(String value, String field) {

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "questListId": "example:quest_disclosure",
+  "progressTrackId": "example:progress",
+  "displayName": "미적용 공개정책 작성 예제",
+  "quests": [
+    {
+      "questId": "example:private_candidate",
+      "title": "작성 예제 제목",
+      "content": "비공개 방의 허용된 청중에게만 AI가 참고할 예제 설명. 정식 게임 콘텐츠가 아니다.",
+      "disclosure": {
+        "mode": "PRIVATE_ROOM",
+        "allowedGodIds": ["example:permitted_listener"]
+      },
+      "objectives": [{"type": "collect_item", "description": "예제 목표", "parameters": {"itemId": "minecraft:wheat", "count": 1}}],
+      "rewards": [{"type": "item", "description": "예제 보상", "parameters": {"itemId": "minecraft:bread", "count": 1}}],
+      "acceptanceConditions": [],
+      "progressOnClear": 0
+    }
+  ]
+}

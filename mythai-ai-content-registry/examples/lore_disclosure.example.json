@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "title": "공개 정책 작성 예시 — 정식 세계관 아님",
+  "secrecy": "SECRET",
+  "keywords": ["스키마 예시"],
+  "knowledgeLevels": [
+    {
+      "level": 1,
+      "content": "이 단계의 예시 정보는 모두에게 전달해도 된다.",
+      "disclosure": { "mode": "PUBLIC" }
+    },
+    {
+      "level": 2,
+      "content": "이 예시 정보는 비공개 방의 현재 플레이어 모두에게 전달할 수 있다. 다른 참가 신은 허용 목록 안이어야 한다.",
+      "disclosure": {
+        "mode": "PRIVATE_ROOM",
+        "allowedGodIds": ["mythictrpg:demeter"]
+      }
+    },
+    {
+      "level": 3,
+      "content": "신이 알고 있어도 대화방에 전달해서는 안 되는 예시 정보다.",
+      "disclosure": { "mode": "NEVER" }
+    }
+  ]
+}

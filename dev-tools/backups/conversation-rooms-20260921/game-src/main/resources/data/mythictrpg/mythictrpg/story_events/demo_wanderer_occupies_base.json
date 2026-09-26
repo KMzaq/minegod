@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "narrativeRole": "WORLD",
+  "scope": "SERVER",
+  "triggers": [
+    {"signal": "mythictrpg:scheduled_due", "subject": "mythictrpg:demo_wanderer_occupies_base", "mode": "IMMEDIATE"}
+  ],
+  "prerequisites": {"type": "mythictrpg:all", "conditions": [
+    {"type": "mythictrpg:story_fact", "fact": "mythictrpg:wanderer_released", "scope": "SERVER", "expected": true},
+    {"type": "mythictrpg:story_location_empty", "location": "mythictrpg:lubras_hell_base"}
+  ]},
+  "actors": [
+    {"role": "owner", "actor": "mythictrpg:lubras"},
+    {"role": "intruder", "actor": "mythictrpg:sealed_wanderer"}
+  ],
+  "repeatPolicy": {"type": "ONCE"},
+  "resolutionPolicy": "FIXED",
+  "outcomes": [{
+    "id": "mythictrpg:occupied",
+    "effects": [
+      {"effectId": "mythictrpg:move_wanderer", "type": "MOVE_ACTOR", "actor": "mythictrpg:sealed_wanderer", "location": "mythictrpg:lubras_hell_base"},
+      {"effectId": "mythictrpg:set_occupied", "type": "SET_FACT", "fact": "mythictrpg:wanderer_occupies_lubras_base", "scope": "SERVER", "value": true},
+      {"effectId": "mythictrpg:inform_lubras", "type": "GRANT_KNOWLEDGE", "holder": "ACTOR", "actor": "mythictrpg:lubras", "fact": "mythictrpg:wanderer_occupies_lubras_base", "level": 2, "disclosurePolicy": "mythictrpg:lubras_cover"},
+      {"effectId": "mythictrpg:make_lubras_absent", "type": "SET_ACTOR_STATE", "actor": "mythictrpg:lubras", "availability": "ABSENT"},
+      {"effectId": "mythictrpg:departure_line", "type": "EMIT_PRESENTATION", "presentation": "mythictrpg:lubras_amused_departure", "audience": "ALL_ONLINE_PLAYERS"},
+      {"effectId": "mythictrpg:schedule_lubras_return", "type": "SCHEDULE_EVENT", "event": "mythictrpg:demo_lubras_returns", "delayTicks": 40}
+    ]
+  }],
+  "failurePolicy": "BLOCK_AND_REPORT"
+}

@@ -8,9 +8,14 @@ import java.util.Set;
 
 /** Static writing example, available globally when knownBy is empty or only to listed existing God IDs otherwise. */
 public record DialogueExample(ResourceLocation id, Set<String> tags, Set<ResourceLocation> knownBy,
-        List<DialogueExampleTurn> dialogue) {
+        List<DialogueExampleTurn> dialogue, ContentDisclosure disclosure) {
+    public DialogueExample(ResourceLocation id, Set<String> tags, Set<ResourceLocation> knownBy,
+            List<DialogueExampleTurn> dialogue) {
+        this(id, tags, knownBy, dialogue, ContentDisclosure.PUBLIC);
+    }
     public DialogueExample {
         Objects.requireNonNull(id, "id");
+        Objects.requireNonNull(disclosure, "disclosure");
         tags = tags == null ? Set.of() : tags.stream().filter(Objects::nonNull).map(String::trim)
                 .filter(tag -> !tag.isEmpty()).collect(java.util.stream.Collectors.toUnmodifiableSet());
         if (tags.isEmpty()) {

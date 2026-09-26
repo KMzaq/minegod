@@ -43,7 +43,9 @@ public final class StoryDisclosureService {
         if (!server.isSameThread()) throw new IllegalStateException("Story disclosure must run on server thread");
         FactDefinition fact = StoryDefinitionManager.INSTANCE.fact(factId).orElse(null);
         if (fact == null || level < 1 || level > fact.maximumLevel()) return false;
-        StoryRuntimeState.get(server).grantKnowledge(StoryKnowledgeHolder.player(audiencePlayerId), factId,
+        var state = StoryRuntimeState.get(server);
+        if (state.knowledgeLevel(StoryKnowledgeHolder.player(audiencePlayerId), factId) >= level) return true;
+        state.grantKnowledge(StoryKnowledgeHolder.player(audiencePlayerId), factId,
                 level, disclosurePolicyId, sourceInstanceId, server.overworld().getGameTime());
         return true;
     }
@@ -78,7 +80,7 @@ public final class StoryDisclosureService {
                 if (cover == null || !cover.allowedSpeakerActorIds().contains(speakerActorId))
                     yield DisclosureResult.withheld("Cover Story is unavailable for this speaker");
                 yield new DisclosureResult(DisclosureKind.AUTHORED_COVER_STORY, 0,
-                        cover.canonicalTranslationKeys(), "");
+                        cover.canonicalTranslationKeys(), "", Optional.of(cover.id()));
             }
         };
     }
@@ -94,10 +96,14 @@ public final class StoryDisclosureService {
     public enum DisclosureKind { TRUE_FACT, AUTHORED_COVER_STORY, WITHHELD, UNKNOWN }
 
     public record DisclosureResult(DisclosureKind kind, int disclosedLevel,
-            List<String> canonicalTranslationKeys, String reason) {
+            List<String> canonicalTranslationKeys, String reason, Optional<ResourceLocation> coverStoryId) {
+        public DisclosureResult(DisclosureKind kind, int disclosedLevel, List<String> keys, String reason) {
+            this(kind, disclosedLevel, keys, reason, Optional.empty());
+        }
         public DisclosureResult {
             canonicalTranslationKeys = List.copyOf(canonicalTranslationKeys);
             reason = reason == null ? "" : reason;
+            coverStoryId = java.util.Objects.requireNonNull(coverStoryId);
         }
         static DisclosureResult withheld(String reason) {
             return new DisclosureResult(DisclosureKind.WITHHELD, 0, List.of(), reason);

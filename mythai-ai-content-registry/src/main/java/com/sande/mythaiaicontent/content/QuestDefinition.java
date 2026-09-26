@@ -8,7 +8,13 @@ import java.util.Objects;
 /** Static quest authoring data. MythicTRPG remains responsible for validation, progress, completion, and rewards. */
 public record QuestDefinition(ResourceLocation questId, String title, String content,
         List<QuestContentNode> objectives, List<QuestContentNode> rewards,
-        List<QuestContentNode> acceptanceConditions, int progressOnClear) {
+        List<QuestContentNode> acceptanceConditions, int progressOnClear, ContentDisclosure disclosure) {
+    public QuestDefinition(ResourceLocation questId, String title, String content,
+            List<QuestContentNode> objectives, List<QuestContentNode> rewards,
+            List<QuestContentNode> acceptanceConditions, int progressOnClear) {
+        this(questId, title, content, objectives, rewards, acceptanceConditions, progressOnClear, ContentDisclosure.PUBLIC);
+    }
+
     public QuestDefinition {
         Objects.requireNonNull(questId, "questId");
         title = required(title, "title");
@@ -17,6 +23,7 @@ public record QuestDefinition(ResourceLocation questId, String title, String con
         rewards = immutableNodes(rewards, "rewards");
         acceptanceConditions = acceptanceConditions == null ? List.of() : List.copyOf(acceptanceConditions);
         acceptanceConditions.forEach(node -> Objects.requireNonNull(node, "acceptanceConditions contains null"));
+        disclosure = disclosure == null ? ContentDisclosure.PUBLIC : disclosure;
         if (progressOnClear < 0 || progressOnClear > 100) {
             throw new IllegalArgumentException("progressOnClear must be between 0 and 100");
         }

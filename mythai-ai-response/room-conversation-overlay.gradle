@@ -1,0 +1,122 @@
+// Reuse the final legacy prompt implementation after every earlier checked overlay.
+// No room request may consult the adapter's player-keyed sessions or ambient game binding.
+ext.patchRoomConversationAdapter = { String source ->
+    String begin = '    private static List<AiDialogueModels.OllamaMessage> generationMessages(ServerPlayer player, Session session, String text,'
+    String end = '    private static List<String> promptTags('
+    int from = source.indexOf(begin), to = source.indexOf(end, from)
+    if (from < 0 || to < 0 || source.indexOf(begin, from + 1) >= 0)
+        throw new GradleException('Room overlay generation helper anchor missing/ambiguous')
+    String roomGeneration = source.substring(from, to).replace(begin,
+            '    private static List<AiDialogueModels.OllamaMessage> roomGenerationMessages(String playerName, String roomGameContext, Session session, String text,')
+    int gameFrom = roomGeneration.indexOf('        context.append("\\n[CURRENT_GAME_CONTEXT]')
+    int gameTo = roomGeneration.indexOf('        if (!session.playActivity.isBlank())', gameFrom)
+    if (gameFrom < 0 || gameTo < 0) throw new GradleException('Room game context anchor missing')
+    roomGeneration = roomGeneration.substring(0, gameFrom) + '''        context.append("\\n[CURRENT_GAME_CONTEXT]\\nplayer: ").append(playerName)
+                .append("\\nNPC participants: ").append(joinIds(session.participants))
+                .append("\\n").append(roomGameContext).append("\\n");
+''' + roomGeneration.substring(gameTo)
+    int questFrom = roomGeneration.indexOf('        List<AiQuestContentBridge.QuestCandidate> questCandidates')
+    int questTo = roomGeneration.indexOf('        context.append("\\n[RESPONSE_INTENT]', questFrom)
+    if (questFrom < 0 || questTo < 0) throw new GradleException('Room ambient quest context anchor missing')
+    roomGeneration = roomGeneration.substring(0, questFrom) + roomGeneration.substring(questTo)
+    roomGeneration = roomGeneration.replace('test-only Minecraft RPG conversation', 'room-scoped Minecraft RPG conversation')
+    roomGeneration = roomGeneration.replace('In ordinary conversation, proposals must be [].',
+            'Gameplay proposals need server-authorized capabilities. Room-control proposals may use the supplied ROOM_SCOPE rules.')
+    roomGeneration = roomGeneration.replace('TURN_SPEAKERS. Obey TURN_DIRECTIVE exactly.',
+            'TURN_SPEAKERS. TURN_DIRECTIVE governs speech and gameplay proposals only. Conversation-control proposals are governed independently by ROOM_SCOPE, even when TURN_DIRECTIVE says proposals must be empty.')
+    roomGeneration = roomGeneration.replace('session.memoryTurn.recall() != null || session.memoryTurn.hasExperiences())));', 'true)));')
+    if (roomGeneration.contains('player.') || roomGeneration.contains('contextFor(player')
+            || roomGeneration.contains('candidatesFor(')) throw new GradleException('Room prompt retained an ambient player access')
+
+    String wrapper = '''
+    /** Request-local wrapper around the SAME tested classifier, retrieval, persona, directive and generation code. */
+    static final class RoomPrompt {
+        private final com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request;
+        private final Session session;
+        private final Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;
+        private GenerationPlan plan;
+
+        RoomPrompt(com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request,
+                DialogueMemoryBridge.Turn memory,
+                Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents) {
+            this(request, memory, contents, "");
+        }
+        RoomPrompt(com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request,
+                DialogueMemoryBridge.Turn memory,
+                Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents, String priorActivity) {
+            this.request = request;
+            this.contents = Map.copyOf(contents);
+            var state = request.speakerState();
+            var content = contents.get(request.speakerGodId());
+            this.session = new Session(request.playerId(), request.godIds(), state.relationshipTier(),
+                    state.emotionTag(), content.profile());
+            session.turnSpeaker = request.speakerGodId();
+            session.memoryTurn = memory;
+            session.playActivity = priorActivity;
+            for (var line : request.history()) {
+                session.history.add(new Transcript(line.role(), line.speakerId(), line.name(), line.text()));
+                if ("PLAYER".equals(line.role())) updatePlayActivity(session, line.text());
+            }
+            session.history.add(new Transcript("PLAYER", request.playerId().toString(), request.playerName(), request.currentText()));
+            updatePlayActivity(session, request.currentText());
+        }
+
+        List<AiDialogueModels.OllamaMessage> classificationMessages() {
+            return classifierMessages(session, request.currentText(), intentClassificationExamples(contents));
+        }
+        String activity() { return session.playActivity; }
+        ConversationIntent fastIntent() {
+            var directive = DialogueTurnDirective.plan(request.currentText(), session.history.stream().map(Transcript::text).toList(),
+                    request.godIds().size(), ConversationIntent.heuristicFallback());
+            if (isDirectSocialTurn(directive)) return ConversationIntent.heuristicFallback();
+            return hasExplicitRequest(request.currentText()) ? null : simpleCasualFeelingIntent(request.currentText());
+        }
+
+        List<AiDialogueModels.OllamaMessage> generation(ConversationIntent classified) {
+            var intent = resolveConversationIntent(classified, request.currentText(), session);
+            intent = MemoryRecallPolicy.effectiveIntent(intent, session.memoryTurn.recalling());
+            var directive = session.memoryTurn.recalling() ? DialogueTurnDirective.recall()
+                    : DialogueTurnDirective.plan(request.currentText(), session.history.stream().map(Transcript::text).toList(),
+                            request.godIds().size(), intent);
+            plan = new GenerationPlan(directive, intent, List.of(request.speakerGodId()));
+            var content = contents.get(request.speakerGodId());
+            // The registry already intersected ownership and explicit disclosure for this exact audience.
+            var lore = directive.isSocialOnly() ? List.<AiTestContentRegistryBridge.Lore>of() : selectedLore(content, intent);
+            String gameContext = request.speakerState().gameContext()
+                    + "\\n[ROOM_SCOPE]\\nroom_id=" + request.roomId() + "\\nrevision=" + request.revision()
+                    + "\\npublic=" + request.publicRoom() + "\\nread_only=" + request.readOnly()
+                    + "\\ncurrent_player_id=" + request.playerId()
+                    + "\\nOnly supplied facts and constraints are authoritative. No proposal is an executed action."
+                    + "\\nRoom control proposals are allowed when the conversation warrants them: conversation_leave (the current player"
+                    + " genuinely said farewell and is leaving; targetParticipantIds must be the current player's UUID),"
+                    + " conversation_end (this God ends its own attendance), conversation_invite (targetParticipantIds must identify"
+                    + " a player explicitly listed as eligible in the supplied game context). Never invent an invite target."
+                    + " These controls are proposals, not completed membership changes. Read-only forbids gameplay proposals.";
+            gameContext += "\\nA supplied STORY context may explicitly permit story_disclose (canonical fact selection) and story_event_hook."
+                    + " These use only its supplied aliases and audience permissions, independently of social intent."
+                    + " Never invent an event or claim a proposed hook already occurred. Read-only still forbids story_event_hook.";
+            while (true) {
+                try {
+                    return roomGenerationMessages(request.playerName(), gameContext, session, request.currentText(), contents,
+                            plan, promptTags(session, content, intent), lore, ConversationDynamics.from(session, request.currentText(), intent));
+                } catch (IllegalArgumentException overBudget) {
+                    if (session.history.size() <= 1) throw overBudget;
+                    session.history.removeFirst(); // Preserve permissions, persona, current input and latest conversation.
+                }
+            }
+        }
+
+        List<AiDialogueModels.Speech> speech(AiDialogueModels.StructuredAiResult output) {
+            return usableSpeeches(output, plan, session);
+        }
+        boolean needsRepair(AiDialogueModels.StructuredAiResult output) {
+            return speech(output).stream().anyMatch(speech -> requiresCasualRepair(plan.directive(), speech.text()));
+        }
+        boolean gameplayProposalsAllowed() { return !request.readOnly() && plan.directive().proposalsAllowed(); }
+    }
+
+'''
+    int tail = source.lastIndexOf('\n}')
+    if (tail < 0) throw new GradleException('Room overlay class tail missing')
+    return source.substring(0, tail) + '\n' + roomGeneration + wrapper + source.substring(tail)
+}

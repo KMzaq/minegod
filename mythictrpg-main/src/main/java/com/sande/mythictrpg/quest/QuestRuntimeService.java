@@ -42,12 +42,31 @@ public final class QuestRuntimeService {
 
     public QuestOperationResult assign(ServerPlayer player, ResourceLocation questId,
             ResourceLocation giverGodId) {
+        return assign(player, questId, giverGodId, null);
+    }
+
+    /** Explicit room scope is rechecked without changing any legacy player conversation state. */
+    public QuestOperationResult assignRoom(ServerPlayer player, ResourceLocation questId,
+            ResourceLocation giverGodId, com.sande.mythictrpg.ai.action.AiActionScope roomScope) {
+        requireServerThread(player.server);
+        if (roomScope == null || !roomScope.actingGodId().equals(giverGodId)
+                || !com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE.actionCurrent(player, roomScope.sessionId(), giverGodId)) {
+            return result(QuestOperationResult.Status.NOT_ASSIGNED, questId, "The quest offer room is no longer current");
+        }
+        return assign(player, questId, giverGodId, roomScope);
+    }
+
+    private QuestOperationResult assign(ServerPlayer player, ResourceLocation questId,
+            ResourceLocation giverGodId, com.sande.mythictrpg.ai.action.AiActionScope roomScope) {
         requireServerThread(player.server);
         QuestAssignmentValidation validation = validateAssignment(player, questId, giverGodId);
         if (!validation.allowed()) {
             return result(validation.rejectionStatus(), questId, validation.reason());
         }
         FtbQuestBinding binding = FtbQuestBindingManager.INSTANCE.find(questId).orElse(null);
+        if (binding.participation().isPresent()) return roomScope == null
+                ? QuestParticipationService.INSTANCE.offer(player, binding, giverGodId)
+                : QuestParticipationService.INSTANCE.offerRoom(player, binding, giverGodId, roomScope);
         if (!FtbQuestAdapter.INSTANCE.activate(player, binding)) {
             return result(QuestOperationResult.Status.FTB_DEFINITION_MISSING, questId,
                     "The mapped FTB quest or assignment marker is not loaded");
@@ -62,6 +81,8 @@ public final class QuestRuntimeService {
             GodAttentionState.get(player.server).recordEntryAssignment(
                     giverGodId, questId, player.getUUID(), assignedAt);
         }
+        com.sande.mythictrpg.gameplay.ledger.detail.ImportantEvents.transition(player.server,player.getUUID(),questId,
+                "ASSIGNED",assignedAt.toString(),assignedAt,null);
         QuestReminderState.get(player.server).ensure(questId, player.getUUID(),
                 player.server.overworld().getGameTime());
         player.sendSystemMessage(Component.literal("[퀘스트 수주] " + questId)
@@ -83,6 +104,12 @@ public final class QuestRuntimeService {
                     "No MythicTRPG to FTB quest binding exists");
         }
         MythicQuestState state = MythicQuestState.get(player.server);
+        if (!state.isWritable()) return QuestAssignmentValidation.reject(QuestOperationResult.Status.INTERNAL_ERROR,
+                "Quest state is unavailable");
+        if (binding.participation().isPresent() && (state.participationRun(questId).isPresent()
+                || !state.assignedPlayers(questId).isEmpty()))
+            return QuestAssignmentValidation.reject(QuestOperationResult.Status.PARTICIPATION_CLOSED,
+                    "이 퀘스트의 수주자가 이미 확정됐습니다.");
         if (state.isCompleted(questId)) {
             return QuestAssignmentValidation.reject(QuestOperationResult.Status.ALREADY_COMPLETED,
                     "The server-wide quest has already been completed");
@@ -153,7 +180,10 @@ public final class QuestRuntimeService {
                         "아직 네가 맡은 일을 모두 확인하지 못했다. 준비가 되면 다시 찾아와라.");
                 continue;
             }
-            results.add(commit(player, binding, Optional.of(npcId), Instant.now(), true, true, true));
+            if (binding.participation().isPresent()) {
+                var run = MythicQuestState.get(server).participationRun(binding.questId()).orElseThrow();
+                results.add(QuestParticipationService.INSTANCE.submit(player, binding, npcId, run.total(playerId)));
+            } else results.add(commit(player, binding, Optional.of(npcId), Instant.now(), true, true, true));
         }
         return List.copyOf(results);
     }
@@ -161,7 +191,7 @@ public final class QuestRuntimeService {
     /** Invoked by the FTB completion event for native AUTO quests. */
     void onFtbQuestCompleted(long ftbQuestId, List<ServerPlayer> onlineMembers, Instant time) {
         FtbQuestBinding binding = FtbQuestBindingManager.INSTANCE.findByFtbQuestId(ftbQuestId).orElse(null);
-        if (binding == null || binding.completionMode() != QuestCompletionMode.AUTO
+        if (binding == null || binding.participation().isPresent() || binding.completionMode() != QuestCompletionMode.AUTO
                 || onlineMembers.isEmpty()) {
             return;
         }
@@ -259,6 +289,7 @@ public final class QuestRuntimeService {
                     "Another player already completed this server-wide quest");
         }
 
+        com.sande.mythictrpg.gameplay.ledger.detail.DetailEvents.quest(player, committed.orElseThrow());
         MythicWorldState.get(player.server).applyQuestClearProgress(
                 binding.progressTrackId(), binding.progressOnClear());
         if (completeInFtb && !FtbQuestAdapter.INSTANCE.complete(player, binding)) {
@@ -270,6 +301,8 @@ public final class QuestRuntimeService {
             if (participant.equals(player.getUUID())) {
                 continue;
             }
+            com.sande.mythictrpg.gameplay.ledger.detail.ImportantEvents.transition(player.server,participant,binding.questId(),
+                    "INVALIDATED_BY_GLOBAL_COMPLETION",time.toString(),time,null);
             ServerPlayer other = player.server.getPlayerList().getPlayer(participant);
             if (other != null) {
                 FtbQuestAdapter.INSTANCE.hideInvalidated(other, binding);

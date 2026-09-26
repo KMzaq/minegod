@@ -156,9 +156,9 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
         int expected = 1;
         for (JsonElement raw : array(json, "levels")) {
             JsonObject level = object(raw, "levels entry");
-            fields(level, "level", "canonicalTranslationKey");
+            fields(level, "level", "canonicalTranslationKey", "disclosure");
             FactKnowledgeLevel parsed = new FactKnowledgeLevel(integer(level, "level"),
-                    string(level, "canonicalTranslationKey"));
+                    string(level, "canonicalTranslationKey"), optionalRoomDisclosure(level, "disclosure"));
             if (parsed.level() != expected++) throw new IllegalArgumentException("Fact levels must start at 1");
             levels.add(parsed);
         }
@@ -167,9 +167,9 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
     }
 
     private static CoverStoryDefinition parseCover(ResourceLocation id, JsonObject json) {
-        fields(json, "schemaVersion", "canonicalTranslationKeys", "allowedSpeakerActorIds"); version(json);
+        fields(json, "schemaVersion", "canonicalTranslationKeys", "allowedSpeakerActorIds", "disclosure"); version(json);
         return new CoverStoryDefinition(id, strings(json, "canonicalTranslationKeys"),
-                ids(json, "allowedSpeakerActorIds"));
+                ids(json, "allowedSpeakerActorIds"), optionalRoomDisclosure(json, "disclosure").orElseGet(RoomAudiencePolicy::ownerOnly));
     }
 
     private static DisclosurePolicy parseDisclosure(ResourceLocation id, JsonObject json) {
@@ -186,7 +186,7 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
     private static PresentationDefinition parsePresentation(ResourceLocation id, JsonObject json) {
         fields(json, "schemaVersion", "kind", "generationPolicy", "canonicalDeliveryPolicy",
                 "speakerActorId", "factRequests", "fallbackTranslationKeys", "performanceTags",
-                "offeredHookIds", "offlineDeliveryPolicy", "maximumAiTurns"); version(json);
+                "offeredHookIds", "offlineDeliveryPolicy", "maximumAiTurns", "roomDisclosure"); version(json);
         List<FactDisclosureRequest> requests = new ArrayList<>();
         for (JsonElement raw : optionalArray(json, "factRequests")) {
             JsonObject value = object(raw, "factRequests entry");
@@ -207,7 +207,8 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
                 json.has("offlineDeliveryPolicy")
                         ? enumValue(json, "offlineDeliveryPolicy", OfflineDeliveryPolicy.class)
                         : OfflineDeliveryPolicy.ON_NEXT_LOGIN,
-                json.has("maximumAiTurns") ? integer(json, "maximumAiTurns") : 1);
+                json.has("maximumAiTurns") ? integer(json, "maximumAiTurns") : 1,
+                optionalRoomDisclosure(json, "roomDisclosure"));
     }
 
     private static EventDefinition parseEvent(ResourceLocation id, JsonObject json) {
@@ -308,12 +309,19 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
     private static HookDefinition parseHook(ResourceLocation id, JsonObject json) {
         fields(json, "schemaVersion", "targetEventId", "allowedSpeakerActorIds", "availabilityConditions",
                 "targetScope", "titleTranslationKey", "summaryTranslationKey", "cooldownTicks",
-                "maximumAcceptances", "confirmationRequired"); version(json);
+                "maximumAcceptances", "confirmationRequired", "disclosure"); version(json);
         return new HookDefinition(id, id(json, "targetEventId"), ids(json, "allowedSpeakerActorIds"),
                 CONDITIONS.parse(json.get("availabilityConditions")), enumValue(json, "targetScope", ScopeType.class),
                 string(json, "titleTranslationKey"), string(json, "summaryTranslationKey"),
                 integer(json, "cooldownTicks"), integer(json, "maximumAcceptances"),
-                bool(json, "confirmationRequired", true));
+                bool(json, "confirmationRequired", true), optionalRoomDisclosure(json, "disclosure").orElseGet(RoomAudiencePolicy::ownerOnly));
+    }
+
+    private static Optional<RoomAudiencePolicy> optionalRoomDisclosure(JsonObject json, String field) {
+        if (!json.has(field)) return Optional.empty();
+        JsonObject rule = object(json.get(field), field);
+        fields(rule, "mode", "allowedGodIds");
+        return Optional.of(new RoomAudiencePolicy(enumValue(rule, "mode", RoomAudienceMode.class), ids(rule, "allowedGodIds")));
     }
 
     private static void validateReferences(Map<ResourceLocation, ActorDefinition> actors,

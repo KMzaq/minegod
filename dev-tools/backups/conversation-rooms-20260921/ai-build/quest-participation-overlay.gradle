@@ -1,0 +1,57 @@
+// Apply after the existing memory overlay, preserving the immutable legacy AI source/JAR.
+ext.patchQuestParticipationAdapter = { String source ->
+    def replace = { String before, String after ->
+        if (!source.contains(before)) throw new GradleException('Quest participation overlay anchor missing: ' + before.take(100))
+        source = source.replace(before, after)
+    }
+    replace('    public void seedNpcTurn(ServerPlayer player, ResourceLocation godId, String text) {', '''    public void observeConversationPeer(ServerPlayer listener, ServerPlayer speaker, String text) {
+        Session session = sessions.get(listener.getUUID());
+        if (session == null) return;
+        // Any pending answer was generated before the new shared line.
+        ++session.turn;
+        session.pending = false;
+        session.history.add(new Transcript("PLAYER", speaker.getUUID().toString(),
+                speaker.getGameProfile().getName(), bounded(text, 1024)));
+        trimHistory(session);
+    }
+
+    private static void sharePlayerLine(ServerPlayer speaker, String text) {
+        for (UUID id : com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.conversationPlayers(speaker)) {
+            if (id.equals(speaker.getUUID())) continue;
+            ServerPlayer listener = speaker.server.getPlayerList().getPlayer(id);
+            if (listener == null) continue;
+            INSTANCE.observeConversationPeer(listener, speaker, text);
+            listener.sendSystemMessage(Component.literal("[대화] " + speaker.getGameProfile().getName() + ": " + text));
+        }
+    }
+
+    public void seedNpcTurn(ServerPlayer player, ResourceLocation godId, String text) {''')
+    replace('        session.pending = true;\n        pruneExperienceHistory(player, session, session.speaker());',
+            '        sharePlayerLine(player, text);\n        session.pending = true;\n        pruneExperienceHistory(player, session, session.speaker());')
+    replace('        context.append(AiQuestContentBridge.attentionPrompt(plan.speakers().getFirst(), player));',
+            '''        context.append(AiQuestContentBridge.attentionPrompt(plan.speakers().getFirst(), player));
+        context.append(com.sande.mythictrpg.quest.QuestParticipationService.INSTANCE.contextFor(player, plan.speakers().getFirst()));''')
+    replace('                .orElse("등록된 퀘스트 정보 없음");',
+            '''                .orElse("등록된 퀘스트 정보 없음");
+        questSummary += com.sande.mythictrpg.quest.QuestParticipationService.INSTANCE.contextFor(player, godId);''')
+    replace('!supported.containsKey(selectedQuestId) || !session.proposedQuestIds.add(selectedQuestId)',
+            '''!supported.containsKey(selectedQuestId) || (com.sande.mythictrpg.quest.FtbQuestBindingManager.INSTANCE
+                        .find(ResourceLocation.parse(selectedQuestId)).flatMap(com.sande.mythictrpg.quest.FtbQuestBinding::participation).isEmpty()
+                        && !session.proposedQuestIds.add(selectedQuestId))''')
+    replace('''    private static void showDialogue(ServerPlayer player, ResourceLocation godId, String displayName, String text) {
+        for (String page : dialoguePages(text, AiDialogueConfig.INSTANCE.settings().responseChunkCharacters())) {''',
+            '''    private static void showDialogue(ServerPlayer player, ResourceLocation godId, String displayName, String text) {
+        for (UUID id : com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.conversationPlayers(player)) {
+            if (id.equals(player.getUUID())) continue;
+            ServerPlayer listener = player.server.getPlayerList().getPlayer(id);
+            if (listener == null) continue;
+            INSTANCE.seedNpcTurn(listener, godId, text);
+            showDialogueOnly(listener, godId, displayName, text);
+        }
+        showDialogueOnly(player, godId, displayName, text);
+    }
+
+    private static void showDialogueOnly(ServerPlayer player, ResourceLocation godId, String displayName, String text) {
+        for (String page : dialoguePages(text, AiDialogueConfig.INSTANCE.settings().responseChunkCharacters())) {''')
+    return source
+}

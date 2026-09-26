@@ -77,8 +77,20 @@ public final class InteractionStartService {
 
         var held = reservation.orElseThrow();
         var interactionId = idGenerator.nextId();
+        com.sande.mythictrpg.ai.region.FixedRoomReservations.Reservation roomReservation = null;
         boolean committed = false;
         try {
+            if (this == INSTANCE && com.sande.mythictrpg.ai.server.ConversationRooms.enabled()) {
+                var player = server.getPlayerList().getPlayer(request.plan().initiatingPlayerId());
+                var gods = new java.util.ArrayList<net.minecraft.resources.ResourceLocation>();
+                gods.add(request.plan().participants().primaryGodId());
+                gods.addAll(request.plan().participants().secondaryGodIds());
+                if (player != null) roomReservation = com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE
+                        .reserveFixed(player, interactionId, gods, com.sande.mythictrpg.ai.room.RecordingScope.STANDARD).orElse(null);
+                if (roomReservation == null) {
+                    return InteractionStartResult.rejected(InteractionStartStatus.RUNTIME_BUSY, InteractionStartReasons.RUNTIME_BUSY);
+                }
+            }
             var encounterResult = encounters.commit(server, request.plan().initiatingPlayerId(),
                     content.manifestedGodIds());
             if (!encounterResult.committed()) {
@@ -128,6 +140,7 @@ public final class InteractionStartService {
             return InteractionStartResult.rejected(InteractionStartStatus.COMMIT_FAILED,
                     InteractionStartReasons.COMMIT_REJECTED);
         } finally {
+            if (roomReservation != null) com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE.releaseFixed(roomReservation);
             runtime.release(held);
         }
     }

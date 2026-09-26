@@ -2,12 +2,17 @@ package com.sande.mythictrpg.ai;
 
 import com.sande.mythictrpg.ai.action.AiActionCapability;
 import com.sande.mythictrpg.ai.action.AiActionCapabilityService;
+import com.sande.mythictrpg.relation.GodRelationTransition;
+import com.sande.mythictrpg.relation.GodRelationTransitionManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 /** Prompt and normalization boundary for game-owned AI action capabilities. */
 final class AiActionCapabilityBridge {
@@ -15,7 +20,16 @@ final class AiActionCapabilityBridge {
     }
 
     static void appendPrompt(StringBuilder context, ResourceLocation godId) {
-        List<AiActionCapability> capabilities = AiActionCapabilityService.capabilitiesFor(godId);
+        appendCapabilities(context, AiActionCapabilityService.capabilitiesFor(godId));
+    }
+
+    /** Room callers must supply the exact game-issued participants, not model-selected targets. */
+    static void appendPrompt(StringBuilder context, ResourceLocation godId, List<ResourceLocation> participants) {
+        appendCapabilities(context, roomCapabilities(AiActionCapabilityService.capabilitiesFor(godId), godId,
+                participants, GodRelationTransitionManager.INSTANCE::find));
+    }
+
+    static void appendCapabilities(StringBuilder context, List<AiActionCapability> capabilities) {
         if (capabilities.isEmpty()) {
             return;
         }
@@ -23,7 +37,7 @@ final class AiActionCapabilityBridge {
         for (AiActionCapability capability : capabilities) {
             context.append("- ").append(capability.promptSummary()).append("\n");
         }
-        context.append("These are proposals, not completed facts. Use exactly the listed type and template_id. ")
+        context.append("These are proposals, not completed facts. Use exactly the listed type and declared parameter keys. ")
                 .append("Do not invent an item, reward, effect, event, count, duration, or target. ")
                 .append("generated_quest_offer is always a SIDE quest: select only a listed template, use title and ")
                 .append("summary for fitting narration, and never alter or invent its objective, count, progress gate, or reward. ")
@@ -40,18 +54,68 @@ final class AiActionCapabilityBridge {
                 .append("prepared, brought, placed in the container they are looking at, or otherwise ready to transfer. ")
                 .append("A question, negotiation, promise to get it later, or discussion of the item is not readiness. ")
                 .append("Confirmation-required actions are only offers until the server receives the player's UI choice.\n");
+        if (capabilities.stream().anyMatch(AiActionCapabilityBridge::isRelationTransition)) {
+            context.append("god_relation_transition accepts only parameters={transition_id: one exact listed ID} ")
+                    .append("and an empty targetParticipantIds list. Never substitute template_id or provide scores, tags, ")
+                    .append("God targets, results or other parameters. The authored transition supplies its participants ")
+                    .append("and changes; only the game's confirmation and validation can apply it.\n");
+        }
     }
 
     static AiDialogueModels.Proposal normalize(AiDialogueModels.Proposal proposal,
             ResourceLocation godId, String playerText) {
+        return normalizeAuthorized(proposal, godId, playerText, AiActionCapabilityService.capabilitiesFor(godId),
+                GodRelationTransitionManager.INSTANCE::find);
+    }
+
+    static AiDialogueModels.Proposal normalize(AiDialogueModels.Proposal proposal,
+            ResourceLocation godId, String playerText, List<ResourceLocation> participants) {
+        return normalizeAuthorized(proposal, godId, playerText,
+                roomCapabilities(AiActionCapabilityService.capabilitiesFor(godId), godId, participants,
+                        GodRelationTransitionManager.INSTANCE::find), GodRelationTransitionManager.INSTANCE::find);
+    }
+
+    /** Pure filtering seam; production lookup always reads the game's current transition registry. */
+    static List<AiActionCapability> roomCapabilities(List<AiActionCapability> capabilities, ResourceLocation godId,
+            List<ResourceLocation> participants, Function<ResourceLocation, Optional<GodRelationTransition>> transitions) {
+        if (participants == null || participants.isEmpty() || participants.size() > 16
+                || participants.stream().anyMatch(java.util.Objects::isNull)
+                || !participants.contains(godId) || Set.copyOf(participants).size() != participants.size()) return List.of();
+        Set<ResourceLocation> present = Set.copyOf(participants);
+        return capabilities.stream().filter(capability -> !isRelationTransition(capability)
+                || capability.templateId().flatMap(transitions).filter(transition -> transition.aiEnabled()
+                        && transition.actingGodId().equals(godId)
+                        && transition.id().equals(capability.templateId().orElseThrow())
+                        && transition.changes().stream().allMatch(change -> present.contains(change.sourceGodId())
+                                && present.contains(change.targetGodId()))).isPresent()).toList();
+    }
+
+    static AiDialogueModels.Proposal normalizeAuthorized(AiDialogueModels.Proposal proposal,
+            ResourceLocation godId, String playerText, List<AiActionCapability> capabilities,
+            Function<ResourceLocation, Optional<GodRelationTransition>> transitions) {
         String type = canonicalType(proposal.type());
-        List<AiActionCapability> capabilities = AiActionCapabilityService.capabilitiesFor(godId);
+        if ("god_relation_transition".equals(type)) {
+            String rawType = proposal.type().trim().toLowerCase(Locale.ROOT);
+            if (!(rawType.equals(type) || rawType.equals("mythictrpg:" + type))
+                    || !proposal.targetParticipantIds().isEmpty()
+                    || !proposal.parameters().keySet().equals(Set.of("transition_id"))) return null;
+            String rawId = proposal.parameters().get("transition_id");
+            ResourceLocation id = rawId == null ? null : ResourceLocation.tryParse(rawId);
+            if (id == null || !id.toString().equals(rawId)) return null;
+            boolean offered = capabilities.stream().anyMatch(capability -> isRelationTransition(capability)
+                    && capability.templateId().filter(id::equals).isPresent());
+            var transition = offered ? transitions.apply(id).orElse(null) : null;
+            if (transition == null || !transition.id().equals(id) || !transition.aiEnabled()
+                    || !transition.actingGodId().equals(godId)) return null;
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(),
+                    Map.of("transition_id", id.toString()));
+        }
         if ("relationship_change".equals(type)) {
             if (capabilities.stream().noneMatch(capability -> capability.actionType().getPath().equals(type))) {
                 return null;
             }
             Integer delta = integer(proposal.parameters().get("affinity_delta"));
-            if (delta == null || delta == 0 || Math.abs(delta) > 50) {
+            if (delta == null || delta == 0 || delta < -50 || delta > 50) {
                 return null;
             }
             return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(),
@@ -79,9 +143,11 @@ final class AiActionCapabilityBridge {
     }
 
     static boolean playerDeclaredItemReady(String text) {
-        String normalized = text == null ? "" : text.replaceAll("\\s+", " ").trim().toLowerCase(Locale.ROOT);
-        return containsAny(normalized, "준비됐", "준비했", "준비 끝", "가져왔", "챙겨왔", "다 모았",
-                "여기 있어", "여기있어", "건넬게", "건네줄게", "받아", "넣어뒀", "넣어 놨", "상자에 넣었");
+        return com.sande.mythictrpg.ai.action.ItemReadinessPolicy.declared(text);
+    }
+
+    private static boolean isRelationTransition(AiActionCapability capability) {
+        return capability.actionType().equals(ResourceLocation.fromNamespaceAndPath("mythictrpg", "god_relation_transition"));
     }
 
     private static String canonicalType(String raw) {

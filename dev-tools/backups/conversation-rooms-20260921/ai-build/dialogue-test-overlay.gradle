@@ -1,0 +1,151 @@
+// Keep the preserved legacy engine intact; apply the command/session change after other overlays.
+ext.patchDialogueTestAdapter = { String source ->
+    def replace = { String before, String after ->
+        if (!source.contains(before) || source.indexOf(before) != source.lastIndexOf(before))
+            throw new GradleException('Dialogue test overlay anchor missing/ambiguous: ' + before.take(100))
+        source = source.replace(before, after)
+    }
+    replace('''    public StartResult start(ServerPlayer player, ResourceLocation godId) {
+        if (GodAiDialogueService.INSTANCE.isActive(player)) {''', '''    public StartResult start(ServerPlayer player, ResourceLocation godId) {
+        return startInternal(player, List.of(godId), true, false);
+    }
+
+    public StartResult start(ServerPlayer player, List<ResourceLocation> godIds, boolean recordLogs) {
+        return startInternal(player, godIds, recordLogs, true);
+    }
+
+    private StartResult startInternal(ServerPlayer player, List<ResourceLocation> godIds, boolean recordLogs, boolean test) {
+        if (GodAiDialogueService.INSTANCE.isActive(player)) {''')
+    replace('''        DialogueMemoryBridge.unbind(player.getUUID());
+        try {
+            AiTestContentRegistryBridge.ContentSnapshot content = contentRegistry.load(godId, "R_NEUTRAL", List.of(godId));
+            Session session = new Session(player.getUUID(), List.of(godId), "R_NEUTRAL", "E_NEUTRAL", content.profile());
+            sessions.put(player.getUUID(), session);
+            logs.append(player.server, player.getUUID(), "SYSTEM", "Started AI test session for " + godId);
+            player.sendSystemMessage(Component.literal("[AI Test] " + content.profile().displayName()
+                    + " 테스트 대화를 시작했습니다. 일반 채팅 또는 /ai_test say로 입력하세요.")''', '''        UUID testInteraction = null;
+        try {
+            List<ResourceLocation> participants = List.copyOf(new LinkedHashSet<>(godIds));
+            if (participants.isEmpty() || participants.size() > 16) return StartResult.CONTENT_FAILURE;
+            Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents = loadContents(participants, "R_NEUTRAL");
+            // Validate every profile before changing a live binding or publishing the session.
+            Session session = new Session(player.getUUID(), participants, "R_NEUTRAL", "E_NEUTRAL",
+                    contents.get(participants.getFirst()).profile());
+            session.recordLogs = recordLogs;
+            if (test) {
+                testInteraction = com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE
+                        .beginTestConversation(player, participants, recordLogs).orElseThrow(() ->
+                                new IllegalStateException("게임 대화가 활성 상태이거나 신 정의/기억 설정이 준비되지 않았습니다."));
+                session.testInteraction = testInteraction;
+            }
+            DialogueMemoryBridge.unbind(player.getUUID());
+            sessions.put(player.getUUID(), session);
+            if (test) DialogueMemoryBridge.bind(player, participants.getFirst(), testInteraction);
+            logs.append(player.server, player.getUUID(), "SYSTEM", "Started AI test session for " + joinIds(participants));
+            String names = participants.stream().map(id -> contents.get(id).profile().displayName())
+                    .collect(java.util.stream.Collectors.joining(", "));
+            player.sendSystemMessage(Component.literal("[AI Test] " + names + " / 기록=" + (recordLogs ? "on" : "off")
+                    + " 테스트 대화를 시작했습니다. 일반 채팅 또는 /ai_test say로 입력하세요.")''')
+    replace('MythicTrpg.LOGGER.warn("Could not start AI test session for {}", godId, exception);',
+            '''if (testInteraction != null) {
+                Session failed = sessions.get(player.getUUID());
+                if (failed != null && testInteraction.equals(failed.testInteraction)) {
+                    sessions.remove(player.getUUID(), failed);
+                    DialogueMemoryBridge.unbind(player.getUUID());
+                }
+                com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.endTestConversation(player, testInteraction);
+            }
+            MythicTrpg.LOGGER.warn("Could not start AI test session for {}", godIds, exception);''')
+    replace('        private boolean debug;', '''        private boolean debug;
+        private boolean recordLogs = true;
+        private UUID testInteraction;
+        private ResourceLocation turnSpeaker;''')
+    replace(' + " / debug=" + session.debug', ' + " / recording=" + session.recordLogs + " / debug=" + session.debug')
+
+    replace('''        sharePlayerLine(player, text);
+        session.pending = true;''', '''        if (session.testInteraction != null) {
+            if (!testLeaseCurrent(player, session)) return;
+            try {
+                var profiles = loadContents(session.participants, session.relationshipTier);
+                var choices = session.participants.stream().map(id -> new com.sande.mythai.response.DialogueTestArguments.God(
+                        id.toString(), profiles.get(id).profile().displayName())).toList();
+                String chosen = com.sande.mythai.response.DialogueTestSpeakerPolicy.select(text, choices,
+                        session.turnSpeaker == null ? "" : session.turnSpeaker.toString());
+                session.turnSpeaker = ResourceLocation.parse(chosen);
+                DialogueMemoryBridge.selectTestSpeaker(player, session.turnSpeaker, session.testInteraction);
+            } catch (RuntimeException failure) {
+                player.sendSystemMessage(Component.literal("[AI Test] 발화자 준비 실패: " + message(failure)));
+                return;
+            }
+        }
+        sharePlayerLine(player, text);
+        session.pending = true;''')
+    replace('''        if (sessions.get(player.getUUID()) != session || session.turn != turn) return;''',
+            '''        if (sessions.get(player.getUUID()) != session || session.turn != turn || !testLeaseCurrent(player, session)) return;''')
+    replace('''        if (memoryFuture.isDone()) {
+            continueAfterMemory(player, session, turn, text, memoryFuture.join());
+        } else {
+            memoryFuture.thenAccept(memory -> player.server.execute(() ->
+                    continueAfterMemory(player, session, turn, text, memory)));
+        }''', '''        memoryFuture.whenComplete((memory, failure) -> player.server.execute(() -> {
+            if (failure != null) {
+                finishFailure(player, session, turn, "기억 조회에 실패했습니다. 다시 시도해 주세요.");
+            } else continueAfterMemory(player, session, turn, text, memory);
+        }));''')
+    replace('''        List<ResourceLocation> mentioned = new ArrayList<>();''', '''        if (session.testInteraction != null) {
+            // One private generation context per turn; arbitrary N participants do not imply N joined prompts.
+            return new GenerationPlan(directive, intent, List.of(session.speaker()));
+        }
+        List<ResourceLocation> mentioned = new ArrayList<>();''')
+    replace('''        if (session.memoryTurn.hasGuardedEvidence() && plan.speakers().stream().anyMatch(g ->''',
+            '''        if (session.memoryTurn.context() != null && plan.speakers().stream().anyMatch(g ->''')
+    replace('''            List<AiTestContentRegistryBridge.Example> intentExamples = intentClassificationExamples(contents);''',
+            '''            List<AiTestContentRegistryBridge.Example> intentExamples = intentClassificationExamples(
+                    session.testInteraction == null ? contents : Map.of(session.speaker(), contents.get(session.speaker())));''')
+    replace('''        for (ResourceLocation godId : session.participants) {
+            AiTestContentRegistryBridge.ContentSnapshot content = contents.get(godId);''',
+            '''        for (ResourceLocation godId : plan.speakers()) {
+            AiTestContentRegistryBridge.ContentSnapshot content = contents.get(godId);''')
+    replace('''            return participants.getFirst();''', '''            return turnSpeaker == null ? participants.getFirst() : turnSpeaker;''')
+    replace('''        List<ResourceLocation> participants = first.equals(second) ? List.of(first) : List.of(first, second);''',
+            '''        if (session.testInteraction != null) return false; // Restart through the authoritative command instead.
+        List<ResourceLocation> participants = first.equals(second) ? List.of(first) : List.of(first, second);''')
+    replace('''        boolean sameTurn = sessions.get(player.getUUID()) == session && session.turn == turn;''',
+            '''        boolean sameTurn = sessions.get(player.getUUID()) == session && session.turn == turn
+                && testLeaseCurrent(player, session);''')
+    replace('''        if (removed == null) {
+            return false;
+        }
+        logs.append''', '''        if (removed == null) {
+            return false;
+        }
+        if (removed.testInteraction != null) com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE
+                .endTestConversation(player, removed.testInteraction);
+        logs.append''')
+    replace('''        if (removed != null) {
+            logs.append''', '''        if (removed != null) {
+            if (removed.testInteraction != null) com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE
+                    .endTestConversation(player, removed.testInteraction);
+            logs.append''')
+
+    // Capture policy through the Session already held by each async callback, never by UUID alone.
+    source = source.replace('logs.append(', 'if (recordingAllowed(session)) logs.append(')
+                   .replace('logs.appendBlock(', 'if (recordingAllowed(session)) logs.appendBlock(')
+    replace('''        if (recordingAllowed(session)) logs.append(player.server, player.getUUID(), "SYSTEM", "Stopped AI test session");''',
+            '''        if (removed.recordLogs) logs.append(player.server, player.getUUID(), "SYSTEM", "Stopped AI test session");''')
+    replace('''            if (recordingAllowed(session)) logs.append(player.server, player.getUUID(), "SYSTEM", "Player logged out; test session discarded");''',
+            '''            if (removed.recordLogs) logs.append(player.server, player.getUUID(), "SYSTEM", "Player logged out; test session discarded");''')
+    replace('    private boolean isCurrent(ServerPlayer player, Session session, long turn) {', '''    private static boolean testLeaseCurrent(ServerPlayer player, Session session) {
+        return session.testInteraction == null || com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE
+                .testConversationId(player).filter(session.testInteraction::equals).isPresent();
+    }
+
+    private boolean recordingAllowed(Session session) {
+        return session != null && session.recordLogs && sessions.get(session.playerId) == session;
+    }
+
+    private boolean isCurrent(ServerPlayer player, Session session, long turn) {''')
+    // Debug console lines contain prompt diagnostics too; the explicit off choice wins.
+    source = source.replace('if (session.debug) {', 'if (session.debug && recordingAllowed(session)) {')
+    return source
+}

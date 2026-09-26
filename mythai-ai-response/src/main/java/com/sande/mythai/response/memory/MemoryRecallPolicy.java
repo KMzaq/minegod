@@ -35,21 +35,34 @@ public final class MemoryRecallPolicy {
         var kept = new ArrayList<MemoryJournal.Entry>();
         var heard = new ArrayList<RumorLedger.HeardRumor>();
         // Personal recall has priority over hearsay; one shared count/character budget.
-        for (var e : result.selected().reversed()) {
+        var ordered=new ArrayList<>(result.selected().reversed());
+        ordered.sort(java.util.Comparator.comparing(e->!result.reasons().getOrDefault(e.id(),"").startsWith("candidate_")));
+        for (var e : ordered) {
             var row = new java.util.LinkedHashMap<String,String>();
-            row.put("source", e.source().name()); row.put("quote", excerpt(e.text(), 300));
+            String hint=result.reasons().getOrDefault(e.id(),"");
+            row.put("source", e.source().name()); row.put("quote", excerpt(e.text(), hint.startsWith("candidate_")?200:300));
+            if (!e.speakerGodId().isEmpty()) row.put("speaker_god_id", e.speakerGodId());
             row.put("recorded_at", java.time.Instant.ofEpochMilli(e.occurredAt()).toString());
             row.put("storage", result.pending().contains(e.id()) ? "PENDING_NOT_DURABLE" : "COMMITTED");
+            String relation=hint.split("\\|",2)[0];
+            if (relation.startsWith("candidate_") && relation.endsWith("_not_verified")) row.put("unverified_relation_hint",relation);
+            int kindStart=hint.indexOf("|kind=");
+            if(kindStart>=0) {
+                String kind=hint.substring(kindStart+6);
+                if(java.util.Set.of("SELF_CLAIM","PLAN_OR_PROMISE","REPORTED","CONDITIONAL","JOKE","OTHER").contains(kind))row.put("unverified_statement_kind",kind);
+            }
             if (RecallSearch.looksLikePlan(e.text())) {
                 var date = RecallSearch.date(e.text(), e.occurredAt(), settings.timeBasis());
                 if (date != null) row.put("mentioned_plan_date_kst_not_completion", date.toString());
             }
+            String daylight=MemorySalience.daylightCondition(e.text());
+            if(!daylight.isEmpty())row.put("game_daylight_condition_not_real_clock",daylight);
             rows.add(row);
             if (rows.size() > 3 || header.length() + JSON.toJson(rows).length() + 1 > limit) rows.removeLast();
             else kept.add(e);
         }
         for (var rumor : rumors) {
-            rows.add(Map.of("source", "RUMOR_RECEIVED", "claim", excerpt(rumor.text(), 180), "epithet", rumor.epithet()));
+            rows.add(DialogueMemoryBridge.rumorRow(rumor));
             if (rows.size() > 3 || header.length() + JSON.toJson(rows).length() + 1 > limit) rows.removeLast();
             else heard.add(rumor);
         }
@@ -65,7 +78,9 @@ public final class MemoryRecallPolicy {
                     + "Question date=" + java.time.Instant.ofEpochMilli(result.query().askedAt()).atZone(java.time.ZoneId.of("Asia/Seoul")).toLocalDate()
                 : "Relative-time basis is UNDECIDED. Preserve original time wording; do not convert to a definite date.";
         return evidence + "\n[RECALL_REQUEST]\n" + JSON.toJson(Map.of("question", result.query().text(),
-                "follow_up", result.query().followUp(), "status", result.status().name()))
+                "follow_up", result.query().followUp(), "status", result.status().name(),
+                "source_role_filter", RecallSourceScope.resolve(result.query().text()).role().name(),
+                "identified_speaker_god_ids", RecallSourceScope.resolve(result.query().text()).speakerGodIds()))
                 + "\n" + dates + "\n";
     }
     public static String recallSystem(String base, RecallSearch.Result result) {
@@ -82,6 +97,12 @@ public final class MemoryRecallPolicy {
                 Do not invent a reason for forgetting, fabricate a past event, or expose internal status/IDs.
                 Use current explicit corrections first; old/new/additional plans are not automatically the same plan.
                 Preserve attributed, conditional and quoted speech. A plan or promise is NOT completed action.
+                A source_role_filter limits whose words are being recalled, not how you must respond.
+                NPC_UTTERANCE belongs to speaker_god_id, even when another god stored the heard memory.
+                Never use NPC words as proof that the player said, promised or completed something.
+                UNSPECIFIED means the question's speaker was ambiguous; retain source labels instead of guessing.
+                Only explicit game IDs/roles are resolved here; do not infer a nickname-to-god mapping.
+                unverified_relation_hint is a model candidate, not a decision that the older words are false or erased.
                 Truncated quotes and recent-raw candidates are incomplete evidence. Do not fill their missing parts.
                 Do not force kindness or 'I remember'. Retain persona, disclosure limits, output schema and game authority.
                 """;
@@ -138,10 +159,21 @@ public final class MemoryRecallPolicy {
                 Do not narrate this check. Keep the NPC's own personality and actual relationship: remembering does
                 not require kindness, warnings, agreement or asking a question. Usually one or two sentences suffice.
                 Do not force a callback or claim 'I remember' when irrelevant. Earlier PLAYER_STATEMENT means the
-                player said it, not a verified world fact. NPC_UTTERANCE is the NPC's remark, not a player admission.
-                RUMOR_RECEIVED is hearsay. Times describe when words were recorded, not when a promised event happened.
+                player said it, not a verified world fact. NPC_UTTERANCE is the supplied speaker_god_id's remark,
+                not a player admission or necessarily your own remark. A listening God's memory is not authorship.
+                RUMOR_RECEIVED is hearsay, never personal witness or a gameplay penalty. CAUTIOUS means tentative; INTERESTED means relevant to this god, not automatically believed. Respect personality and current context; do not repeat an epithet every turn.
+                A supplied assessment is this god's current reviewed stance, not world truth: DOUBTFUL/DISPUTED are unresolved; IGNORED is not endorsed; RECOVERED/RETRACTED must not be used as a current accusation or epithet. The old claim is historical context only. Do not announce game-level reputation removal before a supplied reviewed recovery; your agreement alone does not execute it.
+                Times describe when words were recorded, not when a promised event happened.
+                unverified_statement_kind and unverified_relation_hint are fallible extraction candidates, not facts.
                 A current correction can supersede an old statement conversationally; do not insist outdated evidence
                 is still true or invent that a promise, training, quest or action was completed in the meantime.
+                Important promises are not obligations to remind the player every turn. If later evidence says the
+                plan changed, was cancelled, or was fulfilled, discuss that attributed outcome instead of repeating
+                the old reminder. A claimed fulfillment is not game-confirmed success or permission for rewards.
+                One incident is not a permanent personality trait. Repeated retrieval or NPC paraphrases are not
+                additional evidence. Keep relevant memories in the background when no explicit callback is needed.
+                'Tomorrow' uses the configured real calendar anchored to the original utterance. Sunrise/sunset
+                refer to Minecraft daylight, not a guessed real-world hour or an automatically completed promise.
                 """;
     }
 }

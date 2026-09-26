@@ -1,12 +1,14 @@
 # MythicTRPG + Local AI 통합 테스트 서버
 
+> 2026-09-23 최신 배포: 게임 `mythictrpg-1.0.16.jar`, 콘텐츠 `mythaiaicontent-0.1.1.jar`, 서버 전용 AI `mythai_ai_response-0.1.17.jar`. 파일 배치 뒤 아직 부팅하지 않았다. 버전 해시·백업·검증 범위는 [전체 대화방 통합 배포 기록](../docs/FULL_ROOM_DIALOGUE_INTEGRATION_20260923.md)을 확인한다. 클라이언트 필수 모드 폴더는 서버와 같은 게임1.0.16이다. 이 안내의 실제 런처 준비 절차는 계속 별도다.
+
 Minecraft 1.21.1 / NeoForge 21.1.248 전용 서버다. RisuAI를 사용하지 않고 같은 PC의 Ollama `gemma4:12b`를 호출한다.
 
 ## 설치된 서버 모드
 
-- `mods/mythictrpg-1.0.0.jar`: 게임 상태, Interaction, Dialogue HUD/Network, AI 계약과 우측 상태 UI
-- `mods/mythaiaicontent-0.1.0.jar`: 신 프로필, 지식, 분류 예시 등 정적 콘텐츠
-- `mods/mythai_ai_response-0.1.0.jar`: 콘텐츠 검색, Ollama 호출, 응답 생성과 대화 세션
+- `mods/mythictrpg-1.0.16.jar`: 게임 상태, 신 관계/사건 시스템, 대화방·Dialogue HUD/Network와 게임 권한 검증
+- `mods/mythaiaicontent-0.1.1.jar`: 신 프로필, 지식, 예시·퀘스트와 청중별 공개 정책
+- `mods/mythai_ai_response-0.1.17.jar`: 콘텐츠·청취 기억, Ollama 호출, 다중 신 반응/Story 응답 연결
 
 이전 결합형 `mythictrpg` JAR을 동시에 넣으면 안 된다.
 
@@ -15,10 +17,10 @@ Minecraft 1.21.1 / NeoForge 21.1.248 전용 서버다. RisuAI를 사용하지 �
 클라이언트도 Minecraft 1.21.1 / NeoForge 21.1.248을 사용한다. 우측 AI UI와 Network 호환을 위해 다음 파일을 클라이언트 `mods` 폴더에 넣는다.
 
 ```text
-client-required-mods/mythictrpg-1.0.0.jar
+client-required-mods/mythictrpg-1.0.16.jar
 ```
 
-클라이언트에 이전 `mythictrpg-1.0.0.jar`가 있다면 새 파일로 교체한다. AI 응답 모드는 서버 전용이며 클라이언트에 설치하지 않는다.
+클라이언트에 이전 `mythictrpg-*.jar`가 있다면 새 파일 하나만 남긴다. AI 응답 모드와 콘텐츠 모드는 서버 전용이며 클라이언트에 설치하지 않는다.
 
 ## 실행
 
@@ -70,8 +72,8 @@ OFF에서는 일반 채팅이 AI 세션으로 전달되지 않는다. ON으로 �
 ## 현재 안전 경계
 
 - AI는 대사와 Proposal 데이터만 생성한다.
-- 신 선택, encounter, identification, HUD, 실제 관계·퀘스트·보상·아이템·가호 변경은 MythicTRPG가 소유한다.
-- 퀘스트·아이템·가호 validator/executor는 아직 없으므로 실제 게임 상태에는 적용되지 않는다.
+- AI는 대사와 등록된 Proposal을 제안한다. 신 선택, encounter, identification, 관계·퀘스트·보상·아이템·가호의 실제 변경은 MythicTRPG가 검증하고 수행한다.
+- Hook/관계 제안도 플레이어 확인 및 서버 재검증 전에는 게임 상태에 적용되지 않는다. 상세 대화방·관계·사건 권한은 [재통합 구현 기록](../docs/ORIGINAL_GOALS_REINTEGRATION_20260923.md)을 따른다.
 - AI 장애나 timeout은 Minecraft server thread를 막지 않으며 interaction을 안전하게 실패시킨다.
 
 ## 로그와 복구
@@ -79,4 +81,3 @@ OFF에서는 일반 채팅이 AI 세션으로 전달되지 않는다. ON으로 �
 - 서버 로그: `logs/latest.log`
 - 대화 로그: `world/mythictrpg-ai-test-logs/<플레이어 UUID>/`
 - 교체 전 JAR 백업: `backups/mods-before-ai-provider-2026-08-25/`
-

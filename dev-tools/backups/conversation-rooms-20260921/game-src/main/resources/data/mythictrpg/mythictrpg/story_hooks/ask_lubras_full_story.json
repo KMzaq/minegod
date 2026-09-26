@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "targetEventId": "mythictrpg:demo_ask_lubras_full_story",
+  "allowedSpeakerActorIds": ["mythictrpg:lubras"],
+  "availabilityConditions": {"type": "mythictrpg:all", "conditions": [
+    {"type": "mythictrpg:story_actor_state", "actor": "mythictrpg:lubras", "existence": "ACTIVE", "availability": "AVAILABLE"},
+    {"type": "mythictrpg:story_knowledge", "holder": "PLAYER", "fact": "mythictrpg:wanderer_occupies_lubras_base", "minimumLevel": 1}
+  ]},
+  "targetScope": "PLAYER",
+  "titleTranslationKey": "story.hook.mythictrpg.ask_lubras_full_story.title",
+  "summaryTranslationKey": "story.hook.mythictrpg.ask_lubras_full_story.summary",
+  "cooldownTicks": 0,
+  "maximumAcceptances": 1,
+  "confirmationRequired": true
+}

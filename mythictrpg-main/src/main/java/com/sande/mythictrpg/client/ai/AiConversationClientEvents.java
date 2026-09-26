@@ -26,12 +26,14 @@ public final class AiConversationClientEvents {
             MythicTrpg.MOD_ID, "ai_conversation_hud");
     private static final KeyMapping TOGGLE = new KeyMapping("key.mythictrpg.toggle_ai_conversation",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.mythictrpg");
+    private static final KeyMapping ROOMS = new KeyMapping("대화방 선택", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, "key.categories.mythictrpg");
 
     private AiConversationClientEvents() {
     }
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> com.sande.mythictrpg.network.ClientConversationRoomsBridge.install(AiConversationHudController.INSTANCE::receiveRooms));
         event.enqueueWork(() -> ClientAiConversationBridge.install(
                 AiConversationHudController.INSTANCE::receive));
         event.enqueueWork(() -> ClientAiActionConfirmationBridge.install(payload ->
@@ -44,6 +46,7 @@ public final class AiConversationClientEvents {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(TOGGLE);
+        event.register(ROOMS);
     }
 
     @SubscribeEvent
@@ -53,6 +56,7 @@ public final class AiConversationClientEvents {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
+        while (ROOMS.consumeClick()) Minecraft.getInstance().setScreen(new ConversationRoomsScreen());
         while (TOGGLE.consumeClick()) {
             AiConversationHudController.INSTANCE.toggleVisibility();
         }

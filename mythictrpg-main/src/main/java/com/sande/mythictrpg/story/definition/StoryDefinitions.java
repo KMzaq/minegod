@@ -49,6 +49,20 @@ public final class StoryDefinitions {
     public enum CanonicalDeliveryPolicy { FLAVOR_ONLY, FACT_BEARING, CRITICAL }
     public enum OfflineDeliveryPolicy { DROP_FLAVOR, ON_NEXT_LOGIN, JOURNAL_IMMEDIATELY }
 
+    public enum RoomAudienceMode { OWNER_ONLY, PRIVATE_ROOM, PUBLIC, NEVER }
+
+    /** Explicit permission to disclose narrative text, never permission to accept its action. */
+    public record RoomAudiencePolicy(RoomAudienceMode mode, Set<ResourceLocation> allowedGodIds) {
+        public RoomAudiencePolicy { Objects.requireNonNull(mode); allowedGodIds = Set.copyOf(allowedGodIds); }
+        public static RoomAudiencePolicy ownerOnly() { return new RoomAudiencePolicy(RoomAudienceMode.OWNER_ONLY, Set.of()); }
+        public boolean permits(boolean publicRoom, int playerCount, Set<ResourceLocation> gods, ResourceLocation speaker) {
+            if (playerCount < 1 || mode == RoomAudienceMode.NEVER) return false;
+            if (mode == RoomAudienceMode.OWNER_ONLY && (publicRoom || playerCount != 1 || gods.size() != 1 || !gods.contains(speaker))) return false;
+            if (mode == RoomAudienceMode.PRIVATE_ROOM && publicRoom) return false;
+            return allowedGodIds.isEmpty() || gods.stream().filter(god -> !god.equals(speaker)).allMatch(allowedGodIds::contains);
+        }
+    }
+
     public record ActorDefinition(ResourceLocation id, ActorType type, Optional<ResourceLocation> godId,
             ExistenceState initialExistence, AvailabilityState initialAvailability,
             Optional<ResourceLocation> initialLocationId, Set<ResourceLocation> tags) {
@@ -85,8 +99,10 @@ public final class StoryDefinitions {
         }
     }
 
-    public record FactKnowledgeLevel(int level, String canonicalTranslationKey) {
+    public record FactKnowledgeLevel(int level, String canonicalTranslationKey, Optional<RoomAudiencePolicy> disclosure) {
+        public FactKnowledgeLevel(int level, String canonicalTranslationKey) { this(level, canonicalTranslationKey, Optional.empty()); }
         public FactKnowledgeLevel {
+            disclosure = Objects.requireNonNull(disclosure);
             if (level < 1 || level > 32) {
                 throw new IllegalArgumentException("Story fact level must be within 1..32");
             }
@@ -121,8 +137,12 @@ public final class StoryDefinitions {
     }
 
     public record CoverStoryDefinition(ResourceLocation id, List<String> canonicalTranslationKeys,
-            Set<ResourceLocation> allowedSpeakerActorIds) {
+            Set<ResourceLocation> allowedSpeakerActorIds, RoomAudiencePolicy disclosure) {
+        public CoverStoryDefinition(ResourceLocation id, List<String> keys, Set<ResourceLocation> speakers) {
+            this(id, keys, speakers, RoomAudiencePolicy.ownerOnly());
+        }
         public CoverStoryDefinition {
+            Objects.requireNonNull(disclosure);
             Objects.requireNonNull(id, "id");
             canonicalTranslationKeys = List.copyOf(Objects.requireNonNull(
                     canonicalTranslationKeys, "canonicalTranslationKeys"));
@@ -349,8 +369,13 @@ public final class StoryDefinitions {
     public record HookDefinition(ResourceLocation id, ResourceLocation targetEventId,
             Set<ResourceLocation> allowedSpeakerActorIds, ConditionNode availabilityConditions,
             ScopeType targetScope, String titleTranslationKey, String summaryTranslationKey,
-            int cooldownTicks, int maximumAcceptances, boolean confirmationRequired) {
+            int cooldownTicks, int maximumAcceptances, boolean confirmationRequired, RoomAudiencePolicy disclosure) {
+        public HookDefinition(ResourceLocation id, ResourceLocation event, Set<ResourceLocation> speakers,
+                ConditionNode conditions, ScopeType scope, String title, String summary, int cooldown, int maximum, boolean confirmation) {
+            this(id, event, speakers, conditions, scope, title, summary, cooldown, maximum, confirmation, RoomAudiencePolicy.ownerOnly());
+        }
         public HookDefinition {
+            Objects.requireNonNull(disclosure);
             requireEffect(id, targetEventId, targetScope);
             allowedSpeakerActorIds = Set.copyOf(Objects.requireNonNull(
                     allowedSpeakerActorIds, "allowedSpeakerActorIds"));
@@ -377,8 +402,15 @@ public final class StoryDefinitions {
             Optional<ResourceLocation> speakerActorId, List<FactDisclosureRequest> factRequests,
             List<String> fallbackTranslationKeys, Set<ResourceLocation> performanceTags,
             List<ResourceLocation> offeredHookIds, OfflineDeliveryPolicy offlineDeliveryPolicy,
-            int maximumAiTurns) {
+            int maximumAiTurns, Optional<RoomAudiencePolicy> roomDisclosure) {
+        public PresentationDefinition(ResourceLocation id, PresentationKind kind, GenerationPolicy generation,
+                CanonicalDeliveryPolicy delivery, Optional<ResourceLocation> speaker, List<FactDisclosureRequest> facts,
+                List<String> fallback, Set<ResourceLocation> performance, List<ResourceLocation> hooks,
+                OfflineDeliveryPolicy offline, int maximum) {
+            this(id, kind, generation, delivery, speaker, facts, fallback, performance, hooks, offline, maximum, Optional.empty());
+        }
         public PresentationDefinition {
+            roomDisclosure = Objects.requireNonNull(roomDisclosure);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(kind, "kind");
             Objects.requireNonNull(generationPolicy, "generationPolicy");
