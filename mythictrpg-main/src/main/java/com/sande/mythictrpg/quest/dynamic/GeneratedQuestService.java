@@ -5,6 +5,9 @@ import com.sande.mythictrpg.data.world.MythicWorldState;
 import com.sande.mythictrpg.gameplay.observation.GameplayObservation;
 import com.sande.mythictrpg.gameplay.observation.GameplayObservationSink;
 import com.sande.mythictrpg.quest.GeneratedQuestFtbDisplay;
+import com.sande.mythictrpg.quest.QuestCompletionMode;
+import com.sande.mythictrpg.quest.QuestContactLocation;
+import com.sande.mythictrpg.quest.QuestContactService;
 import com.sande.mythictrpg.quest.reward.NpcRewardGrantService;
 import com.sande.mythictrpg.quest.reward.NpcRewardTableManager;
 import com.sande.mythictrpg.quest.reward.RewardClaimService;
@@ -19,11 +22,19 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import com.sande.mythictrpg.ai.action.AiActionScope;
 
 /** Authoritative generated SIDE quest lifecycle, independent of FTB completion state. */
 public final class GeneratedQuestService implements GameplayObservationSink {
     public static final GeneratedQuestService INSTANCE = new GeneratedQuestService();
     private static final long EXPIRY_CHECK_INTERVAL_TICKS = 20L;
+    private static final Map<OutcomeKey, Outcome> outcomes = new LinkedHashMap<>();
+    private static MinecraftServer outcomeServer;
+    private record OutcomeKey(UUID player, AiActionScope scope) { }
+    private record Outcome(UUID instanceId, ResourceLocation templateId, String status, long expires) { }
 
     private GeneratedQuestService() {
     }
@@ -78,6 +89,13 @@ public final class GeneratedQuestService implements GameplayObservationSink {
                 player.getUUID(), template.godId(), title, summary, template.observationTypeId(),
                 template.subjectId(), template.requiredCount(), 0, template.rewardTableId(), tier,
                 boundedBonus > 0, now, now + template.expiresAfterTicks(), 0L, 0L, 0L);
+        instance = instance.withContactRules(template.completionMode(),
+                Optional.of(QuestContactLocation.capture(player)), template.returnLocation());
+        instance = instance.withFrozenRewards(NpcRewardTableManager.INSTANCE.find(template.rewardTableId())
+                .orElseThrow().tier(tier).orElseThrow().rewards());
+        var preflight = RewardClaimService.INSTANCE.preflight(player, rewardSource(instance),
+                new ResolvedQuestReward("즉석 의뢰 보상", instance.frozenRewards().orElseThrow(), List.of()));
+        if (!preflight.succeeded()) return GeneratedQuestCreationResult.rejected(preflight.reason());
         GeneratedQuestState state = GeneratedQuestState.get(player.server);
         state.create(instance);
         recordTransition(player,instance,"ASSIGNED");
@@ -99,6 +117,9 @@ public final class GeneratedQuestService implements GameplayObservationSink {
             player.sendSystemMessage(Component.literal("전투력 격차 보정으로 보상 단계가 1 상승했습니다.")
                     .withStyle(ChatFormatting.AQUA));
         }
+        if (instance.completionMode() != QuestCompletionMode.AUTO)
+            player.sendSystemMessage(Component.literal("목표 달성 후 의뢰한 신을 만나 확인받아야 완료됩니다.")
+                    .withStyle(ChatFormatting.GRAY));
         return GeneratedQuestCreationResult.created(instance);
     }
 
@@ -106,6 +127,7 @@ public final class GeneratedQuestService implements GameplayObservationSink {
     public void accept(MinecraftServer server, GameplayObservation<?> observation) {
         requireServerThread(server);
         GeneratedQuestState state = GeneratedQuestState.get(server);
+        if (!state.isWritable()) return;
         GeneratedQuestInstance current = state.active(observation.initiatingPlayerId()).orElse(null);
         if (current == null) {
             return;
@@ -114,6 +136,7 @@ public final class GeneratedQuestService implements GameplayObservationSink {
         if (player == null) {
             return;
         }
+        if (current.objectivesCompleted()) return; // Retry via tick/login, never count or emit the transition again.
         if (observation.gameTime() >= current.expiresGameTime()) {
             expire(player, current, state);
             return;
@@ -133,7 +156,106 @@ public final class GeneratedQuestService implements GameplayObservationSink {
                     + "/" + progressed.requiredCount()).withStyle(ChatFormatting.GRAY));
             return;
         }
-        complete(player, progressed, state);
+        recordTransition(player, progressed, "OBJECTIVES_COMPLETED");
+        if (progressed.completionMode() == QuestCompletionMode.AUTO) {
+            approveAndComplete(player, progressed, state, true);
+        } else {
+            player.sendSystemMessage(Component.literal("[즉석 의뢰] 목표를 달성했습니다. 의뢰한 신의 확인을 기다립니다.")
+                    .withStyle(ChatFormatting.YELLOW));
+        }
+    }
+
+    /** Called only after the shared contact service has issued a current game-owned contact. */
+    public void onNpcContact(ServerPlayer player, ResourceLocation godId) {
+        requireServerThread(player.server);
+        GeneratedQuestState state = GeneratedQuestState.get(player.server);
+        if (!state.isWritable()) return;
+        GeneratedQuestInstance instance = state.active(player.getUUID()).orElse(null);
+        if (instance == null || !instance.godId().equals(godId) || !instance.objectivesCompleted()) return;
+        var contactScope = QuestContactService.currentScope(player, godId);
+        if (instance.completionApproved()) {
+            complete(player, instance, state, true);
+        } else if (currentContactPolicy(instance) && QuestContactService.canConfirm(player, godId, instance.origin(),
+                instance.destination(), instance.completionMode())) {
+            approveAndComplete(player, instance, state, true);
+        }
+        if (state.active(player.getUUID()).filter(q -> q.instanceId().equals(instance.instanceId())
+                && !q.completionApproved()).isEmpty()) {
+            contactScope.ifPresent(scope -> rememberOutcome(player, scope, instance,
+                    state.active(player.getUUID()).isEmpty() ? "COMPLETED" : "CONFIRMED_REWARD_PENDING"));
+        }
+    }
+
+    /** Uses the existing per-player quest context; final feedback is restricted to its original scope. */
+    public String contextFor(ServerPlayer player, ResourceLocation godId, UUID roomSessionId) {
+        requireServerThread(player.server);
+        attachOutcomes(player.server);
+        StringBuilder text = new StringBuilder();
+        var instance = GeneratedQuestState.get(player.server).active(player.getUUID())
+                .filter(q -> q.godId().equals(godId)).orElse(null);
+        if (instance != null) {
+            String status = instance.completionApproved() ? "CONFIRMED_REWARD_PENDING"
+                    : instance.awaitingConfirmation() ? "AWAITING_NPC_CONFIRMATION" : "OBJECTIVES_IN_PROGRESS";
+            text.append("\n[GENERATED_QUEST_SERVER_STATE]\n").append(new com.google.gson.Gson().toJson(Map.of(
+                    "instance_id", instance.instanceId().toString(), "template_id", instance.templateId().toString(),
+                    "status", status, "progress", instance.progress(), "required_count", instance.requiredCount(),
+                    "completion_mode", instance.completionMode().name())))
+                    .append("\nObjective completion alone is not NPC approval or reward delivery. Do not claim a visit, confirmation or payment unless this server state says it occurred.\n[/GENERATED_QUEST_SERVER_STATE]\n");
+        }
+        Optional<AiActionScope> scope = roomSessionId == null
+                ? com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.currentActionScope(player)
+                    .filter(value -> value.actingGodId().equals(godId))
+                : Optional.of(new AiActionScope(roomSessionId, godId));
+        scope.filter(value -> scopeCurrent(player, value)).ifPresent(value -> {
+            var outcome = outcomes.get(new OutcomeKey(player.getUUID(), value));
+            if (outcome != null && player.server.overworld().getGameTime() < outcome.expires())
+                text.append("\n[GENERATED_QUEST_LAST_RESULT]\n").append(new com.google.gson.Gson().toJson(Map.of(
+                        "instance_id", outcome.instanceId().toString(), "template_id", outcome.templateId().toString(),
+                        "status", outcome.status())))
+                        .append("\nThis is the recorded result of this room's contact, not permission for a new reward or action.\n[/GENERATED_QUEST_LAST_RESULT]\n");
+        });
+        return text.toString();
+    }
+
+    public void clear() { outcomes.clear(); outcomeServer = null; }
+
+    private static boolean scopeCurrent(ServerPlayer player, AiActionScope scope) {
+        return com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE.actionCurrent(player, scope.sessionId(), scope.actingGodId())
+                || !com.sande.mythictrpg.ai.server.ConversationRooms.enabled()
+                    && com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.currentActionScope(player).filter(scope::equals).isPresent();
+    }
+
+    private static void attachOutcomes(MinecraftServer server) {
+        if (outcomeServer != server) { outcomes.clear(); outcomeServer = server; }
+    }
+
+    private static void rememberOutcome(ServerPlayer player, AiActionScope scope,
+            GeneratedQuestInstance instance, String status) {
+        attachOutcomes(player.server);
+        if (!scopeCurrent(player, scope)) return;
+        long now = player.server.overworld().getGameTime();
+        outcomes.values().removeIf(outcome -> now >= outcome.expires());
+        if (outcomes.size() >= 1024) outcomes.remove(outcomes.keySet().iterator().next());
+        outcomes.put(new OutcomeKey(player.getUUID(), scope),
+                new Outcome(instance.instanceId(), instance.templateId(), status, now + 1200));
+    }
+
+    private static boolean currentContactPolicy(GeneratedQuestInstance instance) {
+        return GeneratedQuestTemplateManager.INSTANCE.find(instance.templateId(), instance.godId())
+                .filter(template -> template.completionMode() == instance.completionMode()
+                        && template.returnLocation().equals(instance.destination())).isPresent();
+    }
+
+    private static void approveAndComplete(ServerPlayer player, GeneratedQuestInstance instance,
+            GeneratedQuestState state, boolean notifyFailure) {
+        if (!instance.objectivesCompleted()) return;
+        if (!instance.completionApproved()) {
+            instance = instance.approveCompletion();
+            state.replace(instance); // Record approval in the saved state before attempting any payout.
+            GeneratedQuestFtbDisplay.sync(player, instance);
+            recordTransition(player, instance, "COMPLETION_APPROVED");
+        }
+        complete(player, instance, state, notifyFailure);
     }
 
     public void onServerTickPost(ServerTickEvent.Post event) {
@@ -144,13 +266,17 @@ public final class GeneratedQuestService implements GameplayObservationSink {
             return;
         }
         GeneratedQuestState state = GeneratedQuestState.get(server);
+        if (!state.isWritable()) return;
         for (GeneratedQuestInstance instance : state.activeQuests()) {
-            if (now < instance.expiresGameTime()) {
+            if (!instance.objectivesCompleted() && now < instance.expiresGameTime()) {
                 continue;
             }
             ServerPlayer player = server.getPlayerList().getPlayer(instance.playerId());
             if (player != null) {
-                expire(player, instance, state);
+                if (instance.completionApproved()) complete(player, instance, state, false);
+                else if (instance.objectivesCompleted() && instance.completionMode() == QuestCompletionMode.AUTO)
+                    approveAndComplete(player, instance, state, false);
+                else expire(player, instance, state);
             }
         }
     }
@@ -161,11 +287,12 @@ public final class GeneratedQuestService implements GameplayObservationSink {
         }
         requireServerThread(player.server);
         GeneratedQuestState state = GeneratedQuestState.get(player.server);
+        if (!state.isWritable()) return;
         GeneratedQuestInstance instance = state.active(player.getUUID()).orElse(null);
         if (instance == null) {
             return;
         }
-        if (player.server.overworld().getGameTime() >= instance.expiresGameTime()) {
+        if (!instance.objectivesCompleted() && player.server.overworld().getGameTime() >= instance.expiresGameTime()) {
             expire(player, instance, state);
             return;
         }
@@ -175,29 +302,47 @@ public final class GeneratedQuestService implements GameplayObservationSink {
                 state.replace(instance.withFtbMirror(mirror.questId(), mirror.markerQuestId(), mirror.taskId()));
             }
         }
+        instance = state.active(player.getUUID()).orElseThrow();
+        if (instance.completionApproved()) complete(player, instance, state, true);
+        else if (instance.objectivesCompleted() && instance.completionMode() == QuestCompletionMode.AUTO)
+            approveAndComplete(player, instance, state, true);
+        else if (instance.awaitingConfirmation())
+            player.sendSystemMessage(Component.literal("[즉석 의뢰] 목표 달성 상태를 복원했습니다. 의뢰한 신의 확인이 필요합니다.")
+                    .withStyle(ChatFormatting.YELLOW));
     }
 
     private static void complete(ServerPlayer player, GeneratedQuestInstance instance,
-            GeneratedQuestState state) {
-        recordTransition(player,instance,"OBJECTIVES_COMPLETED");
-        var validation = NpcRewardGrantService.validate(instance.godId(), instance.rewardTableId(), instance.rewardTier());
-        if (!validation.allowed()) {
-            MythicTrpg.LOGGER.error("Generated quest reward unavailable: {}", validation.reason());
-            return;
+            GeneratedQuestState state, boolean notifyFailure) {
+        if (!instance.objectivesCompleted() || !instance.completionApproved()) return;
+        if (instance.frozenRewards().isEmpty()) {
+            // Historical v1 did not save a reward snapshot. Preserve its table resolution, then freeze once.
+            var validation = NpcRewardGrantService.validate(instance.godId(), instance.rewardTableId(), instance.rewardTier());
+            if (!validation.allowed()) {
+                if (notifyFailure) MythicTrpg.LOGGER.warn("Generated quest reward unavailable: {}", validation.reason());
+                return;
+            }
+            instance = instance.withFrozenRewards(NpcRewardTableManager.INSTANCE.find(instance.rewardTableId())
+                    .orElseThrow().tier(instance.rewardTier()).orElseThrow().rewards());
+            state.replace(instance);
         }
-        var bundle = NpcRewardTableManager.INSTANCE.find(instance.rewardTableId()).orElseThrow()
-                .tier(instance.rewardTier()).orElseThrow().rewards();
-        var source = ResourceLocation.fromNamespaceAndPath("mythictrpg", "generated/" + instance.instanceId());
+        var bundle = instance.frozenRewards().orElseThrow();
+        var source = rewardSource(instance);
         var reward = RewardClaimService.INSTANCE.issue(player, instance.godId(), source,
                 new ResolvedQuestReward("즉석 의뢰 보상", bundle, List.of()));
         if (!reward.succeeded()) {
-            MythicTrpg.LOGGER.error("Generated quest {} reached completion but reward grant failed: {}",
+            if (notifyFailure) MythicTrpg.LOGGER.warn("Generated quest {} reached completion but reward grant failed: {}",
                     instance.instanceId(), reward.reason());
-            player.sendSystemMessage(Component.literal("[즉석 의뢰] 목표는 달성했지만 보상 지급에 실패했습니다. "
-                    + "관리자에게 알려주세요.").withStyle(ChatFormatting.RED));
+            if (notifyFailure) player.sendSystemMessage(Component.literal("[즉석 의뢰] 완료 확인을 받았습니다. "
+                    + "보상은 수령 조건이 해결되면 다시 지급합니다. 문제가 지속되면 관리자에게 알려주세요.")
+                    .withStyle(ChatFormatting.YELLOW));
             return;
         }
         state.remove(instance.playerId(), instance.instanceId());
+        attachOutcomes(player.server);
+        var completedInstance = instance;
+        outcomes.replaceAll((key, value) -> key.player().equals(player.getUUID())
+                && value.instanceId().equals(completedInstance.instanceId())
+                ? new Outcome(value.instanceId(), value.templateId(), "COMPLETED", value.expires()) : value);
         recordTransition(player,instance,"COMPLETED");
         player.sendSystemMessage(Component.literal("[즉석 의뢰 완료] " + instance.title()).withStyle(ChatFormatting.GREEN));
         MythicTrpg.LOGGER.info("Completed generated SIDE quest {} for {} with reward tier {}",
@@ -206,6 +351,7 @@ public final class GeneratedQuestService implements GameplayObservationSink {
 
     private static void expire(ServerPlayer player, GeneratedQuestInstance instance,
             GeneratedQuestState state) {
+        if (instance.objectivesCompleted()) return;
         if (!state.remove(instance.playerId(), instance.instanceId())) {
             return;
         }
@@ -220,6 +366,9 @@ public final class GeneratedQuestService implements GameplayObservationSink {
         if (!server.isSameThread()) {
             throw new IllegalStateException("Generated quests may only run on the server thread");
         }
+    }
+    private static ResourceLocation rewardSource(GeneratedQuestInstance instance) {
+        return ResourceLocation.fromNamespaceAndPath("mythictrpg", "generated/" + instance.instanceId());
     }
     private static void recordTransition(ServerPlayer player, GeneratedQuestInstance instance, String transition) {
         com.sande.mythictrpg.gameplay.ledger.detail.ImportantEvents.transition(player.server,player.getUUID(),instance.templateId(),

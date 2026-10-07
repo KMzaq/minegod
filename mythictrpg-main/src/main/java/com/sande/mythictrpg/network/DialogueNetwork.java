@@ -13,15 +13,18 @@ import net.minecraft.ChatFormatting;
 import com.sande.mythictrpg.shop.ShopProductKey;
 import com.sande.mythictrpg.shop.ShopService;
 import com.sande.mythictrpg.shop.ShopTransactionService;
+import com.sande.mythictrpg.story.runtime.StoryChoiceUiService;
+import com.sande.mythictrpg.story.runtime.StoryEventService;
 
 public final class DialogueNetwork {
-    public static final String PROTOCOL_VERSION = "6";
+    public static final String PROTOCOL_VERSION = "10";
 
     private DialogueNetwork() {
     }
 
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
+        RaidNetwork.register(registrar);
         registrar.playToClient(ConversationRoomsPayload.TYPE, ConversationRoomsPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> ClientConversationRoomsBridge.accept(payload)));
         registrar.playToClient(ClientDialoguePayload.TYPE, ClientDialoguePayload.STREAM_CODEC,
@@ -40,6 +43,12 @@ public final class DialogueNetwork {
                 DialogueNetwork::handleShopCatalog);
         registrar.playToServer(ShopTransactionPayload.TYPE, ShopTransactionPayload.STREAM_CODEC,
                 DialogueNetwork::handleShopTransaction);
+        registrar.playToClient(StoryChoicePagePayload.TYPE, StoryChoicePagePayload.STREAM_CODEC,
+                DialogueNetwork::handleStoryChoicePage);
+        registrar.playToServer(StoryChoiceBrowsePayload.TYPE, StoryChoiceBrowsePayload.STREAM_CODEC,
+                DialogueNetwork::handleStoryChoiceBrowse);
+        registrar.playToServer(StoryChoiceSelectionPayload.TYPE, StoryChoiceSelectionPayload.STREAM_CODEC,
+                DialogueNetwork::handleStoryChoiceSelection);
     }
 
     private static void handleClientDialogue(ClientDialoguePayload payload, IPayloadContext context) {
@@ -144,6 +153,41 @@ public final class DialogueNetwork {
                         .withStyle(ChatFormatting.RED));
             }
             ShopService.INSTANCE.open(player, payload.shopType());
+        });
+    }
+
+    private static void handleStoryChoicePage(StoryChoicePagePayload payload, IPayloadContext context) {
+        try {
+            if (!ClientStoryChoiceBridge.accept(payload)) {
+                MythicTrpg.LOGGER.warn("Story choice page arrived before the client receiver was installed");
+            }
+        } catch (RuntimeException exception) {
+            MythicTrpg.LOGGER.warn("Rejected Story choice page: {}", exception.getMessage());
+            context.disconnect(Component.literal("Invalid Story choice payload"));
+        }
+    }
+
+    private static void handleStoryChoiceBrowse(StoryChoiceBrowsePayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) return;
+        context.enqueueWork(() -> StoryChoiceUiService.INSTANCE.browsePage(player, payload.page()));
+    }
+
+    private static void handleStoryChoiceSelection(StoryChoiceSelectionPayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) return;
+        context.enqueueWork(() -> {
+            try {
+                StoryEventService.StoryChoiceResult result = StoryEventService.INSTANCE.choose(
+                        player, payload.instanceId(), payload.revision(), payload.outcomeId());
+                player.sendSystemMessage(Component.literal(result.accepted()
+                        ? "[스토리] " + result.reason() : "[스토리] 선택 거절: " + result.reason())
+                        .withStyle(result.accepted() ? ChatFormatting.GREEN : ChatFormatting.RED));
+                if (!result.accepted()) StoryChoiceUiService.INSTANCE.sendPage(player, 0, true);
+            } catch (RuntimeException exception) {
+                MythicTrpg.LOGGER.warn("Story choice submission failed for {}", player.getUUID(), exception);
+                player.sendSystemMessage(Component.literal("[스토리] 선택 처리에 실패했습니다. 다시 확인해 주세요.")
+                        .withStyle(ChatFormatting.RED));
+                StoryChoiceUiService.INSTANCE.sendPage(player, 0, true);
+            }
         });
     }
 

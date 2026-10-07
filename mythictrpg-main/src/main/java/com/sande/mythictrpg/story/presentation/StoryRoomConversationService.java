@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 public final class StoryRoomConversationService {
     public static final StoryRoomConversationService INSTANCE = new StoryRoomConversationService();
     public static final String EVIDENCE_KIND = "STORY_DISCLOSURE_V1";
+    static final int MAX_PROOF_BYTES = 16_384;
+    private static final Set<String> PROOF_FIELDS = Set.of("type", "actor", "god", "id", "level", "cover",
+            "policy", "source", "scopeType", "scopeKey", "factValue", "fingerprint");
     private static final Gson JSON = new GsonBuilder()
             .registerTypeHierarchyAdapter(Optional.class, (JsonSerializer<Optional<?>>)(value, type, context) ->
                     value.map(context::serialize).orElse(JsonNull.INSTANCE))
@@ -231,9 +234,10 @@ public final class StoryRoomConversationService {
 
     private boolean evidenceCurrent(MinecraftServer server, boolean publicRoom, Set<UUID> players,
             Set<ResourceLocation> gods, RoomEvidenceReference reference) {
-        if (!EVIDENCE_KIND.equals(reference.kind()) || !StoryRuntimeState.get(server).isReady()) return false;
+        var decoded = decodeProof(reference);
+        if (decoded.isEmpty() || !StoryRuntimeState.get(server).isReady()) return false;
         try {
-            Proof proof = JSON.fromJson(reference.payload(), Proof.class);
+            Proof proof = decoded.orElseThrow();
             ResourceLocation actor = ResourceLocation.parse(proof.actor()), god = ResourceLocation.parse(proof.god());
             if (StoryDefinitionManager.INSTANCE.actor(actor).flatMap(ActorDefinition::godId).filter(god::equals).isEmpty()) return false;
             if (proof.type().equals("HOOK")) {
@@ -255,6 +259,151 @@ public final class StoryRoomConversationService {
             return factStatements(server, actor, god, ResourceLocation.parse(proof.id()), Math.max(1, proof.level()), scope,
                     publicRoom, players, gods).stream().anyMatch(value -> value.proof().equals(proof));
         } catch (RuntimeException malformed) { return false; }
+    }
+
+    /** Shape validation only: a parsed proof still needs the current game-owned disclosure decision above. */
+    static Optional<Proof> decodeProof(RoomEvidenceReference reference) {
+        if (reference == null || !EVIDENCE_KIND.equals(reference.kind())) return Optional.empty();
+        String payload = reference.payload();
+        if (payload.length() > MAX_PROOF_BYTES || payload.getBytes(StandardCharsets.UTF_8).length > MAX_PROOF_BYTES)
+            return Optional.empty();
+        try {
+            Proof proof = new ProofDecoder(payload).read();
+            if (!canonicalId(proof.actor()) || !canonicalId(proof.god()) || !canonicalId(proof.id())
+                    || !proof.fingerprint().matches("[0-9a-f]{64}")) return Optional.empty();
+            boolean fact = proof.type().equals("FACT"), cover = proof.type().equals("COVER");
+            if (fact || cover) {
+                if (proof.level() < 1 || proof.level() > (fact ? 32 : 8) || !canonicalId(proof.policy())
+                        || !(fact ? proof.cover().isEmpty() : canonicalId(proof.cover()))
+                        || !boundedKey(proof.source(), 256)) return Optional.empty();
+                if (proof.scopeType().isEmpty()) {
+                    if (!proof.scopeKey().isEmpty()) return Optional.empty();
+                } else {
+                    ScopeType.valueOf(proof.scopeType());
+                    if (!boundedKey(proof.scopeKey(), 128)) return Optional.empty();
+                }
+            } else {
+                if (!proof.type().equals("HOOK") && !proof.type().equals("PRESENTATION")) return Optional.empty();
+                if (proof.level() != 0 || proof.factValue() || !proof.cover().isEmpty() || !proof.policy().isEmpty()
+                        || !proof.scopeType().isEmpty() || !proof.scopeKey().isEmpty()) return Optional.empty();
+                if (proof.type().equals("HOOK") ? !proof.source().isEmpty() : !boundedKey(proof.source(), 256))
+                    return Optional.empty();
+            }
+            return Optional.of(proof);
+        } catch (RuntimeException malformed) { return Optional.empty(); }
+    }
+
+    private static boolean canonicalId(String value) {
+        return ResourceLocation.parse(value).toString().equals(value);
+    }
+    private static boolean boundedKey(String value, int maximum) {
+        return !value.isBlank() && value.length() <= maximum && value.equals(value.trim());
+    }
+
+    /** Flat V1 wire grammar: no recursive JSON allocation, duplicate fields, coercions or unknown versions. */
+    private static final class ProofDecoder {
+        private final String input;
+        private int position;
+        private ProofDecoder(String input) { this.input = input; }
+
+        private Proof read() {
+            var fields = new HashMap<String, String>();
+            int level = 0;
+            boolean factValue = false;
+            expect('{');
+            do {
+                String field = string();
+                if (!PROOF_FIELDS.contains(field) || fields.containsKey(field)) throw malformed();
+                expect(':');
+                String value;
+                if (field.equals("level")) {
+                    value = integer();
+                    level = Integer.parseInt(value);
+                } else if (field.equals("factValue")) {
+                    value = bool();
+                    factValue = value.equals("true");
+                } else value = string();
+                fields.put(field, value);
+                if (take('}')) break;
+                expect(',');
+            } while (true);
+            whitespace();
+            if (position != input.length() || !fields.keySet().equals(PROOF_FIELDS)) throw malformed();
+            return new Proof(fields.get("type"), fields.get("actor"), fields.get("god"), fields.get("id"), level,
+                    fields.get("cover"), fields.get("policy"), fields.get("source"), fields.get("scopeType"),
+                    fields.get("scopeKey"), factValue, fields.get("fingerprint"));
+        }
+
+        private String string() {
+            expect('"');
+            var result = new StringBuilder();
+            boolean closed = false;
+            while (position < input.length()) {
+                char value = input.charAt(position++);
+                if (value == '"') { closed = true; break; }
+                if (value < 0x20) throw malformed();
+                if (value == '\\') {
+                    if (position >= input.length()) throw malformed();
+                    value = switch (input.charAt(position++)) {
+                        case '"' -> '"'; case '\\' -> '\\'; case '/' -> '/';
+                        case 'b' -> '\b'; case 'f' -> '\f'; case 'n' -> '\n'; case 'r' -> '\r'; case 't' -> '\t';
+                        case 'u' -> unicode();
+                        default -> throw malformed();
+                    };
+                }
+                result.append(value);
+            }
+            if (!closed) throw malformed();
+            for (int index = 0; index < result.length(); index++) {
+                char value = result.charAt(index);
+                if (Character.isHighSurrogate(value)) {
+                    if (++index >= result.length() || !Character.isLowSurrogate(result.charAt(index))) throw malformed();
+                } else if (Character.isLowSurrogate(value)) throw malformed();
+            }
+            return result.toString();
+        }
+
+        private char unicode() {
+            if (position + 4 > input.length()) throw malformed();
+            int value = 0;
+            for (int index = 0; index < 4; index++) {
+                char character = input.charAt(position++);
+                int digit = character >= '0' && character <= '9' ? character - '0'
+                        : character >= 'a' && character <= 'f' ? character - 'a' + 10
+                        : character >= 'A' && character <= 'F' ? character - 'A' + 10 : -1;
+                if (digit < 0) throw malformed();
+                value = value * 16 + digit;
+            }
+            return (char)value;
+        }
+        private String integer() {
+            whitespace();
+            int start = position;
+            while (position < input.length() && input.charAt(position) >= '0' && input.charAt(position) <= '9') position++;
+            if (position == start || position - start > 2 || position - start > 1 && input.charAt(start) == '0') throw malformed();
+            return input.substring(start, position);
+        }
+        private String bool() {
+            whitespace();
+            for (String value : List.of("true", "false")) {
+                if (input.startsWith(value, position)) { position += value.length(); return value; }
+            }
+            throw malformed();
+        }
+        private void expect(char value) { if (!take(value)) throw malformed(); }
+        private boolean take(char value) {
+            whitespace();
+            if (position < input.length() && input.charAt(position) == value) { position++; return true; }
+            return false;
+        }
+        private void whitespace() {
+            while (position < input.length()) {
+                char value = input.charAt(position);
+                if (value != ' ' && value != '\t' && value != '\r' && value != '\n') break;
+                position++;
+            }
+        }
+        private static IllegalArgumentException malformed() { return new IllegalArgumentException("Invalid Story proof"); }
     }
 
     public List<DisclosureLine> prepareDisclosures(ServerPlayer player, UUID contextId, UUID roomId, long revision,

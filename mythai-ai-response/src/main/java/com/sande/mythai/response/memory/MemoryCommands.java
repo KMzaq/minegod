@@ -11,6 +11,23 @@ public final class MemoryCommands {
     private MemoryCommands() {}
     public static void register(RegisterCommandsEvent event) {
         var root = Commands.literal("ai_memory").requires(source -> source.hasPermission(2));
+        root.then(Commands.literal("archive_status").executes(context -> {
+            var store = com.sande.mythictrpg.recording.server.RecordingRuntime.current(context.getSource().getServer());
+            String health = store.map(s -> {
+                var h = s.health();
+                return h.state() + "/" + h.reasonCode() + ", committed=" + h.highWatermark()
+                        + ", queued=" + h.queuedEntries() + ", captureGaps=" + h.gapCount()
+                        + ", quota=" + s.quotaSnapshot().map(q -> q.state() + " " + q.usedPhysicalBytes() + "/" + q.limitBytes()).orElse("UNAVAILABLE")
+                        + ", lexical=" + s.lexicalIndexStatus();
+            }).orElse("OFF_OR_STARTING");
+            context.getSource().sendSuccess(() -> Component.literal("[기록 v2] " + health
+                    + "; retrieval=" + com.sande.mythictrpg.recording.server.RecordingRuntime.retrievalState(context.getSource().getServer())
+                    + "; bundleSHADOW=" + RecordedRetrievalShadow.diagnostics()
+                    + "; projection=" + RecordedProjectionService.diagnostic(context.getSource().getServer())
+                    + "; semanticSHADOW=" + RecordedEmbeddingService.diagnostic(context.getSource().getServer())
+                    + "; 새 검색은 대사에 미반영, 전체 수집·검색 완료를 뜻하지 않습니다."), false);
+            return 1;
+        }));
         root.then(Commands.literal("status").executes(context -> {
             var view = DialogueMemoryBridge.inspect(context.getSource().getPlayerOrException());
             context.getSource().sendSuccess(() -> Component.literal("[기억] " + view.status() + " / 기록=" + view.entries().size() + " / revision=" + view.revision()), false);

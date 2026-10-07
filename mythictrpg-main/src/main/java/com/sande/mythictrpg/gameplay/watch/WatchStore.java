@@ -192,6 +192,45 @@ final class WatchStore implements AutoCloseable {
         for (Proof p : selected) result.put(p.id(), watches.get(p.watchId()).approval().eligibility());
         return Map.copyOf(result);
     }
+    /** Existing proof state only. Missing evidence is not a durable revocation. */
+    AsyncGodWatch.ReconciliationSnapshot reconcileExact(Audience audience, Set<UUID> ids) {
+        if (!world.equals(audience.worldId()))
+            return new AsyncGodWatch.ReconciliationSnapshot(world, audience, journal.committedRevision(), false, "WORLD_MISMATCH", List.of());
+        var result = new ArrayList<AsyncGodWatch.ReconciledProof>();
+        for (UUID id : ids.stream().sorted().toList()) {
+            Proof proof = proofs.get(id);
+            if (proof == null || !proof.observerGodId().equals(audience.key().godId())
+                    || !proof.observerTarget().equals(audience.key().playerId())) {
+                result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.UNKNOWN, null, null)); continue;
+            }
+            Watch owner = watches.get(proof.watchId());
+            if (owner == null) { result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.UNKNOWN, null, null)); continue; }
+            Ref eligibility = owner.approval().eligibility();
+            if (!valid(proof)) {
+                result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.REVOKED, null, eligibility)); continue;
+            }
+            Map<Field, Value> visible = new EnumMap<>(Field.class);
+            boolean unknown = false;
+            for (var field : proof.visibleProjection().entrySet()) {
+                boolean allowed = true;
+                for (Ref ref : field.getValue().subjectRules().values()) {
+                    Disclosure rule = disclosures.get(ref.id());
+                    if (!revokedRefs.contains(ref) && rule == null) unknown = true;
+                    if (revokedRefs.contains(ref) || rule == null || !rule.ref().equals(ref)
+                            || !rule.allowedAudience().containsAll(audience.players())) allowed = false;
+                }
+                if (allowed) visible.put(field.getKey(), field.getValue());
+            }
+            // No permission is fabricated for a missing/reverted disclosure record after partial restore.
+            if (unknown) result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.UNKNOWN, null, eligibility));
+            else if (visible.isEmpty()) result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.DISCLOSURE_CHANGED, null, eligibility));
+            else result.add(new AsyncGodWatch.ReconciledProof(id, AsyncGodWatch.ProofState.CURRENT,
+                    new Proof(proof.id(), proof.worldId(), proof.eventId(), proof.sourceRevision(), proof.sourceRef(), proof.observerTarget(),
+                            proof.observerGodId(), proof.watchId(), proof.policy(), proof.context(), proof.observedAtSequence(), visible, proof.revision()), eligibility));
+        }
+        return new AsyncGodWatch.ReconciliationSnapshot(world, audience, journal.committedRevision(), true, "READY", result);
+    }
+    long committedRevision() { return journal.committedRevision(); }
     long cursor() { return cursor; }
     long bytes() { return journal.bytes(); }
     long maxBytes() { return journal.maxBytes(); }

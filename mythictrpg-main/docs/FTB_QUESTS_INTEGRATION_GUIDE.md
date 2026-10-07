@@ -1,5 +1,17 @@
 # MythicTRPG × FTB Quests 연동 가이드
 
+> 2026-10-02 HanesTest 개발 변경: 기본 완료는 실제 신 접촉 확인을 기다린다. `completionMode` 생략은 `PLAYER_RETURN_TO_NPC`; 명시 `AUTO`/`NPC_VISIT_PLAYER`는 특별 콘텐츠 예외다. 주시 획득과 현재 관측·응답 가능 상태를 구분한다. 아래 §5의 접촉 규칙은 소스 기준이며 운영 배포·실제 인게임 확인을 뜻하지 않는다.
+
+> 2026-09-30 소스 변경(미배포): 일반 고정 퀘스트의 authoritative 완료 기록이 있으나 FTB 완료 표시가 누락된 경우, 완료자 로그인에서 표시를 재동기화한다. `QuestCompletionMirrorRecovery` → `restoreCompletedMirror`는 완료/시작 표시와 pin만 복원하며 퀘스트 commit·스토리·공용 진행도·Mythic 보상·FTB 자동 보상을 실행하지 않는다. 기존 task 수치와 reward claim 기록도 변경하지 않는다. 외부 FTB가 잠겼거나 정의가 없으면 다음 로그인에 다시 시도한다. 참여형 퀘스트는 기존 개별 mirror 경로를 유지한다.
+>
+> 기존 FTB 팀 공유 표시의 한계는 유지된다. 같은 FTB 팀의 다른 최초완료 경쟁자가 무효화 처리되면 공유 표시가 다시 숨겨질 수 있으며, 이 변경은 팀별/개인별 표시 정책을 새로 정의하지 않는다. 다른 팀원까지 모두 정상 복구된다는 의미가 아니다.
+
+검증(2026-09-30): 부모 작업의 직렬 컴파일과 `QuestPlayerAccessGameTests` 개발 GameTest
+3/3이 통과했다(368.7ms, Gradle 12초). 외부 adapter 예외/실패 후 재시도, 타인 완료의
+무효화, 실제 FTB 잠금 해제 후 로그인 2회, 보상 자동 청구 없음과 퀘스트·월드·보상 원본
+불변을 확인했다. 초기 fixture의 final 메서드 override 컴파일 오류는 실제 NBT 설정 API로
+고친 뒤 검증했다. 운영 JAR 배포와 실제 클라이언트 화면 확인은 하지 않았다.
+
 > 2026-09-20 개발본(미배포): 선택적 `participation`으로 SOLO/GROUP/COMPETITIVE/RANKING과 개인별 서버 목표·공동 정산을 추가했다. 이 필드가 있는 퀘스트는 FTB를 표시 미러로만 사용한다. [참여 유형·대화 합류·설정 양식](QUEST_PARTICIPATION_GUIDE.md)이 최신 계약이며, 아래 기존 전역 최초 완료/FTB 직접 목표 설명은 이 필드가 없는 바인딩에 적용된다.
 
 ## 1. 책임 경계
@@ -79,6 +91,7 @@ Minecraft/NeoForge 1.21.1 서버와 클라이언트 양쪽에 다음 파일이 �
 | `assignmentQuestId` | 수주한 플레이어에게만 퀘스트를 공개하는 숨김 마커 ID |
 | `completionMode` | 완료 확인 방식 |
 | `completionNpcIds` | 완료를 확인할 수 있는 신/NPC ID 목록 |
+| `returnLocation` | 선택적 지정 귀환 장소. `{ "dimension":"minecraft:overworld", "x":0, "y":64, "z":0, "radius":8 }`. 정확한 정수 좌표와 숫자 반경 1~64가 필요하다. 장소만으로 접촉/완료를 발생시키지 않는다. |
 | `progressTrackId` | 완료 시 올릴 전역 진행도 ID |
 | `progressOnClear` | 전역 진행도 증가량, `0~100` |
 | `narrativeRole` | 선택 사항. `SIDE`(기본), `MAIN_ENTRY`, `MAIN` 중 하나 |
@@ -154,17 +167,24 @@ FTB ID는 정확히 16자리 16진수이며 첫 글자가 `0~7`이어야 한다.
 
 ### `AUTO`
 
-FTB의 일반 목표가 모두 끝나면 즉시 완료한다. 이 방식의 퀘스트에는 Mythic 확인용 `custom` 태스크를 넣지 않는다.
+특별 퀘스트에 명시적으로 작성한 예외다. FTB의 일반 목표가 모두 끝나면 즉시 완료한다. 이 방식의 퀘스트에는 Mythic 확인용 `custom` 태스크를 넣지 않는다. 생략한 기본값이 아니다.
 
 ### `PLAYER_RETURN_TO_NPC`
 
-아이템·처치 등 일반 FTB 목표가 모두 끝난 뒤 플레이어가 `completionNpcIds` 중 하나에게 직접 상호작용해야 완료한다. FTB 퀘스트의 마지막에 버튼이 없는 `custom` 태스크를 둔다. 그 태스크는 MythicTRPG만 완료할 수 있다.
+아이템·처치 등 일반 FTB 목표가 모두 끝나면 확인 대기다. 수주한 신 또는 `completionNpcIds` 중 하나와 서버가 검증한 실제 접촉이 있어야 완료한다. FTB 퀘스트의 마지막에 버튼이 없는 `custom` 태스크를 둔다. 그 태스크는 MythicTRPG만 완료할 수 있다.
+
+- 실제 지급된 해당 신의 주시가 있으면 직접 대면할 수 있다. 원격 확인은 별도로 그 신의 현재 활성 관찰 세션, 플레이어의 현재 장소·차폐·하늘 정책, 다른 대화·전투·레이드·Story 불가 상태·독서·산책 등을 모두 확인한다. 주시를 소유했다는 사실만으로 원격 응답하지 않는다.
+- 주시가 없으면 실제 대면과 함께 수주 원점 또는 지정 `returnLocation` 범위에 있어야 한다. 또는 현재 등장 조건을 충족하는 실제 재조우가 있어야 한다. 장소 재방문·목표 완료만으로 신을 소환하거나 완료하지 않는다.
+- 신규 수주는 서버의 실제 차원·블록 위치와 기존 대화 반경 16블록을 저장한다. 옛 수주의 위치가 없으면 비워 둔다. 지정 장소에서의 실제 대면 또는 실제 재조우로 확인하며 현재 위치를 과거 수주 장소로 꾸미지 않는다.
+- 독서·산책 중에도 플레이어가 실제 NPC를 클릭해 대면하면 기존 생활활동 일시정지 경로로 대화할 수 있다. 원격으로 부를 때에는 그러한 활동 중이면 응답하지 않는다.
+- `/mythquest call <정확한 God ID>`는 일반 플레이어의 **퀘스트 완료 확인 전용 원격 호출**이다. 현재 주시와 응답 조건을 통과한 같은 서버 틱에서만 확인하며 NPC 소환이나 일반 원격 AI 대화방 생성은 하지 않는다. `/mythquest confirm <questId>` 또는 `/mythroom confirm <room> <god> <quest>`는 실제 접촉이 유지되는 방에서 확인한다.
+- 접촉 증명은 플레이어 객체·신·실제 방/리비전과 묶이며 다른 신·플레이어·비밀방, 방 종료·재접속에 재사용되지 않는다. 관리자 `/ai_call` 시험방은 접촉 권한을 만들지 않는다.
 
 완료 조건이 충족된 경우 MythicTRPG가 먼저 authoritative 완료·FTB `custom` 태스크 완료·전역 진행도 갱신을 수행한다. 그 뒤 AI 응답 모드가 검증된 완료 정보만 받아 NPC HUD 완료 대사를 생성한다. AI가 없거나 호출에 실패하면 같은 NPC HUD 영역에 `[퀘스트가 완료되었습니다]`를 표시하고, 대화 세션은 계속 유지한다. 조건이 아직 부족하면 완료하지 않고 NPC가 미완료 안내 대사를 한다.
 
 ### `NPC_VISIT_PLAYER`
 
-일반 목표가 끝나면 `QuestRuntimeService.readyForNpcVisit(player)`에 노출된다. 기존 사건/등장 시스템이 해당 NPC의 자발적 상호작용을 실제로 생성했을 때만 완료한다. 단순히 목표가 끝났다는 이유로 NPC를 강제 소환하지 않는다.
+특별 퀘스트에 명시한 방문형 예외다. 일반 목표가 끝나면 `QuestRuntimeService.readyForNpcVisit(player)`에 노출된다. 기존 사건/등장 시스템이 해당 NPC의 자발적 상호작용을 실제로 생성하고 전달한 경우만 완료한다. 단순히 목표가 끝났다는 이유로 NPC를 강제 소환하지 않는다. 원격 호출을 NPC 방문으로 취급하지 않는다.
 
 ## 6. 포르투나 샘플 흐름
 
@@ -175,7 +195,7 @@ FTB의 일반 목표가 모두 끝나면 즉시 완료한다. 이 방식의 퀘�
 3. 테스트 수주: `/mythadmin quest assign ADMIN mythictrpg:fortuna_deep_sea_heart mythictrpg:fortuna`
 4. FTB Quests 키 설정에서 퀘스트북을 연다.
 5. 테스트 아이템 지급: `/give ADMIN minecraft:heart_of_the_sea 1`
-6. 아이템 목표가 완료된 후 포르투나와 명시적으로 대화한다. 개발용 직접 확인은 `/mythadmin quest check-return ADMIN mythictrpg:fortuna`이다.
+6. 아이템 목표가 완료된 후 수주 장소·지정 장소에서 포르투나 실체를 만나거나 등장 조건을 다시 충족한 실제 조우로 확인받는다. 현재 유효한 주시와 유휴 조건을 갖춘 경우 `/mythquest call mythictrpg:fortuna`도 사용할 수 있다. 개발용 `/mythadmin quest check-return ADMIN mythictrpg:fortuna` 역시 기존 유효 접촉이 필요하며 접촉·목표 검증을 우회하지 않는다.
 7. FTB 퀘스트북에서 불사의 토템 보상을 누른다.
 8. 상태 확인: `/mythadmin quest status ADMIN`
 
@@ -195,7 +215,7 @@ FTB의 일반 목표가 모두 끝나면 즉시 완료한다. 이 방식의 퀘�
 ## 8. 구현 API
 
 - AI → 게임 수주: `QuestProposalGateway.acceptOffer(player, giverGodId, questId)`
-- 명시적/자발적 NPC 상호작용 완료: 기존 `AiConversationRuntimeService`의 커밋 지점에서 자동 전달
+- 접촉 증명과 완료 확인: `QuestContactService`가 실제 근접 신 클릭(`GodAvatarService`), 전달 완료된 자발적 조우(`InteractionStartService`), 현재 주시·유휴 조건을 재검증하는 `/mythquest call`에서만 발급한다. 증명은 해당 플레이어·신·현재 방 revision에 한정하고 원격 호출은 그 호출 안에서만 유효하다. `AiConversationRuntimeService`의 대화 시작 콜백이나 일반 방 생성만으로 완료하지 않는다.
 - 방문형 후보 조회: `QuestRuntimeService.readyForNpcVisit(player)`
 - 전역 저장: `MythicQuestState` (`mythictrpg_quests` SavedData)
 - 신별 주목 대상 저장: `GodAttentionState` (`mythictrpg_god_attention` SavedData)

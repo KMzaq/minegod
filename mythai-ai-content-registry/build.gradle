@@ -81,3 +81,10 @@ tasks.register('questDisclosureTest', JavaExec) {
     mainClass = 'com.sande.mythaiaicontent.content.QuestDisclosureTest'
 }
 tasks.named('check') { dependsOn 'questDisclosureTest' }
+tasks.register('commonKnowledgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythaiaicontent.content.CommonKnowledgeTest'
+    systemProperty 'log4j2.configurationFile', file('src/test/resources/common-knowledge-log4j2.xml').toURI().toString()
+}
+tasks.named('check') { dependsOn 'commonKnowledgeTest' }

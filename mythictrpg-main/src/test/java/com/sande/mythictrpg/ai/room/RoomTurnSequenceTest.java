@@ -176,6 +176,7 @@ public final class RoomTurnSequenceTest {
         var ledger = new ConversationRoomLedger(); UUID player = UUID.randomUUID();
         var room = ledger.create(RoomType.PRIVATE, player, List.of(PRIMARY.toString(), SECONDARY.toString()), "", RecordingScope.STANDARD);
         var chain = ledger.beginTurn(room.roomId(), room.revision(), player, PRIMARY.toString());
+        check(ledger.latestTurnSequence(room.roomId())==chain.sequence(),"accepted input records a durable in-memory sequence");
         var primaryRequest = request(room, chain.turnId(), PRIMARY, false, false, ownStates(room, PRIMARY));
         var primaryResult = reply(primaryRequest, List.of(new RoomConversationEngine.Speech(PRIMARY, "완료")), "[]", List.of());
         check(ledger.isCurrent(chain) && primaryResult.deliverableFor(primaryRequest), "primary result current before secondary starts");
@@ -183,11 +184,14 @@ public final class RoomTurnSequenceTest {
         var delayedSecondary = reply(secondaryRequest, List.of(new RoomConversationEngine.Speech(SECONDARY, "늦은 반응")), "[]", List.of());
         check(ledger.isCurrent(chain) && delayedSecondary.deliverableFor(secondaryRequest), "same logical turn remains live across selected speaker change");
         var replacement = ledger.beginTurn(room.roomId(), room.revision(), player, SECONDARY.toString());
+        check(ledger.latestTurnSequence(room.roomId())==replacement.sequence()&&replacement.sequence()>chain.sequence(),
+                "new input invalidates a completed social result without relying on UI selection");
         check(!ledger.isCurrent(chain), "new player input invalidates old primary-secondary chain");
         check(delayedSecondary.deliverableFor(secondaryRequest), "shape validity alone does not imply current lease");
         check(!ledger.finishTurn(chain), "late old completion cannot finish newer turn");
         check(ledger.isCurrent(replacement), "new pending turn survives old callback cleanup");
         check(ledger.finishTurn(replacement), "current chain completes exactly once");
+        check(ledger.latestTurnSequence(room.roomId())==replacement.sequence(),"finished turn remains latest for post-delivery review");
         check(!ledger.finishTurn(replacement) && !ledger.isCurrent(replacement), "duplicate completion is inert");
     }
 

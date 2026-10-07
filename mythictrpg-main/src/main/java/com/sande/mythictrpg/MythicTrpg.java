@@ -59,10 +59,21 @@ public final class MythicTrpg {
 
     public MythicTrpg(IEventBus modEventBus) {
         ModItems.register(modEventBus);
+        com.sande.mythictrpg.godavatar.GodAvatarEntities.register(modEventBus);
         ModAttachments.register(modEventBus);
         modEventBus.addListener(DialogueNetwork::register);
         ConditionChangeDispatcher.registerHandler(GodUnlockService.INSTANCE);
         NeoForge.EVENT_BUS.addListener(GodDefinitionManager.INSTANCE::onAddReloadListeners);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.GodAvatarDefinitionManager.INSTANCE::onAddReloadListeners);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.visit.GodVisitPolicies.INSTANCE::onReload);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.GodHomeVisitService.INSTANCE::tick);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.GodHomeVisitService.INSTANCE::stopped);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityDefinitions.INSTANCE::onReload);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE::joined);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE::left);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE::tick);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE::stopping);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE::stopped);
         NeoForge.EVENT_BUS.addListener(InteractionRuleManager.INSTANCE::onAddReloadListeners);
         NeoForge.EVENT_BUS.addListener(GameplayPromotionManager.INSTANCE::onAddReloadListeners);
         NeoForge.EVENT_BUS.addListener(FtbQuestBindingManager.INSTANCE::onAddReloadListeners);
@@ -112,6 +123,9 @@ public final class MythicTrpg {
         NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.gameplay.watch.GodWatchRuntime::onPlayerRespawn);
         NeoForge.EVENT_BUS.addListener(StoryEventService.INSTANCE::onServerStarted);
         NeoForge.EVENT_BUS.addListener(MythAdminCommands::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.GodAvatarCommands::register);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.activity.NpcActivityCommands::register);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.story.command.StoryChoiceCommands::register);
         NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.command.QuestParticipationCommands::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(EconomyCommands::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(PlayerMythDataService::onPlayerLoggedIn);
@@ -170,6 +184,7 @@ public final class MythicTrpg {
         NeoForge.EVENT_BUS.addListener(FreeStructureService.INSTANCE::onServerStopped);
         NeoForge.EVENT_BUS.addListener(StructureVisualEvaluationService.INSTANCE::onServerStopped);
         NeoForge.EVENT_BUS.addListener(MythicTrpg::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.godavatar.GodAvatarService.INSTANCE::onServerStopped);
         LOGGER.info("Mythic TRPG initialized.");
     }
 

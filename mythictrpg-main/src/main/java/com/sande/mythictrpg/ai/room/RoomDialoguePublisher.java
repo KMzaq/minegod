@@ -10,6 +10,11 @@ public final class RoomDialoguePublisher {
     public static RoomDialogueEvent publish(RoomDialogueEvent draft, Collection<UUID> recipients,
             Function<UUID, RoomDialogueEvent.Delivery> dispatch, Consumer<RoomDialogueEvent> observer,
             Consumer<RuntimeException> reportFailure) {
+        return publish(draft, recipients, dispatch, ignored -> { }, observer, reportFailure);
+    }
+    public static RoomDialogueEvent publish(RoomDialogueEvent draft, Collection<UUID> recipients,
+            Function<UUID, RoomDialogueEvent.Delivery> dispatch, Consumer<RoomDialogueEvent> gameCapture,
+            Consumer<RoomDialogueEvent> observer, Consumer<RuntimeException> reportFailure) {
         // Validate scope before sending even one private message.
         var targets = new LinkedHashSet<>(recipients);
         if (!draft.deliveries().isEmpty() || draft.roomType() == RoomType.PRIVATE
@@ -25,6 +30,8 @@ public final class RoomDialoguePublisher {
         var event = draft.withDeliveries(actual);
         // Off means no new recording callback, including initial/consent/non-LLM dialogue.
         if (event.recordingScope().recordingAllowed()) {
+            try { gameCapture.accept(event); }
+            catch (RuntimeException failed) { reportFailure.accept(failed); }
             try { observer.accept(event); }
             catch (RuntimeException failed) { reportFailure.accept(failed); }
         }

@@ -25,7 +25,7 @@ description: "markmar NeoForge 모드를 빌드하거나 테스트 서버를 세
 
 위 세 개를 매번 모두 실행하라는 뜻은 아니다. 필요한 범위만 선택한다. 다른 모듈은 같은 wrapper에 `-p`로 명시적 프로젝트 경로를 전달할 수 있다. FTB는 자체 wrapper의 `:neoforge:build`를 사용한다. 생성 파일을 보존할 필요가 없는지 확인하지 않고 `clean`을 습관적으로 붙이지 않는다.
 
-AI 응답 빌드는 현재 게임 JAR뿐 아니라 `mine/mine`의 기존 AI JAR/소스에 의존한다. `mythai-ai-response/build.gradle`의 입력·오버레이·포함/제외 규칙을 먼저 확인한다. 해당 원본 변경이 JAR 추출 대상이면 소스만 고치고 반영됐다고 하지 않는다. 기존 결합형 JAR에는 게임도 들어 있으므로 최종 서버에 넣지 않는다.
+AI 응답의 실제 `build.gradle` 입력을 먼저 확인한다. 현재 브랜치는 현재 게임 API JAR과 모듈 소유 `src/main/java`/`src/engine/java`로 빌드하며 이전 overlay Gradle을 실행하지 않는다. 게임 API JAR을 먼저 맞추고 `verifyEngineOwnership`/`verifyEnginePackage`로 구 체크아웃 의존과 클래스 중복을 검사한다. 다른 브랜치의 legacy 입력 유무는 재확인한다. 기존 결합형 JAR에는 게임도 들어 있으므로 최종 서버에 넣지 않는다.
 
 ## 배포
 

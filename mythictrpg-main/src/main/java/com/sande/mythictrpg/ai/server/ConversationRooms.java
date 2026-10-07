@@ -10,12 +10,12 @@ import com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings;
 import com.sande.mythictrpg.ai.room.*;
 import com.sande.mythictrpg.ai.region.*;
 import com.sande.mythictrpg.data.god.*;
-import com.sande.mythictrpg.data.player.PlayerMythDataService;
 import com.sande.mythictrpg.dialogue.api.GodDialogueRequest;
 import com.sande.mythictrpg.dialogue.server.DialoguePresentationService;
 import com.sande.mythictrpg.network.ConversationRoomsPayload;
 import com.sande.mythictrpg.rumor.RumorSavedData;
 import com.sande.mythictrpg.relation.GodRelationRoomContext;
+import com.sande.mythictrpg.ai.social.RoomSocialContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
@@ -38,12 +38,18 @@ public final class ConversationRooms {
     private final Map<UUID,List<Line>> history=new HashMap<>();
     private record FeedbackKey(UUID room, ResourceLocation god, UUID player) {}
     private final Map<FeedbackKey,List<String>> feedback=new HashMap<>();
+    private final Map<FeedbackKey,LinkedHashMap<UUID,com.sande.mythictrpg.ai.action.AiActionResult>> actionFeedback=new HashMap<>();
+    private static final int MAX_ACTION_FEEDBACK=16;
     private final Map<UUID,String> lastSpeakers=new HashMap<>();
     private final Set<UUID> splitting=new HashSet<>();
     private final Map<UUID,Long> changedAt=new HashMap<>();
     private final Map<UUID,ConversationRoomLedger.TurnLease> turns=new HashMap<>();
+    private final Map<UUID,RoomConversationEngine.Request> memoryRequests=new HashMap<>();
+    private record StartedRoom(UUID id, long revision) { }
+    private final Map<UUID, StartedRoom> contactStarts = new LinkedHashMap<>();
     private record Line(RoomConversationEngine.HistoryLine value,Set<UUID> audience,Set<String> gods) {}
-    private record PreparedTurn(RoomConversationEngine.Request request, GodRelationRoomContext.Snapshot relations) {}
+    private record PreparedTurn(RoomConversationEngine.Request request, GodRelationRoomContext.Snapshot relations,
+            RoomSocialContext.Snapshot social, String homeVisit, String activity) {}
     private ConversationRooms() {}
     public static boolean enabled() { return RoomConversationEngineRouter.INSTANCE.available()
             && Boolean.parseBoolean(System.getProperty("mythictrpg.conversationRooms.enabled","true")); }
@@ -56,13 +62,23 @@ public final class ConversationRooms {
         }
     }
     public void clear() {
+        for(var room:ledger.activeRooms())com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.endDialogue(room.roomId());
         RoomConversationEngineRouter.INSTANCE.engine().stop();
-        ledger=new ConversationRoomLedger(); fixedRegions.clear();history.clear();feedback.clear();lastSpeakers.clear();
-        splitting.clear();changedAt.clear();turns.clear();
+        ledger=new ConversationRoomLedger(); fixedRegions.clear();history.clear();feedback.clear();actionFeedback.clear();lastSpeakers.clear();
+        splitting.clear();changedAt.clear();turns.clear();memoryRequests.clear();contactStarts.clear();
         if(fixedReservations!=null)fixedReservations.clear();fixedReservations=null;
         if(regions!=null)regions.invalidateAll();regions=null;server=null;
     }
     public boolean hasMembership(ServerPlayer p) {return ledger.activeRooms().stream().anyMatch(r->r.playerIds().contains(p.getUUID()));}
+    public Optional<com.sande.mythictrpg.ai.action.AiActionScope> contactScope(ServerPlayer player, UUID interactionId, ResourceLocation god) {
+        var started = contactStarts.get(interactionId);
+        return started == null ? Optional.empty() : actionScope(player, started.id(), started.revision(), god);
+    }
+    /** Private and public conversations both occupy attention for a remote call. */
+    public boolean godConversing(ServerPlayer player, ResourceLocation god) {
+        attach(player.server);
+        return ledger.activeRooms().stream().anyMatch(r -> r.godIds().contains(god.toString()));
+    }
     public List<ConversationRoomSnapshot> memberships(ServerPlayer p) {
         attach(p.server);return ledger.activeRooms().stream().filter(r->r.playerIds().contains(p.getUUID())).toList();
     }
@@ -163,6 +179,8 @@ public final class ConversationRooms {
         }
         changed(r);
         // The existing Interaction output already sent HUD turns. Add each logical turn to chat once.
+        contactStarts.put(interactionId, new StartedRoom(r.roomId(), r.revision()));
+        while (contactStarts.size() > ConversationRoomLedger.MAX_ROOMS) contactStarts.remove(contactStarts.keySet().iterator().next());
         for(var t:content.turns())publishGod(r,t.speakerGodId(),t.text().getString(),false);
     }
     private boolean eligible(ConversationRoomSnapshot r,ServerPlayer p) {
@@ -223,32 +241,37 @@ public final class ConversationRooms {
     private PreparedTurn prepareTurn(ServerPlayer p,ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,
             ResourceLocation speaker,String text,List<RoomConversationEngine.HistoryLine> before,boolean secondary) {
         var relations=GodRelationRoomContext.capture(server,room,speaker,recipients(room));
+        var social=RoomSocialContext.capture(server,room,speaker,p.getUUID(),recipients(room));
+        String homeVisit=com.sande.mythictrpg.godavatar.GodHomeVisitService.INSTANCE.contextFor(p,speaker,room);
+        boolean readOnly=room.recordingScope().isTest()||MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST;
+        String activity=com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.contextFor(p,speaker,room,readOnly||secondary);
         var states=new ArrayList<RoomConversationEngine.GodState>();
         // The AI receives the selected God's context, never another God's private constraints or memory.
         for(String id:List.of(speaker.toString())) {
             var rid=ResourceLocation.parse(id);
             String context="Room type="+room.type()+"; participants="+participantNames(room.playerIds())
-                    +"\n"+relationshipContext(room.playerIds(),rid)
+                    +"\n"+social.promptText()
                     +"\n"+String.join("\n",secondary?List.of():feedback.getOrDefault(new FeedbackKey(room.roomId(),rid,p.getUUID()),List.of()))
                     +"\nOnly this room's supplied game context is authoritative. Never reuse another room's constraints or feedback."
                     +"\nA conversation move does not transfer or cancel watch entitlement."
-                    +"\n"+relations.promptText();
+                    +"\n"+relations.promptText()+"\n"+homeVisit+"\n"+activity;
             if(!secondary)context+="\nRoom-control capabilities: leave current speaker after genuine farewell; end your own attendance; invite a named online player to PRIVATE only."
                     +"\nEligible private invite targets (IDs/names, invitation still requires acceptance): "+participantNames(server.getPlayerList().getPlayers().stream().limit(64).map(ServerPlayer::getUUID).collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new)))
                     +"\nNo quest/reward capability is implicitly granted by a room invitation.";
             else context+="\nThis is an optional reaction. Only explicitly supplied Story Hooks may be proposed; no other gameplay or room-control capabilities.";
             var godScope=actionScope(p,room.roomId(),room.revision(),rid);
             if(!secondary&&godScope.isPresent())context+="\n"+com.sande.mythictrpg.quest.QuestParticipationService.INSTANCE.contextForRoom(p,rid,godScope.get().sessionId());
-            states.add(new RoomConversationEngine.GodState(rid,"R_NEUTRAL","E_NEUTRAL",context,memoryContext(p,room,rid)));
+            states.add(new RoomConversationEngine.GodState(rid,social.currentPlayerTier(),RoomSocialContext.UNASSESSED_EMOTION,context,memoryContext(p,room,rid)));
         }
-        boolean readOnly=room.recordingScope().isTest()||MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST;
         var request=new RoomConversationEngine.Request(room.roomId(),room.revision(),lease.turnId(),p.getUUID(),p.getGameProfile().getName(),
                 room.godIds().stream().map(ResourceLocation::parse).toList(),speaker,text,before,readOnly,
-                room.recordingScope().recordingAllowed(),room.type().isPublic(),states,secondary,recipients(room));
-        return new PreparedTurn(request,relations);
+                room.recordingScope().recordingAllowed(),room.type().isPublic(),states,secondary,recipients(room),
+                secondary||readOnly?List.of():actionOutcomesFor(p,room.roomId(),room.revision(),speaker));
+        return new PreparedTurn(request,relations,social,homeVisit,activity);
     }
     private void finishTurn(ConversationRoomLedger.TurnLease lease) {
-        if(ledger.finishTurn(lease))turns.remove(lease.roomId(),lease);
+        if(ledger.finishTurn(lease)){turns.remove(lease.roomId(),lease);memoryRequests.remove(lease.roomId());
+            com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.endDialogue(lease.roomId());}
     }
     private void advanceReactions(ServerPlayer p,ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,List<String> remaining) {
         if(server!=p.server||!ledger.isCurrent(lease))return;
@@ -270,6 +293,7 @@ public final class ConversationRooms {
     }
     private void runTurn(ServerPlayer p,ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,PreparedTurn prepared,List<String> remaining) {
         var request=prepared.request();
+        memoryRequests.put(room.roomId(),request);
         if(!com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE.speakerAvailable(p,request.speakerGodId())) {
             failedTurn(p,room,lease,request,remaining,"그 신은 지금 대화할 수 없습니다.");return;
         }
@@ -284,11 +308,23 @@ public final class ConversationRooms {
             if(!GodRelationRoomContext.isCurrent(server,prepared.relations(),room,recipients(room))) {
                 failedTurn(p,room,lease,request,remaining,"신들의 관계나 청중이 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요.");return;
             }
+            if(!RoomSocialContext.isCurrent(server,prepared.social(),room,p.getUUID(),recipients(room))) {
+                failedTurn(p,room,lease,request,remaining,"관계나 사회적 상황의 근거가 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요.");return;
+            }
+            if(!prepared.homeVisit().equals(com.sande.mythictrpg.godavatar.GodHomeVisitService.INSTANCE.contextFor(p,request.speakerGodId(),room))) {
+                failedTurn(p,room,lease,request,remaining,"방문 상태가 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요."); return;
+            }
+            if(!com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.contextCurrent(p,request.speakerGodId(),room,prepared.activity())) {
+                failedTurn(p,room,lease,request,remaining,"NPC의 실제 활동·장소가 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요."); return;
+            }
             if(failure!=null||result==null||!result.failure().isBlank()) {
                 failedTurn(p,room,lease,request,remaining,result==null?"AI 요청 실패":result.failure());return;
             }
             if(!result.deliverableFor(request)) {
                 failedTurn(p,room,lease,request,remaining,"현재 방·화자와 일치하지 않는 응답을 취소했습니다.");return;
+            }
+            if(!actionOutcomesCurrent(p,request)) {
+                failedTurn(p,room,lease,request,remaining,"게임 처리 결과가 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요.");return;
             }
             try {
             var storyEvents=new ArrayList<RoomDialogueEvent>();
@@ -299,10 +335,14 @@ public final class ConversationRooms {
                         .ifPresent(storyEvents::add);
             }
             boolean fullyDelivered=!result.speech().isEmpty();
+            var speechEvents=new ArrayList<RoomDialogueEvent>();
             for(var speech:result.speech()) {
                 var event=publishGod(room,speech.godId(),speech.text(),true,Optional.of(lease.turnId()));
+                if(event!=null)speechEvents.add(event);
                 fullyDelivered&=event!=null&&RoomTurnPolicy.fullyDispatched(event,p.getUUID());
             }
+            if(fullyDelivered)try {com.sande.mythictrpg.rumor.SocialRuntime.roomReplyCompleted(p,room,lease,speechEvents);}
+            catch(RuntimeException socialFailure){MythicTrpg.LOGGER.warn("Room social completion unavailable; dialogue remains delivered",socialFailure);}
             RoomConversationEngineRouter.INSTANCE.engine().delivered(request,result);
             if(result.storyContextId().isPresent())com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE
                     .commitDisclosures(p,result.storyContextId().get(),storyEvents);
@@ -331,7 +371,7 @@ public final class ConversationRooms {
                         proposal.get("type").getAsString(),proposal.has("title")?proposal.get("title").getAsString():"",
                         proposal.has("summary")?proposal.get("summary").getAsString():"",params,
                         com.sande.mythictrpg.ai.action.ItemReadinessPolicy.declared(playerText));
-                reports.add("Game validator: "+result.actionType()+" status="+result.status()+" reason="+result.reason());
+                // Gateway owns pending -> terminal replacement; do not leave a second stale PENDING report here.
                 p.sendSystemMessage(Component.literal("[게임 처리] "+result.status()+": "+result.reason()));
             }
         }catch(RuntimeException invalid){reports.add("Game validator: malformed or unsupported proposal rejected; no inferred execution.");}
@@ -393,6 +433,23 @@ public final class ConversationRooms {
     }
     public void loggedOut(ServerPlayer p) { for(var r:memberships(p))leave(p,r,"DISCONNECT_NOT_INTENTIONAL_DISRESPECT"); }
     public boolean isCurrent(UUID id,long revision) {return server!=null&&server.isSameThread()&&ledger.find(id).filter(r->r.revision()==revision).isPresent();}
+    /** Exact current game-issued speaker/turn, not merely a selected room or AI-supplied IDs. */
+    public boolean memoryReadCurrent(MinecraftServer expected,RoomConversationEngine.Request request) {
+        if(server!=expected||!expected.isSameThread()||!isCurrent(request.roomId(),request.revision()))return false;
+        var issued=memoryRequests.get(request.roomId());var lease=turns.get(request.roomId());
+        var room=ledger.find(request.roomId()).orElse(null);
+        return issued!=null&&lease!=null&&ledger.isCurrent(lease)&&issued.turnId().equals(request.turnId())
+                &&issued.playerId().equals(request.playerId())&&issued.speakerGodId().equals(request.speakerGodId())
+                &&issued.secondary()==request.secondary()&&issued.publicRoom()==request.publicRoom()
+                &&issued.recording()==request.recording()&&room!=null&&room.recordingScope().recordingAllowed()
+                &&issued.godIds().equals(request.godIds())&&issued.audiencePlayerIds().equals(request.audiencePlayerIds())
+                &&recipients(room).equals(request.audiencePlayerIds())
+                &&expected.getPlayerList().getPlayer(request.playerId())!=null;
+    }
+    /** Latest accepted input, including a finished reply; selected UI rooms do not confer this authority. */
+    public boolean socialTurnCurrent(UUID roomId,long revision,long sequence) {
+        return isCurrent(roomId,revision)&&sequence>0&&ledger.latestTurnSequence(roomId)==sequence;
+    }
     private static UUID generation(ConversationRoomSnapshot r) {return UUID.nameUUIDFromBytes((r.roomId()+"/"+r.revision()).getBytes(StandardCharsets.UTF_8));}
     public Optional<com.sande.mythictrpg.ai.action.AiActionScope> actionScope(ServerPlayer p,UUID roomId,long revision,ResourceLocation god) {
         if(server!=p.server||!server.isSameThread()||server.getPlayerList().getPlayer(p.getUUID())!=p
@@ -407,9 +464,60 @@ public final class ConversationRooms {
         return ledger.activeRooms().stream().filter(r->generation(r).equals(sessionId))
                 .anyMatch(r->actionScope(p,r.roomId(),r.revision(),god).isPresent());
     }
+    /** Only the Gateway can issue this one-use result, and only its unchanged original room may receive it. */
+    public boolean acceptActionOutcome(ServerPlayer player,com.sande.mythictrpg.ai.action.AiActionGateway.RoomOutcome outcome) {
+        if(outcome==null||!player.getUUID().equals(outcome.playerId()))return false;
+        var scope=actionScope(player,outcome.roomId(),outcome.revision(),outcome.godId());
+        if(scope.isEmpty()||!scope.get().sessionId().equals(outcome.sessionId())||!outcome.consumeFor(player))return false;
+        var key=new FeedbackKey(outcome.roomId(),outcome.godId(),outcome.playerId());
+        var values=actionFeedback.computeIfAbsent(key,ignored->new LinkedHashMap<>());
+        var result=outcome.result();var previous=values.get(result.proposalId());
+        if(previous!=null&&previous.status()!=com.sande.mythictrpg.ai.action.AiActionResult.Status.PENDING_CONFIRMATION)return false;
+        values.remove(result.proposalId());values.put(result.proposalId(),result);
+        while(values.size()>MAX_ACTION_FEEDBACK)values.remove(values.keySet().iterator().next());
+        return true;
+    }
+    /** Read-only next-turn context; never selects another room or starts a model request. */
+    public List<String> actionFeedbackFor(ServerPlayer player,UUID roomId,long revision,ResourceLocation god) {
+        if(actionScope(player,roomId,revision,god).isEmpty())return List.of();
+        var values=actionFeedback.get(new FeedbackKey(roomId,god,player.getUUID()));
+        return values==null?List.of():values.values().stream()
+                .map(com.sande.mythictrpg.ai.action.AiActionResult::feedbackLine).toList();
+    }
+    /** The existing Gateway-owned outcomes, projected only for this exact room generation, actor and player. */
+    public List<RoomConversationEngine.ActionOutcome> actionOutcomesFor(ServerPlayer player,UUID roomId,long revision,ResourceLocation god) {
+        if(actionScope(player,roomId,revision,god).isEmpty())return List.of();
+        var values=actionFeedback.get(new FeedbackKey(roomId,god,player.getUUID()));
+        return values==null?List.of():values.values().stream().map(result->new RoomConversationEngine.ActionOutcome(
+                result.proposalId(),result.actionType().toString(),RoomConversationEngine.ActionStatus.valueOf(result.status().name()),
+                result.dialogueReason(),result.dialogueDetails())).toList();
+    }
+    /** A confirmation arriving during generation invalidates only the matching request's result evidence. */
+    public boolean actionOutcomesCurrent(ServerPlayer player,RoomConversationEngine.Request request) {
+        if(server!=player.server||!server.isSameThread()||server.getPlayerList().getPlayer(player.getUUID())!=player
+                ||!player.getUUID().equals(request.playerId())||!isCurrent(request.roomId(),request.revision()))return false;
+        var room=ledger.find(request.roomId()).orElseThrow();
+        if(!room.playerIds().contains(player.getUUID())||!room.godIds().contains(request.speakerGodId().toString()))return false;
+        if(request.secondary()||request.readOnly())return request.actionOutcomes().isEmpty();
+        return actionScope(player,request.roomId(),request.revision(),request.speakerGodId()).isPresent()
+                &&request.actionOutcomes().equals(actionOutcomesFor(player,request.roomId(),request.revision(),request.speakerGodId()));
+    }
     public Set<UUID> actionPlayers(ServerPlayer p,UUID sessionId,ResourceLocation god) {
         if(!actionCurrent(p,sessionId,god))return Set.of();
         return ledger.activeRooms().stream().filter(r->generation(r).equals(sessionId)).findFirst().map(ConversationRoomSnapshot::playerIds).orElse(Set.of());
+    }
+    /** Bounded, already-audience-filtered context for a game-authorized visit action. No selected-room fallback. */
+    public Optional<com.sande.mythictrpg.godavatar.visit.GodVisitPlanner.Dialogue> visitDialogue(
+            ServerPlayer p, UUID sessionId, ResourceLocation god) {
+        if (!actionCurrent(p, sessionId, god)) return Optional.empty();
+        var room = ledger.activeRooms().stream().filter(r -> generation(r).equals(sessionId)).findFirst().orElseThrow();
+        var lines = visibleHistory(room, god.toString());
+        var selected = lines.subList(Math.max(0, lines.size() - 8), lines.size()).stream()
+                .filter(line -> line.text().length() <= 1000)
+                .map(line -> new com.sande.mythictrpg.godavatar.visit.GodVisitPlanner.Line(
+                        line.messageId(), line.role(), line.speakerId(), line.text())).toList();
+        return Optional.of(new com.sande.mythictrpg.godavatar.visit.GodVisitPlanner.Dialogue(
+                room.roomId(), room.revision(), ledger.latestTurnSequence(room.roomId()), selected));
     }
     public ConversationMemoryContext memoryContext(ServerPlayer p,ConversationRoomSnapshot r,ResourceLocation god) {
         if(!r.playerIds().contains(p.getUUID())||!r.godIds().contains(god.toString())||MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.OFF)return null;
@@ -508,6 +616,8 @@ public final class ConversationRooms {
         }
         var event=new RoomDialogueEvent(UUID.randomUUID(),r.roomId(),r.revision(),turnId,r.type(),r.recordingScope(),
                 role,speaker,text,r.godIds(),participants,Map.of(),System.currentTimeMillis());
+        var sourceTurn=turns.get(r.roomId());
+        if(turnId.isPresent()&&sourceTurn!=null&&turnId.get().equals(sourceTurn.turnId())) event=event.withTurnSequence(sourceTurn.sequence());
         var anchor=r.playerIds().stream().map(server.getPlayerList()::getPlayer).filter(Objects::nonNull).findFirst();
         var heard=RoomTurnPolicy.heardGods(r,id->anchor.isPresent()
                 &&com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE.speakerAvailable(anchor.get(),ResourceLocation.parse(id)));
@@ -516,18 +626,33 @@ public final class ConversationRooms {
         var dispatched=RoomDialoguePublisher.publish(event,recipients(r),id-> {
             var p=server.getPlayerList().getPlayer(id);if(p==null)return null;
             boolean chat=false;int pages=0;
+            Optional<RoomDialogueEvent.DispatchView> chatView=Optional.empty(),hudView=Optional.empty();
             var god="NPC".equals(role)?ResourceLocation.parse(speaker):null;
             Component name=god==null?Component.literal(participants.get(UUID.fromString(speaker)))
                     :GodIdentityService.INSTANCE.getDisplayName(server,id,god);
             if(p.getChatVisibility()!=net.minecraft.world.entity.player.ChatVisiblity.HIDDEN)try {
-                p.sendSystemMessage(prefix(r).copy().append(name).append(Component.literal(": "+text).withStyle(ChatFormatting.WHITE)));chat=true;
+                var display=prefix(r).copy().append(name).append(Component.literal(": "+text).withStyle(ChatFormatting.WHITE));
+                String dispatchedText=display.getString();
+                p.sendSystemMessage(display);chat=true;
+                chatView=Optional.of(new RoomDialogueEvent.DispatchView(dispatchedText,List.of(dispatchedText),Set.of(0),Map.of()));
             }catch(RuntimeException failed){recordingFailure(r.roomId(),failed);}
-            if(hud&&god!=null&&r.playerIds().contains(id))for(String page:RoomHudText.pages(text))try {
-                if(DialoguePresentationService.INSTANCE.sendTo(p,GodDialogueRequest.literal(god,page)).status()
-                        ==com.sande.mythictrpg.dialogue.server.DialogueSendStatus.SENT)pages++;
-            }catch(RuntimeException failed){recordingFailure(r.roomId(),failed);}
-            return chat||pages>0?new RoomDialogueEvent.Delivery(p.getGameProfile().getName(),chat,pages):null;
-        },e->RoomConversationEngineRouter.INSTANCE.engine().dialoguePublished(e),failure->recordingFailure(r.roomId(),failure));
+            if(hud&&god!=null&&r.playerIds().contains(id)) {
+                var pagePlan=RoomHudText.pages(text);var sentParts=new LinkedHashSet<Integer>();var transportIds=new LinkedHashMap<Integer,UUID>();
+                for(int index=0;index<pagePlan.size();index++)try {
+                    // Literal pages retain their exact text through the presentation sanitizer; only style is stripped.
+                    var sent=DialoguePresentationService.INSTANCE.sendTo(p,GodDialogueRequest.literal(god,pagePlan.get(index)));
+                    if(sent.status()==com.sande.mythictrpg.dialogue.server.DialogueSendStatus.SENT) {
+                        pages++;sentParts.add(index);if(sent.messageId().isPresent())transportIds.put(index,sent.messageId().get());
+                    }
+                }catch(RuntimeException failed){recordingFailure(r.roomId(),failed);}
+                if(!sentParts.isEmpty())hudView=Optional.of(new RoomDialogueEvent.DispatchView(text,pagePlan,sentParts,transportIds));
+            }
+            return chat||pages>0?new RoomDialogueEvent.Delivery(p.getGameProfile().getName(),chat,pages,chatView,hudView):null;
+        },e->com.sande.mythictrpg.recording.server.RecordingRuntime.captureRoom(server,e),
+                e->RoomConversationEngineRouter.INSTANCE.engine().dialoguePublished(e),failure->recordingFailure(r.roomId(),failure));
+        if("PLAYER".equals(role)&&sourceTurn!=null)try {
+            com.sande.mythictrpg.rumor.SocialRuntime.roomPlayerPublished(server,r,sourceTurn,dispatched);
+        }catch(RuntimeException socialFailure){recordingFailure(r.roomId(),socialFailure);}
         try {RoomConversationEngineRouter.INSTANCE.engine().dialogueObserved(dispatched);}
         catch(RuntimeException failure){recordingFailure(r.roomId(),failure);}
         return dispatched;
@@ -548,25 +673,25 @@ public final class ConversationRooms {
         return names.codePointCount(0,names.length())>500?names.substring(0,names.offsetByCodePoints(0,500))+"…":names;
     }
     private void changed(ConversationRoomSnapshot r) {
+        com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.endDialogue(r.roomId());
         feedback.keySet().removeIf(key->key.room().equals(r.roomId()));
+        actionFeedback.keySet().removeIf(key->key.room().equals(r.roomId()));
         if(!r.godIds().contains(lastSpeakers.get(r.roomId())))lastSpeakers.remove(r.roomId());
         RoomConversationEngineRouter.INSTANCE.engine().invalidate(r.roomId());turns.remove(r.roomId());changedAt.put(r.roomId(),server.overworld().getGameTime());
         for(UUID id:r.playerIds()){var p=server.getPlayerList().getPlayer(id);if(p!=null)sync(p);}
     }
     private void removed(ConversationRoomSnapshot r) {
-        RoomConversationEngineRouter.INSTANCE.engine().invalidate(r.roomId());turns.remove(r.roomId());history.remove(r.roomId());feedback.keySet().removeIf(key->key.room().equals(r.roomId()));lastSpeakers.remove(r.roomId());changedAt.remove(r.roomId());splitting.remove(r.roomId());
+        com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.endDialogue(r.roomId());
+        actionFeedback.keySet().removeIf(key->key.room().equals(r.roomId()));
+        RoomConversationEngineRouter.INSTANCE.engine().invalidate(r.roomId());turns.remove(r.roomId());memoryRequests.remove(r.roomId());history.remove(r.roomId());feedback.keySet().removeIf(key->key.room().equals(r.roomId()));lastSpeakers.remove(r.roomId());changedAt.remove(r.roomId());splitting.remove(r.roomId());
         var region=fixedRegions.remove(r.roomId());if(region!=null)regions.release(region);
         for(UUID id:r.playerIds()){var p=server.getPlayerList().getPlayer(id);if(p!=null)sync(p);}
     }
     private String participantNames(Set<UUID> players) {return String.join(", ",players.stream().map(id->{var p=server.getPlayerList().getPlayer(id);return id+":"+(p==null?"offline":p.getGameProfile().getName());}).toList());}
-    private String relationshipContext(Set<UUID> players,ResourceLocation god) {
-        var service=PlayerMythDataService.get(server);
-        return "Game affinity values; numerical tier mapping UNDEFINED; do not fabricate a tier or intimacy.\n"
-                +String.join("\n",players.stream().map(id->"player="+id+", affinity="+service.find(id).map(p->p.affinities().getOrDefault(god,0)).orElse(0)).toList());
-    }
 
     public void tick(ServerTickEvent.Post event) {
         if(server==null||event.getServer()!=server)return;
+        com.sande.mythictrpg.ai.action.AiActionGateway.expirePending(server);
         regions.advance(2048);
         if(server.overworld().getGameTime()%10!=0)return;
         for(var r:ledger.activeRooms()) {
@@ -619,28 +744,35 @@ public final class ConversationRooms {
         }return result;
     }
     private void split(ConversationRoomSnapshot r,List<Set<UUID>> groups,int fixedIndex) {
+        com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime.INSTANCE.endDialogue(r.roomId());
         splitting.add(r.roomId());
         var prior=turns.remove(r.roomId());if(prior!=null)ledger.finishTurn(prior);
         RoomConversationEngineRouter.INSTANCE.engine().invalidate(r.roomId());
         var futures=new LinkedHashMap<String,CompletableFuture<RoomConversationEngine.SplitResult>>();
         var relationSnapshots=new LinkedHashMap<String,GodRelationRoomContext.Snapshot>();
+        var socialSnapshots=new LinkedHashMap<String,RoomSocialContext.Snapshot>();
         for(String god:r.godIds()) {
             try {
             var rid=ResourceLocation.parse(god);var candidates=new ArrayList<RoomConversationEngine.Candidate>();
             var relations=GodRelationRoomContext.capture(server,r,rid,recipients(r));
             relationSnapshots.put(god,relations);
+            var social=RoomSocialContext.captureForSplit(server,r,rid,recipients(r));
+            socialSnapshots.put(god,social);
             for(int i=0;i<groups.size();i++)candidates.add(new RoomConversationEngine.Candidate(Integer.toString(i),List.copyOf(groups.get(i)),
-                    participantNames(groups.get(i))+"\n"+relationshipContext(groups.get(i),rid)));
+                    participantNames(groups.get(i))));
             var input=new RoomConversationEngine.SplitRequest(r.roomId(),r.revision(),rid,candidates,
-                    "Players separated. Choose who you WANT to converse with, not necessarily your watch target. Watch ownership does not change. Empty key means leave.\n"+relations.promptText(),
+                    "Players separated. Choose who you WANT to converse with, not necessarily your watch target. Watch ownership does not change. Empty key means leave.\n"+relations.promptText()+"\n"+social.promptText(),
                     visibleHistory(r,god),r.godIds().stream().map(ResourceLocation::parse).toList());
             futures.put(god,RoomConversationEngineRouter.INSTANCE.engine().chooseSplit(input).completeOnTimeout(null,90,TimeUnit.SECONDS));}
-            catch(RuntimeException failed) {splitting.remove(r.roomId());changedAt.put(r.roomId(),server.overworld().getGameTime()+100);return;}
+            catch(RuntimeException failed) {MythicTrpg.LOGGER.warn("Room split context unavailable",failed);splitting.remove(r.roomId());changedAt.put(r.roomId(),server.overworld().getGameTime()+100);return;}
         }
         CompletableFuture.allOf(futures.values().toArray(CompletableFuture[]::new)).whenComplete((ignored,failure)-> {
             MinecraftServer s=server;if(s==null)return;s.execute(()-> {
                 splitting.remove(r.roomId());if(!isCurrent(r.roomId(),r.revision()))return;
                 if(relationSnapshots.values().stream().anyMatch(snapshot->!GodRelationRoomContext.isCurrent(server,snapshot,r,recipients(r)))) {
+                    changedAt.put(r.roomId(),server.overworld().getGameTime()+100);return;
+                }
+                if(socialSnapshots.values().stream().anyMatch(snapshot->!RoomSocialContext.isCurrentForSplit(server,snapshot,r,recipients(r)))) {
                     changedAt.put(r.roomId(),server.overworld().getGameTime()+100);return;
                 }
                 // Recheck locations; do not apply a decision for groups that have already moved/rejoined.

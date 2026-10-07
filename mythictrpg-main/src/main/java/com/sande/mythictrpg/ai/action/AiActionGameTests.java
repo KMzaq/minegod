@@ -83,7 +83,8 @@ public final class AiActionGameTests {
                 "player damage should be an immediate scene action");
         helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.NPC_VISIT_REQUEST).isEmpty(),
                 "NPC visit action became executable before the external NPC mod integration");
-        helper.assertValueEqual(AiActionGateway.registeredActionTypes().size(), 11,
+        helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.RAID_OFFER).isPresent(), "raid offer missing");
+        helper.assertValueEqual(AiActionGateway.registeredActionTypes().size(), 12,
                 "unexpected production AI action count");
         helper.succeed();
     }

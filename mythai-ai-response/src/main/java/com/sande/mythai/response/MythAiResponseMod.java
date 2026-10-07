@@ -36,7 +36,15 @@ public final class MythAiResponseMod {
         NeoForge.EVENT_BUS.addListener(AiTestCommands::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.MemoryCommands::register);
         NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.DialogueMemoryBridge::onTick);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.RecordedProjectionService::tick);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.RecordedProjectionService::stopping);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.RecordedEmbeddingService::tick);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.RecordedEmbeddingService::stopping);
         com.sande.mythictrpg.rumor.SocialReview.configure(com.sande.mythai.response.memory.SocialReviewProvider.INSTANCE);
+        com.sande.mythictrpg.godavatar.visit.GodVisitPlanner.install(com.sande.mythictrpg.ai.OllamaHomeVisitProvider.INSTANCE);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.ai.OllamaHomeVisitProvider::stopped);
+        com.sande.mythictrpg.godavatar.activity.GodActivityPlanner.install(com.sande.mythictrpg.ai.OllamaActivityProvider.INSTANCE);
+        NeoForge.EVENT_BUS.addListener(com.sande.mythictrpg.ai.OllamaActivityProvider::stopped);
         NeoForge.EVENT_BUS.addListener(com.sande.mythai.response.memory.SocialReviewProvider::stopped);
         NeoForge.EVENT_BUS.addListener(AiTestChatEvents::onServerChat);
         NeoForge.EVENT_BUS.addListener(AiTestChatEvents::onPlayerLoggedOut);

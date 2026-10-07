@@ -98,6 +98,15 @@ public final class InteractionStartService {
                         InteractionStartReasons.COMMIT_REJECTED);
             }
             committed = true;
+            if (this == INSTANCE) {
+                try {
+                    com.sande.mythictrpg.godavatar.GodAvatarService.INSTANCE.onEncounterCommitted(
+                            server, request.plan().initiatingPlayerId(), content.manifestedGodIds());
+                } catch (RuntimeException avatarFailure) {
+                    MythicTrpg.LOGGER.error("God avatar placement failed after encounter commit; dialogue continues",
+                            avatarFailure);
+                }
+            }
             try {
                 runtime.commit(held, request.plan().mode());
             } catch (RuntimeException exception) {
@@ -123,6 +132,14 @@ public final class InteractionStartService {
             }
             try {
                 startedListener.onStarted(server, interactionId, request.plan(), content);
+                if (this == INSTANCE && delivery.status() == DeliveryStatus.ALL_SENT
+                        && request.plan().mode() == com.sande.mythictrpg.interaction.api.InteractionMode.SPONTANEOUS) {
+                    for (var playerId : request.plan().audience().recipientPlayerIds()) {
+                        var contacted = server.getPlayerList().getPlayer(playerId);
+                        if (contacted != null) com.sande.mythictrpg.quest.QuestContactService.encountered(
+                                contacted, request.plan().participants().primaryGodId(), interactionId);
+                    }
+                }
             } catch (RuntimeException exception) {
                 MythicTrpg.LOGGER.error("Interaction {} AI conversation hook failed after commit",
                         interactionId, exception);

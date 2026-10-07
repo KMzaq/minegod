@@ -1,0 +1,44 @@
+{
+	default_hide_dependency_lines: true
+	default_quest_shape: "circle"
+	filename: "mythic_story"
+	group: ""
+	icon: {
+		id: "minecraft:enchanted_book"
+	}
+	id: "28F364E699FDFCF7"
+	images: [ ]
+	order_index: 0
+	quest_links: [ ]
+	quests: [{
+		dependencies: ["5DD74E73298791E8"]
+		hide_details_until_startable: true
+		hide_until_deps_complete: true
+		icon: {
+			id: "minecraft:heart_of_the_sea"
+		}
+		id: "21F48990D282287B"
+		rewards: [{
+			id: "4C15C146B067A7C7"
+			item: {
+				count: 1
+				id: "minecraft:totem_of_undying"
+			}
+			type: "item"
+		}]
+		tasks: [
+			{
+				consume_items: true
+				id: "011B59CDC0548101"
+				item: { count: 1, id: "minecraft:heart_of_the_sea" }
+				type: "item"
+			}
+			{
+				id: "568A7F6370A4BCF0"
+				type: "custom"
+			}
+		]
+		x: 0.0d
+		y: 0.0d
+	}]
+}

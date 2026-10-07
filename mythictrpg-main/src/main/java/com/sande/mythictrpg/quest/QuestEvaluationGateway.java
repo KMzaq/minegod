@@ -55,6 +55,9 @@ public final class QuestEvaluationGateway {
             return result(QuestEvaluationResult.Status.WRONG_NPC, questId, score,
                     OptionalInt.empty(), "Evaluator NPC does not own this assignment");
         }
+        if (!QuestContactService.canConfirm(player, binding, evaluatorNpcId))
+            return result(QuestEvaluationResult.Status.COMPLETION_FAILED, questId, score, OptionalInt.empty(),
+                    "평가 결과를 완료로 확인할 실제 신 접촉이 없습니다. 다시 만나 평가를 요청하세요.");
         NpcRewardTable table = policy.rewardTableId().flatMap(NpcRewardTableManager.INSTANCE::find).orElse(null);
         if (policy.rewardTableId().isPresent() && table == null) {
             return result(QuestEvaluationResult.Status.REWARD_TABLE_MISSING, questId, score,

@@ -18,6 +18,8 @@ public final class DialogueRecovery {
      * It must only read a previously prepared review; never perform blocking inference on the game thread. */
     public interface Reviewer {
         long currentTurn(UUID player);
+        /** Legacy player-only reviewers remain compatible; room-aware reviewers override this exact scope. */
+        default long currentTurn(ConversationMemoryContext context) { return currentTurn(context.playerId()); }
         Verdict review(Proposal proposal,ReputationLedger.Entry assessment);
     }
     public static boolean eligible(Proposal proposal,ConversationMemoryContext current,long currentTurn,ReputationLedger.Entry entry) {

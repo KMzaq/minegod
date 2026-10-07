@@ -12,16 +12,59 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-def legacyCombinedJar = file('../mine/mine/build/libs/mythictrpg-1.0.0.jar')
-// Quest participation adds game-owned conversation/quest APIs. Keep the matching game build.
+repositories { mavenCentral() }
+
+// Public integration contracts are provided by the current game module.
+// The AI engine is now built entirely from this module's versioned sources.
 def currentMythicTrpgJar = file(providers.gradleProperty('mythicTrpgApiJar')
-        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.16.jar').get())
-def legacyAiSourceDir = file('../mine/mine/src/main/java/com/sande/mythictrpg/ai')
-def patchedAiSourceDir = layout.buildDirectory.dir('generated/sources/patchedAi/java')
-apply from: 'memory-foundation-overlay.gradle'
-apply from: 'quest-participation-overlay.gradle'
-apply from: 'dialogue-test-overlay.gradle'
-apply from: 'room-conversation-overlay.gradle'
+        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.27.jar').get())
+def patchedAiSourceDir = providers.provider { layout.projectDirectory.dir('src/engine/java') }
+sourceSets.main.java.srcDir(patchedAiSourceDir)
+
+// Fail closed if an archived checkout or combined game JAR is accidentally reintroduced.
+tasks.register('verifyEngineOwnership') {
+    doLast {
+        def forbidden = { File input ->
+            def path = input.canonicalPath.replace('\\', '/')
+            path.contains('/mine/mine/') || path.contains('/mine2/')
+        }
+        if (sourceSets.main.allSource.files.any(forbidden) || configurations.compileClasspath.files.any(forbidden)) {
+            throw new GradleException('AI build depends on an archived game checkout')
+        }
+        def required = ['AiTestDialogueAdapter', 'AiDialogueModels', 'LocalOllamaClient',
+                        'LocalLlmRequestScheduler', 'DialogueTurnDirective']
+        required.each { name ->
+            if (!file("src/engine/java/com/sande/mythictrpg/ai/${name}.java").isFile())
+                throw new GradleException("Missing owned engine source: ${name}")
+        }
+    }
+}
+tasks.named('compileJava') { dependsOn 'verifyEngineOwnership' }
+
+tasks.register('verifyEnginePackage') {
+    dependsOn 'jar'
+    doLast {
+        def classesIn = { File archive ->
+            def zip = new java.util.zip.ZipFile(archive)
+            try { return zip.entries().findAll { !it.directory && it.name.endsWith('.class') }
+                    .collect { it.name }.toSet() }
+            finally { zip.close() }
+        }
+        def actual = classesIn(tasks.named('jar').get().archiveFile.get().asFile)
+        def game = classesIn(currentMythicTrpgJar)
+        def duplicate = actual.intersect(game)
+        if (!duplicate.empty) throw new GradleException("Game classes embedded in AI JAR: ${duplicate}")
+        def compiled = sourceSets.main.output.classesDirs.files.collectMany { root ->
+            if (!root.isDirectory()) return []
+            fileTree(root).matching { include '**/*.class' }.files.collect {
+                root.toPath().relativize(it.toPath()).toString().replace('\\', '/')
+            }
+        }.toSet()
+        if (actual != compiled) throw new GradleException('AI JAR classes must come exclusively from owned source compilation')
+        logger.lifecycle("Owned AI package verified: ${actual.size()} classes, no game overlap")
+    }
+}
+tasks.named('check') { dependsOn 'verifyEnginePackage' }
 
 neoForge {
     version = project.neo_version
@@ -41,10 +84,10 @@ neoForge {
 dependencies {
     // Public integration contracts are owned by the current upstream MythicTRPG project.
     compileOnly files(currentMythicTrpgJar)
-    // Compile against the already-tested AI bytecode. The final JAR below copies only
-    // com/sande/mythictrpg/ai and never embeds the legacy MythicTRPG game implementation.
-    compileOnly files(legacyCombinedJar)
     testImplementation files(currentMythicTrpgJar)
+    // Same pinned driver as the game-owned store, for isolated end-to-end projection fixtures only.
+    // Not embedded in the AI distribution and never a second production storage owner.
+    testRuntimeOnly('org.xerial:sqlite-jdbc:3.53.4.0') { transitive = false }
 }
 
 tasks.register('roomConversationEngineTest', JavaExec) {
@@ -53,7 +96,36 @@ tasks.register('roomConversationEngineTest', JavaExec) {
     mainClass = 'com.sande.mythictrpg.ai.RoomConversationEngineTest'
     args layout.buildDirectory.dir('room-engine-test-artifacts').get().asFile.absolutePath
 }
+tasks.register('roomEmotionStateTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomEmotionStateTest'
+}
+tasks.named('check') { dependsOn 'roomEmotionStateTest' }
 tasks.named('check') { dependsOn 'roomConversationEngineTest' }
+
+tasks.register('roomPersonaPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPersonaPromptTest'
+}
+tasks.named('check') { dependsOn 'roomPersonaPromptTest' }
+
+tasks.register('minecraftCommonKnowledgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.MinecraftCommonKnowledgeTest'
+}
+tasks.named('check') { dependsOn 'minecraftCommonKnowledgeTest' }
+
+// Offline only: exports synthetic, frozen-context A/B inputs; never invokes Ollama or the server.
+tasks.register('exportNpcHarnessComparison', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.NpcHarnessComparisonExport'
+    args layout.buildDirectory.dir('npc-harness-comparison').get().asFile.absolutePath,
+            file('../server/config/mythictrpg/ai-dialogue.json').absolutePath
+}
 tasks.register('roomReactionPromptTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
@@ -83,6 +155,18 @@ tasks.register('godRelationCapabilityBridgeTest', JavaExec) {
     mainClass = 'com.sande.mythictrpg.ai.GodRelationCapabilityBridgeTest'
 }
 tasks.named('check') { dependsOn 'godRelationCapabilityBridgeTest' }
+tasks.register('raidCapabilityBridgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RaidCapabilityBridgeTest'
+}
+tasks.named('check') { dependsOn 'raidCapabilityBridgeTest' }
+tasks.register('questRosterPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.QuestRosterPromptTest'
+}
+tasks.named('check') { dependsOn 'questRosterPromptTest' }
 
 tasks.register('dialogueTestArgumentsTest', JavaExec) {
     dependsOn testClasses
@@ -253,679 +337,6 @@ tasks.register('memoryRecallReplay', JavaExec) {
     }
 }
 
-def generatePatchedAiSources = tasks.register('generatePatchedAiSources') {
-    inputs.file('quest-participation-overlay.gradle')
-    inputs.file('dialogue-test-overlay.gradle')
-    inputs.file('room-conversation-overlay.gradle')
-    inputs.files(file("${legacyAiSourceDir}/AiTestDialogueAdapter.java"),
-            file("${legacyAiSourceDir}/DialogueTurnDirective.java"), file("${legacyAiSourceDir}/LocalLlmRequestScheduler.java"), file('memory-foundation-overlay.gradle'))
-    outputs.dir(patchedAiSourceDir)
-    doLast {
-        def outputPackage = patchedAiSourceDir.get().file('com/sande/mythictrpg/ai').asFile
-        outputPackage.mkdirs()
-
-        def replaceRequired = { String text, String before, String after, String label ->
-            if (!text.contains(before)) {
-                throw new GradleException("Could not apply AI overlay patch: ${label}")
-            }
-            text.replace(before, after)
-        }
-
-        String adapter = file("${legacyAiSourceDir}/AiTestDialogueAdapter.java").getText('UTF-8')
-        adapter = replaceRequired(adapter,
-                'ConversationIntent fastSocialIntent = simpleCasualFeelingIntent(text);',
-                'ConversationIntent fastSocialIntent = hasExplicitRequest(text) ? null : simpleCasualFeelingIntent(text);',
-                'request priority before casual feeling')
-        adapter = replaceRequired(adapter,
-                'logs.append(player.server, player.getUUID(), "PLAYER", text);\n\n        Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;',
-                'logs.append(player.server, player.getUUID(), "PLAYER", text);\n        updatePlayActivity(session, text);\n\n        Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;',
-                'generic play activity update')
-        adapter = replaceRequired(adapter,
-                'String response = plan.directive().compactSpeech(\n                    bounded(speech.text(), AiDialogueConfig.INSTANCE.settings().maxResponseCharacters()));',
-                'String response = plan.directive().naturalSpeech(\n                    bounded(speech.text(), AiDialogueConfig.INSTANCE.settings().maxResponseCharacters()));',
-                'natural multi-sentence speech')
-        adapter = replaceRequired(adapter,
-                'List<AiDialogueModels.Proposal> proposals = plan.directive().proposalsAllowed() ? result.proposals() : List.of();',
-                'List<AiDialogueModels.Proposal> proposals = plan.directive().proposalsAllowed()\n                ? normalizeProposals(result.proposals(), plan.speakers().getFirst(), player, session, text)\n                : List.of();',
-                'stable proposal identifiers')
-        adapter = replaceRequired(adapter,
-                'proposals.size() == result.proposals().size() ? "speech accepted; proposals are display-only"',
-                'proposals.size() == result.proposals().size() ? "speech accepted; proposals submitted to game gateway"',
-                'proposal dispatch diagnostics')
-        adapter = replaceRequired(adapter,
-                '''        logs.append(player.server, player.getUUID(), "VALIDATION_RESULT", "direct social response; no LLM call or proposal");
-        showDialogue(player, speaker, content.profile().displayName(), response);''',
-                '''        logs.append(player.server, player.getUUID(), "VALIDATION_RESULT", "direct social response; no LLM call or proposal");
-        SpokenIdentityReveal.commitIfNameWasSpoken(player, speaker, content.profile().displayName(), response);
-        showDialogue(player, speaker, content.profile().displayName(), response);''',
-                'identity reveal from direct approved speech')
-        adapter = replaceRequired(adapter,
-                '''            logs.appendBlock(player.server, player.getUUID(), "FINAL_SPEECH", content.profile().displayName() + ": " + response);
-            showDialogue(player, speaker, content.profile().displayName(), response);''',
-                '''            logs.appendBlock(player.server, player.getUUID(), "FINAL_SPEECH", content.profile().displayName() + ": " + response);
-            SpokenIdentityReveal.commitIfNameWasSpoken(player, speaker, content.profile().displayName(), response);
-            showDialogue(player, speaker, content.profile().displayName(), response);''',
-                'identity reveal from generated approved speech')
-        adapter = replaceRequired(adapter,
-                '.append("\\nNo other game fact, location, item, quest, reward, or world event was supplied.\\n")\n                .append("\\n[RESPONSE_INTENT]\\ntags: ")',
-                '.append("\\nNo other game fact, location, item, quest, reward, or world event was supplied.\\n")\n                .append("Do not invent an item hand-in location, NPC inventory, coordinates, or completion mechanism. ")\n                .append("Without authoritative state, explain that the game cannot verify or execute it yet.\\n");\n        if (!session.playActivity.isBlank()) {\n            context.append("\\n[ONGOING_ACTIVITY]\\ncategory: PLAY_ACTIVITY\\nname: ")\n                    .append(session.playActivity)\n                    .append("\\nThis is conversational session state, not world state. Continue the named play naturally. ")\n                    .append("If PLAYER_TEXT is a move, word, answer, or choice in the activity, take the NPC turn now; ")\n                    .append("do not merely tell the player to continue or propose starting again. ")\n                    .append("For activities requiring unsupported world actions, keep them verbal and do not claim movement or game-state changes.\\n");\n        }\n        String supportedQuestId = supportedQuestId(session.profile);\n        if (!supportedQuestId.isBlank()) {\n            context.append("\\n[SUPPORTED_PROPOSAL]\\ntype: quest_offer\\nquest_id: ")\n                    .append(supportedQuestId)\n                    .append("\\nUse this exact quest_id. Never generate an alternative ID. ")\n                    .append("Without authoritative quest state, do not emit quest_turn_in, quest_complete, or reward_grant.\\n");\n        }\n        context.append("\\n[RESPONSE_INTENT]\\ntags: ")',
-                'authoritative boundary and play/proposal context')
-        adapter = replaceRequired(adapter,
-                '''        String supportedQuestId = supportedQuestId(session.profile);
-        if (!supportedQuestId.isBlank()) {
-            context.append("\\n[SUPPORTED_PROPOSAL]\\ntype: quest_offer\\nquest_id: ")
-                    .append(supportedQuestId)
-                    .append("\\nUse this exact quest_id. Never generate an alternative ID. ")
-                    .append("Without authoritative quest state, do not emit quest_turn_in, quest_complete, or reward_grant.\\n");
-        }''',
-                '''        List<AiQuestContentBridge.QuestCandidate> questCandidates = AiQuestContentBridge
-                .candidatesFor(plan.speakers().getFirst(), player);
-        if (!questCandidates.isEmpty()) {
-            context.append("\\n[AUTHOR_DEFINED_QUEST_CANDIDATES]\\n");
-            for (AiQuestContentBridge.QuestCandidate candidate : questCandidates) {
-                context.append("- ").append(candidate.promptSummary()).append("\\n");
-            }
-            context.append("These are proposal candidates, not accepted, active, or completed quests. ")
-                    .append("Never invent a different quest ID. If several candidates are available, present concise choices ")
-                    .append("and let the player choose; do not choose on the player's behalf. Only emit quest_offer after one ")
-                    .append("candidate is unambiguously selected. Without authoritative quest state, do not emit quest_turn_in, ")
-                    .append("quest_complete, or reward_grant.\\n");
-        }
-        context.append(AiQuestContentBridge.attentionPrompt(plan.speakers().getFirst(), player));
-        AiActionCapabilityBridge.appendPrompt(context, plan.speakers().getFirst());''',
-                'quest lists replace prose-scanned quest id')
-        adapter = replaceRequired(adapter,
-                '+ "\\ngenerationReferenceExamples=DISABLED (phase-2 prompt never receives example dialogue)"\n                + "\\nlegacyExampleSelection=" + examples.stream().map(AiTestContentRegistryBridge.Example::id).toList());',
-                '+ "\\nphase2ExamplePolicy=PROFILE_GUIDELINES_ONLY"\n                + "\\nclassifierExamplesUsedOnlyInStage1=true");',
-                'remove dead phase-2 example diagnostics')
-        adapter = replaceRequired(adapter,
-                '    /** Clear, low-risk mood statements do not need a separate LLM classification call. */\n    private static ConversationIntent simpleCasualFeelingIntent(String text) {',
-                '''    private static boolean hasExplicitRequest(String text) {
-        String normalized = normalize(text);
-        return containsAnyText(normalized, "퀘스트", "의뢰", "임무", "필요한 거", "할 일", "아이템", "물건",
-                "가호", "힘을 줘", "도와", "도움", "보상", "대가", "선물", "공물", "줄래", "줘봐", "해줘",
-                "준비됐", "준비했", "가져왔", "챙겨왔", "다 모았", "건넬게", "받아", "넣어뒀", "상자에 넣었");
-    }
-
-    /** Clear, low-risk mood statements do not need a separate LLM classification call. */
-    private static ConversationIntent simpleCasualFeelingIntent(String text) {''',
-                'explicit request detector')
-        adapter = replaceRequired(adapter,
-                '    private Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> loadContents(List<ResourceLocation> participants,',
-                '''    private static void updatePlayActivity(Session session, String text) {
-        String normalized = text == null ? "" : text.replaceAll("[!?.~]+$", "").trim();
-        if (containsAnyText(normalized, "놀이 그만", "게임 그만", "그만하자", "이제 그만", "끝내자")) {
-            session.playActivity = "";
-            return;
-        }
-        String candidate = requestedActivity(normalized);
-        if (!candidate.isBlank()) {
-            session.playActivity = candidate;
-            session.playActivityStartedTurn = session.turn;
-        }
-    }
-
-    private static String requestedActivity(String text) {
-        for (String suffix : List.of(" 같이 하자", " 하자", "하자", " 해보자", "해보자", " 할래", "할래")) {
-            if (!text.endsWith(suffix)) {
-                continue;
-            }
-            String candidate = text.substring(0, text.length() - suffix.length()).trim()
-                    .replaceFirst("^(우리|나랑|같이)\\\\s+", "");
-            if (!candidate.isBlank() && candidate.length() <= 40
-                    && !containsAnyText(candidate, "뭐", "무엇", "어떻게")) {
-                return candidate;
-            }
-        }
-        return "";
-    }
-
-    private static boolean containsAnyText(String value, String... needles) {
-        for (String needle : needles) {
-            if (value.contains(needle)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String supportedQuestId(AiTestContentRegistryBridge.Profile profile) {
-        for (List<String> guidelines : profile.situationGuidelines().values()) {
-            for (String guideline : guidelines) {
-                java.util.regex.Matcher matcher = java.util.regex.Pattern
-                        .compile("quest_id=([a-z0-9_.-]+:[a-z0-9_./-]+)").matcher(guideline);
-                if (matcher.find()) {
-                    return matcher.group(1);
-                }
-            }
-        }
-        return "";
-    }
-
-    private static List<AiDialogueModels.Proposal> normalizeProposals(List<AiDialogueModels.Proposal> raw,
-            AiTestContentRegistryBridge.Profile profile, Session session) {
-        String fixedQuestId = supportedQuestId(profile);
-        List<AiDialogueModels.Proposal> accepted = new ArrayList<>();
-        for (AiDialogueModels.Proposal proposal : raw) {
-            if (proposal == null) {
-                continue;
-            }
-            String type = proposal.type().toLowerCase(Locale.ROOT);
-            if (type.contains("quest")) {
-                if (fixedQuestId.isBlank() || type.contains("turn_in") || type.contains("complete")
-                        || type.contains("reward")) {
-                    continue;
-                }
-                if (!session.proposedQuestIds.add(fixedQuestId)) {
-                    continue;
-                }
-                Map<String, String> parameters = new LinkedHashMap<>(proposal.parameters());
-                parameters.put("quest_id", fixedQuestId);
-                accepted.add(new AiDialogueModels.Proposal("quest_offer", proposal.title(), proposal.summary(),
-                        proposal.targetParticipantIds(), Map.copyOf(parameters)));
-                continue;
-            }
-            accepted.add(proposal);
-        }
-        return List.copyOf(accepted);
-    }
-
-    private Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> loadContents(List<ResourceLocation> participants,''',
-                'activity and proposal helpers')
-        adapter = replaceRequired(adapter,
-                '''    private static String supportedQuestId(AiTestContentRegistryBridge.Profile profile) {
-        for (List<String> guidelines : profile.situationGuidelines().values()) {
-            for (String guideline : guidelines) {
-                java.util.regex.Matcher matcher = java.util.regex.Pattern
-                        .compile("quest_id=([a-z0-9_.-]+:[a-z0-9_./-]+)").matcher(guideline);
-                if (matcher.find()) {
-                    return matcher.group(1);
-                }
-            }
-        }
-        return "";
-    }
-
-    private static List<AiDialogueModels.Proposal> normalizeProposals(List<AiDialogueModels.Proposal> raw,
-            AiTestContentRegistryBridge.Profile profile, Session session) {
-        String fixedQuestId = supportedQuestId(profile);
-        List<AiDialogueModels.Proposal> accepted = new ArrayList<>();
-        for (AiDialogueModels.Proposal proposal : raw) {
-            if (proposal == null) {
-                continue;
-            }
-            String type = proposal.type().toLowerCase(Locale.ROOT);
-            if (type.contains("quest")) {
-                if (fixedQuestId.isBlank() || type.contains("turn_in") || type.contains("complete")
-                        || type.contains("reward")) {
-                    continue;
-                }
-                if (!session.proposedQuestIds.add(fixedQuestId)) {
-                    continue;
-                }
-                Map<String, String> parameters = new LinkedHashMap<>(proposal.parameters());
-                parameters.put("quest_id", fixedQuestId);
-                accepted.add(new AiDialogueModels.Proposal("quest_offer", proposal.title(), proposal.summary(),
-                        proposal.targetParticipantIds(), Map.copyOf(parameters)));
-                continue;
-            }
-            accepted.add(proposal);
-        }
-        return List.copyOf(accepted);
-    }''',
-                '''    private static Map<String, AiQuestContentBridge.QuestCandidate> supportedQuests(ResourceLocation godId,
-            net.minecraft.server.level.ServerPlayer player) {
-        Map<String, AiQuestContentBridge.QuestCandidate> supported = new LinkedHashMap<>();
-        for (AiQuestContentBridge.QuestCandidate candidate : AiQuestContentBridge.candidatesFor(godId, player)) {
-            supported.put(candidate.questId().toString(), candidate);
-        }
-        return Map.copyOf(supported);
-    }
-
-    private static List<AiDialogueModels.Proposal> normalizeProposals(List<AiDialogueModels.Proposal> raw,
-            ResourceLocation godId, net.minecraft.server.level.ServerPlayer player, Session session,
-            String playerText) {
-        Map<String, AiQuestContentBridge.QuestCandidate> supported = supportedQuests(godId, player);
-        List<AiDialogueModels.Proposal> accepted = new ArrayList<>();
-        for (AiDialogueModels.Proposal proposal : raw) {
-            if (proposal == null) {
-                continue;
-            }
-            String type = proposal.type().toLowerCase(Locale.ROOT);
-            if (type.contains("quest")) {
-                if (supported.isEmpty() || type.contains("turn_in") || type.contains("complete")
-                        || type.contains("reward")) {
-                    continue;
-                }
-                String selectedQuestId = proposal.parameters().getOrDefault("quest_id", "");
-                if (selectedQuestId.isBlank() && supported.size() == 1) {
-                    selectedQuestId = supported.keySet().iterator().next();
-                }
-                if (!supported.containsKey(selectedQuestId) || !session.proposedQuestIds.add(selectedQuestId)) {
-                    continue;
-                }
-                Map<String, String> parameters = new LinkedHashMap<>(proposal.parameters());
-                parameters.put("quest_id", selectedQuestId);
-                accepted.add(new AiDialogueModels.Proposal("quest_offer", proposal.title(), proposal.summary(),
-                        proposal.targetParticipantIds(), Map.copyOf(parameters)));
-                continue;
-            }
-            AiDialogueModels.Proposal normalized = AiActionCapabilityBridge.normalize(proposal, godId, playerText);
-            if (normalized != null) {
-                accepted.add(normalized);
-            }
-        }
-        return List.copyOf(accepted);
-    }''',
-                'multiple author-defined quest ids')
-        adapter = replaceRequired(adapter,
-                '        private boolean debug;\n\n        private Session(UUID playerId,',
-                '        private boolean debug;\n        private String playActivity = "";\n        private long playActivityStartedTurn;\n        private final Set<String> proposedQuestIds = new LinkedHashSet<>();\n\n        private Session(UUID playerId,',
-                'session play and proposal state')
-        adapter = replaceRequired(adapter,
-                '''        for (AiDialogueModels.Proposal proposal : proposals) {
-            showProposal(player, proposal);
-        }''',
-                '''        for (AiDialogueModels.Proposal proposal : proposals) {
-            com.sande.mythictrpg.ai.action.AiActionResult action =
-                    MythicAiActionDispatcher.dispatch(player, plan.speakers().getFirst(), proposal, text);
-            logs.append(player.server, player.getUUID(), "AI_ACTION_RESULT",
-                    action.actionType() + ": " + action.status()
-                            + (action.reason().isBlank() ? "" : " (" + action.reason() + ")"));
-            if (action.status() == com.sande.mythictrpg.ai.action.AiActionResult.Status.REJECTED
-                    || action.status() == com.sande.mythictrpg.ai.action.AiActionResult.Status.FAILED) {
-                player.sendSystemMessage(Component.literal("[AI 액션 거절] " + action.actionType() + ": "
-                        + action.reason()).withStyle(ChatFormatting.RED));
-                continue;
-            }
-            showProposal(player, proposal);
-        }''',
-                'dispatch all proposals through the MythicTRPG action gateway')
-        adapter = replaceRequired(adapter,
-                'Component.literal("[AI Test][Proposal only] " + bounded(proposal.title(), 120) + ": "',
-                'Component.literal("[AI][제안] " + bounded(proposal.title(), 120) + ": "',
-                'proposal presentation label')
-        adapter = replaceRequired(adapter,
-                '''    private static void showDialogue(ServerPlayer player, ResourceLocation godId, String displayName, String text) {
-        if (DialoguePresentationService.INSTANCE.sendTo(player, GodDialogueRequest.literal(godId, text)).status()
-                != DialogueSendStatus.SENT) {
-            player.sendSystemMessage(Component.literal("[AI Test][" + displayName + "] " + text)
-                    .withStyle(ChatFormatting.LIGHT_PURPLE));
-        }
-    }''',
-                '''    private static void showDialogue(ServerPlayer player, ResourceLocation godId, String displayName, String text) {
-        for (String page : dialoguePages(text, AiDialogueConfig.INSTANCE.settings().responseChunkCharacters())) {
-            if (DialoguePresentationService.INSTANCE.sendTo(player, GodDialogueRequest.literal(godId, page)).status()
-                    != DialogueSendStatus.SENT) {
-                player.sendSystemMessage(Component.literal("[AI Test][" + displayName + "] " + page)
-                        .withStyle(ChatFormatting.LIGHT_PURPLE));
-            }
-        }
-    }
-
-    private static List<String> dialoguePages(String text, int maximumCharacters) {
-        String normalized = text == null ? "" : text.replaceAll("\\\\s+", " ").trim();
-        if (normalized.isBlank()) {
-            return List.of();
-        }
-        List<String> pages = new ArrayList<>();
-        java.util.regex.Matcher sentences = java.util.regex.Pattern.compile(".+?[.!?。](?:\\\\s+|$)|.+$")
-                .matcher(normalized);
-        while (sentences.find()) {
-            String sentence = sentences.group().trim();
-            while (sentence.length() > maximumCharacters) {
-                int split = sentence.lastIndexOf(' ', maximumCharacters);
-                if (split < maximumCharacters / 2) {
-                    split = maximumCharacters;
-                }
-                pages.add(sentence.substring(0, split).trim());
-                sentence = sentence.substring(split).trim();
-            }
-            if (!sentence.isBlank()) {
-                pages.add(sentence);
-            }
-        }
-        return List.copyOf(pages);
-    }''',
-                'sentence-by-sentence HUD pages')
-        adapter = replaceRequired(adapter,
-                '    public boolean stop(ServerPlayer player) {',
-                '''    public void seedNpcTurn(ServerPlayer player, ResourceLocation godId, String text) {
-        Session session = sessions.get(player.getUUID());
-        String boundedText = bounded(text, AiDialogueConfig.INSTANCE.settings().maxResponseCharacters());
-        if (session == null || boundedText.isBlank()) {
-            return;
-        }
-        try {
-            AiTestContentRegistryBridge.ContentSnapshot content = contentRegistry.load(godId,
-                    session.relationshipTier, session.participants);
-            session.history.add(new Transcript("NPC", godId.toString(), content.profile().displayName(), boundedText));
-            trimHistory(session);
-        } catch (RuntimeException exception) {
-            MythicTrpg.LOGGER.warn("Could not seed AI conversation history for {}", godId, exception);
-        }
-    }
-
-    public void discardPlayer(UUID playerId) {
-        sessions.remove(playerId);
-    }
-
-    public boolean stop(ServerPlayer player) {''',
-                'seed committed interaction content and bounded UUID cleanup')
-        adapter = replaceRequired(adapter,
-                '    private void submitGeneration(ServerPlayer player, Session session, long turn, String text,',
-                '''    public boolean generateQuestCompletionDialogue(ServerPlayer player, ResourceLocation godId,
-            ResourceLocation questId) {
-        Session session = sessions.get(player.getUUID());
-        if (session == null || session.pending || !session.participants.contains(godId)) {
-            return false;
-        }
-        session.pending = true;
-        long turn = ++session.turn;
-        AiTestContentRegistryBridge.ContentSnapshot content;
-        try {
-            content = contentRegistry.load(godId, session.relationshipTier, session.participants);
-        } catch (RuntimeException exception) {
-            completeQuestCompletionFailure(player, session, turn, godId, questId,
-                    "콘텐츠 레지스트리 오류: " + message(exception));
-            return true;
-        }
-        String questSummary = AiQuestContentBridge.completionCandidate(godId, questId)
-                .map(candidate -> candidate.title() + ": " + candidate.content())
-                .orElse("등록된 퀘스트 정보 없음");
-        UUID requestId = UUID.randomUUID();
-        try {
-            llm.submit(requestId, questCompletionMessages(session, content.profile(), godId, questId, questSummary),
-                    AiDialogueConfig.INSTANCE.settings()).completion().whenComplete((scheduled, failure) ->
-                    player.server.execute(() -> completeQuestCompletionGeneration(player, session, turn, content,
-                            godId, questId, scheduled == null ? null : scheduled.value(), failure)));
-        } catch (RuntimeException exception) {
-            completeQuestCompletionFailure(player, session, turn, godId, questId, message(exception));
-        }
-        return true;
-    }
-
-    private static List<AiDialogueModels.OllamaMessage> questCompletionMessages(Session session,
-            AiTestContentRegistryBridge.Profile profile, ResourceLocation godId, ResourceLocation questId,
-            String questSummary) {
-        String system = """
-                [ROLE]
-                You write one short, natural Korean NPC line for an already completed Minecraft RPG quest.
-
-                [AUTHORITATIVE_FACTS]
-                The server has already completed the quest. This is the only completed game action you may acknowledge.
-                Do not claim that an item was handed over, consumed, granted, equipped, or that a reward was received.
-                Do not invent facts, conditions, locations, or future quests. Do not create proposals.
-
-                [OUTPUT]
-                Return JSON only in exactly this shape:
-                {"speech":[{"speakerId":"NPC_ID","text":"one NPC line","targets":["player"]}],"currentTopic":"quest_completion","proposals":[]}
-                """.replace("NPC_ID", godId.toString());
-        String user = "[NPC_PROFILE]\\nname=" + profile.displayName()
-                + "\\nstyles=" + profile.speechStyles()
-                + "\\nguidelines=" + profile.dialogueGuidelines()
-                + "\\n[COMPLETED_QUEST]\\nid=" + questId + "\\nsummary=" + questSummary
-                + "\\n[RECENT_CONVERSATION]\\n" + recentConversation(session)
-                + "\\nWrite the NPC's acknowledgement now.";
-        return List.of(new AiDialogueModels.OllamaMessage("system", system),
-                new AiDialogueModels.OllamaMessage("user", user));
-    }
-
-    private static String recentConversation(Session session) {
-        StringBuilder result = new StringBuilder();
-        int first = Math.max(0, session.history.size() - 6);
-        for (int index = first; index < session.history.size(); index++) {
-            Transcript turn = session.history.get(index);
-            result.append(turn.role()).append(": ").append(turn.text()).append("\\n");
-        }
-        return result.toString();
-    }
-
-    private void completeQuestCompletionGeneration(ServerPlayer player, Session session, long turn,
-            AiTestContentRegistryBridge.ContentSnapshot content, ResourceLocation godId, ResourceLocation questId,
-            AiDialogueModels.StructuredAiResult result, Throwable failure) {
-        if (!isCurrent(player, session, turn)) {
-            return;
-        }
-        if (failure != null || result == null) {
-            completeQuestCompletionFailure(player, session, turn, godId, questId, "응답 생성 실패 또는 시간 초과");
-            return;
-        }
-        String response = result.speech().stream().filter(speech -> speech != null && !speech.text().isBlank())
-                .map(AiDialogueModels.Speech::text).map(text -> bounded(text,
-                        AiDialogueConfig.INSTANCE.settings().maxResponseCharacters()))
-                .findFirst().orElse("");
-        if (response.isBlank() || claimsGameAction(response)) {
-            completeQuestCompletionFailure(player, session, turn, godId, questId,
-                    response.isBlank() ? "빈 완료 대사" : "완료 대사가 허용되지 않은 게임 실행을 주장함");
-            return;
-        }
-        session.pending = false;
-        session.history.add(new Transcript("NPC", godId.toString(), content.profile().displayName(), response));
-        trimHistory(session);
-        logs.appendBlock(player.server, player.getUUID(), "QUEST_COMPLETION_SPEECH",
-                "quest=" + questId + "\\nresponse=" + response);
-        showDialogue(player, godId, content.profile().displayName(), response);
-    }
-
-    private void completeQuestCompletionFailure(ServerPlayer player, Session session, long turn,
-            ResourceLocation godId, ResourceLocation questId, String detail) {
-        if (!isCurrent(player, session, turn)) {
-            return;
-        }
-        session.pending = false;
-        logs.appendBlock(player.server, player.getUUID(), "QUEST_COMPLETION_FALLBACK",
-                "quest=" + questId + "\\nreason=" + detail);
-        String fallback = "[퀘스트가 완료되었습니다]";
-        session.history.add(new Transcript("NPC", godId.toString(), fallback, fallback));
-        trimHistory(session);
-        showDialogue(player, godId, fallback, fallback);
-    }
-
-    private void submitGeneration(ServerPlayer player, Session session, long turn, String text,''',
-                'AI-generated quest completion narration')
-        adapter = replaceRequired(adapter,
-                '    private void submitGeneration(ServerPlayer player, Session session, long turn, String text,',
-                '''    public boolean generateQuestEvaluationDialogue(ServerPlayer player, ResourceLocation godId,
-            ResourceLocation questId, int score, int passingScore, boolean passed, int rewardTier,
-            String evaluationSummary, List<String> grantedRewards) {
-        Session session = sessions.get(player.getUUID());
-        if (session == null || session.pending || !session.participants.contains(godId)) {
-            return false;
-        }
-        session.pending = true;
-        long turn = ++session.turn;
-        AiTestContentRegistryBridge.ContentSnapshot content;
-        try {
-            content = contentRegistry.load(godId, session.relationshipTier, session.participants);
-        } catch (RuntimeException exception) {
-            completeQuestEvaluationFailure(player, session, turn, godId, questId, passed);
-            return true;
-        }
-        String questSummary = AiQuestContentBridge.completionCandidate(godId, questId)
-                .map(candidate -> candidate.title() + ": " + candidate.content())
-                .orElse(questId.toString());
-        String system = """
-                You write one short natural Korean NPC evaluation line for a Minecraft RPG quest.
-                The supplied score, pass/fail result, reward tier, and granted rewards are authoritative server facts.
-                If failed, explain the supplied evaluation evidence and demand a retry without inventing new requirements.
-                If passed, acknowledge completion and the granted reward naturally. Do not change the score or reward.
-                Return JSON only: {"speech":[{"speakerId":"NPC_ID","text":"one NPC line","targets":["player"]}],"currentTopic":"quest_evaluation","proposals":[]}
-                """.replace("NPC_ID", godId.toString());
-        String user = "[NPC_PROFILE]\\nname=" + content.profile().displayName()
-                + "\\nstyles=" + content.profile().speechStyles()
-                + "\\nguidelines=" + content.profile().dialogueGuidelines()
-                + "\\n[QUEST]\\n" + questSummary
-                + "\\n[EVALUATION]\\nscore=" + score + "\\npassingScore=" + passingScore
-                + "\\npassed=" + passed + "\\nrewardTier=" + rewardTier
-                + "\\nevidence=" + evaluationSummary + "\\ngrantedRewards=" + grantedRewards
-                + "\\n[RECENT_CONVERSATION]\\n" + recentConversation(session);
-        UUID requestId = UUID.randomUUID();
-        try {
-            llm.submit(requestId, List.of(new AiDialogueModels.OllamaMessage("system", system),
-                            new AiDialogueModels.OllamaMessage("user", user)),
-                    AiDialogueConfig.INSTANCE.settings()).completion().whenComplete((scheduled, failure) ->
-                    player.server.execute(() -> completeQuestEvaluationGeneration(player, session, turn, content,
-                            godId, questId, passed, scheduled == null ? null : scheduled.value(), failure)));
-        } catch (RuntimeException exception) {
-            completeQuestEvaluationFailure(player, session, turn, godId, questId, passed);
-        }
-        return true;
-    }
-
-    private void completeQuestEvaluationGeneration(ServerPlayer player, Session session, long turn,
-            AiTestContentRegistryBridge.ContentSnapshot content, ResourceLocation godId, ResourceLocation questId,
-            boolean passed, AiDialogueModels.StructuredAiResult result, Throwable failure) {
-        if (!isCurrent(player, session, turn)) {
-            return;
-        }
-        String response = failure == null && result != null ? result.speech().stream()
-                .filter(speech -> speech != null && !speech.text().isBlank())
-                .map(AiDialogueModels.Speech::text)
-                .map(text -> bounded(text, AiDialogueConfig.INSTANCE.settings().maxResponseCharacters()))
-                .findFirst().orElse("") : "";
-        if (response.isBlank()) {
-            completeQuestEvaluationFailure(player, session, turn, godId, questId, passed);
-            return;
-        }
-        session.pending = false;
-        session.history.add(new Transcript("NPC", godId.toString(), content.profile().displayName(), response));
-        trimHistory(session);
-        logs.appendBlock(player.server, player.getUUID(), "QUEST_EVALUATION_SPEECH",
-                "quest=" + questId + "\\npassed=" + passed + "\\nresponse=" + response);
-        showDialogue(player, godId, content.profile().displayName(), response);
-    }
-
-    private void completeQuestEvaluationFailure(ServerPlayer player, Session session, long turn,
-            ResourceLocation godId, ResourceLocation questId, boolean passed) {
-        if (!isCurrent(player, session, turn)) {
-            return;
-        }
-        session.pending = false;
-        String fallback = passed ? "[퀘스트가 완료되었습니다]" : "[평가 결과: 재도전이 필요합니다]";
-        session.history.add(new Transcript("NPC", godId.toString(), fallback, fallback));
-        trimHistory(session);
-        logs.appendBlock(player.server, player.getUUID(), "QUEST_EVALUATION_FALLBACK",
-                "quest=" + questId + "\\npassed=" + passed);
-        showDialogue(player, godId, fallback, fallback);
-    }
-
-    private void submitGeneration(ServerPlayer player, Session session, long turn, String text,''',
-                'AI-generated evaluation quest narration')
-        adapter = patchMemoryFoundationAdapter(adapter)
-        adapter = patchQuestParticipationAdapter(adapter)
-        adapter = patchSocialAdapter(adapter)
-        adapter = patchDialogueTestAdapter(adapter)
-        adapter = patchRoomConversationAdapter(adapter)
-        file("${outputPackage}/AiTestDialogueAdapter.java").write(adapter, 'UTF-8')
-
-        String directive = file("${legacyAiSourceDir}/DialogueTurnDirective.java").getText('UTF-8')
-        directive = replaceRequired(directive,
-                'if (isCasualFeeling(normalized)) {',
-                'if (isCasualFeeling(normalized) && !hasRequestIntent(tags, normalized)) {',
-                'request priority over casual directive')
-        directive = replaceRequired(directive,
-                'if (tags.contains(DialogueExampleTag.S_CHAT) || isSmallTalk(normalized)) {',
-                'if ((tags.contains(DialogueExampleTag.S_CHAT) || isSmallTalk(normalized))\n                && !hasRequestIntent(tags, normalized)) {',
-                'request priority over small talk directive')
-        directive = replaceRequired(directive,
-                'if (tags.contains(DialogueExampleTag.S_INFORMATION_REQUEST) || containsAny(normalized, "왜", "어떻게", "무엇", "뭐야", "알려")) {',
-                'if ((tags.contains(DialogueExampleTag.S_INFORMATION_REQUEST) || containsAny(normalized, "왜", "어떻게", "무엇", "뭐야", "알려"))\n                && !hasRequestIntent(tags, normalized)) {',
-                'request priority over generic information directive')
-        directive = replaceRequired(directive,
-                '|| containsAny(normalized, "줄 수", "가호", "보상", "퀘스트", "도와", "필요한 거 있어");',
-                '|| containsAny(normalized, "줄 수", "가호", "보상", "퀘스트", "도와", "필요한 거 있어", '
-                        + '"준비됐", "준비했", "가져왔", "챙겨왔", "다 모았", "건넬게", "받아", "넣어뒀", "상자에 넣었");',
-                'item readiness allows a proposal turn')
-        directive = replaceRequired(directive,
-                '''            common.add("Return proposals as an empty array.");
-            return new DialogueTurnDirective(Mode.SMALL_TALK,
-                    "React naturally to the recent event the player shared.", common, false, maxReplies, 44);''',
-                '''            common.add("A reactive server-authorized proposal is allowed only when the event clearly warrants an immediate in-character action.");
-            return new DialogueTurnDirective(Mode.SMALL_TALK,
-                    "React naturally to the recent event the player shared.", common, true, maxReplies, 44);''',
-                'reactive actions for shared events')
-        directive = replaceRequired(directive,
-                '''            common.add("Return proposals as an empty array.");
-            return new DialogueTurnDirective(Mode.SMALL_TALK,
-                    "Respond naturally to the player's immediate feeling or social gesture.", common, false, maxReplies, 28);''',
-                '''            common.add("A reactive server-authorized proposal is allowed only when this social gesture clearly warrants an immediate in-character action.");
-            return new DialogueTurnDirective(Mode.SMALL_TALK,
-                    "Respond naturally to the player's immediate feeling or social gesture.", common, true, maxReplies, 28);''',
-                'reactive actions for social gestures')
-        directive = replaceRequired(directive,
-                'return new DialogueTurnDirective(Mode.APOLOGY, "React naturally to the player\'s apology.", common, false, maxReplies, 56);',
-                'return new DialogueTurnDirective(Mode.APOLOGY, "React naturally to the player\'s apology.", common, true, maxReplies, 56);',
-                'reactive actions for apologies')
-        directive = replaceRequired(directive,
-                '''            common.add("Address the disagreement directly. Do not escalate into threats or claim an action occurred.");
-            return new DialogueTurnDirective(Mode.CONFLICT, "Address the conflict without inventing consequences.", common,
-                    false, maxReplies, 56);''',
-                '''            common.add("Address the disagreement directly. A server-authorized reactive action may be proposed when proportionate to the NPC and scene, but never claim it succeeded.");
-            return new DialogueTurnDirective(Mode.CONFLICT, "Address the conflict without inventing consequences.", common,
-                    true, maxReplies, 56);''',
-                'reactive actions for conflicts')
-        directive = replaceRequired(directive,
-                '''        return new DialogueTurnDirective(Mode.GENERAL, "Respond directly and naturally to PLAYER_TEXT.", common, false,
-                maxReplies, 56);''',
-                '''        common.add("A reactive server-authorized proposal is allowed only when the immediate scene clearly warrants it.");
-        return new DialogueTurnDirective(Mode.GENERAL, "Respond directly and naturally to PLAYER_TEXT.", common, true,
-                maxReplies, 56);''',
-                'reactive actions for general and spontaneous turns')
-        directive = replaceRequired(directive,
-                'proposalsAllowed ? "only when supported by the current request" : "[]"',
-                'proposalsAllowed ? "only when supported by the current turn and server-authorized capabilities" : "[]"',
-                'reactive proposal policy wording')
-        int compactStart = directive.indexOf('    String compactSpeech(String rawText) {')
-        int compactEnd = directive.indexOf('    String promptBlock() {', compactStart)
-        if (compactStart < 0 || compactEnd < 0) {
-            throw new GradleException('Could not apply AI overlay patch: naturalSpeech method')
-        }
-        directive = directive.substring(0, compactStart) + '''    String naturalSpeech(String rawText) {
-        if (mode == Mode.GREETING) {
-            return "안녕.";
-        }
-        return rawText == null ? "" : rawText.replaceAll("\\s+", " ").trim();
-    }
-
-''' + directive.substring(compactEnd)
-        directive = replaceRequired(directive,
-                '    private static boolean isSmallTalk(String text) {',
-                '''    private static boolean hasRequestIntent(Set<DialogueExampleTag> tags, String text) {
-        return tags.contains(DialogueExampleTag.S_ITEM_REQUEST)
-                || tags.contains(DialogueExampleTag.S_POWER_REQUEST)
-                || tags.contains(DialogueExampleTag.S_HELP_REQUEST)
-                || tags.contains(DialogueExampleTag.S_QUEST_INQUIRY)
-                || tags.contains(DialogueExampleTag.S_REWARD_NEGOTIATION)
-                || tags.contains(DialogueExampleTag.S_GIFT_OFFER)
-                || containsAny(text, "퀘스트", "의뢰", "임무", "필요한 거", "할 일", "아이템", "물건", "가호",
-                        "힘을 줘", "도와", "도움", "보상", "대가", "선물", "공물", "줄래", "줘봐", "해줘",
-                        "준비됐", "준비했", "가져왔", "챙겨왔", "다 모았", "건넬게", "받아", "넣어뒀", "상자에 넣었");
-    }
-
-    private static boolean isSmallTalk(String text) {''',
-                'request priority helper')
-        directive = patchRecallDirective(directive)
-        file("${outputPackage}/DialogueTurnDirective.java").write(directive, 'UTF-8')
-
-        // Patch the real scheduler, not an unused helper. Keep legacy source/JAR immutable.
-        String scheduler = file("${legacyAiSourceDir}/LocalLlmRequestScheduler.java").getText('UTF-8')
-        scheduler = replaceRequired(scheduler,
-                '''        try {
-            executorFor(settings).execute(() -> execute(requestId, submittedAt, request, completion));''',
-                '''        var admission = com.sande.mythai.response.memory.ModelAdmission.foreground();
-        completion.whenComplete((value, failure) -> admission.close());
-        try {
-            executorFor(settings).execute(() -> execute(requestId, submittedAt,
-                    () -> com.sande.mythai.response.memory.ModelAdmission.run(admission,
-                            settings.maxConcurrentLlmRequests(), settings.requestTimeoutSeconds() * 1000L, request), completion));''',
-                'common dialogue/classification/spontaneous model admission')
-        file("${outputPackage}/LocalLlmRequestScheduler.java").write(scheduler, 'UTF-8')
-    }
-}
-
-sourceSets.main.java.srcDir(patchedAiSourceDir)
-tasks.named('compileJava').configure { dependsOn(generatePatchedAiSources) }
 
 def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
     def replaceProperties = [
@@ -953,31 +364,178 @@ tasks.named('processResources', ProcessResources) {
         eachFile { path = 'data/mythai_room_full_path/structure/empty.nbt' }
         includeEmptyDirs = false
     }
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_recording_policy/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_dialogue_guard/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
 }
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar).configure {
-    if (!legacyCombinedJar.exists()) {
-        throw new GradleException("Missing tested AI source JAR: ${legacyCombinedJar}")
-    }
-    from(zipTree(legacyCombinedJar)) {
-        include 'com/sande/mythictrpg/ai/**'
-        exclude 'com/sande/mythictrpg/ai/GodAiDialogueService*'
-        exclude 'com/sande/mythictrpg/ai/AiTestDialogueAdapter*'
-        exclude 'com/sande/mythictrpg/ai/DialogueTurnDirective*'
-        exclude 'com/sande/mythictrpg/ai/LocalLlmRequestScheduler*'
-        exclude 'com/sande/mythictrpg/ai/*Commands*'
-        exclude 'com/sande/mythictrpg/ai/*Events*'
-        exclude 'com/sande/mythictrpg/ai/**/*GameTests*'
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
     manifest {
         attributes('Implementation-Title': mod_name,
                 'Implementation-Version': mod_version,
-                'MythAI-Extracted-Engine': 'legacy-tested-ollama-gemma-pipeline')
+                'MythAI-Engine': 'source-owned-ollama-pipeline')
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.register('homeVisitTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.HomeVisitTest'
+}
+tasks.named('check') { dependsOn 'homeVisitTest' }
+
+tasks.register('godActivityAiTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.GodActivityAiTest'
+    args layout.buildDirectory.dir('god-activity-ai-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'godActivityAiTest' }
+
+tasks.register('recordedProjectionRuntimeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionRuntimeTest'
+}
+tasks.named('check') { dependsOn 'recordedProjectionRuntimeTest' }
+
+tasks.register('recordedProjectionExtractorTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionExtractorTest'
+}
+tasks.register('recordedProjectionPipelineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionPipelineTest'
+    def artifacts = layout.buildDirectory.dir('recorded-projection-pipeline-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedProjectionExtractorTest', 'recordedProjectionPipelineTest' }
+
+tasks.register('recordedEmbeddingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedEmbeddingTest'
+}
+tasks.named('check') { dependsOn 'recordedEmbeddingTest' }
+
+tasks.register('recordedEmbeddingPipelineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedEmbeddingPipelineTest'
+    def artifacts = layout.buildDirectory.dir('recorded-embedding-pipeline-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedEmbeddingPipelineTest' }
+
+tasks.register('recordedObservationShadowTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedObservationShadowTest'
+}
+tasks.named('check') { dependsOn 'recordedObservationShadowTest' }
+
+tasks.register('recordedRecallQueryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedRecallQueryTest'
+}
+tasks.named('check') { dependsOn 'recordedRecallQueryTest' }
+
+tasks.register('roomRecallPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RoomRecallPlanTest'
+}
+tasks.named('check') { dependsOn 'roomRecallPlanTest' }
+
+tasks.register('roomRecallPlannerTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RoomRecallPlannerTest'
+}
+tasks.named('check') { dependsOn 'roomRecallPlannerTest' }
+
+// Explicit opt-in only: real Ollama calls against synthetic fixtures, never part of check.
+tasks.register('dialogueGroundingAuditReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingAuditReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file('../검토결과/dialogue-system-20261007/live').absolutePath,
+            file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/dialogue-system-20261007/audit-v2').get()).absolutePath,
+            '--execute-loopback'
+}
+tasks.register('dialogueGroundingLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/dialogue-system-20261007/live').get()).absolutePath,
+            '--execute-loopback'
+}
+
+['turnInterpretationTest': 'TurnInterpretationTest',
+ 'roomDialogueGroundingTest': 'RoomDialogueGroundingTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythictrpg.ai.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+
+tasks.register('recordedRumorShadowTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedRumorShadowTest'
+}
+tasks.named('check') { dependsOn 'recordedRumorShadowTest' }
+
+// Paired compact/verbose prompt evaluation; opt-in live calls are never part of check.
+tasks.register('compactDialoguePreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.CompactDialogueLiveEvaluation'
+    args '--preflight'
+}
+tasks.register('compactDialogueLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.CompactDialogueLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput')
+            .orElse('../검토결과/compact-dialogue-20261007/paired').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('3').get()
+}
+
+['recordedRetrievalCoordinatorTest': 'RecordedRetrievalCoordinatorTest',
+ 'roomEvidenceRefreshTest': 'RoomEvidenceRefreshTest',
+ 'recordedNativeSpeechPromptTest': 'RecordedNativeSpeechPromptTest',
+ 'recordedNativeInterpretationPromptTest': 'RecordedNativeInterpretationPromptTest',
+ 'roomHistoryEvidencePreparationTest': 'RoomHistoryEvidencePreparationTest',
+ 'recordedMemoryPromptTest': 'RecordedMemoryPromptTest',
+ 'recordedQueryEmbeddingTest': 'RecordedQueryEmbeddingTest',
+ 'recordedRetrievalShadowTest': 'RecordedRetrievalShadowTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythai.response.memory.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
 }

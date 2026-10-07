@@ -26,7 +26,7 @@ import java.util.UUID;
  * deliberately not used as the narrative source of truth.
  */
 public final class MythicQuestState extends SavedData {
-    public static final int CURRENT_DATA_VERSION = 1;
+    public static final int CURRENT_DATA_VERSION = 2;
     private static final String FILE_NAME = "mythictrpg_quests";
     private static final Factory<MythicQuestState> FACTORY = new Factory<>(
             MythicQuestState::new, MythicQuestState::load);
@@ -46,7 +46,7 @@ public final class MythicQuestState extends SavedData {
         MythicQuestState state = new MythicQuestState();
         try {
             int version = requireInt(tag, "dataVersion");
-            if (version != CURRENT_DATA_VERSION) {
+            if (version != 1 && version != CURRENT_DATA_VERSION) {
                 throw new IllegalArgumentException("Unsupported quest dataVersion " + version
                         + " (expected " + CURRENT_DATA_VERSION + ")");
             }
@@ -56,6 +56,7 @@ public final class MythicQuestState extends SavedData {
                 ListTag runs = requireList(tag, "participationRuns", Tag.TAG_STRING);
                 for (int i = 0; i < runs.size(); i++) {
                     var run = new QuestParticipationRun(RUN_JSON.fromJson(runs.getString(i), QuestParticipationRun.Snapshot.class));
+                    QuestRosterRefunds.validate(run, registries);
                     if (state.participationRuns.putIfAbsent(ResourceLocation.parse(run.snapshot().questId()), run) != null)
                         throw new IllegalArgumentException("Duplicate participation run");
                 }
@@ -103,6 +104,17 @@ public final class MythicQuestState extends SavedData {
         return assignments.getOrDefault(questId, Map.of()).containsKey(playerId);
     }
 
+    /** Only the live assignment commit may capture an origin. Loading/login never guesses one. */
+    public void recordAssignmentOrigin(ResourceLocation questId, UUID playerId, QuestContactLocation origin) {
+        ensureWritable();
+        var players = assignments.get(questId);
+        var previous = players == null ? null : players.get(playerId);
+        if (previous == null || previous.origin().isPresent()) return;
+        players.put(playerId, new QuestAssignment(previous.questId(), previous.playerId(), previous.giverGodId(),
+                previous.assignedAt(), Optional.of(origin)));
+        setDirty();
+    }
+
     public Optional<QuestParticipationRun> participationRun(ResourceLocation questId) {
         return Optional.ofNullable(participationRuns.get(questId));
     }
@@ -121,6 +133,19 @@ public final class MythicQuestState extends SavedData {
     }
 
     public boolean isWritable() { return rejectedRawData == null; }
+
+    /** Reconcile only this run's assignments after an approved roster mutation. */
+    public void reconcileRoster(QuestParticipationRun run) {
+        ensureWritable();
+        ResourceLocation quest = ResourceLocation.parse(run.snapshot().questId());
+        if (participationRuns.get(quest) != run || run.snapshot().closed() || completions.containsKey(quest))
+            throw new IllegalStateException("Run is no longer active");
+        var entries = assignments.computeIfAbsent(quest, ignored -> new LinkedHashMap<>());
+        entries.keySet().removeIf(id -> !run.participants().contains(id));
+        for (UUID id : run.participants()) entries.putIfAbsent(id,
+                new QuestAssignment(quest, id, ResourceLocation.parse(run.snapshot().giverId()), Instant.now()));
+        setDirty();
+    }
 
     public void closeUnsubmittedRun(ResourceLocation questId) {
         ensureWritable();
@@ -207,6 +232,7 @@ public final class MythicQuestState extends SavedData {
                             entry.putString("player", assignment.playerId().toString());
                             entry.putString("giver", assignment.giverGodId().toString());
                             entry.putLong("assignedAt", assignment.assignedAt().toEpochMilli());
+                            assignment.origin().ifPresent(place -> entry.put("origin", place.save()));
                             list.add(entry);
                         }));
         return list;
@@ -241,7 +267,8 @@ public final class MythicQuestState extends SavedData {
             Instant assignedAt = Instant.ofEpochMilli(requireLong(entry, "assignedAt"));
             QuestAssignment previous = destination.computeIfAbsent(questId,
                     ignored -> new LinkedHashMap<>()).putIfAbsent(playerId,
-                            new QuestAssignment(questId, playerId, giver, assignedAt));
+                            new QuestAssignment(questId, playerId, giver, assignedAt,
+                                    entry.contains("origin") ? Optional.of(QuestContactLocation.load(entry.getCompound("origin"))) : Optional.empty()));
             if (previous != null) {
                 throw new IllegalArgumentException("Duplicate assignment for " + questId + " and " + playerId);
             }

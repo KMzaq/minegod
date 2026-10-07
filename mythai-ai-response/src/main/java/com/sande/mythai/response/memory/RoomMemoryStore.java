@@ -66,11 +66,15 @@ public final class RoomMemoryStore implements AutoCloseable {
     private volatile String failure = "";
     private volatile long diskBytes;
     private volatile MemoryRetentionSettings limits = MemoryRetentionSettings.DEFAULT;
+    private volatile RecallSettings recallSettings = RecallSettings.OFF;
     private long sequence;
     private FileChannel lockChannel;
     private FileLock lock;
 
     public RoomMemoryStore(Path directory, Path config) {
+        this(directory, config, null);
+    }
+    public RoomMemoryStore(Path directory, Path config, Path recallConfig) {
         this.directory = directory.toAbsolutePath().normalize(); this.config = config;
         writer = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(512), work -> {
             var thread = new Thread(work, "mythai-room-memory-writer"); thread.setDaemon(true); return thread;
@@ -80,7 +84,11 @@ public final class RoomMemoryStore implements AutoCloseable {
                 finally { try { if (lockChannel != null) lockChannel.close(); } catch (IOException error) { fail(error); } }
             }
         };
-        writer.execute(() -> { try { limits = config == null ? MemoryRetentionSettings.DEFAULT : MemoryRetentionSettings.load(config); load(); ready = true; }
+        writer.execute(() -> { try {
+            limits = config == null ? MemoryRetentionSettings.DEFAULT : MemoryRetentionSettings.load(config);
+            recallSettings = recallConfig == null ? RecallSettings.OFF : RecallSettings.load(recallConfig);
+            load(); ready = true;
+        }
             catch (Exception error) { fail(error); } });
     }
     public RoomMemoryStore(Path directory) { this(directory, null); }
@@ -89,6 +97,7 @@ public final class RoomMemoryStore implements AutoCloseable {
     public String failureReason() { return failure; }
     public Capacity capacity() { return new Capacity(diskBytes, limits.maxStorageBytes(), snapshot.records().size(), limits.maxEntries()); }
     public List<Record> records() { return List.copyOf(snapshot.records().values()); }
+    RecallSettings recallSettings() { return recallSettings; }
 
     public CompletableFuture<Result> append(Record record) {
         Objects.requireNonNull(record);
@@ -174,6 +183,20 @@ public final class RoomMemoryStore implements AutoCloseable {
 
     /** Candidate search is permission-scoped and off-thread. Game evidence is revalidated before prompt construction. */
     public List<Record> candidates(Scope scope, String question, Set<UUID> recent, int maximum, long budgetNanos) {
+        return candidates(scope, question, RecallQuery.explicitRecall(question), false, null, recent, maximum,
+                budgetNanos, System.currentTimeMillis());
+    }
+    public List<Record> candidates(Scope scope, RecallQuery query, Set<UUID> recent, int maximum,
+            long budgetNanos, long now) {
+        var key = query.scope().key();
+        if (!key.world().equals(scope.worldId()) || !key.god().equals(scope.readerGodId())
+                || !key.player().equals(scope.requesterId()) || !query.scope().audience().equals(scope.playerAudience())) return List.of();
+        var settings = recallSettings;
+        return candidates(scope, query.text(), query.explicit(), settings.enabled() && query.planQuestion(),
+                settings.enabled() ? RecallSearch.temporal(query, settings.timeBasis()) : null, recent, maximum, budgetNanos, now);
+    }
+    private List<Record> candidates(Scope scope, String question, boolean explicit, boolean planQuestion,
+            RecallSearch.Temporal temporal, Set<UUID> recent, int maximum, long budgetNanos, long now) {
         if (!ready() || maximum < 1 || budgetNanos < 1) return List.of();
         long start = System.nanoTime();
         var read = snapshot;
@@ -181,7 +204,6 @@ public final class RoomMemoryStore implements AutoCloseable {
         read.byGod().getOrDefault(scope.worldId() + "/" + scope.readerGodId(), List.of()).forEach(row -> all.put(row.messageId(), row));
         pending.values().stream().filter(row -> row.worldId().equals(scope.worldId()) && row.heardGodIds().contains(scope.readerGodId()))
                 .forEach(row -> all.putIfAbsent(row.messageId(), row));
-        boolean explicit = RecallQuery.explicitRecall(question);
         var role = RecallSourceScope.resolve(question);
         var query = MemoryJournal.lexical(RecallSourceScope.lexicalQuery(question));
         var namedPlayers = new HashSet<String>();
@@ -195,8 +217,13 @@ public final class RoomMemoryStore implements AutoCloseable {
         for (var row : all.values()) {
             if (System.nanoTime() - start > budgetNanos) return List.of();
             if (snapshot.retired().contains(row.messageId()) || !visible(row, scope, true)
-                    || !explicit && recent.contains(row.messageId()) || row.occurredAt() > System.currentTimeMillis()) continue;
+                    || !explicit && (recent.contains(row.messageId()) || row.text().equals(question))
+                    || row.occurredAt() > now) continue;
             if (explicit && (!sourceAllowed(row, scope, role) || !namedPlayers.isEmpty() && !namedPlayers.contains(row.speakerId()))) continue;
+            // Match personal recall policy: retained questions cannot become evidence answering themselves.
+            if (explicit && (RecallQuery.explicitRecall(row.text()) || RecallQuery.bareFollowUp(row.text()))) continue;
+            if (explicit && planQuestion && !RecallSearch.looksLikePlan(row.text())) continue;
+            if (temporal != null && !temporal.allows(row.text(), row.occurredAt())) continue;
             var terms = read.terms().get(row.messageId());
             if (terms == null) terms = MemoryJournal.lexical(row.text()).terms(); // accepted, not yet durable write
             long overlap = query.terms().stream().filter(terms::contains).count();

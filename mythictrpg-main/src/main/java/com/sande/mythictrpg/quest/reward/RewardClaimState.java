@@ -19,7 +19,8 @@ import java.util.UUID;
 
 /** Durable reward receipts and non-expiring player choices. */
 public final class RewardClaimState extends SavedData {
-    public static final int CURRENT_DATA_VERSION = 2;
+    // v4 retains permanent blessing ownership and removal state independently of prunable receipts.
+    public static final int CURRENT_DATA_VERSION = 4;
     private static final int MAX_CLAIMS = 4096;
     private static final String FILE_NAME = "mythictrpg_reward_claims";
     private static final Factory<RewardClaimState> FACTORY = new Factory<>(
@@ -28,6 +29,99 @@ public final class RewardClaimState extends SavedData {
     private final Map<UUID, RewardClaim> claims = new LinkedHashMap<>();
     private final Map<WatchKey, WatchEntitlement> watches = new LinkedHashMap<>();
     private static final int MAX_WATCHES = 4096;
+    private static final int MAX_PERMANENT_BLESSINGS = 16_384;
+    private final Map<BlessingKey, PermanentBlessingEntitlement> blessings = new LinkedHashMap<>();
+    private final java.util.Set<SuppressedBlessing> suppressedBlessings = new java.util.LinkedHashSet<>();
+
+    public enum BlessingSource { QUEST_CLAIM, NPC_TABLE }
+    private record BlessingKey(UUID playerId, BlessingSource source, ResourceLocation sourceId,
+            ResourceLocation godId, ResourceLocation effectId) { }
+    private record SuppressedBlessing(UUID playerId, ResourceLocation effectId) { }
+    public record PermanentBlessingEntitlement(UUID playerId, ResourceLocation godId,
+            BlessingSource source, ResourceLocation sourceId, Optional<UUID> claimId,
+            ResourceLocation effectId, int amplifier, long grantGameTime) { }
+
+    /** Possession survives milk, death, logout and completed-claim pruning. Never infer it from active effects. */
+    public List<PermanentBlessingEntitlement> permanentBlessingsFor(UUID playerId) {
+        ensureWritable();
+        return blessings.values().stream().filter(value -> value.playerId().equals(playerId)).toList();
+    }
+
+    public Map<ResourceLocation, Integer> ownedPermanentBlessingLevels(UUID playerId) {
+        Map<ResourceLocation, Integer> levels = new LinkedHashMap<>();
+        permanentBlessingsFor(playerId).forEach(value -> levels.merge(value.effectId(), value.amplifier(), Math::max));
+        return Map.copyOf(levels);
+    }
+
+    public boolean isBlessingSuppressed(UUID playerId, ResourceLocation effectId) {
+        ensureWritable();
+        return suppressedBlessings.contains(new SuppressedBlessing(playerId, effectId));
+    }
+
+    void suppressBlessing(UUID playerId, ResourceLocation effectId) {
+        ensureWritable();
+        if (ownedPermanentBlessingLevels(playerId).containsKey(effectId)
+                && suppressedBlessings.add(new SuppressedBlessing(playerId, effectId))) setDirty();
+    }
+
+    void resumeBlessing(UUID playerId, ResourceLocation effectId) {
+        ensureWritable();
+        if (suppressedBlessings.remove(new SuppressedBlessing(playerId, effectId))) setDirty();
+    }
+
+    void clearBlessingSuppression(UUID playerId) {
+        ensureWritable();
+        if (suppressedBlessings.removeIf(value -> value.playerId().equals(playerId))) setDirty();
+    }
+
+    /** Conservative preflight independent of the eventual claim/template source. */
+    public boolean canGrantPermanentBlessings(UUID playerId, List<RewardEntry> rewards) {
+        if (!isWritable()) return false;
+        var owned = ownedPermanentBlessingLevels(playerId);
+        long count = rewards.stream().filter(BlessingRewardEntry.class::isInstance)
+                .map(BlessingRewardEntry.class::cast).filter(BlessingRewardEntry::permanent)
+                .map(BlessingRewardEntry::effectId).distinct()
+                .filter(effect -> !owned.containsKey(effect)).count();
+        return isWritable() && blessings.size() + count <= MAX_PERMANENT_BLESSINGS;
+    }
+
+    private boolean canAcquireBlessings(UUID playerId, ResourceLocation godId, BlessingSource source,
+            ResourceLocation sourceId, List<RewardEntry> rewards) {
+        long count = rewards.stream().filter(BlessingRewardEntry.class::isInstance)
+                .map(BlessingRewardEntry.class::cast).filter(BlessingRewardEntry::permanent)
+                .map(value -> new BlessingKey(playerId, source, sourceId, godId, value.effectId()))
+                .distinct().filter(key -> !blessings.containsKey(key)).count();
+        return isWritable() && blessings.size() + count <= MAX_PERMANENT_BLESSINGS;
+    }
+
+    public boolean ownsPermanentBlessing(UUID playerId, ResourceLocation godId, BlessingRewardEntry reward) {
+        return permanentBlessingsFor(playerId).stream().anyMatch(value -> value.godId().equals(godId)
+                && value.effectId().equals(reward.effectId()) && value.amplifier() >= reward.amplifier());
+    }
+
+    private void acquireBlessings(UUID playerId, ResourceLocation godId, BlessingSource source,
+            ResourceLocation sourceId, Optional<UUID> claimId, List<RewardEntry> rewards, long gameTime) {
+        if (gameTime < 0 || !canAcquireBlessings(playerId, godId, source, sourceId, rewards))
+            throw new IllegalStateException("Permanent blessing ownership storage unavailable");
+        for (RewardEntry reward : rewards) if (reward instanceof BlessingRewardEntry blessing && blessing.permanent()) {
+            BlessingKey key = new BlessingKey(playerId, source, sourceId, godId, blessing.effectId());
+            PermanentBlessingEntitlement prior = blessings.get(key);
+            if (prior == null || prior.amplifier() < blessing.amplifier()) {
+                blessings.put(key, new PermanentBlessingEntitlement(playerId, godId, source, sourceId,
+                        claimId, blessing.effectId(), blessing.amplifier(), gameTime));
+                setDirty();
+            }
+        }
+    }
+
+    /** Only the existing God-owned authored table boundary calls this; no new AI payload authority. */
+    void acquireTableBlessings(UUID playerId, ResourceLocation godId, ResourceLocation tableId, int tier,
+            List<RewardEntry> rewards, long gameTime) {
+        ensureWritable();
+        acquireBlessings(playerId, godId, BlessingSource.NPC_TABLE,
+                ResourceLocation.fromNamespaceAndPath(tableId.getNamespace(), tableId.getPath() + "/tier_" + tier),
+                Optional.empty(), rewards, gameTime);
+    }
 
     public record WatchKey(UUID playerId, ResourceLocation godId) { }
     /** Kept independently of prunable completed receipts, in the SAME SavedData transaction. */
@@ -87,6 +181,7 @@ public final class RewardClaimState extends SavedData {
         if (!isWritable()) {
             return false;
         }
+        if (hasPrunedBlessingReceipt(playerId, sourceId)) return false;
         if (findBySource(playerId, sourceId).isPresent() || claims.size() < MAX_CLAIMS) {
             return true;
         }
@@ -96,6 +191,7 @@ public final class RewardClaimState extends SavedData {
     /** Reserve capacity for a whole settlement before creating any receipt. Server-thread only. */
     public boolean canCreateBatch(java.util.Set<UUID> players, ResourceLocation sourceId) {
         if (!isWritable()) return false;
+        if (players.stream().anyMatch(player -> hasPrunedBlessingReceipt(player, sourceId))) return false;
         long needed = players.stream().filter(id -> findBySource(id, sourceId).isEmpty()).count();
         long retained = claims.values().stream().filter(claim -> !claim.fullyClaimed()
                 || (players.contains(claim.playerId()) && claim.sourceId().equals(sourceId))).count();
@@ -133,6 +229,8 @@ public final class RewardClaimState extends SavedData {
         if (existing != null) {
             return existing;
         }
+        if (hasPrunedBlessingReceipt(claim.playerId(), claim.sourceId()))
+            throw new IllegalStateException("Reward source already granted a permanent blessing; its completed receipt was pruned");
         pruneClaimed();
         if (claims.size() >= MAX_CLAIMS) {
             throw new IllegalStateException("Reward claim storage is full of pending claims");
@@ -148,7 +246,10 @@ public final class RewardClaimState extends SavedData {
     public RewardClaim markAutomaticGranted(UUID claimId, long gameTime) {
         RewardClaim claim = requireWritableClaim(claimId);
         if (!claim.automaticGranted()) {
+            checkEntitlementCapacity(claim, claim.automaticRewards(), gameTime);
             acquireWatches(claim, claim.automaticRewards(), gameTime);
+            acquireBlessings(claim.playerId(), claim.godId(), BlessingSource.QUEST_CLAIM, claim.sourceId(),
+                    Optional.of(claim.claimId()), claim.automaticRewards(), gameTime);
             claim = claim.withAutomaticGranted();
             claims.put(claimId, claim);
             setDirty();
@@ -167,7 +268,10 @@ public final class RewardClaimState extends SavedData {
         }
         var rewards = claim.choices().stream().filter(c -> c.optionId().equals(optionId)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown choice")).rewards();
+        checkEntitlementCapacity(claim, rewards, gameTime);
         acquireWatches(claim, rewards, gameTime);
+        acquireBlessings(claim.playerId(), claim.godId(), BlessingSource.QUEST_CLAIM, claim.sourceId(),
+                Optional.of(claim.claimId()), rewards, gameTime);
         claim = claim.withSelected(optionId);
         claims.put(claimId, claim);
         setDirty();
@@ -202,6 +306,22 @@ public final class RewardClaimState extends SavedData {
             acquired.add(entry);
         }
         tag.put("watches", acquired);
+        ListTag ownedBlessings = new ListTag();
+        for (PermanentBlessingEntitlement blessing : blessings.values()) {
+            CompoundTag entry = new CompoundTag();
+            entry.putUUID("playerId", blessing.playerId()); entry.putString("godId", blessing.godId().toString());
+            entry.putString("source", blessing.source().name()); entry.putString("sourceId", blessing.sourceId().toString());
+            blessing.claimId().ifPresent(value -> entry.putUUID("claimId", value));
+            entry.putString("effectId", blessing.effectId().toString()); entry.putInt("amplifier", blessing.amplifier());
+            entry.putLong("grantGameTime", blessing.grantGameTime()); ownedBlessings.add(entry);
+        }
+        tag.put("permanentBlessings", ownedBlessings);
+        ListTag suppressed = new ListTag();
+        for (SuppressedBlessing blessing : suppressedBlessings) {
+            CompoundTag entry = new CompoundTag(); entry.putUUID("playerId", blessing.playerId());
+            entry.putString("effectId", blessing.effectId().toString()); suppressed.add(entry);
+        }
+        tag.put("suppressedBlessings", suppressed);
         return tag;
     }
 
@@ -239,6 +359,43 @@ public final class RewardClaimState extends SavedData {
                         throw new IllegalArgumentException("Duplicate watch entitlement");
                 }
             }
+            if (tag.getInt("dataVersion") >= 4) {
+                ListTag ownedBlessings = requireList(tag, "permanentBlessings");
+                if (ownedBlessings.size() > MAX_PERMANENT_BLESSINGS)
+                    throw new IllegalArgumentException("Too many permanent blessing entitlements");
+                for (int i = 0; i < ownedBlessings.size(); i++) {
+                    CompoundTag entry = ownedBlessings.getCompound(i);
+                    UUID playerId = requireUuid(entry, "playerId");
+                    ResourceLocation godId = id(entry.getString("godId"), "godId");
+                    ResourceLocation sourceId = id(entry.getString("sourceId"), "sourceId");
+                    ResourceLocation effectId = id(entry.getString("effectId"), "effectId");
+                    BlessingSource source = BlessingSource.valueOf(entry.getString("source"));
+                    Optional<UUID> claimId = source == BlessingSource.QUEST_CLAIM
+                            ? Optional.of(requireUuid(entry, "claimId")) : Optional.empty();
+                    if (source == BlessingSource.NPC_TABLE && entry.contains("claimId"))
+                        throw new IllegalArgumentException("Authored table blessing cannot invent a quest receipt");
+                    if (!entry.contains("amplifier", Tag.TAG_INT) || !entry.contains("grantGameTime", Tag.TAG_LONG)
+                            || entry.getLong("grantGameTime") < 0)
+                        throw new IllegalArgumentException("Invalid permanent blessing level/time");
+                    BlessingRewardEntry reward = new BlessingRewardEntry(effectId, -1, entry.getInt("amplifier"));
+                    var value = new PermanentBlessingEntitlement(playerId, godId, source, sourceId, claimId,
+                            effectId, reward.amplifier(), entry.getLong("grantGameTime"));
+                    if (state.blessings.putIfAbsent(new BlessingKey(playerId, source, sourceId, godId, effectId), value) != null)
+                        throw new IllegalArgumentException("Duplicate permanent blessing source");
+                }
+                ListTag suppressed = requireList(tag, "suppressedBlessings");
+                if (suppressed.size() > MAX_PERMANENT_BLESSINGS)
+                    throw new IllegalArgumentException("Too many suppressed blessings");
+                var ownedEffects = new java.util.HashSet<SuppressedBlessing>();
+                state.blessings.values().forEach(value -> ownedEffects.add(new SuppressedBlessing(value.playerId(), value.effectId())));
+                for (int i = 0; i < suppressed.size(); i++) {
+                    CompoundTag entry = suppressed.getCompound(i);
+                    var value = new SuppressedBlessing(requireUuid(entry, "playerId"), id(entry.getString("effectId"), "effectId"));
+                    if (!ownedEffects.contains(value)
+                            || !state.suppressedBlessings.add(value))
+                        throw new IllegalArgumentException("Invalid suppressed blessing ownership");
+                }
+            }
             for(RewardClaim claim:state.claims.values()) {
                 var delivered=new ArrayList<RewardEntry>();
                 if(claim.automaticGranted())delivered.addAll(claim.automaticRewards());
@@ -246,10 +403,19 @@ public final class RewardClaimState extends SavedData {
                         .findFirst().ifPresent(c->delivered.addAll(c.rewards())));
                 for(RewardEntry reward:delivered)if(reward instanceof WatchRewardEntry watch && !state.hasWatch(claim.playerId(),watch.godId()))
                     throw new IllegalArgumentException("Granted watch receipt missing entitlement");
+                for (RewardEntry reward : delivered) if (reward instanceof BlessingRewardEntry blessing && blessing.permanent()) {
+                    var owned = state.blessings.get(new BlessingKey(claim.playerId(), BlessingSource.QUEST_CLAIM,
+                            claim.sourceId(), claim.godId(), blessing.effectId()));
+                    if (owned == null || owned.amplifier() < blessing.amplifier()
+                            || !owned.claimId().equals(Optional.of(claim.claimId())))
+                        throw new IllegalArgumentException("Granted permanent blessing receipt missing entitlement");
+                }
             }
         } catch (RuntimeException exception) {
             state.claims.clear();
             state.watches.clear();
+            state.blessings.clear();
+            state.suppressedBlessings.clear();
             state.rejectedRawData = tag.copy();
             state.rejectionReason = exception.getMessage();
             MythicTrpg.LOGGER.error("Rejected reward claim data without replacing it: {}",
@@ -323,6 +489,17 @@ public final class RewardClaimState extends SavedData {
             throw new IllegalStateException("Unknown reward claim");
         }
         return claim;
+    }
+
+    private void checkEntitlementCapacity(RewardClaim claim, List<RewardEntry> rewards, long gameTime) {
+        if (gameTime < 0 || !canGrantWatches(claim.playerId(), rewards)
+                || !canAcquireBlessings(claim.playerId(), claim.godId(), BlessingSource.QUEST_CLAIM, claim.sourceId(), rewards))
+            throw new IllegalStateException("Reward entitlement storage unavailable");
+    }
+
+    private boolean hasPrunedBlessingReceipt(UUID playerId, ResourceLocation sourceId) {
+        return findBySource(playerId, sourceId).isEmpty() && blessings.values().stream().anyMatch(value ->
+                value.source() == BlessingSource.QUEST_CLAIM && value.playerId().equals(playerId) && value.sourceId().equals(sourceId));
     }
 
     private void pruneClaimed() {

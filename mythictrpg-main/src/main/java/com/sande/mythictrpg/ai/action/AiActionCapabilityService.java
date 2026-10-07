@@ -18,6 +18,25 @@ public final class AiActionCapabilityService {
 
     public static List<AiActionCapability> capabilitiesFor(ResourceLocation godId) {
         List<AiActionCapability> result = new ArrayList<>();
+        if (AiActionRegistry.INSTANCE.find(AiActionTypes.QUEST_ROSTER_REQUEST).isPresent())
+            result.add(new AiActionCapability(AiActionTypes.QUEST_ROSTER_REQUEST, Optional.empty(),
+                    "type=quest_roster_request, parameters={quest_id: exact quest from QUEST_PARTICIPATION_SERVER_STATE with roster_management=AVAILABLE}. "
+                    + "When the player asks to quit or reorganize their quest, open NPC roster choices. "
+                    + "This ONLY opens a menu; never claim someone left, joined, was refunded, or completed before server confirmation. "
+                    + "Server enforces configured absence, submitted-player protection, eligibility and consent. No target IDs or consent in the proposal."));
+        if (AiActionRegistry.INSTANCE.find(AiActionTypes.NPC_ACTIVITY_REQUEST).isPresent()
+                && com.sande.mythictrpg.godavatar.activity.NpcActivityDefinitions.INSTANCE.policy(godId).isPresent())
+            result.add(new AiActionCapability(AiActionTypes.NPC_ACTIVITY_REQUEST, Optional.empty(),
+                    "type=npc_activity_request, parameters={choice_id: exact NPC_ACTIVITY_CONTEXT choice token or STOP or CONTINUE}. "
+                    + "Only use current room choices. A player's objection is a social request; decide by persona, relationship and power. "
+                    + "Admin restrictions cannot be refused. Success means an activity was requested, never that materials, crafting or arrival already completed."));
+        var visit = com.sande.mythictrpg.godavatar.visit.GodVisitPolicies.INSTANCE.snapshot().get(godId);
+        if (visit != null && visit.dialogue() && com.sande.mythictrpg.godavatar.visit.GodVisitPlanner.available())
+            result.add(new AiActionCapability(AiActionTypes.NPC_VISIT_REQUEST, Optional.empty(),
+                    "type=npc_visit_request, parameters={}; only in a live room. As this God, request considering a visit "
+                    + "to this player's registered building when the scene warrants it. Server checks progress, existing physical avatar, "
+                    + "cooldown, raid and movement orders. A later bounded AI decision may choose a building or decline. "
+                    + "Never invent coordinates/building IDs, promise arrival, summon/teleport or say movement has started."));
         if (AiActionRegistry.INSTANCE.find(AiActionTypes.RELATIONSHIP_CHANGE).isPresent()) {
             result.add(new AiActionCapability(AiActionTypes.RELATIONSHIP_CHANGE, Optional.empty(),
                     "type=relationship_change, parameters={affinity_delta: integer -50..50 excluding 0}; "
@@ -56,6 +75,15 @@ public final class AiActionCapabilityService {
                                     + transition.summary() + "; this always requires explicit player confirmation; "
                                     + "never invent a transition ID, score, tag, participant, or result")));
         }
+        com.sande.mythictrpg.raid.RaidCatalog.INSTANCE.snapshot().raids().values().stream()
+                .filter(raid -> raid.offerGodIds().contains(godId))
+                .sorted(java.util.Comparator.comparing(raid -> raid.id().toString()))
+                .forEach(raid -> result.add(new AiActionCapability(AiActionTypes.RAID_OFFER,
+                        Optional.of(raid.id()), "type=raid_offer, parameters={raid_id: " + raid.id()
+                                + "}; authored invitation: " + raid.displayName()
+                                + "; requires player confirmation and live entry validation. Confirmation ONLY creates a FORMING lobby. "
+                                + "Other players join voluntarily; leader starts queue separately. Never claim combat, teleport, "
+                                + "roster consent or reward has happened; busy God/arena waits in the queue.")));
         return List.copyOf(result);
     }
 

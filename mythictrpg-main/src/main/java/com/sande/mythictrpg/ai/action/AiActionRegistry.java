@@ -15,6 +15,7 @@ public final class AiActionRegistry {
 
     private AiActionRegistry() {
         register(QuestOfferAiAction.definition());
+        register(QuestRosterAiAction.definition());
         register(ItemRequestAiAction.definition());
         register(RewardProposalAiAction.definition());
         register(RelationshipChangeAiAction.definition());
@@ -22,6 +23,9 @@ public final class AiActionRegistry {
         register(WorldInteractionAiAction.definition());
         register(PlayerDamageAiAction.definition());
         register(GeneratedQuestOfferAiAction.definition());
+        register(RaidOfferAiAction.definition());
+        register(NpcVisitAiAction.definition());
+        register(NpcActivityAiAction.definition());
         register(StructureEvaluationRequestAiAction.definition());
         register(GodRelationTransitionAiAction.definition());
         register(StoryEventHookAiAction.definition());

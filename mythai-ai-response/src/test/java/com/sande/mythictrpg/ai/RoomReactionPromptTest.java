@@ -55,6 +55,42 @@ public final class RoomReactionPromptTest {
         check(!other.contains("ACTUALLY_PUBLISHED") && !other.contains("OWN_RELATION_FEEDBACK") && !other.contains("OWN_MEMORY"),
                 "same god/player does not share another room's context");
         publicationIdentityBoundary(request, god);
+        var fact = new MinecraftCommonKnowledge.Fact("minecraft:heart_of_the_sea", "바다의 심장",
+                List.of("바다의 심장"), "바다의 심장은 묻힌 보물에서 얻어 전달체 제작에 사용하는 아이템이다.");
+        var deliveredItem = new Request(request.roomId(), request.revision(), request.turnId(), player, "player",
+                request.godIds(), god, "UNPROVEN_RAW_INPUT", List.of(new HistoryLine("NPC", primary.toString(), "primary",
+                        "바다의 심장을 가져오면 돼.")), true, true, false, request.godStates(), true);
+        var selected = MinecraftCommonKnowledge.select(deliveredItem, List.of(fact));
+        var grounded = RoomReactionPrompt.messages(deliveredItem, content, memory, selected);
+        check(grounded.getLast().content().contains("publicMinecraftReference") && grounded.getLast().content().contains("전달체"),
+                "secondary shares basic meaning of an already delivered item mention");
+        check(!grounded.toString().contains("UNPROVEN_RAW_INPUT"), "common reference does not expose raw secondary current text");
+        check(grounded.getFirst().content().contains(MinecraftCommonKnowledge.policy()), "same grounding policy in secondary");
+        var social = new Request(request.roomId(), request.revision(), request.turnId(), player, "player", request.godIds(), god,
+                "UNDELIVERED_BOAST", request.history(), true, true, false,
+                List.of(new GodState(god, "R_HOSTILE", "E_UNASSESSED", "[GAME_SOCIAL_CONTEXT] OWN_VERIFIED_POWER", null)), true);
+        var socialMessages = RoomReactionPrompt.messages(social, content, memory, List.of());
+        var socialScene = com.google.gson.JsonParser.parseString(socialMessages.getLast().content()).getAsJsonObject();
+        check(socialMessages.getFirst().content().contains(NaturalConversationPolicy.text().strip()), "secondary shares contextual conversational judgement");
+        check(socialScene.getAsJsonArray("gameConfirmedActionOutcomes").isEmpty(),
+                "secondary receives only its request-scoped game outcomes, never primary action receipts");
+        check(socialScene.get("relationshipTier").getAsString().equals("R_HOSTILE"), "secondary receives its own affinity tier");
+        check(socialScene.get("currentEmotion").getAsString().equals("E_UNASSESSED"), "secondary missing emotion is not forced calmness");
+        check(socialScene.get("ownAuthoritativeContext").getAsString().contains("OWN_VERIFIED_POWER"), "secondary uses own social evidence");
+        check(!socialMessages.toString().contains("UNDELIVERED_BOAST"), "new social context does not expose undelivered player text");
+        check(socialMessages.getFirst().content().contains(DivineSocialPrompt.policy()), "primary and secondary share divine independence rules");
+        var recallBounded = RoomReactionPrompt.messages(social, content, memory, List.of(),
+                List.of("OWN_QUOTED_SOURCE WHOLE_SECOND_ROW_" + "x".repeat(14_000), "OWN_QUOTED_SOURCE"));
+        var boundedScene = com.google.gson.JsonParser.parseString(recallBounded.getLast().content()).getAsJsonObject();
+        check(boundedScene.get("actuallyHeardMemory").getAsString().equals("OWN_QUOTED_SOURCE")
+                && boundedScene.getAsJsonObject("optionalContextAvailability").get("heardMemory").getAsString().equals("OMITTED_CONTEXT_BUDGET"),
+                "secondary fits whole attributed recall records with explicit omission metadata");
+        check(boundedScene.get("ownAuthoritativeContext").getAsString().equals(social.speakerState().gameContext())
+                && recallBounded.getLast().content().contains("ACTUALLY_PUBLISHED") && recallBounded.getLast().content().length() <= 12_000,
+                "secondary optional fitting retains own authority and actually delivered primary");
+        check(boundedScene.getAsJsonArray("gameConfirmedActionOutcomes").isEmpty(),
+                "secondary budget fallback preserves the explicit empty outcome scope");
+        check(!MythAiRoomConversationEngine.gameplayCapabilitiesVisible(social), "secondary cannot receive primary gameplay capabilities");
         System.out.println("RoomReactionPromptTest: PASS (" + checks + " checks; no server or model)");
     }
     private static void publicationIdentityBoundary(Request request, ResourceLocation god) {

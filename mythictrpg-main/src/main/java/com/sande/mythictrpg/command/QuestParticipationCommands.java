@@ -28,6 +28,43 @@ public final class QuestParticipationCommands {
                     return 1;
                 })));
         dispatcher.register(Commands.literal("mythquest")
+                .then(Commands.literal("call").then(Commands.argument("god", ResourceLocationArgument.id()).executes(ctx -> {
+                    boolean replied = com.sande.mythictrpg.quest.QuestContactService.call(ctx.getSource().getPlayerOrException(),
+                            ResourceLocationArgument.getId(ctx, "god"));
+                    if (!replied) ctx.getSource().sendFailure(Component.literal(
+                            "지금 당신을 주시하며 응답할 수 있는 상태가 아닙니다. 실제로 만나거나 나중에 다시 부르세요."));
+                    return replied ? 1 : 0;
+                })))
+                .then(Commands.literal("roster").then(Commands.argument("room", StringArgumentType.word())
+                        .then(Commands.argument("god", ResourceLocationArgument.id())
+                        .then(Commands.argument("quest", ResourceLocationArgument.id()).executes(ctx -> {
+                            var player = ctx.getSource().getPlayerOrException();
+                            var rooms = com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE;
+                            var room = rooms.resolveMember(player, StringArgumentType.getString(ctx, "room")).orElse(null);
+                            var god = ResourceLocationArgument.getId(ctx, "god");
+                            var scope = room == null ? null : rooms.actionScope(player, room.roomId(), room.revision(), god).orElse(null);
+                            String problem = com.sande.mythictrpg.quest.QuestReorganizationService.INSTANCE.open(player,
+                                    ResourceLocationArgument.getId(ctx, "quest"), scope);
+                            if (!problem.isEmpty()) ctx.getSource().sendFailure(Component.literal(problem));
+                            return problem.isEmpty() ? 1 : 0;
+                        })))))
+                .then(Commands.literal("roster-select").then(Commands.argument("token", UuidArgument.uuid()).executes(ctx -> {
+                    boolean ok = com.sande.mythictrpg.quest.QuestReorganizationService.INSTANCE.select(
+                            ctx.getSource().getPlayerOrException(), UuidArgument.getUuid(ctx, "token"));
+                    if (!ok) ctx.getSource().sendFailure(Component.literal("만료됐거나 사용할 수 없는 참가자 관리 선택입니다."));
+                    return ok ? 1 : 0;
+                })))
+                .then(Commands.literal("roster-answer").then(Commands.argument("token", UuidArgument.uuid())
+                        .then(Commands.argument("answer", StringArgumentType.word())
+                                .suggests((ctx, builder) -> { builder.suggest("yes"); builder.suggest("no"); return builder.buildFuture(); })
+                                .executes(ctx -> {
+                                    String answer = StringArgumentType.getString(ctx, "answer");
+                                    if (!answer.equals("yes") && !answer.equals("no")) return 0;
+                                    boolean ok = com.sande.mythictrpg.quest.QuestReorganizationService.INSTANCE.answer(
+                                            ctx.getSource().getPlayerOrException(), UuidArgument.getUuid(ctx, "token"), answer.equals("yes"));
+                                    if (!ok) ctx.getSource().sendFailure(Component.literal("만료됐거나 본인에게 발급되지 않은 참가자 변경 확인입니다."));
+                                    return ok ? 1 : 0;
+                                }))))
                 .then(Commands.literal("watches").executes(ctx -> {
                     var player=ctx.getSource().getPlayerOrException();
                     var entries=com.sande.mythictrpg.quest.reward.RewardClaimState.get(player.server).watchesFor(player.getUUID());

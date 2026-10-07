@@ -48,6 +48,44 @@ public final class WatchExactEvidenceTest {
             get(pending);
             check(!get(f.watch.readExact(audience, Set.of(proof.id()))).view().available(), "revised disclosure cannot silently recreate old access");
         }
+        durableReconciliation();
         System.out.println("WatchExactEvidenceTest: " + (checks-before) + " checks PASS; artifacts=" + GodWatchTest.root);
+    }
+    private static void durableReconciliation() throws Exception {
+        Path directory; UUID world; UUID first, second; long durable;
+        try (Fixture f = new Fixture("receipt-reconciliation")) {
+            f.rules(); Watch active = f.start(GOD_A, A); f.start(GOD_B, A);
+            check(f.watch.currentWatch(active), "durably started watch is current");
+            var observations = f.capture(A);
+            var a = observations.stream().filter(p -> p.observerGodId().equals(GOD_A)).findFirst().orElseThrow(); first = a.id();
+            var b = observations.stream().filter(p -> p.observerGodId().equals(GOD_B)).findFirst().orElseThrow(); second = b.id();
+            var audience = audience(f.world, GOD_A, A, A);
+            var valid = get(f.watch.reconcileExact(audience, Set.of(first)));
+            check(valid.available() && valid.proofs().getFirst().state() == AsyncGodWatch.ProofState.CURRENT, "exact reconciliation preserves original valid observation");
+            check(valid.committedRevision() == f.watch.committedRevision() && valid.committedRevision() > f.watch.status().observationCursor(), "durable journal revision is distinct from raw observation cursor");
+            var pausing = f.watch.transition(active.id(), active.revision(), State.PAUSED, new Ref("test:technical_pause", 1));
+            check(!f.watch.currentWatch(active), "queued pause immediately invalidates remote contact attention");
+            get(pausing);
+            check(get(f.watch.reconcileExact(audience, Set.of(first))).proofs().getFirst().state() == AsyncGodWatch.ProofState.CURRENT, "pause does not erase already acquired knowledge");
+            long before = f.watch.committedRevision(), observed = f.watch.status().observationCursor();
+            get(f.watch.revokeProof(first));
+            check(f.watch.committedRevision() > before && f.watch.status().observationCursor() == observed, "revocation advances durable revision without a new observation");
+            check(get(f.watch.reconcileExact(audience, Set.of(first))).proofs().getFirst().state() == AsyncGodWatch.ProofState.REVOKED, "explicit proof revocation is distinguishable from a missing proof");
+            check(get(f.watch.reconcileExact(audience(f.world, GOD_B, A, A), Set.of(second))).proofs().getFirst().state() == AsyncGodWatch.ProofState.CURRENT, "another God's same-event proof remains valid");
+            check(get(f.watch.reconcileExact(audience, Set.of(UUID.randomUUID()))).proofs().getFirst().state() == AsyncGodWatch.ProofState.UNKNOWN, "missing proof is UNKNOWN not permanent revocation");
+            check(get(f.watch.reconcileExact(audience, Set.of(second))).proofs().getFirst().state() == AsyncGodWatch.ProofState.UNKNOWN, "foreign God proof not exposed through reconciliation");
+            check(!get(f.watch.reconcileExact(audience(UUID.randomUUID(), GOD_A, A, A), Set.of(first))).available(), "foreign world reconciliation fails closed");
+            directory = f.dir; world = f.world; durable = f.watch.committedRevision();
+        }
+        try (Fixture f = new Fixture(directory, world, UUID.randomUUID(), LIMITS, ignored -> {})) {
+            check(f.watch.committedRevision() > durable, "durable revision survives clean restart including lifecycle frames");
+            check(get(f.watch.reconcileExact(audience(world, GOD_A, A, A), Set.of(first))).proofs().getFirst().state() == AsyncGodWatch.ProofState.REVOKED, "replayed revocation remains explicit");
+            var audience = audience(world, GOD_B, A, A);
+            check(get(f.watch.reconcileExact(audience, Set.of(second))).proofs().getFirst().state() == AsyncGodWatch.ProofState.CURRENT, "restart suspension preserves unrelated God historical proof");
+            long before = f.watch.committedRevision();
+            get(f.watch.disclose(new Disclosure(new Ref(RULE_A.id(), RULE_A.revision() + 1), Set.of())));
+            var denied = get(f.watch.reconcileExact(audience, Set.of(second)));
+            check(denied.committedRevision() > before && denied.proofs().getFirst().state() == AsyncGodWatch.ProofState.DISCLOSURE_CHANGED, "durably narrowed disclosure has distinct projection state");
+        }
     }
 }

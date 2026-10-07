@@ -225,6 +225,9 @@ public final class AiConversationRuntimeService {
     }
 
     /** Returns only the server-owned scope; AI output cannot choose either value. */
+    public boolean godConversing(ResourceLocation god) {
+        return states.values().stream().anyMatch(state -> state.enabled() && state.currentGodId().filter(god::equals).isPresent());
+    }
     public Optional<AiActionScope> currentActionScope(ServerPlayer player) {
         requireServerThread(player.server);
         if (testScopes.containsKey(player.getUUID())) return Optional.empty();
@@ -342,9 +345,11 @@ public final class AiConversationRuntimeService {
 
     public void onServerStopped(ServerStoppedEvent event) {
         ConversationRooms.INSTANCE.clear();
+        com.sande.mythictrpg.ai.social.RoomSocialContext.clear(event.getServer());
         states.clear();
         testScopes.clear();
         com.sande.mythictrpg.quest.QuestParticipationService.INSTANCE.clear();
+        com.sande.mythictrpg.quest.QuestContactService.clear();
         AiActionGateway.clear();
         AiConversationEngineRouter.INSTANCE.onServerStopped();
         com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.reset();

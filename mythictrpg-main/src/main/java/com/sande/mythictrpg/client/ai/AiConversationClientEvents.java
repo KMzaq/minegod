@@ -5,7 +5,9 @@ import com.sande.mythictrpg.MythicTrpg;
 import com.sande.mythictrpg.network.ClientAiConversationBridge;
 import com.sande.mythictrpg.network.ClientAiActionConfirmationBridge;
 import com.sande.mythictrpg.network.ClientRewardChoiceBridge;
+import com.sande.mythictrpg.network.ClientStoryChoiceBridge;
 import com.sande.mythictrpg.client.quest.RewardChoiceClientController;
+import com.sande.mythictrpg.client.story.StoryChoiceClientController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
@@ -41,6 +43,8 @@ public final class AiConversationClientEvents {
                         .setScreen(new AiActionConfirmationScreen(payload)))));
         event.enqueueWork(() -> ClientRewardChoiceBridge.install(payload ->
                 Minecraft.getInstance().execute(() -> RewardChoiceClientController.INSTANCE.receive(payload))));
+        event.enqueueWork(() -> ClientStoryChoiceBridge.install(payload ->
+                Minecraft.getInstance().execute(() -> StoryChoiceClientController.INSTANCE.receive(payload))));
     }
 
     @SubscribeEvent
@@ -56,6 +60,7 @@ public final class AiConversationClientEvents {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
+        StoryChoiceClientController.INSTANCE.tick();
         while (ROOMS.consumeClick()) Minecraft.getInstance().setScreen(new ConversationRoomsScreen());
         while (TOGGLE.consumeClick()) {
             AiConversationHudController.INSTANCE.toggleVisibility();
@@ -66,11 +71,13 @@ public final class AiConversationClientEvents {
     public static void onLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
         AiConversationHudController.INSTANCE.reset();
         RewardChoiceClientController.INSTANCE.reset();
+        StoryChoiceClientController.INSTANCE.reset();
     }
 
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         AiConversationHudController.INSTANCE.reset();
         RewardChoiceClientController.INSTANCE.reset();
+        StoryChoiceClientController.INSTANCE.reset();
     }
 }

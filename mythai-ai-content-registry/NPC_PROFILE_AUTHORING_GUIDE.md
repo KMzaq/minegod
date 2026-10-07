@@ -7,7 +7,7 @@
 ## 1. 파일 위치
 
 ```text
-src/main/resources/data/<namespace>/mythai_ai/god_profiles/<소속_이름>.json
+src/main/resources/data/<namespace>/mythai_ai/god_profiles/<소속신화_소속_신이름>.json
 ```
 
 기본 namespace를 사용한다면 다음 위치에 작성한다.
@@ -18,21 +18,23 @@ src/main/resources/data/mythaiaicontent/mythai_ai/god_profiles/
 
 ## 2. 파일명과 ID 규칙
 
-파일명과 ID의 path는 반드시 소문자 영어 `소속_이름` 형식으로 작성한다.
+2026-10-04 사용자 확정 기준: 신규 신의 파일명과 God ID의 path는 소문자 영어 `소속신화_소속_신이름` 형식으로 작성한다. 이전의 두 부분 `소속_이름` 기준을 대체한다.
 
 ```text
-<affiliation>_<name>
+<mythology>_<affiliation>_<name>
 ```
 
 예시:
 
-| 신 | 소속 | 권장 파일명 |
-|---|---|---|
-| 데메테르 | Olympus | `olympus_demeter.json` |
-| 크로노스 | Titan | `titan_cronus.json` |
-| 하데스 | Underworld | `underworld_hades.json` |
-| 포세이돈 | Sea | `sea_poseidon.json` |
-| 포르투나 | Roman | `roman_fortuna.json` |
+| 신 | 신화 | 소속 | 작성 파일명 |
+|---|---|---|---|
+| 데메테르 | Greek | Olympian | `greek_olympian_demeter.json` |
+| 크로노스 | Greek | Titan | `greek_titan_cronus.json` |
+| 하데스 | Greek | Underworld | `greek_underworld_hades.json` |
+| 포세이돈 | Greek | Olympian | `greek_olympian_poseidon.json` |
+| 포르투나 | Roman | 미정 | `roman_affiliation_fortuna.json` (`affiliation`은 작성 시 결정) |
+
+그리스 예시는 기존 135신 테스트 데이터팩의 ID를 따른다. `olympian`과 `olympus`를 같은 ID로 취급하지 않는다. 포르투나의 소속은 이름만으로 임의 확정하지 않는다. 이 문서 갱신은 기존 게임 God ID·참조·월드 저장 자료를 변경하거나 이관하지 않는다.
 
 허용 문자는 다음과 같다.
 
@@ -43,10 +45,10 @@ a-z, 0-9, _, -, /
 대문자, 한글, 공백은 파일명과 ID에 사용하지 않는다.
 
 ```text
-올바름: olympus_demeter
-잘못됨: Olympus_Demeter
-잘못됨: 올림포스_데메테르
-잘못됨: olympus demeter
+올바름: greek_olympian_demeter
+잘못됨: Greek_Olympian_Demeter
+잘못됨: 그리스_올림포스_데메테르
+잘못됨: greek olympian demeter
 ```
 
 ### 프로필 콘텐츠 ID
@@ -55,30 +57,30 @@ a-z, 0-9, _, -, /
 
 ```text
 파일:
-data/mythaiaicontent/mythai_ai/god_profiles/olympus_demeter.json
+data/mythaiaicontent/mythai_ai/god_profiles/greek_olympian_demeter.json
 
 프로필 콘텐츠 ID:
-mythaiaicontent:olympus_demeter
+mythaiaicontent:greek_olympian_demeter
 ```
 
 프로필 JSON 안에는 `contentId`를 직접 작성하지 않는다.
 
 ### `godId`
 
-`godId`는 MythicTRPG가 소유하는 실제 신 ID다. 신규 신은 MythicTRPG 측 God Definition도 같은 `소속_이름` 규칙으로 만드는 것을 권장한다.
+`godId`는 MythicTRPG가 소유하는 실제 신 ID다. 신규 신은 MythicTRPG 측 God Definition도 같은 `소속신화_소속_신이름` 규칙으로 작성한다.
 
 ```json
-"godId": "mythictrpg:olympus_demeter"
+"godId": "mythictrpg:greek_olympian_demeter"
 ```
 
-단, 이미 존재하는 신의 `godId`가 `mythictrpg:demeter`라면 프로필만 임의로 `mythictrpg:olympus_demeter`로 바꾸면 안 된다. MythicTRPG의 God Definition ID와 정확히 일치해야 한다.
+단, 기존 테스트 신 `mythictrpg:demeter`를 사용 중인 프로필만 `mythictrpg:greek_olympian_demeter`로 바꾸면 안 된다. 두 ID는 서로 다른 게임 identity이며 자동 별칭이 아니다. 기존 테스트 신을 이전하려면 게임 정의·모든 참조·저장 데이터의 이관을 별도로 맞춘다.
 
 ## 3. 전체 양식
 
 ```json
 {
   "schemaVersion": 2,
-  "godId": "mythictrpg:olympus_demeter",
+  "godId": "mythictrpg:greek_olympian_demeter",
   "displayName": "데메테르",
   "identity": "곡물과 농경, 수확을 관장하는 올림포스의 여신이다.",
   "description": "성실한 노동과 생명의 결실을 중요하게 생각한다.",
@@ -206,6 +208,13 @@ R_DEEP_BOND
 
 관계 지침은 수치를 저장하는 곳이 아니다. 해당 관계 단계에서 NPC가 어떻게 말하는지만 작성한다.
 
+### 신의 독립적 동기 작성
+
+- `description`·`personality`·`values`에는 신이 무엇을 원하고 지키며 어떤 부탁을 거절할 수 있는지 고정된 성격을 쓴다. `dialogueGuidelines`에는 그 성격을 대화 전반에서 적용하는 원칙을, `situationGuidelines`에는 도움·사과·갈등처럼 실제 상황이 맞을 때만 쓰는 판단을 둔다. `relationshipGuidelines`는 게임이 전달한 관계 단계에 따른 태도 변화이며, 친밀함이 자동 승낙이나 복종을 뜻하지 않도록 작성한다.
+- 자애로운 신은 계속 따뜻할 수 있고 장난스러운 신은 계속 호기심을 보일 수 있다. 거절·이견·서운함도 자기 가치와 실제 문맥에서 나오게 하며, 모든 신이 거절하거나 사소한 반말을 모욕으로 처벌하게 만들지 않는다. 가까운 관계에서는 믿음과 애정을 실제로 드러내되 매번 권위나 교훈을 강조하지 않는다.
+- 상대의 물리적 힘, 신격·사회적 지위, 실제 후원·보호 약속, 호감과 현재 감정은 서로 다르다. 확인된 게임 정보나 허용된 기억이 없으면 힘의 서열·후원 관계·과거 사건을 프로필에서 만들어 내지 않는다. NPC가 믿거나 추측하는 말은 그 신의 관점으로 표현하며 확정된 월드 사실이나 실행 완료로 쓰지 않는다.
+- 도움·가호·퀘스트·보상의 의향과 실제 실행을 구분한다. 작성 지침은 허용된 제안을 어떻게 말할지 정하지만 게임의 지급·관계 변경·퀘스트 판정을 대신하지 않는다.
+
 ## 7. 작성 금지 항목
 
 프로필에는 다음 데이터를 넣지 않는다.
@@ -221,7 +230,7 @@ R_DEEP_BOND
 
 ## 8. 점검 목록
 
-- 파일명이 소문자 영어 `소속_이름.json`인가?
+- 신규 신 파일명이 소문자 영어 `소속신화_소속_신이름.json`인가?
 - `godId`가 실제 MythicTRPG God ID와 일치하는가?
 - 퀘스트 본문을 프로필에 직접 넣지 않았는가?
 - 참조한 `loreId`, `questListId`, `signatureExampleId`가 실제로 존재하는가?

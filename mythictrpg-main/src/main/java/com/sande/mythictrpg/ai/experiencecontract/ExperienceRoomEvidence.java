@@ -31,8 +31,8 @@ public final class ExperienceRoomEvidence {
     private record CacheKey(Scope scope, RoomEvidenceReference reference) { }
     private ExperienceRoomEvidence() { }
 
-    /** Only the game lease issuer calls this using an audience-projected snapshot with checked raw receipts. */
-    static Map<UUID, RoomEvidenceReference> capture(AsyncGodWatch.ReadSnapshot snapshot) {
+    /** Immutable conversion for game lease/capture adapters; callers still need current raw/proof/audience authority. */
+    public static Map<UUID, RoomEvidenceReference> capture(AsyncGodWatch.ReadSnapshot snapshot) {
         var refs = new LinkedHashMap<UUID, RoomEvidenceReference>();
         for (var proof : snapshot.view().proofs()) {
             var eligibility = snapshot.eligibilityRefs().get(proof.id());

@@ -24,6 +24,20 @@ public final class RumorDialogueTest {
         var list=new ArrayList<RumorLedger.HeardRumor>();for(int i=0;i<8;i++)list.add(new RumorLedger.HeardRumor(UUID.randomUUID(),1,"x".repeat(180),"y".repeat(60),"INTERESTED"));
         var bounded=DialogueMemoryBridge.prompt(List.of(),list);var json=bounded.substring(bounded.indexOf("[{"),bounded.lastIndexOf(']')+1);
         check(json.length()<=640&&com.google.gson.JsonParser.parseString(json).getAsJsonArray().size()<=3,"shared rumor budget");
+        var packed=DialogueMemoryBridge.packLegacy(List.of(),list);
+        check(packed.rumors().size()==com.google.gson.JsonParser.parseString(json).getAsJsonArray().size(),
+                "only actually fitted claims become social recovery topics");
+        check(packed.rumors().size()<list.size(),"over-budget claims omitted from evidence manifest");
+        check(packed.prompt().equals(bounded),"manifest and generated prompt use one projection");
+        UUID owner=UUID.randomUUID();
+        var oldEntry=new MemoryJournal.Entry(UUID.randomUUID(),new MemoryJournal.Key(UUID.randomUUID(),"mythictrpg:fortuna",owner),
+                UUID.randomUUID(),1,MemoryJournal.Source.PLAYER_STATEMENT,Set.of(owner),System.currentTimeMillis(),"earlier",false);
+        var mixed=DialogueMemoryBridge.packLegacy(List.of(oldEntry),list);
+        String mixedJson=mixed.prompt().substring(mixed.prompt().indexOf("[{"),mixed.prompt().lastIndexOf(']')+1);
+        check(mixed.selected().size()+mixed.rumors().size()==com.google.gson.JsonParser.parseString(mixedJson).getAsJsonArray().size(),
+                "combined journal and rumor evidence exactly matches shared prompt budget");
+        var empty=DialogueMemoryBridge.packLegacy(List.of(),List.of());
+        check(empty.prompt().isEmpty()&&empty.selected().isEmpty()&&empty.rumors().isEmpty(),"empty projection has no hidden evidence");
         var turn=new DialogueMemoryBridge.Turn(null,null,List.of(),List.of(r),prompt,1);
         check(turn.hasGuardedEvidence(),"rumor NPC replies cannot enter independent journal");
         var valid=new AtomicBoolean(true);var ref=ExperienceHistory.Reference.guarded(valid::get);

@@ -1,5 +1,7 @@
 # MythicTRPG 통합 퀘스트 보상 가이드
 
+> **2026-10-02 HanesTest 개발:** `blessing`의 `durationTicks: -1`은 무한 효과와 별도 영구 보유권을 지급한다. 우유/효과 해제로 버프를 지운 상태는 재접속에도 유지하며 `/mythblessing reapply` 또는 사망 후 부활로 다시 적용한다. 동일 효과는 보유 최고 단계 하나로 적용하고 출처는 각각 보존한다. 저장 형식 v4·부활·차등 전투력·검증 범위는 [영구가호 가이드](PERMANENT_BLESSINGS.md)를 따른다. 기존 임시가호를 자동으로 영구가호로 바꾸거나 기존 보상표를 수정하지 않았다.
+
 > **2026-09-20 주시 보상 추가(게임 1.0.8, 미배포):** `{"type":"watch","godId":"mythictrpg:fortuna","displayName":"포르투나"}`는 등록된 신의 개인 주시 획득 보상이다. 실제 자동 지급/선택 claim 처리 때만 획득하고, 같은 신 중복은 최초 근거를 유지한다. `/mythquest watches`로 본인 획득을 조회한다. 관측은 별도 정책/차폐를 통과해야 한다. AI_ACTION으로 직접 지급하지 못하며 기존 퀘스트 정의에는 추가하지 않았다. 저장 버전/예시/실행 한계는 [최신 구현 기록](../../docs/MEMORY_POLICY_IMPLEMENTATION_20260920.md)을 따른다.
 
 > 2026-09-20: [참여 유형](QUEST_PARTICIPATION_GUIDE.md)이 있는 퀘스트는 종료 시 기존 claim 저장소에 참가자 전체의 지급권을 검증·생성한다. 오프라인 지급은 재접속, 일시 지급 실패는 `/mythquest rewards`로 재시도한다. 랭킹은 작성된 순위·점수 구간으로 보상 단계를 선택하며 FTB 보상 버튼과 중복 지급하지 않는다. 별도 보상 DB는 만들지 않았다.
@@ -49,13 +51,15 @@ schemaVersion 2와 `godId`를 사용한다.
 |---|---|---|
 | 아이템 | `{"type":"item","itemId":"minecraft:emerald","count":3}` | 등록 아이템, 수량 1–64 |
 | 호감도 | `{"type":"affinity","amount":75}` | 퀘스트 보상 +1–+200, 최종값 -1000–1000 |
-| 가호 | `{"type":"blessing","effectId":"minecraft:speed","durationTicks":1200,"amplifier":1}` | 등록된 Minecraft 효과, 20–72000틱, 증폭 0–4 |
+| 가호 | `{"type":"blessing","effectId":"minecraft:speed","durationTicks":1200,"amplifier":1}` | 등록된 Minecraft 효과, 20–72000틱 또는 영구 `-1`, 증폭 0–4. 영구 즉시효과 거부 |
 | 칭호 | `{"type":"title","titleId":"mythictrpg:swift","displayName":"신속한 자"}` | 영구 해금 ID, 표시명 1–80자 |
 | 화폐 | `{"type":"currency","amount":100}` | 플레이어 개인 골드, 최종 잔액 0–9,000,000,000 |
 | 상점 상품 해금 | `{"type":"unlock_shop_product","shopId":"mythictrpg:witch_buy","productId":"mythictrpg:witch_healing_potion"}` | 등록 상품을 월드 전역으로 해금 |
 
 AI의 일반 관계 변경 액션은 기존 규칙대로 1회 -50–+50이다. 퀘스트의 호감도 보상만 한 항목당
-최대 +200을 허용한다. 가호는 현재 효과보다 약하거나 남은 시간이 짧으면 중복으로 덮어쓰지 않는다.
+최대 +200을 허용한다. 임시가호는 현재 효과보다 약하거나 남은 시간이 짧으면 중복으로 덮어쓰지 않는다.
+영구가호는 기존 게임 보상 저장소에 출처별 보유를 저장하고 동일 효과 최고 단계만 Minecraft 무한 효과로 적용한다.
+더 강한 임시 포션은 끝날 때 영구가호 단계로 복귀한다. 우유로 지웠으면 같은 효과를 추가 보상으로 받아도 제거 상태를 유지한다.
 칭호는 플레이어 프로필의 `unlockedTitles`에 영구 저장되며, 장착·표시 UI는 별도 표현 계층이다.
 
 ## 후속 설계: ‘OOO의 주시’ 보상 — 현재 미지원

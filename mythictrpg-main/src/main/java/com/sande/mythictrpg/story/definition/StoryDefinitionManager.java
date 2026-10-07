@@ -240,7 +240,7 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
         List<OutcomeDefinition> outcomes = new ArrayList<>();
         for (JsonElement raw : array(json, "outcomes")) {
             JsonObject value = object(raw, "outcomes entry");
-            fields(value, "id", "weight", "additionalConditions", "effects");
+            fields(value, "id", "weight", "additionalConditions", "effects", "displayName", "description");
             Optional<ConditionNode> extra = value.has("additionalConditions")
                     ? Optional.of(CONDITIONS.parse(value.get("additionalConditions"))) : Optional.empty();
             List<Effect> effects = new ArrayList<>();
@@ -248,14 +248,18 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
                 effects.add(parseEffect(object(effect, "effects entry")));
             }
             outcomes.add(new OutcomeDefinition(id(value, "id"), value.has("weight")
-                    ? integer(value, "weight") : 1, extra, effects));
+                    ? integer(value, "weight") : 1, extra, effects,
+                    value.has("displayName") ? Optional.of(string(value, "displayName")) : Optional.empty(),
+                    value.has("description") ? Optional.of(string(value, "description")) : Optional.empty()));
         }
         Optional<ChoicePolicy> choice = Optional.empty();
         if (json.has("choicePolicy")) {
             JsonObject value = object(json.get("choicePolicy"), "choicePolicy");
-            fields(value, "timeoutTicks", "defaultOutcomeId");
+            fields(value, "timeoutTicks", "defaultOutcomeId", "displayName", "description");
             choice = Optional.of(new ChoicePolicy(longInteger(value, "timeoutTicks"),
-                    optionalId(value, "defaultOutcomeId")));
+                    optionalId(value, "defaultOutcomeId"),
+                    value.has("displayName") ? Optional.of(string(value, "displayName")) : Optional.empty(),
+                    value.has("description") ? Optional.of(string(value, "description")) : Optional.empty()));
         }
         return new EventDefinition(id, enumValue(json, "narrativeRole", NarrativeRole.class),
                 enumValue(json, "scope", ScopeType.class), triggers,

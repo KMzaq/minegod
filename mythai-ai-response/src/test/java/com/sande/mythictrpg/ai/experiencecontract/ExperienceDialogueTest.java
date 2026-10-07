@@ -60,7 +60,9 @@ public final class ExperienceDialogueTest {
                 check(combined.hasExperiences() && combined.recalling(),"persisted crop selected after new conversation");
                 check(combined.prompt().contains("DIRECT_OBSERVATION") && combined.prompt().contains("MATURE_CROP_REMOVED"),"actual typed prompt-data source and event");
                 check(combined.prompt().contains("BLOCK_REMOVED_NOT_ITEM_ACQUISITION"),"no fake loot/reward completion");
-                check(combined.prompt().contains("275") && combined.prompt().contains("UNDEFINED"),"actual affinity, no invented tier");
+                check(combined.prompt().contains("275") && combined.prompt().contains("NOT_PROVIDED_BY_EXPERIENCE_VIEW"),"actual affinity, no invented tier");
+                check(!combined.prompt().contains("UNDEFINED") && !combined.prompt().contains("template fallback")
+                        && combined.prompt().contains("GAME_SOCIAL_CONTEXT"), "experience cannot override supplied authoritative social tier");
                 check(!combined.prompt().contains("NEVER_LEAK") && !combined.prompt().contains(eventId.toString()) && !combined.prompt().contains(player.toString()),"no hidden fields/internal identities in prompt");
                 check(combined.prompt().length() < 1300,"small bounded observed context");
                 check(combined.experience().current(combined.observations().ids()),"selected lease current before generation");

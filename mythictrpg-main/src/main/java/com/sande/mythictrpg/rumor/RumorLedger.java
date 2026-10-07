@@ -55,6 +55,24 @@ public final class RumorLedger {
     private final Map<String, Delivery> pending = new LinkedHashMap<>();
     private final Map<String, Receipt> receipts = new LinkedHashMap<>();
     private long revision;
+    private java.util.function.BooleanSupplier quotaEnabled;
+    private java.util.function.BiPredicate<Snapshot, Boolean> mutationGate;
+    void mutationGate(java.util.function.BooleanSupplier enabled, java.util.function.BiPredicate<Snapshot, Boolean> gate) {
+        quotaEnabled = enabled; mutationGate = gate;
+    }
+    private boolean gated() { return mutationGate != null && quotaEnabled.getAsBoolean(); }
+    private boolean mutate(boolean maintenance, java.util.function.Predicate<RumorLedger> operation) {
+        // Keep the live instance: CourierEngine deliberately holds it. Only a validated draft is copied back.
+        RumorLedger draft = new RumorLedger(worldId); draft.copyFrom(this);
+        if (!operation.test(draft)) return false;
+        if (!mutationGate.test(draft.snapshot(), maintenance)) return false;
+        copyFrom(draft); return true;
+    }
+    private void copyFrom(RumorLedger other) {
+        couriers.clear(); couriers.putAll(other.couriers); evidence.clear(); evidence.putAll(other.evidence);
+        claims.clear(); claims.putAll(other.claims); pending.clear(); pending.putAll(other.pending);
+        receipts.clear(); receipts.putAll(other.receipts); revision = other.revision;
+    }
     public RumorLedger() { this(UUID.randomUUID()); }
     private RumorLedger(UUID worldId) { this.worldId = Objects.requireNonNull(worldId); }
     public UUID worldId() { return worldId; }
@@ -67,6 +85,7 @@ public final class RumorLedger {
 
     /** Explicit game lifecycle operation; unload/login are deliberately not callers. */
     public boolean bindCourier(UUID subject, UUID entity) {
+        if (gated()) return mutate(false, draft -> draft.bindCourier(subject, entity));
         Objects.requireNonNull(subject); Objects.requireNonNull(entity);
         Courier old = couriers.get(subject);
         if (old != null && !old.blocked()) return false;
@@ -78,6 +97,7 @@ public final class RumorLedger {
 
     /** The bound observation subject, not the killer or FTB team, determines suppression. */
     public boolean courierDied(UUID entity) {
+        if (gated()) return mutate(true, draft -> draft.courierDied(entity));
         Courier courier = couriers.values().stream().filter(c -> c.entity().equals(entity) && !c.blocked()).findFirst().orElse(null);
         if (courier == null) return false;
         couriers.put(courier.subject(), new Courier(courier.subject(), entity, UUID.randomUUID(), true));
@@ -93,6 +113,8 @@ public final class RumorLedger {
     }
     boolean observe(UUID eventId, UUID subject, UUID observer, Set<UUID> mentionedSubjects,
             String excerpt, Set<String> authorizedGods, Set<UUID> disclosureAudience,CourierProof proof) {
+        if (gated()) return mutate(false, draft -> draft.observe(eventId, subject, observer, mentionedSubjects,
+                excerpt, authorizedGods, disclosureAudience, proof));
         Courier courier = couriers.get(subject);
         if (!Set.of(subject).equals(mentionedSubjects) || courier == null || courier.blocked()
                 || !courier.entity().equals(observer) || evidence.containsKey(eventId) || evidence.size() >= LIMIT) return false;
@@ -103,6 +125,7 @@ public final class RumorLedger {
 
     /** Candidate text cannot create an observation, select receivers, or grant game effects. */
     public boolean publish(UUID rootId, String allegation, String epithet) {
+        if (gated()) return mutate(false, draft -> draft.publish(rootId, allegation, epithet));
         Evidence source = evidence.get(rootId);
         if (source == null || !valid(source) || claims.containsKey(rootId)) return false;
         Claim claim = new Claim(rootId, 1, allegation, epithet, false);
@@ -115,10 +138,12 @@ public final class RumorLedger {
 
     public List<Delivery> pending() { return List.copyOf(pending.values()); }
     boolean discard(Delivery delivery) {
+        if (gated()) return mutate(true, draft -> draft.discard(delivery));
         if(!pending.remove(key(delivery.rootId(),delivery.godId()),delivery))return false;
         revision++;return true;
     }
     public boolean deliver(Delivery delivery) {
+        if (gated()) return mutate(false, draft -> draft.deliver(delivery));
         if (delivery == null || !delivery.equals(pending.get(key(delivery.rootId(), delivery.godId())))) return false;
         Evidence source = evidence.get(delivery.rootId());
         Claim claim = claims.get(delivery.rootId());
@@ -133,6 +158,7 @@ public final class RumorLedger {
 
     /** Administrative invalidation, not in-world forgetting or a pigeon kill. */
     public boolean revoke(UUID rootId) {
+        if (gated()) return mutate(true, draft -> draft.revoke(rootId));
         Claim old = claims.get(rootId);
         if (!evidence.containsKey(rootId) || old != null && old.revoked()) return false;
         // Tombstone even before publication: a delayed worker must not revive invalidated evidence.

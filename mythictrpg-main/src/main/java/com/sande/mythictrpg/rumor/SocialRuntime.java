@@ -2,7 +2,14 @@ package com.sande.mythictrpg.rumor;
 
 import com.sande.mythictrpg.MythicTrpg;
 import com.sande.mythictrpg.ai.memorycontract.*;
+import com.sande.mythictrpg.ai.api.RoomConversationEngine;
+import com.sande.mythictrpg.ai.api.RoomDialogueEvent;
+import com.sande.mythictrpg.ai.room.ConversationRoomLedger;
+import com.sande.mythictrpg.ai.room.ConversationRoomSnapshot;
+import com.sande.mythictrpg.ai.room.RoomTurnPolicy;
 import com.sande.mythictrpg.ai.server.AiConversationRuntimeService;
+import com.sande.mythictrpg.ai.server.ConversationRooms;
+import com.sande.mythictrpg.ai.social.RoomSocialContext;
 import com.sande.mythictrpg.gameplay.ledger.ActionRecord;
 import com.sande.mythictrpg.gameplay.watch.RewardWatchSettings;
 import net.minecraft.core.BlockPos;
@@ -23,6 +30,8 @@ public final class SocialRuntime {
     private final SocialSettings settings;
     private final RewardWatchSettings barriers;
     private final Map<UUID,Turn> turns=new HashMap<>();
+    private final Map<UUID,Turn> roomTurns=new HashMap<>();
+    private final LinkedHashSet<UUID> roomPlayerReceipts=new LinkedHashSet<>();
     private final Set<UUID> privateInteractions=new HashSet<>();
     private final Map<String,CompletableFuture<SocialReview.Answer>> inFlight=new HashMap<>();
     private final Map<String,Integer> attempts=new HashMap<>();
@@ -30,15 +39,27 @@ public final class SocialRuntime {
     private final Map<UUID,DialogueRecovery.Proposal> approvedRecovery=new HashMap<>();
     private final Map<UUID,ConversationMemoryContext> testPublications=new HashMap<>();
     private int receiptCursor;
+    private static final ResourceLocation ROOM_REPUTATION_PROVIDER=ResourceLocation.fromNamespaceAndPath("mythictrpg","room_reputation");
     private static final class Turn {
         final ConversationMemoryContext context; final long number;
+        final UUID roomTurnId;
+        final long roomRevision;
+        final Set<String> roomGods;
+        final Set<UUID> openingAudience;
+        final boolean roomTest;
         final List<SocialReview.Line> conversation;
         final List<CourierEngine.CandidateInput> captured=new ArrayList<>();
         CourierRumorService.DialogueWitness witness;
         Set<UUID> recoveryTopics=Set.of();
         final Set<UUID> recoveryDone=new HashSet<>();
         boolean delivered;
-        Turn(ConversationMemoryContext c,long n,List<SocialReview.Line> lines){context=c;number=n;conversation=new ArrayList<>(lines);}
+        Turn(ConversationMemoryContext c,long n,List<SocialReview.Line> lines){this(c,n,lines,null,0,Set.of(),Set.of(),false);}
+        Turn(ConversationMemoryContext c,long n,List<SocialReview.Line> lines,UUID roomTurnId,long roomRevision,
+                Set<String> roomGods,Set<UUID> openingAudience,boolean roomTest){
+            context=c;number=n;conversation=new ArrayList<>(lines);this.roomTurnId=roomTurnId;this.roomRevision=roomRevision;
+            this.roomGods=Set.copyOf(roomGods);this.openingAudience=Set.copyOf(openingAudience);this.roomTest=roomTest;
+        }
+        boolean room(){return roomTurnId!=null;}
     }
     private SocialRuntime(MinecraftServer server,SocialSettings settings,RewardWatchSettings barriers){this.server=server;this.settings=settings;this.barriers=barriers;}
     public static void started(ServerStartedEvent event) {
@@ -50,17 +71,27 @@ public final class SocialRuntime {
             var runtime=new SocialRuntime(server,settings,RewardWatchSettings.load(path.resolveSibling("reward-watch.json")));
             INSTANCES.put(server,runtime);
             // The reviewer is owned by this game service; only a validated, single-use prepared verdict can pass.
-            ReputationService.installDialogueReviewer(server,new DialogueRecovery.Reviewer(){
+            boolean reviewerInstalled=ReputationService.installDialogueReviewer(server,new DialogueRecovery.Reviewer(){
                 public long currentTurn(UUID player){var t=runtime.turns.get(player);return t==null?-1:t.number;}
+                public long currentTurn(ConversationMemoryContext context){
+                    if(context==null)return -1;
+                    var t=runtime.roomTurns.get(context.interactionId());
+                    return t!=null&&t.context.equals(context)&&runtime.roomCurrent(t)?t.number:currentTurn(context.playerId());
+                }
                 public DialogueRecovery.Verdict review(DialogueRecovery.Proposal proposal,ReputationLedger.Entry entry){
                     boolean approved=proposal.equals(runtime.approvedRecovery.remove(proposal.id()));
                     return new DialogueRecovery.Verdict(approved,"mythictrpg:contextual_dialogue_persuasion");
                 }
             });
+            if(reviewerInstalled)RoomSocialContext.register(server,ROOM_REPUTATION_PROVIDER,
+                    scope->ReputationService.roomSnapshot(server,ROOM_REPUTATION_PROVIDER,scope));
         } catch(RuntimeException invalid){MythicTrpg.LOGGER.error("Social rumor pipeline disabled; existing dialogue unchanged",invalid);}
     }
     public static void stopped(ServerStoppedEvent event) {
-        var r=INSTANCES.remove(event.getServer());if(r!=null){r.inFlight.values().forEach(f->f.cancel(true));r.inFlight.clear();r.turns.clear();r.approvedRecovery.clear();}
+        var r=INSTANCES.remove(event.getServer());if(r!=null){
+            RoomSocialContext.unregister(event.getServer(),ROOM_REPUTATION_PROVIDER);
+            r.inFlight.values().forEach(f->f.cancel(true));r.inFlight.clear();r.turns.clear();r.roomTurns.clear();r.approvedRecovery.clear();
+        }
     }
     private static void requireThread(MinecraftServer server){if(!server.isSameThread())throw new IllegalStateException("social game thread");}
     private static SocialRuntime current(MinecraftServer server){requireThread(server);return MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST?INSTANCES.get(server):null;}
@@ -101,6 +132,98 @@ public final class SocialRuntime {
         turn.witness=CourierRumorService.witnessDialogue(player,source,text,c.audience());
     }
     public static void cancelPlayer(UUID player) { for(var r:INSTANCES.values()){requireThread(r.server);r.turns.remove(player);} }
+    /** Game-issued accepted room input; no selected-UI-room or player-only legacy scope is consulted. */
+    public static void roomPlayerPublished(MinecraftServer server,ConversationRoomSnapshot room,
+            ConversationRoomLedger.TurnLease lease,RoomDialogueEvent event) {
+        var r=current(server);if(r==null||!roomInputMatches(room,lease,event)
+                ||!ConversationRooms.INSTANCE.socialTurnCurrent(room.roomId(),room.revision(),lease.sequence()))return;
+        if(!r.roomPlayerReceipts.add(event.messageId()))return;
+        while(r.roomPlayerReceipts.size()>8192)r.roomPlayerReceipts.remove(r.roomPlayerReceipts.iterator().next());
+        var player=server.getPlayerList().getPlayer(lease.playerId());
+        if(player==null||event.text().length()>1200||event.text().isBlank())return;
+        var context=ConversationRooms.INSTANCE.memoryContext(player,room,ResourceLocation.parse(lease.godId()));
+        if(context==null||!AiConversationRuntimeService.INSTANCE.recordingAllowed(player,context))return;
+        var receivers=new LinkedHashSet<>(event.fullTextReceiverIds());receivers.add(player.getUUID());
+        var old=r.roomTurns.get(room.roomId());
+        var lines=new ArrayList<SocialReview.Line>();
+        if(old!=null&&old.context.equals(context)&&old.delivered)lines.addAll(old.conversation);
+        while(lines.size()>4)lines.removeFirst();
+        lines.add(new SocialReview.Line("PLAYER",event.text()));
+        var turn=new Turn(context,lease.sequence(),lines,lease.turnId(),room.revision(),room.godIds(),receivers,room.recordingScope().isTest());
+        r.roomTurns.put(room.roomId(),turn);
+        // A private room is never an ordinary-dialogue rumor source, even if an admin did not mark it confidential.
+        if(!room.type().isPublic()||!r.settings.ordinaryDialogueObservable()||receivers.size()>16
+                ||r.settings.privateGods().stream().anyMatch(room.godIds()::contains)
+                ||r.obscured(player,player.blockPosition())||event.text().length()>500)return;
+        turn.witness=CourierRumorService.witnessDialogue(player,event.messageId(),event.text(),Set.copyOf(receivers));
+    }
+    /** Actual complete speech bundle; a first page or first of several speeches cannot settle a social turn. */
+    public static void roomReplyCompleted(ServerPlayer player,ConversationRoomSnapshot room,
+            ConversationRoomLedger.TurnLease lease,List<RoomDialogueEvent> speeches) {
+        var r=current(player.server);if(r==null||room==null||lease==null||speeches==null||speeches.isEmpty())return;
+        var turn=r.roomTurns.get(room.roomId());
+        if(turn==null||turn.delivered||!turn.room()||!turn.roomTurnId.equals(lease.turnId())
+                ||turn.number!=lease.sequence()||!turn.context.playerId().equals(player.getUUID())
+                ||!turn.context.godId().equals(lease.godId())||!r.roomCurrent(turn)
+                ||speeches.size()>8||speeches.stream().map(RoomDialogueEvent::messageId).distinct().count()!=speeches.size())return;
+        if(!roomSpeechMatches(room,lease,speeches,player.getUUID()))return;
+        String reply=String.join("\n",speeches.stream().map(RoomDialogueEvent::text).toList());
+        if(reply.isBlank()||reply.length()>1200)return;
+        turn.conversation.add(new SocialReview.Line("GOD",reply));turn.delivered=true;
+        if(turn.witness!=null&&speeches.stream().allMatch(e->e.fullTextReceiverIds().containsAll(turn.openingAudience))
+                &&!r.obscured(player,player.blockPosition())) {
+            String exchange="플레이어 발언: "+turn.witness.opening().excerpt()+"\n신의 공개 답변: "+reply;
+            if(exchange.length()<=600&&(!turn.roomTest||r.testPublications.size()<4096)) {
+                var captured=CourierRumorService.captureDialogue(player,turn.witness,exchange);
+                turn.captured.addAll(captured);
+                if(turn.roomTest)captured.forEach(input->r.testPublications.put(input.rootId(),turn.context));
+            }
+        }
+        r.recover(player,turn);
+    }
+    /** Selected roots came from this exact room's bounded memory retrieval, not an LLM target list. */
+    public static void roomRecoveryTopics(ServerPlayer player,RoomConversationEngine.Request request,Collection<UUID> roots) {
+        var r=current(player.server);if(r==null||request==null||roots==null||roots.size()>3
+                ||request.secondary()||request.publicRoom()||!request.recording()
+                ||!request.playerId().equals(player.getUUID()))return;
+        var turn=r.roomTurns.get(request.roomId());
+        if(turn==null||turn.delivered||!turn.room()||!turn.roomTurnId.equals(request.turnId())
+                ||!turn.context.godId().equals(request.speakerGodId().toString())
+                ||!turn.context.equals(request.speakerState().memoryContext())||!r.roomCurrent(turn))return;
+        turn.recoveryTopics=roots.stream().filter(root->root!=null&&r.roomRootAllowed(turn,root))
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+    }
+    private boolean roomCurrent(Turn turn) {
+        if(!turn.room())return false;
+        var player=server.getPlayerList().getPlayer(turn.context.playerId());
+        return player!=null&&ConversationRooms.INSTANCE.socialTurnCurrent(turn.context.interactionId(),turn.roomRevision,turn.number)
+                &&ConversationRooms.INSTANCE.memoryCurrent(player,turn.context)
+                &&AiConversationRuntimeService.INSTANCE.recordingAllowed(player,turn.context);
+    }
+    private boolean roomRootAllowed(Turn turn,UUID root) {
+        if(!turn.room()||turn.context.audience().size()>16)return false;
+        return turn.roomGods.stream().allMatch(god->CourierRumorService.heardOne(server,turn.context.playerId(),god,root,
+                turn.context.audience()).isPresent());
+    }
+    static boolean roomInputMatches(ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,RoomDialogueEvent event) {
+        return room!=null&&lease!=null&&event!=null&&event.recordingScope().recordingAllowed()
+                &&room.recordingScope()==event.recordingScope()&&room.roomId().equals(event.roomId())
+                &&room.revision()==event.revision()&&room.roomId().equals(lease.roomId())
+                &&room.revision()==lease.revision()&&event.turnId().filter(lease.turnId()::equals).isPresent()
+                &&event.turnSequence()==lease.sequence()&&"PLAYER".equals(event.role())
+                &&lease.playerId().toString().equals(event.speakerId())&&room.godIds().contains(lease.godId())
+                &&event.heardGodIds().contains(lease.godId());
+    }
+    static boolean roomSpeechMatches(ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,
+            List<RoomDialogueEvent> speeches,UUID player) {
+        if(room==null||lease==null||speeches==null||speeches.isEmpty()||speeches.size()>8||player==null
+                ||speeches.stream().map(RoomDialogueEvent::messageId).distinct().count()!=speeches.size())return false;
+        for(var speech:speeches)if(!room.roomId().equals(speech.roomId())||room.revision()!=speech.revision()
+                ||!speech.turnId().filter(lease.turnId()::equals).isPresent()||speech.turnSequence()!=lease.sequence()
+                ||!"NPC".equals(speech.role())||!lease.godId().equals(speech.speakerId())
+                ||!RoomTurnPolicy.fullyDispatched(speech,player))return false;
+        return true;
+    }
     /** Only authorized rumors actually selected for this turn, never an LLM-chosen target or global rumor search. */
     public static void recoveryTopics(ServerPlayer player,long number,Collection<UUID> roots) {
         var r=current(player.server);if(r==null)return;var t=r.turns.get(player.getUUID());
@@ -140,14 +263,19 @@ public final class SocialRuntime {
     public static void tick(ServerTickEvent.Post event) {
         var r=current(event.getServer());if(r==null||event.getServer().getTickCount()%20!=0)return;
         r.turns.entrySet().removeIf(e->{var p=r.server.getPlayerList().getPlayer(e.getKey());return p==null||!AiConversationRuntimeService.INSTANCE.recordingAllowed(p,e.getValue().context);});
+        r.roomTurns.entrySet().removeIf(e->!r.roomCurrent(e.getValue()));
         r.privateInteractions.removeIf(id->r.turns.values().stream().noneMatch(t->t.context.interactionId().equals(id))
                 &&r.server.getPlayerList().getPlayers().stream().noneMatch(p->AiConversationRuntimeService.INSTANCE.memoryContext(p).map(c->c.interactionId().equals(id)).orElse(false)));
-        r.attempts.keySet().removeIf(key->key.startsWith("recover/")&&!r.inFlight.containsKey(key)&&r.turns.values().stream()
-                .noneMatch(t->key.startsWith("recover/"+t.context.generation()+"/"+t.number+"/")));
+        r.attempts.keySet().removeIf(key->key.startsWith("recover/")&&!r.inFlight.containsKey(key)
+                &&java.util.stream.Stream.concat(r.turns.values().stream(),r.roomTurns.values().stream())
+                        .noneMatch(t->key.startsWith("recover/"+t.context.generation()+"/"+t.number+"/")));
         r.retryAt.keySet().retainAll(r.attempts.keySet());
         // Busy/preempted recovery is retried only while this exact delivered turn remains current.
         for(var entry:r.turns.entrySet())if(entry.getValue().delivered&&!entry.getValue().recoveryTopics.isEmpty()){
             var player=r.server.getPlayerList().getPlayer(entry.getKey());if(player!=null)r.recover(player,entry.getValue());
+        }
+        for(var turn:r.roomTurns.values())if(turn.delivered&&!turn.recoveryTopics.isEmpty()){
+            var player=r.server.getPlayerList().getPlayer(turn.context.playerId());if(player!=null)r.recover(player,turn);
         }
         for(var input:CourierRumorService.pendingCandidates(r.server,32)) {
             if(!r.testPublicationAllowed(input.rootId()))continue;
@@ -173,25 +301,29 @@ public final class SocialRuntime {
             var receipt=receipts.get(Math.floorMod(receiptCursor+i,receipts.size()));
             var source=data.access(server,l->l.evidence(receipt.rootId()));
             if(source==null||source.proof()==null)continue;
-            var active=turns.get(source.subject());
             var player=server.getPlayerList().getPlayer(source.subject());
+            var active=roomTurns.values().stream().filter(t->t.delivered&&t.context.playerId().equals(source.subject())
+                    &&receptionRelevant(t.context,true,t.recoveryTopics,source.subject(),receipt.godId(),receipt.rootId())
+                    &&roomCurrent(t)&&roomRootAllowed(t,receipt.rootId())).findFirst().orElse(null);
+            if(active==null)active=turns.get(source.subject());
+            final Turn selected=active;
             // Do not fan out one model judgment per god merely because a rumor was delivered.
             // Review only an actually selected rumor after that god's current reply has finished.
-            if(active==null||player==null||!AiConversationRuntimeService.INSTANCE.recordingAllowed(player,active.context)
-                    ||!receptionRelevant(active.context,active.delivered,active.recoveryTopics,
+            if(selected==null||player==null||!turnCurrent(player,selected)
+                    ||!receptionRelevant(selected.context,selected.delivered,selected.recoveryTopics,
                     source.subject(),receipt.godId(),receipt.rootId()))continue;
-            var heard=CourierRumorService.heardOne(server,source.subject(),receipt.godId(),receipt.rootId(),Set.of(source.subject())).orElse(null);
+            var audience=selected.room()?selected.context.audience():Set.of(source.subject());
+            var heard=CourierRumorService.heardOne(server,source.subject(),receipt.godId(),receipt.rootId(),audience).orElse(null);
             var policy=ReputationService.receptionPolicy(server,source.subject(),receipt.godId(),receipt.rootId());
-            if(heard==null||policy==null||ReputationService.assessment(server,source.subject(),receipt.godId(),receipt.rootId(),Set.of(source.subject()))!=null)continue;
+            if(heard==null||policy==null||ReputationService.assessment(server,source.subject(),receipt.godId(),receipt.rootId(),audience)!=null)continue;
             int affinity;try{affinity=ReputationService.affinity(server,source.subject(),receipt.godId());}catch(RuntimeException unavailable){continue;}
             if(affinity<policy.minimumBaseAffinity()||affinity>policy.maximumBaseAffinity())continue;
             var request=new SocialReview.Request(UUID.randomUUID(),SocialReview.Kind.RECEPTION,receipt.godId(),affinity,heard.text(),List.of(),
                     "수신 태도: "+heard.reception()+". 전언은 세계의 확정 사실이 아니다.");
             submit("receive/"+receipt.rootId()+"/"+receipt.godId(),request,answer->{
-                if(turns.get(source.subject())!=active
-                        ||!AiConversationRuntimeService.INSTANCE.recordingAllowed(player,active.context))return;
+                if(!turnCurrent(player,selected)||selected.room()&&!roomRootAllowed(selected,receipt.rootId()))return;
                 if(generating(source.subject(),receipt.godId()))throw new SocialReview.Busy();
-                ReputationService.receiveReviewed(server,source.subject(),receipt.godId(),heard,policy,affinity,request,answer);
+                ReputationService.receiveReviewed(server,source.subject(),receipt.godId(),audience,heard,policy,affinity,request,answer);
             });
         }
         receiptCursor=Math.floorMod(receiptCursor+count,receipts.size());
@@ -200,7 +332,16 @@ public final class SocialRuntime {
             UUID subject,String god,UUID root) {
         return delivered&&context.playerId().equals(subject)&&context.godId().equals(god)&&selected.contains(root);
     }
-    private boolean generating(UUID subject,String god){var turn=turns.get(subject);return turn!=null&&!turn.delivered&&turn.context.godId().equals(god);}
+    private boolean generating(UUID subject,String god){
+        var turn=turns.get(subject);
+        return turn!=null&&!turn.delivered&&turn.context.godId().equals(god)
+                ||roomTurns.values().stream().anyMatch(t->!t.delivered&&t.context.playerId().equals(subject)
+                        &&t.context.godId().equals(god)&&roomCurrent(t));
+    }
+    private boolean turnCurrent(ServerPlayer player,Turn turn) {
+        return turn.room()?roomTurns.get(turn.context.interactionId())==turn&&roomCurrent(turn)
+                :turns.get(player.getUUID())==turn&&AiConversationRuntimeService.INSTANCE.recordingAllowed(player,turn.context);
+    }
     private boolean testPublicationAllowed(UUID root) {
         var context=testPublications.get(root);
         if(context==null)return true;
@@ -208,11 +349,12 @@ public final class SocialRuntime {
         return player!=null&&AiConversationRuntimeService.INSTANCE.recordingAllowed(player,context);
     }
     private void recover(ServerPlayer player,Turn turn) {
-        if(!AiConversationRuntimeService.INSTANCE.recordingAllowed(player,turn.context))return;
+        if(!turnCurrent(player,turn))return;
         var heard=RumorSavedData.get(server).heard(server,player.getUUID(),turn.context.godId(),turn.context.audience());
         int reviewed=0;
         for(var h:heard) {
-            if(!turn.recoveryTopics.contains(h.rootId())||turn.recoveryDone.contains(h.rootId()))continue;
+            if(!turn.recoveryTopics.contains(h.rootId())||turn.recoveryDone.contains(h.rootId())
+                    ||turn.room()&&!roomRootAllowed(turn,h.rootId()))continue;
             var entry=ReputationService.assessment(server,player.getUUID(),turn.context.godId(),h.rootId(),turn.context.audience());
             if(entry==null||entry.terminal()||entry.decision().outcome()==ReputationLedger.Outcome.IGNORED)continue;
             if(reviewed++>=2)break;
@@ -221,8 +363,8 @@ public final class SocialRuntime {
                     settings.recoveryGuidance().getOrDefault(entry.decision().policyId(),""));
             submit("recover/"+turn.context.generation()+"/"+turn.number+"/"+h.rootId(),request,answer->{
                 turn.recoveryDone.add(h.rootId());
-                if(turns.get(player.getUUID())!=turn||!turn.delivered||!SocialReview.valid(request,answer)||answer.verdict()!=SocialReview.Verdict.RECOVER
-                        ||!AiConversationRuntimeService.INSTANCE.recordingAllowed(player,turn.context)
+                if(!turnCurrent(player,turn)||!turn.delivered||!SocialReview.valid(request,answer)||answer.verdict()!=SocialReview.Verdict.RECOVER
+                        ||turn.room()&&!roomRootAllowed(turn,h.rootId())
                         ||ReputationService.affinity(server,player.getUUID(),turn.context.godId())!=affinity)return;
                 String explanation=answer.quote();
                 var proposal=new DialogueRecovery.Proposal(request.id(),turn.context,turn.number,h.rootId(),entry.version(),explanation);

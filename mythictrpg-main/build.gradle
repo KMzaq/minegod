@@ -28,6 +28,7 @@ sourceSets.main.resources {
 }
 
 repositories {
+    mavenCentral()
     // Add here additional repositories if required by some of the dependencies below.
 }
 
@@ -70,13 +71,13 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             // The tests are ours, while their minimal structure template is a built-in Minecraft resource.
-            systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft"
+            systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft,mythictrpg_story_evidence"
         }
 
         memoryGameTestServer {
             type = 'gameTestServer'
             gameDirectory = project.file('build/memory-gametest-runtime')
-            systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft"
+            systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft,mythictrpg_story_evidence"
         }
 
         questParticipationGameTestServer {
@@ -96,7 +97,8 @@ neoForge {
             gameDirectory = project.file(providers.gradleProperty('roomTestDirectory')
                     .getOrElse('build/room-integration-gametest-runtime'))
             systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('roomTestNamespaces')
-                    .getOrElse('mythictrpg_room_integration,minecraft')
+                    .getOrElse('mythictrpg_room_integration,minecraft,mythictrpg_story_evidence')
+            systemProperty 'mythai.fixture.nativeRetrievalShadow', providers.gradleProperty('roomNativeRetrievalShadow').orElse('false').get()
         }
 
         data {
@@ -144,6 +146,17 @@ configurations {
 }
 
 dependencies {
+    // Recording v2 has one game-owned JDBC/native runtime, never duplicated into the AI JAR.
+    // NeoForge 1.21.1 dev runs do not expose ordinary Java implementation libraries to mods.
+    // Production still uses the jar-in-jar entry below; this is only the dev launch classpath.
+    additionalRuntimeClasspath('org.xerial:sqlite-jdbc:3.53.4.0') { transitive = false }
+    jarJar(implementation('org.xerial:sqlite-jdbc:3.53.4.0') {
+        version {
+            strictly '[3.53.4.0]'
+            prefer '3.53.4.0'
+        }
+        transitive = false
+    })
     // FTB Quests is the optional UI/progress implementation behind MythicTRPG's
     // authoritative quest boundary. Keep these jars external: they must not be
     // repackaged into mythictrpg.jar.
@@ -159,8 +172,10 @@ dependencies {
             '../external-mods/ftb-quests-neoforge-2101.1.34.jar')
     // Opt-in combined-module GameTest. Never changes the installed test server or uses the legacy combined JAR.
     if (providers.gradleProperty('roomAiIntegration').getOrElse('false') == 'true') {
-        localRuntime files('../mythai-ai-response/build/libs/mythai_ai_response-0.1.17.jar',
-                '../mythai-ai-content-registry/build/libs/mythaiaicontent-0.1.1.jar')
+        localRuntime files(providers.gradleProperty('roomAiResponseJar')
+                        .orElse('../mythai-ai-response/build/libs/mythai_ai_response-0.1.29.jar').get(),
+                providers.gradleProperty('roomAiContentJar')
+                        .orElse('../mythai-ai-content-registry/build/libs/mythaiaicontent-0.1.3.jar').get())
     }
 
     // Example optional mod dependency with JEI
@@ -207,10 +222,33 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 // Include the output of "generateModMetadata" as an input directory for the build
 // this works with both building through Gradle and the IDE.
 sourceSets.main.resources.srcDir generateModMetadata
+// Dedicated namespaces keep focused regressions separate from older game fixtures.
+tasks.named('processResources', ProcessResources) {
+    dependsOn 'createMinecraftArtifacts'
+    ['mythictrpg_story_choice', 'mythictrpg_component_rewards', 'mythictrpg_recording', 'mythictrpg_recording_rumor',
+     'mythictrpg_god_avatar', 'mythictrpg_npc_activity_body', 'mythictrpg_npc_activity', 'mythictrpg_npc_activity_memory', 'mythictrpg_npc_work', 'mythictrpg_npc_activity_schema', 'mythictrpg_raid', 'mythictrpg_raid_offer', 'mythictrpg_power',
+     'mythictrpg_generated_rewards', 'mythictrpg_blessings', 'mythictrpg_quest_contact', 'mythictrpg_quest_participation', 'mythictrpg_recording_channels', 'mythictrpg_recording_read', 'mythictrpg_native_evidence',
+     'mythai_native_content_evidence', 'mythictrpg_native_interpretation', 'mythictrpg_story_evidence', 'mythictrpg_home_visit',
+     'mythictrpg_action_confirmation', 'mythictrpg_quest_access', 'mythictrpg_quest_roster', 'mythictrpg_raid_ui'].each { testNamespace ->
+        from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+            include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+            eachFile { path = "data/${testNamespace}/structure/empty.nbt" }
+            includeEmptyDirs = false
+        }
+    }
+}
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
 neoForge.ideSyncTask generateModMetadata
 
 // Example configuration to allow publishing using the maven-publish plugin
+['npcActivityMemoryTest':'NpcActivityMemoryTest', 'activityRoomExperienceTest':'ActivityRoomExperienceTest'].each { taskName,testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythictrpg.godavatar.activity.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
@@ -367,11 +405,25 @@ tasks.register('godRelationRoomContextTest', JavaExec) {
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
     mainClass = 'com.sande.mythictrpg.relation.GodRelationRoomContextTest'
 }
+tasks.register('roomActionOutcomeContractTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.room.RoomActionOutcomeContractTest'
+}
+tasks.named('check') { dependsOn 'roomActionOutcomeContractTest' }
+
 tasks.register('roomTurnSequenceTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
     mainClass = 'com.sande.mythictrpg.ai.room.RoomTurnSequenceTest'
 }
+tasks.register('roomSocialContextTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.social.RoomSocialContextTest'
+    args layout.buildDirectory.dir('room-social-context-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'roomSocialContextTest' }
 tasks.named('check') { dependsOn 'godRelationRoomContextTest', 'roomTurnSequenceTest' }
 tasks.register('storyHookTokenRoomTest', JavaExec) {
     dependsOn testClasses
@@ -379,6 +431,122 @@ tasks.register('storyHookTokenRoomTest', JavaExec) {
     mainClass = 'com.sande.mythictrpg.story.presentation.StoryHookTokenRoomTest'
     args projectDir.absolutePath, layout.buildDirectory.dir('story-hook-fixture').get().asFile.absolutePath
 }
+tasks.register('storyChoiceContractTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.story.runtime.StoryChoiceContractTest'
+}
+tasks.named('check') { dependsOn 'storyChoiceContractTest' }
+
+tasks.register('storyEvidenceProofTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.story.presentation.StoryEvidenceProofTest'
+}
+tasks.named('check') { dependsOn 'storyEvidenceProofTest' }
+
+tasks.register('recordingStoreTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingStoreTest'
+    args layout.buildDirectory.dir('recording-m1-test').get().asFile.absolutePath
+}
+tasks.register('managedStoreQuotaTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.ManagedStoreQuotaTest'
+}
+tasks.named('check') { dependsOn 'recordingStoreTest', 'managedStoreQuotaTest' }
+tasks.register('roomRecordingCaptureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RoomRecordingCaptureTest'
+    args layout.buildDirectory.dir('room-recording-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'roomRecordingCaptureTest' }
+tasks.register('recordedRoomReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedRoomReadTest'
+    args layout.buildDirectory.dir('recorded-room-read-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedRoomReadTest' }
+tasks.register('watchRecordingCaptureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.WatchRecordingCaptureTest'
+    args layout.buildDirectory.dir('watch-recording-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'watchRecordingCaptureTest' }
+tasks.register('recordingKnowledgeStoreTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingKnowledgeStoreTest'
+    args layout.buildDirectory.dir('recording-knowledge-test').get().asFile.absolutePath
+}
+tasks.register('rumorRecordingCaptureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RumorRecordingCaptureTest'
+    args layout.buildDirectory.dir('rumor-recording-capture-test').get().asFile.absolutePath
+}
+tasks.register('rumorRecordingStateTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.rumor.RumorRecordingStateTest'
+}
+tasks.named('check') { dependsOn 'recordingKnowledgeStoreTest', 'rumorRecordingCaptureTest', 'rumorRecordingStateTest' }
+
+tasks.register('recordingProjectionSettingsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingProjectionSettingsTest'
+    def artifacts = layout.buildDirectory.dir('recording-projection-settings-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingProjectionSettingsTest' }
+
+tasks.register('recordingProjectionStoreTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingProjectionStoreTest'
+    def artifacts = layout.buildDirectory.dir('recording-projection-store-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingProjectionStoreTest' }
+
+tasks.register('recordingLexicalIndexTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingLexicalIndexTest'
+    def artifacts = layout.buildDirectory.dir('recording-lexical-index-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingLexicalIndexTest' }
+
+tasks.register('channelRecordingCaptureTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.channel.ChannelRecordingCaptureTest'
+    args layout.buildDirectory.dir('channel-recording-test').get().asFile.absolutePath
+}
+
+tasks.named('check') { dependsOn 'channelRecordingCaptureTest' }
+tasks.register('combatPowerPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.power.CombatPowerPolicyTest'
+}
+tasks.named('check') { dependsOn 'combatPowerPolicyTest' }
+tasks.register('blessingPowerPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.power.BlessingPowerPolicyTest'
+}
+tasks.named('check') { dependsOn 'blessingPowerPolicyTest' }
 tasks.register('storyExternalEffectReceiptsTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
@@ -404,4 +572,177 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+
+tasks.register('recordingProjectionAuthorityTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingProjectionAuthorityTest'
+    args layout.buildDirectory.dir('recording-projection-authority-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingProjectionAuthorityTest' }
+
+tasks.register('recordedInterpretationReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedInterpretationReadTest'
+    args layout.buildDirectory.dir('recorded-interpretation-read-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedInterpretationReadTest' }
+
+tasks.register('recordingEmbeddingSettingsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingEmbeddingSettingsTest'
+    def artifacts = layout.buildDirectory.dir('recording-embedding-settings-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.register('recordingEmbeddingStoreTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.EmbeddingStoreTest'
+    def artifacts = layout.buildDirectory.dir('recording-embedding-store-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.register('recordedSemanticReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedSemanticReadTest'
+    def artifacts = layout.buildDirectory.dir('recorded-semantic-read-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingEmbeddingSettingsTest', 'recordingEmbeddingStoreTest', 'recordedSemanticReadTest' }
+
+tasks.register('recordedObservationReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedObservationReadTest'
+    def artifacts = layout.buildDirectory.dir('recorded-observation-read-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedObservationReadTest' }
+
+tasks.register('recordedSemanticInterpretationReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedSemanticInterpretationReadTest'
+    def artifacts = layout.buildDirectory.dir('recorded-semantic-interpretation-read-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedSemanticInterpretationReadTest' }
+
+tasks.register('recordedActorSelectionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedActorSelectionTest'
+    def artifacts = layout.buildDirectory.dir('recorded-actor-selection-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedActorSelectionTest' }
+
+tasks.register('nativeRumorReadAccessTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.rumor.NativeRumorReadAccessTest'
+}
+tasks.named('check') { dependsOn 'nativeRumorReadAccessTest' }
+
+tasks.register('recordedRumorReadTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedRumorReadTest'
+    def artifacts = layout.buildDirectory.dir('recorded-rumor-read-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedRumorReadTest' }
+
+tasks.register('recordingRetrievalSettingsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordingRetrievalSettingsTest'
+    args layout.buildDirectory.dir('recording-retrieval-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordingRetrievalSettingsTest' }
+
+tasks.register('nativeMemoryEvidenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.api.NativeMemoryEvidenceTest'
+}
+tasks.register('nativeRoomEvidenceCacheTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.NativeRoomEvidenceCacheTest'
+}
+tasks.named('check') { dependsOn 'nativeMemoryEvidenceTest', 'nativeRoomEvidenceCacheTest' }
+tasks.register('nativeInterpretationEvidenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.api.NativeInterpretationEvidenceTest'
+}
+tasks.named('check') { dependsOn 'nativeInterpretationEvidenceTest' }
+['nativeInterpretationSessionTest':'NativeInterpretationSessionTest',
+ 'recordedNativeInterpretationStoreTest':'RecordedNativeInterpretationStoreTest'].each { taskName,testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythictrpg.recording.server.${testClass}"
+        args layout.buildDirectory.dir(taskName).get().asFile.absolutePath
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+tasks.register('recordedNativeEvidenceStoreTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.RecordedNativeEvidenceStoreTest'
+    args layout.buildDirectory.dir('recorded-native-evidence-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedNativeEvidenceStoreTest' }
+
+// Reproducible isolated authority fixture. Missing OFF-by-default config otherwise waits until GameTest timeout.
+if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictrpg_recording_read'
+        || providers.gradleProperty('roomNativeRetrievalShadow').orElse('false').get() == 'true'
+        || providers.gradleProperty('roomNativeRetrievalMode').isPresent()) {
+    def fixtureRoot = file(providers.gradleProperty('roomTestDirectory').orElse('build/room-integration-gametest-runtime').get())
+    def buildRootPath = layout.buildDirectory.get().asFile.canonicalFile.toPath()
+    def fixtureRetrievalMode = providers.gradleProperty('roomNativeRetrievalMode').orElse(
+            providers.gradleProperty('roomNativeRetrievalShadow').orElse('false').map { it == 'true' ? 'SHADOW' : '' }).get()
+    tasks.register('prepareRecordedAuthorityFixture') {
+        doLast {
+            if (!fixtureRoot.canonicalFile.toPath().startsWith(buildRootPath))
+                throw new GradleException('Recording authority GameTest must use a development build/ directory')
+            def settings = [
+                'ai-memory-foundation.json': [schemaVersion: 1, mode: 'PERSONAL'],
+                'recording-v2.json': [schemaVersion: 2, archiveMode: 'SHADOW', worldRecordingLimitBytes: 268435456,
+                    maintenanceHeadroomBytes: 2097152, warningRatio: 0.90, deferBackgroundRatio: 0.95,
+                    overflowPolicy: 'STOP_NEW_RECORDS', automaticRawDeletion: false, importLegacyTestData: false]
+            ]
+            if (fixtureRetrievalMode) {
+                if (!(fixtureRetrievalMode in ['LEGACY', 'SHADOW', 'NEW']))
+                    throw new GradleException('Unsupported development retrieval fixture mode')
+                settings['recording-retrieval.json'] = [schemaVersion: 1, retrievalMode: fixtureRetrievalMode]
+                // Two-player/six-response fixture shares conservative in-flight reservations with legacy writers.
+                // This is a byte ceiling, not a preallocated file; small-quota failure has separate focused tests.
+                settings['recording-v2.json'].worldRecordingLimitBytes = 2147483648L
+                settings['recording-v2.json'].maintenanceHeadroomBytes = 16777216L
+            }
+            def directory = new File(fixtureRoot, 'config/mythictrpg')
+            directory.mkdirs()
+            settings.each { name, expected ->
+                def target = new File(directory, name)
+                if (target.exists()) {
+                    if (new groovy.json.JsonSlurper().parse(target) != expected)
+                        throw new GradleException("Preserving differing fixture config: ${target}")
+                } else target.setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(expected)), 'UTF-8')
+            }
+        }
+    }
+    tasks.named('runRoomIntegrationGameTestServer') { dependsOn 'prepareRecordedAuthorityFixture' }
 }

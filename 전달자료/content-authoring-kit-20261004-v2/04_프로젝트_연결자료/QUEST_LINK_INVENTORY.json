@@ -1,0 +1,173 @@
+{
+  "schema": "authoring-reference-not-runtime-input",
+  "generatedAt": "2026-10-04",
+  "branch": "HanesTest",
+  "lists": [
+    {
+      "questListId": "mythictrpg:quest_list_olympus",
+      "progressTrackId": "mythictrpg:progress_olympus",
+      "source": "mythai-ai-content-registry/src/main/resources/data/mythictrpg/mythai_ai/quest_lists/quest_list_olympus.json",
+      "referencingGodIds": [
+        "mythictrpg:demeter"
+      ],
+      "quests": []
+    },
+    {
+      "questListId": "mythictrpg:quest_list_fortuna",
+      "progressTrackId": "mythictrpg:progress_fortuna",
+      "source": "mythai-ai-content-registry/src/main/resources/data/mythictrpg/mythai_ai/quest_lists/quest_list_fortuna.json",
+      "referencingGodIds": [
+        "mythictrpg:fortuna"
+      ],
+      "quests": [
+        {
+          "questId": "mythictrpg:fortuna_deep_sea_heart",
+          "title": "포르투나의 시험: 깊은 바다의 심장",
+          "objectives": [
+            {
+              "type": "collect_item",
+              "description": "바다의 심장 2개를 구한다.",
+              "parameters": {
+                "itemId": "minecraft:heart_of_the_sea",
+                "count": 2
+              }
+            }
+          ],
+          "rewards": [
+            {
+              "type": "item",
+              "description": "불사의 토템 1개를 받는다.",
+              "parameters": {
+                "itemId": "minecraft:totem_of_undying",
+                "count": 1
+              }
+            }
+          ],
+          "progressOnClear": 10,
+          "binding": {
+            "schemaVersion": 1,
+            "questId": "mythictrpg:fortuna_deep_sea_heart",
+            "ftbQuestId": "21F48990D282287B",
+            "assignmentQuestId": "5DD74E73298791E8",
+            "completionMode": "PLAYER_RETURN_TO_NPC",
+            "completionNpcIds": [
+              "mythictrpg:fortuna"
+            ],
+            "progressTrackId": "mythictrpg:progress_fortuna",
+            "progressOnClear": 10,
+            "narrativeRole": "MAIN_ENTRY",
+            "minimumAffinity": -250,
+            "reminder": {
+              "unrelatedActivityTicks": 12000,
+              "cooldownTicks": 12000,
+              "signalId": "mythictrpg:fortuna_deep_sea_heart_reminder",
+              "relevantActions": [
+                {
+                  "observation": "mythictrpg:item_first_obtained",
+                  "subject": "minecraft:heart_of_the_sea"
+                }
+              ]
+            }
+          },
+          "bindingSource": "mythictrpg-main/src/main/resources/data/mythictrpg/mythictrpg/ftb_quests/fortuna_deep_sea_heart.json"
+        }
+      ]
+    },
+    {
+      "questListId": "mythictrpg:quest_list_demeter",
+      "progressTrackId": "mythictrpg:progress_demeter",
+      "source": "mythai-ai-content-registry/src/main/resources/data/mythictrpg/mythai_ai/quest_lists/quest_list_demeter.json",
+      "referencingGodIds": [
+        "mythictrpg:demeter"
+      ],
+      "quests": []
+    }
+  ],
+  "generatedQuestTemplates": [
+    {
+      "templateId": "mythictrpg:fortuna_zombie_cull",
+      "source": "mythictrpg-main/src/main/resources/data/mythictrpg/mythictrpg/generated_quest_templates/fortuna_zombie_cull.json",
+      "definition": {
+        "schemaVersion": 1,
+        "godId": "mythictrpg:fortuna",
+        "objective": {
+          "observation": "mythictrpg:entity_killed",
+          "subject": "minecraft:zombie",
+          "count": 8
+        },
+        "worldProgress": {
+          "trackId": "mythictrpg:progress_fortuna",
+          "minimum": 0,
+          "maximum": 35
+        },
+        "reward": {
+          "tableId": "mythictrpg:fortuna",
+          "baseTier": 2,
+          "maximumTier": 3,
+          "catchUpMaximumBonus": 1
+        },
+        "cooldownTicks": 24000,
+        "expiresAfterTicks": 72000
+      }
+    },
+    {
+      "templateId": "mythictrpg:fortuna_spider_cull",
+      "source": "mythictrpg-main/src/main/resources/data/mythictrpg/mythictrpg/generated_quest_templates/fortuna_spider_cull.json",
+      "definition": {
+        "schemaVersion": 1,
+        "godId": "mythictrpg:fortuna",
+        "objective": {
+          "observation": "mythictrpg:entity_killed",
+          "subject": "minecraft:spider",
+          "count": 10
+        },
+        "worldProgress": {
+          "trackId": "mythictrpg:progress_fortuna",
+          "minimum": 20,
+          "maximum": 65
+        },
+        "reward": {
+          "tableId": "mythictrpg:fortuna",
+          "baseTier": 3,
+          "maximumTier": 4,
+          "catchUpMaximumBonus": 1
+        },
+        "cooldownTicks": 24000,
+        "expiresAfterTicks": 72000
+      }
+    },
+    {
+      "templateId": "mythictrpg:fortuna_crop_harvest",
+      "source": "mythictrpg-main/src/main/resources/data/mythictrpg/mythictrpg/generated_quest_templates/fortuna_crop_harvest.json",
+      "definition": {
+        "schemaVersion": 1,
+        "godId": "mythictrpg:fortuna",
+        "objective": {
+          "observation": "mythictrpg:mature_crop_harvested",
+          "subject": "minecraft:wheat",
+          "count": 16
+        },
+        "worldProgress": {
+          "trackId": "mythictrpg:progress_fortuna",
+          "minimum": 0,
+          "maximum": 50
+        },
+        "reward": {
+          "tableId": "mythictrpg:fortuna",
+          "baseTier": 1,
+          "maximumTier": 2,
+          "catchUpMaximumBonus": 1
+        },
+        "cooldownTicks": 24000,
+        "expiresAfterTicks": 72000
+      }
+    }
+  ],
+  "knownMismatch": {
+    "questId": "mythictrpg:fortuna_deep_sea_heart",
+    "developmentAiObjectiveCount": 2,
+    "developmentFtbObjectiveCount": 2,
+    "installedServerFtbObjectiveCount": 1,
+    "resolution": "Reference only; no content or server files changed"
+  }
+}

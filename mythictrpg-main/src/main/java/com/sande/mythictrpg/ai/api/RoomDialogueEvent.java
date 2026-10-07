@@ -12,7 +12,16 @@ public record RoomDialogueEvent(UUID messageId, UUID roomId, long revision, Opti
         RoomType roomType, RecordingScope recordingScope, String role, String speakerId, String text,
         Set<String> godIds, Map<UUID, String> participantNames, Map<UUID, Delivery> deliveries, long occurredAtUtc,
         Set<String> heardGodIds, UUID worldId, Set<UUID> fullTextReceiverIds,
-        List<RoomEvidenceReference> evidenceRefs, Set<UUID> sourceMessageIds) {
+        List<RoomEvidenceReference> evidenceRefs, Set<UUID> sourceMessageIds, long turnSequence) {
+    /** Binary/source compatibility for existing producers; zero means ordering was not supplied. */
+    public RoomDialogueEvent(UUID messageId, UUID roomId, long revision, Optional<UUID> turnId,
+            RoomType roomType, RecordingScope recordingScope, String role, String speakerId, String text,
+            Set<String> godIds, Map<UUID, String> participantNames, Map<UUID, Delivery> deliveries, long occurredAtUtc,
+            Set<String> heardGodIds, UUID worldId, Set<UUID> fullTextReceiverIds,
+            List<RoomEvidenceReference> evidenceRefs, Set<UUID> sourceMessageIds) {
+        this(messageId, roomId, revision, turnId, roomType, recordingScope, role, speakerId, text, godIds, participantNames,
+                deliveries, occurredAtUtc, heardGodIds, worldId, fullTextReceiverIds, evidenceRefs, sourceMessageIds, 0);
+    }
     public RoomDialogueEvent(UUID messageId, UUID roomId, long revision, Optional<UUID> turnId,
             RoomType roomType, RecordingScope recordingScope, String role, String speakerId, String text,
             Set<String> godIds, Map<UUID,String> participantNames, Map<UUID,Delivery> deliveries, long occurredAtUtc,
@@ -36,7 +45,8 @@ public record RoomDialogueEvent(UUID messageId, UUID roomId, long revision, Opti
         heardGodIds = Set.copyOf(heardGodIds);
         fullTextReceiverIds = Set.copyOf(fullTextReceiverIds); evidenceRefs = List.copyOf(evidenceRefs);
         sourceMessageIds = Set.copyOf(sourceMessageIds);
-        if (revision < 0 || occurredAtUtc < 0 || text.isBlank() || participantNames.size() > 64
+        if (revision < 0 || occurredAtUtc < 0 || turnSequence < 0 || turnId.isEmpty() && turnSequence != 0
+                || text.isBlank() || participantNames.size() > 64
                 || godIds.isEmpty() || godIds.size() > 16 || !godIds.containsAll(heardGodIds)
                 || !Set.of("PLAYER", "NPC").contains(role) || text.length() > 131072
                 || evidenceRefs.size() > 64 || sourceMessageIds.size() > 256 || sourceMessageIds.contains(messageId)
@@ -47,40 +57,70 @@ public record RoomDialogueEvent(UUID messageId, UUID roomId, long revision, Opti
                 || roomType == RoomType.PRIVATE && !participantNames.keySet().containsAll(deliveries.keySet()))
             throw new IllegalArgumentException("Invalid room dialogue speaker/audience");
     }
-    public record Delivery(String playerName, boolean chatDispatched, int hudPagesDispatched) {
+    /** Exact server-side presentation projection. Parts are the original ordered plan, not just successful counts. */
+    public record DispatchView(String plainText, List<String> parts, Set<Integer> dispatchedParts,
+            Map<Integer, UUID> transportMessageIds) {
+        public DispatchView {
+            Objects.requireNonNull(plainText); parts = List.copyOf(parts); dispatchedParts = Set.copyOf(dispatchedParts);
+            transportMessageIds = Map.copyOf(transportMessageIds);
+            int partCount = parts.size();
+            if (parts.isEmpty() || parts.size() > 4096 || !String.join("", parts).equals(plainText)
+                    || dispatchedParts.isEmpty() || dispatchedParts.stream().anyMatch(index -> index < 0 || index >= partCount)
+                    || !dispatchedParts.containsAll(transportMessageIds.keySet()))
+                throw new IllegalArgumentException("Invalid exact dispatch view");
+        }
+        public boolean complete() { return dispatchedParts.size() == parts.size(); }
+    }
+    public record Delivery(String playerName, boolean chatDispatched, int hudPagesDispatched,
+            Optional<DispatchView> chatView, Optional<DispatchView> hudView) {
+        /** Legacy compatibility: counts remain usable by old consumers, never fabricated into exact archive views. */
+        public Delivery(String playerName, boolean chatDispatched, int hudPagesDispatched) {
+            this(playerName, chatDispatched, hudPagesDispatched, Optional.empty(), Optional.empty());
+        }
         public Delivery {
-            Objects.requireNonNull(playerName);
+            Objects.requireNonNull(playerName); Objects.requireNonNull(chatView); Objects.requireNonNull(hudView);
             if (hudPagesDispatched < 0 || !chatDispatched && hudPagesDispatched == 0)
                 throw new IllegalArgumentException("No successful dispatch");
+            if (chatView.isPresent() && (!chatDispatched || !chatView.get().complete() || chatView.get().parts().size() != 1)
+                    || hudView.isPresent() && hudView.get().dispatchedParts().size() != hudPagesDispatched)
+                throw new IllegalArgumentException("Dispatch count differs from exact view");
         }
     }
     public RoomDialogueEvent withDeliveries(Map<UUID, Delivery> actual) {
         return new RoomDialogueEvent(messageId, roomId, revision, turnId, roomType, recordingScope, role,
                 speakerId, text, godIds, participantNames, actual, occurredAtUtc, heardGodIds, worldId,
-                completeRecipients(text, actual), evidenceRefs, sourceMessageIds);
+                completeRecipients(text, actual), evidenceRefs, sourceMessageIds, turnSequence);
     }
 
     /** Explicit virtual-NPC hearing, issued by the live game room after publication. */
     public RoomDialogueEvent withHeardGods(Set<String> heard) {
         return new RoomDialogueEvent(messageId, roomId, revision, turnId, roomType, recordingScope, role,
                 speakerId, text, godIds, participantNames, deliveries, occurredAtUtc, heard, worldId,
-                fullTextReceiverIds, evidenceRefs, sourceMessageIds);
+                fullTextReceiverIds, evidenceRefs, sourceMessageIds, turnSequence);
     }
     public RoomDialogueEvent withWorld(UUID world) {
         return new RoomDialogueEvent(messageId, roomId, revision, turnId, roomType, recordingScope, role,
                 speakerId, text, godIds, participantNames, deliveries, occurredAtUtc, heardGodIds, world,
-                fullTextReceiverIds, evidenceRefs, sourceMessageIds);
+                fullTextReceiverIds, evidenceRefs, sourceMessageIds, turnSequence);
     }
     public RoomDialogueEvent withEvidence(List<RoomEvidenceReference> references, Set<UUID> sources) {
         return new RoomDialogueEvent(messageId, roomId, revision, turnId, roomType, recordingScope, role,
                 speakerId, text, godIds, participantNames, deliveries, occurredAtUtc, heardGodIds, worldId,
-                fullTextReceiverIds, references, sources);
+                fullTextReceiverIds, references, sources, turnSequence);
+    }
+    public RoomDialogueEvent withTurnSequence(long sequence) {
+        return new RoomDialogueEvent(messageId, roomId, revision, turnId, roomType, recordingScope, role,
+                speakerId, text, godIds, participantNames, deliveries, occurredAtUtc, heardGodIds, worldId,
+                fullTextReceiverIds, evidenceRefs, sourceMessageIds, sequence);
     }
     private static Set<UUID> completeRecipients(String text, Map<UUID, Delivery> deliveries) {
         int total = com.sande.mythictrpg.ai.room.RoomHudText.pages(text).size();
         var complete = new LinkedHashSet<UUID>();
         deliveries.forEach((id, receipt) -> {
-            if (receipt.chatDispatched() || receipt.hudPagesDispatched() == total) complete.add(id);
+            boolean chatComplete = receipt.chatDispatched() && (receipt.chatView().isEmpty() || receipt.chatView().get().plainText().endsWith(text));
+            boolean hudComplete = receipt.hudView().map(view -> view.complete() && view.plainText().equals(text))
+                    .orElse(receipt.hudPagesDispatched() == total);
+            if (chatComplete || hudComplete) complete.add(id);
         });
         return Set.copyOf(complete);
     }

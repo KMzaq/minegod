@@ -295,7 +295,13 @@ public final class StoryDefinitions {
     }
 
     public record OutcomeDefinition(ResourceLocation id, int weight,
-            Optional<ConditionNode> additionalConditions, List<Effect> effects) {
+            Optional<ConditionNode> additionalConditions, List<Effect> effects,
+            Optional<String> displayName, Optional<String> description) {
+        public OutcomeDefinition(ResourceLocation id, int weight,
+                Optional<ConditionNode> additionalConditions, List<Effect> effects) {
+            this(id, weight, additionalConditions, effects, Optional.empty(), Optional.empty());
+        }
+
         public OutcomeDefinition {
             Objects.requireNonNull(id, "id");
             if (weight < 1 || weight > 1_000_000) {
@@ -303,6 +309,10 @@ public final class StoryDefinitions {
             }
             additionalConditions = copy(additionalConditions, "additionalConditions");
             effects = List.copyOf(Objects.requireNonNull(effects, "effects"));
+            displayName = copy(displayName, "displayName")
+                    .map(value -> bounded(value, "displayName", 120));
+            description = copy(description, "description")
+                    .map(value -> bounded(value, "description", 600));
             if (effects.isEmpty() || effects.size() > 64) {
                 throw new IllegalArgumentException("Story outcome requires 1..64 effects");
             }
@@ -313,9 +323,18 @@ public final class StoryDefinitions {
         }
     }
 
-    public record ChoicePolicy(long timeoutTicks, Optional<ResourceLocation> defaultOutcomeId) {
+    public record ChoicePolicy(long timeoutTicks, Optional<ResourceLocation> defaultOutcomeId,
+            Optional<String> displayName, Optional<String> description) {
+        public ChoicePolicy(long timeoutTicks, Optional<ResourceLocation> defaultOutcomeId) {
+            this(timeoutTicks, defaultOutcomeId, Optional.empty(), Optional.empty());
+        }
+
         public ChoicePolicy {
             defaultOutcomeId = copy(defaultOutcomeId, "defaultOutcomeId");
+            displayName = copy(displayName, "displayName")
+                    .map(value -> bounded(value, "choice displayName", 120));
+            description = copy(description, "description")
+                    .map(value -> bounded(value, "choice description", 600));
             if (timeoutTicks < -1 || timeoutTicks == 0) {
                 throw new IllegalArgumentException("Choice timeout must be -1 or positive");
             }

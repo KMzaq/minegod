@@ -25,6 +25,8 @@ public final class RewardClaimService {
         if (!validation.allowed()) {
             return Result.reject(validation.reason());
         }
+        String invalidItems = invalidItemComponents(player.registryAccess(), reward);
+        if (invalidItems != null) return Result.reject(invalidItems);
         RewardClaimState state = RewardClaimState.get(player.server);
         if (!state.isWritable()) {
             return Result.reject(state.rejectionReason().orElse("Reward claim state is unavailable"));
@@ -42,6 +44,8 @@ public final class RewardClaimService {
         if (!validation.allowed()) {
             return Result.reject(validation.reason());
         }
+        String invalidItems = invalidItemComponents(player.registryAccess(), reward);
+        if (invalidItems != null) return Result.reject(invalidItems);
 
         RewardClaimState state = RewardClaimState.get(player.server);
         if (!state.isWritable()) {
@@ -64,7 +68,9 @@ public final class RewardClaimService {
                 if (!live.allowed()) return Result.reject(live.reason());
             }
             // Persist the monotonic receipt before applying side effects so a restart cannot duplicate rewards.
-            state.markAutomaticGranted(claim.claimId(), player.server.overworld().getGameTime());
+            try {
+                state.markAutomaticGranted(claim.claimId(), player.server.overworld().getGameTime());
+            } catch (RuntimeException unavailable) { return Result.reject(unavailable.getMessage()); }
             if (!claim.automaticRewards().isEmpty()) {
                 RewardExecutionService.Result grant = RewardExecutionService.grant(player, claim.godId(),
                         claim.automaticRewards(), RewardGrantPurpose.QUEST);
@@ -73,9 +79,10 @@ public final class RewardClaimService {
                             claim.claimId(), grant.reason());
                     return Result.reject("Automatic reward grant failed after receipt creation: " + grant.reason());
                 }
-                player.sendSystemMessage(Component.literal("[퀘스트 보상] "
+                boolean refund = claim.sourceId().getNamespace().equals("mythictrpg") && claim.sourceId().getPath().startsWith("quest_refund/");
+                player.sendSystemMessage(Component.literal((refund ? "[제출품 반환] " : "[퀘스트 보상] ")
                         + String.join(", ", grant.rewards())).withStyle(ChatFormatting.GOLD));
-                recordGrant(player,claim,"AUTOMATIC_REWARD_GRANTED");
+                recordGrant(player,claim,refund ? "QUEST_SUBMISSION_REFUNDED" : "AUTOMATIC_REWARD_GRANTED");
             }
             claim = state.find(claim.claimId()).orElseThrow();
         }
@@ -97,6 +104,8 @@ public final class RewardClaimService {
             var reward = entry.getValue();
             Validation validation = validate(reward);
             if (!validation.allowed()) return Result.reject(validation.reason());
+            String invalidItems = invalidItemComponents(server.registryAccess(), reward);
+            if (invalidItems != null) return Result.reject(invalidItems);
             claims.add(new RewardClaim(UUID.randomUUID(), entry.getKey(), godId, sourceId,
                     reward.selectionTitle(), reward.automaticRewards(), reward.choices(), false,
                     java.util.Optional.empty(), server.overworld().getGameTime()));
@@ -193,6 +202,14 @@ public final class RewardClaimService {
             }
         }
         return Validation.allow();
+    }
+
+    private static String invalidItemComponents(net.minecraft.core.HolderLookup.Provider registries,
+            ResolvedQuestReward reward) {
+        var all = new java.util.ArrayList<RewardEntry>(reward.automaticRewards());
+        for (var choice : reward.choices()) all.addAll(choice.rewards());
+        var validation = RewardExecutionService.validateItemComponents(registries, all);
+        return validation.allowed() ? null : validation.reason();
     }
 
     private static void sendChoice(ServerPlayer player, RewardClaim claim) {

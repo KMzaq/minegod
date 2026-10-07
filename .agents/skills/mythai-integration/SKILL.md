@@ -10,8 +10,8 @@ description: "markmar의 MythicTRPG·AI 응답·콘텐츠 레지스트리 모드
 ## 실제 경로부터 확인
 
 - 게임의 호출부 → DTO/Provider → AI 응답 → 정규화 → Gateway → Validator/Executor → HUD/피드백을 추적한다. 같은 이름의 구 구현과 운영 코드가 공존할 수 있다.
-- AI 응답의 `build.gradle`에서 현재 게임 JAR, legacy AI JAR, 원본 Java, 생성 오버레이 및 JAR 제외 목록을 확인한다. 패키지명이 `com.sande.mythictrpg.ai`라는 이유만으로 게임 모드 소유 코드라고 단정하지 않는다.
-- `mythictrpg-main`은 현재 작업본, `incoming`은 보존 원본이다. `mine/mine`은 일부 AI 빌드 입력이다. 불필요한 전체 복사·원본 수정·의존성 분리를 하지 않는다.
+- AI 응답의 `build.gradle`에서 실제 게임 API JAR과 소스 입력을 확인한다. 현재 브랜치의 `src/engine/java`는 이관된 AI 소유 소스이며 `src/main/java`와 함께 직접 컴파일한다. 예전 overlay/`build/generated`는 수정 기준이 아니다. 다른 브랜치에는 아직 legacy 의존성이 있을 수 있다. 패키지명이 `com.sande.mythictrpg.ai`라는 이유만으로 게임 모드 소유 코드라고 단정하지 않는다.
+- `mythictrpg-main`은 현재 작업본, `incoming`·`mine`·`mine2`는 보존 원본이다. 현재 AI 빌드는 `mine`을 읽지 않지만 별도 정리 요청 없이 삭제하지 않는다. 패키징 변경 시 `verifyEngineOwnership`/`verifyEnginePackage`로 소스 소유권과 중복을 검사한다.
 
 ## 필요한 계약만 읽기
 

@@ -13,7 +13,20 @@ public final class QuestParticipationTest {
 
     public static void main(String[] args) {
         consent(); solo(); group(); competitive(); ranking(); persistence(); parser();
+        QuestReorganizationTest.main(args);
+        contactPolicy();
         System.out.println("QuestParticipationTest: " + checks + " assertions passed");
+    }
+    private static void contactPolicy() {
+        check(!QuestContactPolicy.permits(false, false, false, true, true, true, true, false), "no contact from ownership/location alone");
+        check(!QuestContactPolicy.permits(true, false, false, true, false, true, false, false), "watch entitlement is not active observation");
+        check(!QuestContactPolicy.permits(true, false, false, true, true, false, false, false), "reading/walking/combat/another conversation blocks remote");
+        check(QuestContactPolicy.permits(true, false, false, true, true, true, false, false), "active idle remote reply");
+        check(QuestContactPolicy.permits(true, true, false, false, false, false, true, false), "physical return interrupts ordinary activity");
+        check(!QuestContactPolicy.permits(true, true, false, false, false, true, false, false), "unknown old origin cannot be invented");
+        check(QuestContactPolicy.permits(true, true, true, false, false, true, false, false), "real reencounter works for unknown origin");
+        check(QuestContactPolicy.permits(true, false, true, false, false, true, false, true), "authored visit accepts committed encounter");
+        check(!QuestContactPolicy.permits(true, false, false, true, true, true, false, true), "remote cannot claim authored NPC visit");
     }
     private static void consent() {
         UUID offer = UUID.randomUUID(), session = UUID.randomUUID();

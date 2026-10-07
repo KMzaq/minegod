@@ -77,6 +77,7 @@ public final class QuestRuntimeService {
             return result(QuestOperationResult.Status.ALREADY_COMPLETED, questId,
                     "The quest became unavailable before assignment committed");
         }
+        state.recordAssignmentOrigin(questId, player.getUUID(), QuestContactLocation.capture(player));
         if (binding.narrativeRole() == QuestNarrativeRole.MAIN_ENTRY) {
             GodAttentionState.get(player.server).recordEntryAssignment(
                     giverGodId, questId, player.getUUID(), assignedAt);
@@ -93,6 +94,15 @@ public final class QuestRuntimeService {
     /** Checks every side-effect-free assignment condition used by AI action validation. */
     public QuestAssignmentValidation validateAssignment(ServerPlayer player, ResourceLocation questId,
             ResourceLocation giverGodId) {
+        return validateAssignment(player, questId, giverGodId, false);
+    }
+
+    QuestAssignmentValidation validateReplacement(ServerPlayer player, ResourceLocation questId, ResourceLocation giverGodId) {
+        return validateAssignment(player, questId, giverGodId, true);
+    }
+
+    private QuestAssignmentValidation validateAssignment(ServerPlayer player, ResourceLocation questId,
+            ResourceLocation giverGodId, boolean replacement) {
         requireServerThread(player.server);
         if (giverGodId == null) {
             return QuestAssignmentValidation.reject(QuestOperationResult.Status.UNKNOWN_QUEST,
@@ -106,7 +116,7 @@ public final class QuestRuntimeService {
         MythicQuestState state = MythicQuestState.get(player.server);
         if (!state.isWritable()) return QuestAssignmentValidation.reject(QuestOperationResult.Status.INTERNAL_ERROR,
                 "Quest state is unavailable");
-        if (binding.participation().isPresent() && (state.participationRun(questId).isPresent()
+        if (!replacement && binding.participation().isPresent() && (state.participationRun(questId).isPresent()
                 || !state.assignedPlayers(questId).isEmpty()))
             return QuestAssignmentValidation.reject(QuestOperationResult.Status.PARTICIPATION_CLOSED,
                     "이 퀘스트의 수주자가 이미 확정됐습니다.");
@@ -137,6 +147,9 @@ public final class QuestRuntimeService {
                     "This main quest is reserved for players currently focused by this God");
         }
         if (binding.narrativeRole() == QuestNarrativeRole.MAIN_ENTRY) {
+            if (replacement && !attention.isFocused(giverGodId, player.getUUID()))
+                return QuestAssignmentValidation.reject(QuestOperationResult.Status.MAIN_QUEST_RESTRICTED,
+                        "재편성으로 처음 선택되지 않은 사람에게 메인 진행 자격을 부여할 수 없습니다.");
             Optional<GodAttentionRecord> existing = attention.record(giverGodId);
             if (existing.isPresent()
                     && !existing.orElseThrow().entryQuestId().equals(questId)) {
@@ -167,10 +180,7 @@ public final class QuestRuntimeService {
                     || !binding.acceptsCompletionNpc(assignment.giverGodId(), npcId)) {
                 continue;
             }
-            boolean correctMode = binding.completionMode() == QuestCompletionMode.PLAYER_RETURN_TO_NPC
-                    ? interactionMode == InteractionMode.EXPLICIT
-                    : interactionMode == InteractionMode.SPONTANEOUS;
-            if (!correctMode) {
+            if (!QuestContactService.canConfirm(player, binding, npcId)) {
                 continue;
             }
             if (!FtbQuestAdapter.INSTANCE.objectivesReady(player, binding)) {
@@ -186,6 +196,19 @@ public final class QuestRuntimeService {
             } else results.add(commit(player, binding, Optional.of(npcId), Instant.now(), true, true, true));
         }
         return List.copyOf(results);
+    }
+
+    /** Explicit player confirmation after a game-issued NPC contact, never merely an open room. */
+    public QuestOperationResult confirmReturn(ServerPlayer player, ResourceLocation quest, ResourceLocation god) {
+        requireServerThread(player.server);
+        var binding = FtbQuestBindingManager.INSTANCE.find(quest).orElse(null);
+        if (binding == null || binding.participation().isPresent() || binding.evaluationPolicy().isPresent()
+                || binding.completionMode() != QuestCompletionMode.PLAYER_RETURN_TO_NPC
+                || !QuestContactService.canConfirm(player, binding, god))
+            return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, quest, "현재 유효한 신의 귀환 확인 접촉이 필요합니다.");
+        if (!FtbQuestAdapter.INSTANCE.objectivesReady(player, binding))
+            return result(QuestOperationResult.Status.OBJECTIVES_NOT_READY, quest, "아직 목표를 달성하지 않았습니다.");
+        return commit(player, binding, Optional.of(god), Instant.now(), true, true, true);
     }
 
     /** Invoked by the FTB completion event for native AUTO quests. */
@@ -225,22 +248,28 @@ public final class QuestRuntimeService {
             return;
         }
         MythicQuestState state = MythicQuestState.get(player.server);
+        QuestReorganizationService.INSTANCE.login(player);
         for (QuestAssignment assignment : state.assignmentsFor(player.getUUID())) {
             FtbQuestBindingManager.INSTANCE.find(assignment.questId())
                     .ifPresent(binding -> FtbQuestAdapter.INSTANCE.activate(player, binding));
         }
-        for (FtbQuestBinding binding : FtbQuestBindingManager.INSTANCE.snapshot().byQuestId().values()) {
-            state.completion(binding.questId()).ifPresent(record -> {
-                if (record.assignedPlayersAtCompletion().contains(player.getUUID())
-                        && !record.completedBy().equals(player.getUUID())) {
-                    FtbQuestAdapter.INSTANCE.hideInvalidated(player, binding);
-                }
-            });
-        }
+        QuestCompletionMirrorRecovery.reconcile(state, player.getUUID(),
+                FtbQuestBindingManager.INSTANCE.snapshot().byQuestId().values(),
+                new QuestCompletionMirrorRecovery.Mirror() {
+                    @Override public boolean restore(FtbQuestBinding binding, QuestCompletionRecord completion) {
+                        return FtbQuestAdapter.INSTANCE.restoreCompletedMirror(player, binding, completion);
+                    }
+                    @Override public void hideInvalidated(FtbQuestBinding binding) {
+                        FtbQuestAdapter.INSTANCE.hideInvalidated(player, binding);
+                    }
+                }).forEach(quest -> MythicTrpg.LOGGER.warn(
+                        "FTB completion display reconciliation unavailable for {}; retained for next login", quest));
     }
 
     QuestOperationResult completeEvaluation(ServerPlayer player, FtbQuestBinding binding,
             ResourceLocation completionNpcId) {
+        if (!QuestContactService.canConfirm(player, binding, completionNpcId))
+            return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, binding.questId(), "현재 유효한 신의 완료 확인 접촉이 필요합니다.");
         return commit(player, binding, Optional.of(completionNpcId), Instant.now(), true, false);
     }
 
@@ -253,6 +282,9 @@ public final class QuestRuntimeService {
     private QuestOperationResult commit(ServerPlayer player, FtbQuestBinding binding,
             Optional<ResourceLocation> completionNpcId, Instant time, boolean completeInFtb,
             boolean narrateCompletion, boolean issueBindingRewards) {
+        if (binding.completionMode() != QuestCompletionMode.AUTO && (completionNpcId.isEmpty()
+                || !QuestContactService.canConfirm(player, binding, completionNpcId.orElseThrow())))
+            return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, binding.questId(), "현재 유효한 신의 완료 확인 접촉이 필요합니다.");
         MythicQuestState state = MythicQuestState.get(player.server);
         if (!state.isAssigned(binding.questId(), player.getUUID())) {
             return result(QuestOperationResult.Status.NOT_ASSIGNED, binding.questId(),

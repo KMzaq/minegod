@@ -44,15 +44,41 @@ public final class RoomConversationEngineTest {
         String lorePrompt = text(promptA.generation(new ConversationIntent(Set.of(), Set.of("history"), 100, ConversationIntent.Source.LOCAL_LLM)));
         check(lorePrompt.contains("PUBLIC_LORE_RETRIEVED") && lorePrompt.contains("AUDIENCE_APPROVED_PRIVATE_LORE"), "classified keywords retrieve registry-approved lore without a PUBLIC-only restriction");
         check(a2.contains("conversation_leave") && a2.contains("conversation_invite"), "room control capabilities enter prompt");
-        check(a2.contains("Conversation-control proposals are governed independently by ROOM_SCOPE"), "gameplay-empty directives cannot suppress permitted room controls");
+        check(a2.contains("Room control proposals are allowed") && !a2.contains("[TURN_DIRECTIVE]"),
+                "room controls retained without hard-coded social directives");
         var continuedActivity = new AiTestDialogueAdapter.RoomPrompt(a, memoryA, Map.of(god, content), "끝말잇기");
-        check(text(continuedActivity.generation(ConversationIntent.heuristicFallback())).contains("name: 끝말잇기"),
+        check(text(continuedActivity.generation(ConversationIntent.heuristicFallback())).contains("끝말잇기"),
                 "room conversational activity survives trimmed transcript");
-        check(!b2.contains("name: 끝말잇기"), "activity cannot cross rooms sharing same player and God");
-        var filtered = promptA.speech(new AiDialogueModels.StructuredAiResult(List.of(
+        check(!b2.contains("끝말잇기"), "activity cannot cross rooms sharing same player and God");
+        var foreignSpeech = new AiDialogueModels.StructuredAiResult(List.of(
                 new AiDialogueModels.Speech(otherGod.toString(), "다른 신 비공개 응답", List.of("player")),
-                new AiDialogueModels.Speech(god.toString(), "이 대화에 대한 답변입니다.", List.of("player"))), "", List.of()));
-        check(filtered.size() == 1 && filtered.getFirst().speakerId().equals(god.toString()), "result cannot add another God speaker");
+                new AiDialogueModels.Speech(god.toString(), "이 대화에 대한 답변입니다.", List.of("player"))), "", List.of());
+        check(promptA.needsRepair(foreignSpeech), "foreign speaker must be repaired rather than silently accepted");
+        try { promptA.speech(foreignSpeech); throw new AssertionError("foreign speaker accepted"); }
+        catch (IllegalArgumentException expected) { checks++; }
+        var greeting = new Request(roomA, 2, UUID.randomUUID(), player, "player", List.of(god), god, "안녕",
+                List.of(), true, false, false, List.of(new GodState(god, "R_NEUTRAL", "E_NEUTRAL", "", null)));
+        var greetingPrompt = new AiTestDialogueAdapter.RoomPrompt(greeting, memoryA, Map.of(god, content));
+        var greetingText = text(greetingPrompt.generation(ConversationIntent.heuristicFallback()));
+        check(greetingText.contains("VALUE_FORTUNA") && greetingText.contains("RESTRICTION_FORTUNA"),
+                "casual greeting retains values and restrictions through production wrapper");
+        var authored = new AiDialogueModels.StructuredAiResult(List.of(
+                new AiDialogueModels.Speech(god.toString(), "또 만났네. 오늘은 무슨 이야기야?", List.of())), "", List.of());
+        check(greetingPrompt.speech(authored).getFirst().text().equals(authored.speech().getFirst().text()),
+                "greeting uses model's full in-character speech, never stock greeting");
+        check(!greetingPrompt.gameplayProposalsAllowed(), "read-only greeting preserves gameplay prohibition");
+        check(!MythAiRoomConversationEngine.gameplayCapabilitiesVisible(greeting)
+                && MythAiRoomConversationEngine.gameplayCapabilitiesVisible(a), "read-only omits unusable capabilities but live primary retains them");
+        var recalledRoomPrompt = new AiTestDialogueAdapter.RoomPrompt(a, memoryA, Map.of(god, content), "",
+                List.of("RECALL_A_TOO_LARGE_" + "x".repeat(14_000), "RECALL_A_WHOLE_SOURCE"));
+        var recalledText = text(recalledRoomPrompt.generation(ConversationIntent.heuristicFallback()));
+        check(recalledText.contains("RECALL_A_WHOLE_SOURCE") && !recalledText.contains("RECALL_A_TOO_LARGE_")
+                && !b2.contains("RECALL_A_WHOLE_SOURCE"), "actual RoomPrompt wrapper supplies bounded recall only to its own session");
+        var socialClaim = new AiDialogueModels.StructuredAiResult(List.of(new AiDialogueModels.Speech(god.toString(),
+                "아까 네가 말한 기회라는 게 무슨 뜻이었니?", List.of())), "", List.of());
+        check(!greetingPrompt.needsRepair(socialClaim), "social keywords alone never force repair");
+        check(text(new AiTestDialogueAdapter.RoomPrompt(greeting, memoryA, Map.of(god, content))
+                .legacyGeneration(ConversationIntent.heuristicFallback())).contains("[TURN_DIRECTIVE]"), "offline legacy comparator remains available");
         var tokens = new RoomResponseTokens();
         var oldA = tokens.issue(roomA, 2, a.turnId()); var activeB = tokens.issue(roomB, 2, b.turnId());
         check(tokens.current(oldA) && tokens.current(activeB), "same player same God simultaneous rooms accepted");
@@ -103,6 +129,7 @@ public final class RoomConversationEngineTest {
             }
         }
         checks += RoomRecordingIntegrationTest.run(java.nio.file.Path.of(args[0]), profile);
+        checks += NpcActivityExperiencePromptTest.run(content);
         System.out.println("RoomConversationEngineTest: PASS (" + checks + " checks; no server or LLM)");
     }
     private static Request request(UUID room, UUID player, ResourceLocation god, String context, String relation, String emotion, String history) {

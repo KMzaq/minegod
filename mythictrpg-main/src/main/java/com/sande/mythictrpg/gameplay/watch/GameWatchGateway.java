@@ -85,11 +85,20 @@ public final class GameWatchGateway implements AutoCloseable {
     public CompletableFuture<AsyncGodWatch.ReadSnapshot> readExact(Audience audience, Set<UUID> observationIds) {
         requireCurrent(); return watch.readExact(audience, observationIds);
     }
+    public CompletableFuture<AsyncGodWatch.ReconciliationSnapshot> reconcileExact(Audience audience, Set<UUID> observationIds) {
+        requireCurrent(); return watch.reconcileExact(audience, observationIds);
+    }
+    public long committedRevision() { requireCurrent(); return watch.committedRevision(); }
     public boolean current(AsyncGodWatch.ReadSnapshot snapshot, Audience audience) {
         try { requireCurrent(); return watch.current(snapshot, audience); } catch (IllegalStateException stale) { return false; }
     }
     public CompletableFuture<Void> disclose(Disclosure disclosure) { requireCurrent(); return watch.disclose(disclosure); }
     public boolean gameCurrent() { try { requireCurrent(); return true; } catch (IllegalStateException stale) { return false; } }
+    public boolean currentWatch(Watch value, ServerPlayer player) {
+        return gameCurrent() && value != null && !suspending.containsKey(player.getUUID())
+                && targetSessions.get(player.getUUID()) == player
+                && value.approval().key().playerId().equals(player.getUUID()) && watch.currentWatch(value);
+    }
     public void requestClose() { requireServerThread(); watch.requestClose(); }
     public CompletableFuture<Void> ready() { return watch.ready(); }
     private void requireCurrent() {

@@ -3,13 +3,28 @@ package com.sande.mythictrpg.quest.dynamic;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
+import java.util.Optional;
+import com.sande.mythictrpg.quest.QuestCompletionMode;
+import com.sande.mythictrpg.quest.QuestContactLocation;
 
 /** Authored, SIDE-only mechanics which an AI may select but never alter. */
 public record GeneratedQuestTemplate(ResourceLocation id, ResourceLocation godId,
         ResourceLocation observationTypeId, ResourceLocation subjectId, int requiredCount,
         ResourceLocation progressTrackId, int minimumWorldProgress, int maximumWorldProgress,
         ResourceLocation rewardTableId, int baseRewardTier, int maximumRewardTier,
-        int catchUpMaximumBonus, long cooldownTicks, long expiresAfterTicks) {
+        int catchUpMaximumBonus, long cooldownTicks, long expiresAfterTicks,
+        QuestCompletionMode completionMode, Optional<QuestContactLocation> returnLocation) {
+    public GeneratedQuestTemplate(ResourceLocation id, ResourceLocation godId,
+            ResourceLocation observationTypeId, ResourceLocation subjectId, int requiredCount,
+            ResourceLocation progressTrackId, int minimumWorldProgress, int maximumWorldProgress,
+            ResourceLocation rewardTableId, int baseRewardTier, int maximumRewardTier,
+            int catchUpMaximumBonus, long cooldownTicks, long expiresAfterTicks) {
+        this(id, godId, observationTypeId, subjectId, requiredCount, progressTrackId, minimumWorldProgress,
+                maximumWorldProgress, rewardTableId, baseRewardTier, maximumRewardTier,
+                catchUpMaximumBonus, cooldownTicks, expiresAfterTicks,
+                QuestCompletionMode.PLAYER_RETURN_TO_NPC, Optional.empty());
+    }
+
     public GeneratedQuestTemplate {
         Objects.requireNonNull(id, "id");
         Objects.requireNonNull(godId, "godId");
@@ -17,6 +32,10 @@ public record GeneratedQuestTemplate(ResourceLocation id, ResourceLocation godId
         Objects.requireNonNull(subjectId, "subjectId");
         Objects.requireNonNull(progressTrackId, "progressTrackId");
         Objects.requireNonNull(rewardTableId, "rewardTableId");
+        Objects.requireNonNull(completionMode, "completionMode");
+        returnLocation = Objects.requireNonNull(returnLocation, "returnLocation");
+        if (completionMode == QuestCompletionMode.AUTO && returnLocation.isPresent())
+            throw new IllegalArgumentException("AUTO generated quests cannot specify a return location");
         if (requiredCount < 1 || requiredCount > 256) {
             throw new IllegalArgumentException("requiredCount must be between 1 and 256");
         }

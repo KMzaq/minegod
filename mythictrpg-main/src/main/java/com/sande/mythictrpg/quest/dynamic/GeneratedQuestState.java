@@ -17,7 +17,7 @@ import java.util.UUID;
 
 /** Server-wide persistent state for at most one active generated SIDE quest per player. */
 public final class GeneratedQuestState extends SavedData {
-    public static final int CURRENT_DATA_VERSION = 1;
+    public static final int CURRENT_DATA_VERSION = 3;
     private static final String FILE_NAME = "mythictrpg_generated_quests";
     private static final Factory<GeneratedQuestState> FACTORY = new Factory<>(
             GeneratedQuestState::new, GeneratedQuestState::load);
@@ -117,12 +117,12 @@ public final class GeneratedQuestState extends SavedData {
         GeneratedQuestState state = new GeneratedQuestState();
         try {
             if (!tag.contains("dataVersion", Tag.TAG_ANY_NUMERIC)
-                    || tag.getInt("dataVersion") != CURRENT_DATA_VERSION) {
+                    || tag.getInt("dataVersion") < 1 || tag.getInt("dataVersion") > CURRENT_DATA_VERSION) {
                 throw new IllegalArgumentException("unsupported or missing generated quest dataVersion");
             }
             ListTag active = requireList(tag, "active");
             for (int index = 0; index < active.size(); index++) {
-                GeneratedQuestInstance instance = loadInstance(active.getCompound(index));
+                GeneratedQuestInstance instance = loadInstance(active.getCompound(index), tag.getInt("dataVersion"));
                 if (state.activeByPlayer.putIfAbsent(instance.playerId(), instance) != null) {
                     throw new IllegalArgumentException("duplicate active generated quest player");
                 }
@@ -168,11 +168,27 @@ public final class GeneratedQuestState extends SavedData {
         tag.putLong("ftbQuest", value.ftbQuestId());
         tag.putLong("ftbMarker", value.ftbMarkerQuestId());
         tag.putLong("ftbTask", value.ftbTaskId());
+        tag.putString("completionMode", value.completionMode().name());
+        tag.putBoolean("completionApproved", value.completionApproved());
+        value.origin().ifPresent(location -> tag.put("origin", location.save()));
+        value.destination().ifPresent(location -> tag.put("returnLocation", location.save()));
+        tag.putString("rewardSnapshotMode", value.frozenRewards().isPresent() ? "FROZEN" : "LEGACY_UNFROZEN");
+        value.frozenRewards().ifPresent(rewards -> {
+            ListTag entries = new ListTag();
+            rewards.stream().map(com.sande.mythictrpg.quest.reward.RewardEntryCodec::save).forEach(entries::add);
+            tag.put("frozenRewards", entries);
+        });
         return tag;
     }
 
-    private static GeneratedQuestInstance loadInstance(CompoundTag tag) {
-        return new GeneratedQuestInstance(requireUuid(tag, "instance"),
+    private static GeneratedQuestInstance loadInstance(CompoundTag tag, int dataVersion) {
+        if (dataVersion >= 2) {
+            String mode = tag.getString("rewardSnapshotMode");
+            if (!("FROZEN".equals(mode) && tag.contains("frozenRewards", Tag.TAG_LIST)
+                    || "LEGACY_UNFROZEN".equals(mode) && !tag.contains("frozenRewards")))
+                throw new IllegalArgumentException("missing or inconsistent generated quest reward snapshot");
+        }
+        var instance = new GeneratedQuestInstance(requireUuid(tag, "instance"),
                 id(tag.getString("template"), "active.template"), requireUuid(tag, "player"),
                 id(tag.getString("god"), "active.god"), tag.getString("title"), tag.getString("summary"),
                 id(tag.getString("observation"), "active.observation"),
@@ -181,6 +197,32 @@ public final class GeneratedQuestState extends SavedData {
                 tag.getInt("rewardTier"), tag.getBoolean("catchUpApplied"), tag.getLong("created"),
                 tag.getLong("expires"), tag.getLong("ftbQuest"), tag.getLong("ftbMarker"),
                 tag.getLong("ftbTask"));
+        if (tag.contains("frozenRewards")) {
+            ListTag entries = requireList(tag, "frozenRewards");
+            var rewards = new java.util.ArrayList<com.sande.mythictrpg.quest.reward.RewardEntry>();
+            for (int i = 0; i < entries.size(); i++)
+                rewards.add(com.sande.mythictrpg.quest.reward.RewardEntryCodec.load(entries.getCompound(i)));
+            instance = instance.withFrozenRewards(rewards);
+        }
+        if (dataVersion >= 3) {
+            if (!tag.contains("completionMode", Tag.TAG_STRING)
+                    || !tag.contains("completionApproved", Tag.TAG_BYTE))
+                throw new IllegalArgumentException("missing generated quest confirmation state");
+            for (String field : List.of("origin", "returnLocation"))
+                if (tag.contains(field) && !tag.contains(field, Tag.TAG_COMPOUND))
+                    throw new IllegalArgumentException("invalid generated quest " + field);
+            instance = instance.withContactRules(
+                    com.sande.mythictrpg.quest.QuestCompletionMode.parse(tag.getString("completionMode")),
+                    tag.contains("origin") ? Optional.of(com.sande.mythictrpg.quest.QuestContactLocation.load(tag.getCompound("origin"))) : Optional.empty(),
+                    tag.contains("returnLocation") ? Optional.of(com.sande.mythictrpg.quest.QuestContactLocation.load(tag.getCompound("returnLocation"))) : Optional.empty());
+            if (tag.getBoolean("completionApproved")) instance = instance.approveCompletion();
+        } else if (instance.objectivesCompleted()) {
+            // v1/v2 completed objectives immediately entered automatic payout. Preserve that earned
+            // retry right, but never invent a historical NPC contact, assignment place or destination.
+            instance = instance.withContactRules(com.sande.mythictrpg.quest.QuestCompletionMode.AUTO,
+                    Optional.empty(), Optional.empty()).approveCompletion();
+        }
+        return instance;
     }
 
     private void ensureWritable() {
@@ -193,7 +235,7 @@ public final class GeneratedQuestState extends SavedData {
         if (!tag.contains(field, Tag.TAG_LIST)) {
             throw new IllegalArgumentException("missing list '" + field + "'");
         }
-        ListTag list = tag.getList(field, Tag.TAG_COMPOUND);
+        ListTag list = (ListTag) tag.get(field);
         if (!list.isEmpty() && list.getElementType() != Tag.TAG_COMPOUND) {
             throw new IllegalArgumentException("invalid list element type for '" + field + "'");
         }

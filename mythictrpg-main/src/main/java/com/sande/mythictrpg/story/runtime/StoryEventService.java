@@ -75,6 +75,7 @@ public final class StoryEventService {
             ResourceLocation outcomeId) {
         requireServerThread(player.server);
         StoryRuntimeState state = StoryRuntimeState.get(player.server);
+        if (!state.isReady()) return StoryChoiceResult.rejected("Story state is unavailable");
         EventInstance instance = state.eventInstance(instanceId).orElse(null);
         if (instance == null) return StoryChoiceResult.rejected("Story event instance was not found");
         if (instance.status() != EventStatus.WAITING_FOR_CHOICE || instance.revision() != expectedRevision)
@@ -84,14 +85,32 @@ public final class StoryEventService {
         EventDefinition definition = StoryDefinitionManager.INSTANCE.event(instance.eventId()).orElse(null);
         if (definition == null || !definition.fingerprint().equals(instance.definitionFingerprint())) {
             state.putEvent(instance.withStatus(EventStatus.RECOVERY_REQUIRED));
+            StoryChoiceUiService.INSTANCE.refreshAudience(player.server, instance.frozenAudiencePlayerIds(), false);
             return StoryChoiceResult.rejected("Story definition changed while the choice was open");
+        }
+        ChoicePolicy choicePolicy = definition.choicePolicy().orElse(null);
+        long now = player.server.overworld().getGameTime();
+        if (choicePolicy != null && choicePolicy.timeoutTicks() > 0
+                && now - instance.triggeredAtGameTime() >= choicePolicy.timeoutTicks()) {
+            processChoiceTimeouts(player.server);
+            return StoryChoiceResult.rejected("Story choice expired");
         }
         OutcomeDefinition outcome = eligibleOutcomes(player.server, definition, instance.scope(),
                 instance.initiatingPlayerId()).stream().filter(value -> value.id().equals(outcomeId))
                 .findFirst().orElse(null);
         if (outcome == null) return StoryChoiceResult.rejected("Story outcome is not currently selectable");
-        resolve(player.server, definition, instance, outcome, OptionalLong.empty());
-        return new StoryChoiceResult(true, "Story choice committed", instanceId, outcomeId);
+        try {
+            resolve(player.server, definition, instance, outcome, OptionalLong.empty());
+        } finally {
+            StoryChoiceUiService.INSTANCE.refreshAudience(player.server, instance.frozenAudiencePlayerIds(), false);
+        }
+        EventInstance current = state.eventInstance(instanceId).orElseThrow();
+        if (current.status() == EventStatus.RECOVERY_REQUIRED)
+            return StoryChoiceResult.rejected("Story choice could not be applied; recovery is required");
+        return new StoryChoiceResult(true,
+                current.status() == EventStatus.EXTERNAL_EFFECT_PENDING
+                        ? "Story choice recorded; external effect is pending" : "Story choice committed",
+                instanceId, outcomeId);
     }
 
     public void onServerStarted(ServerStartedEvent event) {
@@ -126,6 +145,7 @@ public final class StoryEventService {
                 .sorted(Comparator.comparingLong(PresentationOpportunity::createdAtGameTime))
                 .forEach(value -> com.sande.mythictrpg.story.presentation.StoryPresentationService.INSTANCE
                         .dispatch(player.server, value));
+        StoryChoiceUiService.INSTANCE.sendPage(player, 0, true);
     }
 
     public void onGodIdentified(GodIdentifiedEvent event) {
@@ -219,8 +239,10 @@ public final class StoryEventService {
         state.putEvent(instance);
 
         if (definition.resolutionPolicy() == ResolutionPolicy.PLAYER_CHOICE) {
-            state.putEvent(instance.withStatus(EventStatus.WAITING_FOR_CHOICE));
+            EventInstance waiting = instance.withStatus(EventStatus.WAITING_FOR_CHOICE);
+            state.putEvent(waiting);
             state.addAudit(signal.gameTime(), "WAITING_FOR_CHOICE", instanceId);
+            StoryChoiceUiService.INSTANCE.refreshAudience(server, waiting.frozenAudiencePlayerIds(), true);
             return AttemptResult.started(instanceId);
         }
         List<OutcomeDefinition> eligible = eligibleOutcomes(server, definition, scope.scope,
@@ -382,7 +404,7 @@ public final class StoryEventService {
         }
     }
 
-    private List<OutcomeDefinition> eligibleOutcomes(MinecraftServer server, EventDefinition definition,
+    List<OutcomeDefinition> eligibleOutcomes(MinecraftServer server, EventDefinition definition,
             StoryScopeKey scope, Optional<UUID> playerId) {
         return definition.outcomes().stream().filter(outcome -> outcome.additionalConditions()
                 .map(condition -> ConditionEngine.INSTANCE.evaluate(condition,
@@ -514,10 +536,15 @@ public final class StoryEventService {
         for (EventInstance instance : state.eventInstances().values()) {
             if (instance.status() != EventStatus.WAITING_FOR_CHOICE) continue;
             EventDefinition definition = StoryDefinitionManager.INSTANCE.event(instance.eventId()).orElse(null);
-            if (definition == null || !definition.fingerprint().equals(instance.definitionFingerprint())) continue;
+            if (definition == null || !definition.fingerprint().equals(instance.definitionFingerprint())) {
+                state.putEvent(instance.withStatus(EventStatus.RECOVERY_REQUIRED));
+                state.addAudit(now, "CHOICE_DEFINITION_CHANGED", instance.instanceId());
+                StoryChoiceUiService.INSTANCE.refreshAudience(server, instance.frozenAudiencePlayerIds(), false);
+                continue;
+            }
             ChoicePolicy choice = definition.choicePolicy().orElse(null);
             if (choice == null || choice.timeoutTicks() < 1
-                    || instance.triggeredAtGameTime() + choice.timeoutTicks() > now) continue;
+                    || now - instance.triggeredAtGameTime() < choice.timeoutTicks()) continue;
             OutcomeDefinition outcome = definition.outcomes().stream()
                     .filter(value -> value.id().equals(choice.defaultOutcomeId().orElseThrow()))
                     .filter(value -> value.additionalConditions().map(condition -> ConditionEngine.INSTANCE.evaluate(
@@ -530,6 +557,7 @@ public final class StoryEventService {
             } else {
                 resolve(server, definition, instance, outcome, OptionalLong.empty());
             }
+            StoryChoiceUiService.INSTANCE.refreshAudience(server, instance.frozenAudiencePlayerIds(), false);
         }
     }
 

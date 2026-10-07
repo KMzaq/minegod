@@ -34,8 +34,7 @@ public final class RecallSearch {
         var sourceScope = RecallSourceScope.resolve(query.text());
         var contextTerms = context.stream().map(MemoryJournal::lexical).toList();
         boolean planQuestion = query.planQuestion();
-        LocalDate target = query.planQuestion() ? date(query.text(), query.askedAt(), settings.timeBasis()) : null;
-        LocalDate saidOn = recordedDate(query.text(), query.askedAt(), settings.timeBasis());
+        var temporal = temporal(query, settings.timeBasis());
         for (var entry : allowed) {
             if (System.nanoTime() - start > budgetNanos) return unavailable(query, "search_budget");
             if (entry.source() == MemoryJournal.Source.HEARSAY_NPC || entry.occurredAt() > now
@@ -51,19 +50,14 @@ public final class RecallSearch {
             if (query.explicit() && planQuestion && !plan) continue;
             // Questions are retained in the journal but cannot answer themselves on a later turn.
             if (query.explicit() && (RecallQuery.explicitRecall(entry.text()) || RecallQuery.bareFollowUp(entry.text()))) continue;
-            if (saidOn != null && !day(entry.occurredAt()).equals(saidOn)) continue;
+            if (!temporal.allows(entry.text(), entry.occurredAt())) continue;
             var candidateTerms = MemoryJournal.lexical(entry.text());
             boolean lexical = MemoryJournal.related(queryTerms, candidateTerms);
             // Heard NPC words are retrievable as attributed words, never a recent-raw/plan fallback for the player.
             boolean npc = entry.source() == MemoryJournal.Source.NPC_UTTERANCE;
             if (query.explicit() && npc && !lexical) continue;
             boolean contextual = contextTerms.stream().anyMatch(t -> MemoryJournal.related(t, candidateTerms));
-            LocalDate eventDate = plan ? date(entry.text(), entry.occurredAt(), settings.timeBasis()) : null;
-            // A recording-date condition must not turn 'yesterday's tomorrow' into tomorrow from today.
-            LocalDate expected = saidOn == null ? target : relativeToDay(query.text(), saidOn, settings.timeBasis(), true);
-            boolean timeMatch = expected != null && expected.equals(eventDate);
-            boolean wrongDate = expected != null && eventDate != null && !expected.equals(eventDate);
-            if (wrongDate) continue;
+            boolean timeMatch = temporal.planMatches(entry.text(), entry.occurredAt());
             if (query.explicit() && !npc) raw.add(entry);
             int score = lexical ? 40 : contextual ? 20 : 0;
             String reason = lexical ? "lexical" : "player_context";
@@ -111,11 +105,26 @@ public final class RecallSearch {
                 ||!MemorySalience.searchable(entry,now,query.explicit())
                 ||RecallQuery.explicitRecall(entry.text())||RecallQuery.bareFollowUp(entry.text()))return false;
         if(query.planQuestion()&&!looksLikePlan(entry.text()))return false;
-        LocalDate said=recordedDate(query.text(),query.askedAt(),settings.timeBasis());
-        if(said!=null&&!day(entry.occurredAt()).equals(said))return false;
-        LocalDate expected=said==null?(query.planQuestion()?date(query.text(),query.askedAt(),settings.timeBasis()):null):relativeToDay(query.text(),said,settings.timeBasis(),true);
-        LocalDate event=looksLikePlan(entry.text())?date(entry.text(),entry.occurredAt(),settings.timeBasis()):null;
-        return expected==null||event==null||expected.equals(event);
+        return temporal(query,settings.timeBasis()).allows(entry.text(),entry.occurredAt());
+    }
+    /** Shared raw-text time constraints. They neither grant access nor interpret an unknown date. */
+    record Temporal(LocalDate recordedOn, LocalDate plannedOn, RecallSettings.TimeBasis basis) {
+        boolean allows(String text, long occurredAt) {
+            if (recordedOn != null && !day(occurredAt).equals(recordedOn)) return false;
+            if (plannedOn == null) return true;
+            LocalDate event = looksLikePlan(text) ? date(text, occurredAt, basis) : null;
+            return event == null || plannedOn.equals(event);
+        }
+        boolean planMatches(String text, long occurredAt) {
+            return plannedOn != null && looksLikePlan(text) && plannedOn.equals(date(text, occurredAt, basis));
+        }
+    }
+    static Temporal temporal(RecallQuery query, RecallSettings.TimeBasis basis) {
+        LocalDate said = recordedDate(query.text(), query.askedAt(), basis);
+        // Keep both dates anchored to the original question, including a follow-up after midnight.
+        LocalDate planned = said == null ? (query.planQuestion() ? date(query.text(), query.askedAt(), basis) : null)
+                : relativeToDay(query.text(), said, basis, true);
+        return new Temporal(said, planned, basis);
     }
     private static boolean uncertainClaim(String text) {
         return text.matches(".*(말고|취소|변경|아니라|농담|장난|라면|다면|일지도|라고 했|다고 말했|다고 했|가 말|가 얘기).*");

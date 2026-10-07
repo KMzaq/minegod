@@ -6,14 +6,17 @@ import net.minecraft.resources.ResourceLocation;
 /** Stable IDs for game-owned actions that an AI response may propose. */
 public final class AiActionTypes {
     public static final ResourceLocation QUEST_OFFER = id("quest_offer");
+    public static final ResourceLocation QUEST_ROSTER_REQUEST = id("quest_roster_request");
     public static final ResourceLocation ITEM_REQUEST = id("item_request");
     public static final ResourceLocation REWARD_PROPOSAL = id("reward_proposal");
     public static final ResourceLocation RELATIONSHIP_CHANGE = id("relationship_change");
     public static final ResourceLocation BLESSING_OFFER = id("blessing_offer");
     public static final ResourceLocation NPC_VISIT_REQUEST = id("npc_visit_request");
+    public static final ResourceLocation NPC_ACTIVITY_REQUEST = id("npc_activity_request");
     public static final ResourceLocation WORLD_INTERACTION = id("world_interaction");
     public static final ResourceLocation PLAYER_DAMAGE = id("player_damage");
     public static final ResourceLocation GENERATED_QUEST_OFFER = id("generated_quest_offer");
+    public static final ResourceLocation RAID_OFFER = id("raid_offer");
     public static final ResourceLocation STRUCTURE_EVALUATION_REQUEST = id("structure_evaluation_request");
     public static final ResourceLocation GOD_RELATION_TRANSITION = id("god_relation_transition");
     public static final ResourceLocation STORY_EVENT_HOOK = id("story_event_hook");

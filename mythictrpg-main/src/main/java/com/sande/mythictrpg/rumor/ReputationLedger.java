@@ -35,6 +35,11 @@ public final class ReputationLedger {
     private final UUID worldId;
     private final Map<Key,Entry> entries=new LinkedHashMap<>();
     private long revision;
+    private java.util.function.BooleanSupplier quotaEnabled;
+    private java.util.function.BiPredicate<Snapshot, Boolean> mutationGate;
+    void mutationGate(java.util.function.BooleanSupplier enabled, java.util.function.BiPredicate<Snapshot, Boolean> gate) {
+        quotaEnabled = enabled; mutationGate = gate;
+    }
     public ReputationLedger(UUID worldId){this.worldId=Objects.requireNonNull(worldId);}
     public UUID worldId(){return worldId;}
     public long revision(){return revision;}
@@ -42,6 +47,14 @@ public final class ReputationLedger {
     public Entry find(UUID subject,String god,UUID source){return entries.get(new Key(subject,god,source));}
     public List<Entry> entries(){return List.copyOf(entries.values());}
     Result apply(Decision decision) {
+        if (mutationGate != null && quotaEnabled.getAsBoolean()) {
+            ReputationLedger draft = restore(snapshot());
+            Result result = draft.apply(decision);
+            if (result != Result.APPLIED) return result;
+            boolean maintenance = decision.outcome() == Outcome.RECOVERED || decision.outcome() == Outcome.RETRACTED;
+            if (!mutationGate.test(draft.snapshot(), maintenance)) return Result.CAPACITY;
+            entries.clear(); entries.putAll(draft.entries); revision = draft.revision; return result;
+        }
         if(!worldId.equals(decision.worldId())||revision==Long.MAX_VALUE)return Result.REJECTED;
         var key=new Key(decision.subject(),decision.godId(),decision.sourceId());var old=entries.get(key);
         if(old!=null&&old.decision().equals(decision))return Result.DUPLICATE;

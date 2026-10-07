@@ -107,6 +107,7 @@ public final class QuestParticipationService {
     /** Plain yes/no is routed only through the room in which it was actually spoken. */
     public boolean handleRoomAnswer(ServerPlayer player, UUID sessionId, ResourceLocation god, String text) {
         requireThread(player.server);
+        if (QuestReorganizationService.INSTANCE.handleAnswer(player, sessionId, god, text)) return true;
         var offer = pending.values().stream().filter(p -> p.roomAction()
                 && p.enrollment().conversationId().equals(sessionId) && p.god().equals(god)
                 && p.enrollment().audience().contains(player.getUUID())).findFirst();
@@ -155,11 +156,17 @@ public final class QuestParticipationService {
             offer.enrollment().audience().forEach(id -> npc(player.server.getPlayerList().getPlayer(id), offer.god(), "이번 의뢰는 맡기지 않겠습니다."));
             return true;
         }
+        if (accepted.size() < binding.participation().orElseThrow().reorganization()
+                .map(QuestReorganizationPolicy::minimumParticipants).orElse(1)) {
+            accepted.forEach(id -> npc(player.server.getPlayerList().getPlayer(id), offer.god(), "필수 참여 인원이 부족하여 수주하지 않았습니다."));
+            return false;
+        }
         QuestParticipationRun run = new QuestParticipationRun(UUID.randomUUID(), offer.quest().toString(), offer.god().toString(),
                 binding.participation().orElseThrow(), accepted, player.server.overworld().getGameTime());
         MythicQuestState.get(player.server).addParticipationRun(run);
         for (UUID id : accepted) {
             ServerPlayer member = player.server.getPlayerList().getPlayer(id);
+            MythicQuestState.get(player.server).recordAssignmentOrigin(offer.quest(), id, QuestContactLocation.capture(member));
             com.sande.mythictrpg.gameplay.ledger.detail.ImportantEvents.transition(player.server,id,offer.quest(),
                     "ASSIGNED",run.snapshot().runId().toString(),Instant.now(),run.snapshot().runId());
             QuestReminderState.get(player.server).ensure(offer.quest(), id, run.snapshot().startedAt());
@@ -194,6 +201,7 @@ public final class QuestParticipationService {
     }
     /** Logout is an explicit all-conversation event; ordinary legacy toggles are not. */
     public void cancelAllForPlayer(MinecraftServer server, UUID player) {
+        QuestReorganizationService.INSTANCE.logout(server, player);
         for (Pending offer : List.copyOf(pending.values())) if (offer.enrollment().audience().contains(player))
             cancel(server, offer, "접속 상태가 바뀌어 수주 질문을 취소했습니다. 참여자를 다시 확인해주세요.");
     }
@@ -201,7 +209,7 @@ public final class QuestParticipationService {
         pending.remove(offer.enrollment().offerId());
         for (UUID id : offer.enrollment().audience()) npc(server.getPlayerList().getPlayer(id), offer.god(), message);
     }
-    public void clear() { pending.clear(); lastSettlementWarning.clear(); }
+    public void clear() { pending.clear(); lastSettlementWarning.clear(); QuestReorganizationService.INSTANCE.clear(); }
 
     public Optional<UUID> pendingOffer(UUID player) {
         return pending.values().stream().filter(p -> p.enrollment().audience().contains(player))
@@ -222,6 +230,7 @@ public final class QuestParticipationService {
     private String contextFor(ServerPlayer player, ResourceLocation npc, UUID roomSessionId) {
         requireThread(player.server);
         StringBuilder text = new StringBuilder("\n[QUEST_PARTICIPATION_SERVER_STATE]\n");
+        List<String> rosterQuests = new ArrayList<>();
         for (Pending offer : pending.values()) if ((roomSessionId == null ? !offer.roomAction()
                 : offer.roomAction() && offer.enrollment().conversationId().equals(roomSessionId)) && offer.god().equals(npc)
                 && offer.enrollment().audience().contains(player.getUUID()))
@@ -232,11 +241,11 @@ public final class QuestParticipationService {
         for (int i = runs.size() - 1; i >= 0 && shown < 8; i--) {
             var run = runs.get(i);
             var binding = FtbQuestBindingManager.INSTANCE.find(ResourceLocation.parse(run.snapshot().questId())).orElse(null);
-            if (!run.participants().contains(player.getUUID()) || binding == null
+            if (!run.snapshot().progress().containsKey(player.getUUID()) || binding == null
                     || !binding.acceptsCompletionNpc(ResourceLocation.parse(run.snapshot().giverId()), npc)) continue;
             shown++;
             text.append("quest=").append(binding.questId()).append(" type=").append(run.snapshot().type())
-                    .append(" status=").append(run.snapshot().closed() ? (run.winners().contains(player.getUUID()) ? "COMPLETED" : "CLOSED_NOT_COMPLETED")
+                    .append(" status=").append(!run.participants().contains(player.getUUID()) ? "LEFT_QUEST_NO_COMPLETION_REWARD" : run.snapshot().closed() ? (run.winners().contains(player.getUUID()) ? "COMPLETED" : "CLOSED_NOT_COMPLETED")
                             : run.snapshot().submissions().containsKey(player.getUUID()) ? "SUBMITTED_WAITING" : "ACTIVE")
                     .append(" personal_progress=").append(run.total(player.getUUID())).append('/').append(run.maximum())
                     .append(" accepted_count=").append(run.participants().size())
@@ -250,7 +259,17 @@ public final class QuestParticipationService {
                     text.append(" final_rank=").append(run.snapshot().ranking().rank(player.getUUID(), run.scores()));
             }
             text.append('\n');
+            if (run.snapshot().roster() != null && !run.snapshot().closed() && run.participants().contains(player.getUUID())) {
+                rosterQuests.add(binding.questId().toString());
+                text.append("roster_management=AVAILABLE; quest_roster_request only opens NPC management choices; "
+                        + "withdrawal/removal/recruitment needs explicit confirmation. Submitted members retain eligibility. ")
+                        .append("minimum_participants=").append(run.snapshot().roster().policy().minimumParticipants()).append('\n');
+            }
         }
+        text.append("[QUEST_ROSTER_REQUESTS]\n").append(new com.google.gson.Gson().toJson(rosterQuests)).append("\n[/QUEST_ROSTER_REQUESTS]\n");
+        if (roomSessionId != null) text.append(QuestReorganizationService.INSTANCE.contextFor(player, new AiActionScope(roomSessionId, npc)));
+        text.append(com.sande.mythictrpg.quest.dynamic.GeneratedQuestService.INSTANCE.contextFor(player, npc, roomSessionId));
+        text.append("Quest objectives alone are not NPC confirmation. Default quests need current game-verified contact; acquired watch ownership alone cannot establish remote attention.\n");
         return text.append("Never treat a consent question or a submitted entry as completed. Do not invent other players' scores or rewards.\n").toString();
     }
 
@@ -282,6 +301,9 @@ public final class QuestParticipationService {
 
     public QuestOperationResult confirm(ServerPlayer player, ResourceLocation quest) {
         var scope = AiConversationRuntimeService.INSTANCE.currentActionScope(player).orElse(null);
+        if (scope == null) scope = MythicQuestState.get(player.server).assignmentsFor(player.getUUID()).stream()
+                .filter(a -> a.questId().equals(quest)).findFirst()
+                .flatMap(a -> QuestContactService.currentScope(player, a.giverGodId())).orElse(null);
         return confirm(player, quest, scope);
     }
 
@@ -291,15 +313,18 @@ public final class QuestParticipationService {
         if (roomScope == null || !ConversationRooms.INSTANCE.actionCurrent(player, roomScope.sessionId(), roomScope.actingGodId())) {
             return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, quest, "The selected quest confirmation room is no longer current");
         }
+        if (!QuestContactService.matchesScope(player, roomScope))
+            return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, quest, "이 대화방에서 실제로 접촉한 신에게 확인해야 합니다.");
         return confirm(player, quest, roomScope);
     }
 
     private QuestOperationResult confirm(ServerPlayer player, ResourceLocation quest, AiActionScope scope) {
         var binding = FtbQuestBindingManager.INSTANCE.find(quest).orElse(null);
-        if (scope == null || binding == null || binding.participation().isEmpty()
+        if (scope == null || binding == null
                 || binding.evaluationPolicy().isPresent() || binding.completionMode() != QuestCompletionMode.PLAYER_RETURN_TO_NPC)
             return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, quest,
                     "아이템/행동형 귀환 퀘스트만 대화 중 확인할 수 있습니다. 평가형은 서버 평가가 필요합니다.");
+        if (binding.participation().isEmpty()) return QuestRuntimeService.INSTANCE.confirmReturn(player, quest, scope.actingGodId());
         return submit(player, binding, scope.actingGodId(), 0);
     }
 
@@ -331,7 +356,14 @@ public final class QuestParticipationService {
                 var stack = player.getInventory().getItem(slot);
                 if (stack.isEmpty() || !net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(goal.subject())) continue;
                 int count = Math.min(missing, stack.getCount());
+                QuestRoster receipts;
+                try { receipts = QuestRosterRefunds.prepare(player, run, stack, count); }
+                catch (IllegalArgumentException invalid) {
+                    player.sendSystemMessage(Component.literal("[제출 보류] 반환 가능한 아이템 기록을 저장할 수 없습니다: " + invalid.getMessage()));
+                    continue;
+                }
                 if (run.advance(player.getUUID(), i, count, now)) {
+                    if (receipts != null) run.roster(receipts);
                     stack.shrink(count); consumed += count; missing -= count;
                 }
             }
@@ -358,6 +390,8 @@ public final class QuestParticipationService {
             return result(QuestOperationResult.Status.NOT_ASSIGNED, binding.questId(), "유효한 수주 또는 확인 NPC가 없습니다.");
         if (!run.accepting(player.getUUID(), now))
             return result(QuestOperationResult.Status.PARTICIPATION_CLOSED, binding.questId(), "참가자가 아니거나 이미 제출/마감되었습니다.");
+        if (!QuestContactService.canConfirm(player, binding, npc))
+            return result(QuestOperationResult.Status.WRONG_INTERACTION_MODE, binding.questId(), "실제 조우·대면 또는 현재 주시를 통한 응답이 필요합니다.");
         int verifiedScore = binding.evaluationPolicy().isEmpty() ? run.score(player.getUUID()) : score;
         if (binding.evaluationPolicy().isPresent() && !binding.evaluationPolicy().orElseThrow().passes(verifiedScore))
             return result(QuestOperationResult.Status.OBJECTIVES_NOT_READY, binding.questId(), "서버 평가 통과가 필요합니다.");
@@ -394,18 +428,24 @@ public final class QuestParticipationService {
             cancel(server, offer, "대화 또는 퀘스트 설정이 바뀌어 질문이 취소되었습니다.");
         long now = server.overworld().getGameTime();
         if (now % 20 != 0) return;
+        if (!MythicQuestState.get(server).isWritable()) return;
+        QuestReorganizationService.INSTANCE.tick(server);
         for (var run : MythicQuestState.get(server).participationRuns()) {
+            QuestRosterRefunds.tick(server, run);
             var binding = FtbQuestBindingManager.INSTANCE.find(ResourceLocation.parse(run.snapshot().questId())).orElse(null);
             if (binding != null && binding.participation().isPresent()) settle(server, binding, run);
         }
     }
 
-    private void settle(MinecraftServer server, FtbQuestBinding binding, QuestParticipationRun run) {
+    void settle(MinecraftServer server, FtbQuestBinding binding, QuestParticipationRun run) {
         var state = MythicQuestState.get(server);
         long now = server.overworld().getGameTime();
         if (!state.isWritable() || run.snapshot().closed() || !run.shouldClose(now)) return;
         ResourceLocation god = ResourceLocation.parse(run.snapshot().giverId());
         if (!matches(binding, run)) { warnSettlement(run, now, "Participation configuration changed; restore it before settling"); return; }
+        if (run.participants().isEmpty()) {
+            run.close(now); state.closeUnsubmittedRun(binding.questId()); return;
+        }
         String problem = configurationProblem(binding, god);
         if (!problem.isEmpty()) { warnSettlement(run, now, problem); return; }
         Map<UUID, ResolvedQuestReward> payouts = new LinkedHashMap<>();
@@ -468,10 +508,11 @@ public final class QuestParticipationService {
         }
     }
 
-    private static boolean matches(FtbQuestBinding binding, QuestParticipationRun run) {
+    static boolean matches(FtbQuestBinding binding, QuestParticipationRun run) {
         return binding.participation().filter(p -> p.type() == run.snapshot().type()
                 && p.objectives().equals(run.snapshot().objectives())
-                && p.ranking().equals(Optional.ofNullable(run.snapshot().ranking()))).isPresent();
+                && p.ranking().equals(Optional.ofNullable(run.snapshot().ranking()))
+                && p.reorganization().equals(Optional.ofNullable(run.snapshot().roster()).map(QuestRoster::policy))).isPresent();
     }
 
     private static QuestRewardResolver.Resolution resolveReward(FtbQuestBinding binding, ResourceLocation god, int tier) {

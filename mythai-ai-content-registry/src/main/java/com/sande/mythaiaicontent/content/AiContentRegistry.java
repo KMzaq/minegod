@@ -39,6 +39,7 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
     private static final FileToIdConverter EXAMPLES = FileToIdConverter.json("mythai_ai/dialogue_examples");
     private static final FileToIdConverter SOCIAL_RELATIONS = FileToIdConverter.json("mythai_ai/social_relations");
     private static final FileToIdConverter QUEST_LISTS = FileToIdConverter.json("mythai_ai/quest_lists");
+    private static final FileToIdConverter COMMON_KNOWLEDGE = FileToIdConverter.json("mythai_ai/common_knowledge");
 
     private volatile Snapshot snapshot = Snapshot.empty();
 
@@ -51,6 +52,11 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
 
     public Snapshot snapshot() {
         return snapshot;
+    }
+
+    /** Unrestricted public reference facts. Relevance selection and prompt budgets belong to the caller. */
+    public List<CommonKnowledgeEntry> publicCommonKnowledge() {
+        return snapshot.publicCommonKnowledge();
     }
 
     /** Resolves a static profile using the God ID owned by MythicTRPG, never a display name. */
@@ -190,6 +196,8 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
                 AiContentRegistry::parseSocialRelation, errors);
         Map<ResourceLocation, QuestListDefinition> questListsById = parseAll(resourceManager, QUEST_LISTS,
                 AiContentRegistry::parseQuestList, errors);
+        Map<ResourceLocation, CommonKnowledgeEntry> commonKnowledgeById = parseAll(resourceManager, COMMON_KNOWLEDGE,
+                AiContentRegistry::parseCommonKnowledge, errors, CommonKnowledgeEntry.MAX_ENTRIES);
 
         Map<ResourceLocation, GodContentProfile> godsByGodId = new LinkedHashMap<>();
         for (GodContentProfile profile : godsByContentId.values()) {
@@ -210,7 +218,8 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
         return new Prepared(Map.copyOf(godsByContentId), Map.copyOf(godsByGodId), Map.copyOf(loreById),
                 Map.copyOf(examplesById), Map.copyOf(socialRelationsById), Map.copyOf(questListsById),
                 indexes.knowledgeLevelsByGodId(),
-                indexes.holdersByLoreId(), buildSocialRelationIndex(socialRelationsById.values()));
+                indexes.holdersByLoreId(), buildSocialRelationIndex(socialRelationsById.values()),
+                List.copyOf(commonKnowledgeById.values()));
     }
 
     @Override
@@ -218,17 +227,29 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
         snapshot = new Snapshot(prepared.godsByContentId(), prepared.godsByGodId(), prepared.loreById(),
                 prepared.examplesById(), prepared.socialRelationsById(), prepared.questListsById(),
                 prepared.knowledgeLevelsByGodId(),
-                prepared.holdersByLoreId(), prepared.socialTagsBySourceGodId(), snapshot.generation() + 1);
+                prepared.holdersByLoreId(), prepared.socialTagsBySourceGodId(), prepared.publicCommonKnowledge(),
+                snapshot.generation() + 1);
         MythAiContentRegistryMod.LOGGER.info("Loaded {} static God profiles, {} lore entries, {} dialogue examples, "
-                        + "{} social relations, and {} quest lists (generation {}).", prepared.godsByContentId().size(),
+                        + "{} social relations, {} quest lists, and {} public common knowledge entries (generation {}).",
+                prepared.godsByContentId().size(),
                 prepared.loreById().size(), prepared.examplesById().size(), prepared.socialRelationsById().size(),
-                prepared.questListsById().size(), snapshot.generation());
+                prepared.questListsById().size(), prepared.publicCommonKnowledge().size(), snapshot.generation());
     }
 
     private static <T> Map<ResourceLocation, T> parseAll(ResourceManager resources, FileToIdConverter converter,
             EntryParser<T> parser, List<String> errors) {
+        return parseAll(resources, converter, parser, errors, Integer.MAX_VALUE);
+    }
+
+    private static <T> Map<ResourceLocation, T> parseAll(ResourceManager resources, FileToIdConverter converter,
+            EntryParser<T> parser, List<String> errors, int maximumEntries) {
         Map<ResourceLocation, T> parsed = new LinkedHashMap<>();
-        converter.listMatchingResources(resources).entrySet().stream().sorted(Map.Entry.comparingByKey())
+        Map<ResourceLocation, Resource> matching = converter.listMatchingResources(resources);
+        if (matching.size() > maximumEntries) {
+            errors.add("AI content category exceeds maximum of " + maximumEntries + " entries");
+            return parsed;
+        }
+        matching.entrySet().stream().sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> {
                     ResourceLocation id = converter.fileToId(entry.getKey());
                     try (Reader reader = entry.getValue().openAsReader()) {
@@ -247,6 +268,36 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
                     }
                 });
         return parsed;
+    }
+
+    /** Deliberately has no lore ownership/disclosure fields: every accepted fact is public to every audience. */
+    static CommonKnowledgeEntry parseCommonKnowledge(ResourceLocation contentId, JsonObject json) {
+        if (!Set.of("schemaVersion", "title", "keywords", "content").containsAll(json.keySet())) {
+            throw new IllegalArgumentException("common_knowledge accepts only schemaVersion, title, keywords, content; "
+                    + "secret or restricted knowledge belongs in lore");
+        }
+        JsonElement version = json.get("schemaVersion");
+        if (version == null || !version.isJsonPrimitive() || !version.getAsJsonPrimitive().isNumber()
+                || !version.getAsString().equals("2")) {
+            throw new IllegalArgumentException("common_knowledge schemaVersion must be the integer 2");
+        }
+        JsonArray rawKeywords = array(json, "keywords");
+        if (rawKeywords.isEmpty() || rawKeywords.size() > CommonKnowledgeEntry.MAX_KEYWORDS) {
+            throw new IllegalArgumentException("keywords must contain 1.." + CommonKnowledgeEntry.MAX_KEYWORDS + " strings");
+        }
+        List<String> keywords = new ArrayList<>();
+        for (JsonElement keyword : rawKeywords) {
+            keywords.add(strictString(keyword, "keywords[]"));
+        }
+        return new CommonKnowledgeEntry(contentId, strictString(json.get("title"), "title"), keywords,
+                strictString(json.get("content"), "content"));
+    }
+
+    private static String strictString(JsonElement value, String field) {
+        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) {
+            throw new IllegalArgumentException(field + " must be a string");
+        }
+        return value.getAsString();
     }
 
     private static GodContentProfile parseGod(ResourceLocation contentId, JsonObject json) {
@@ -707,7 +758,8 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             Map<ResourceLocation, QuestListDefinition> questListsById,
             Map<ResourceLocation, Map<ResourceLocation, Integer>> knowledgeLevelsByGodId,
             Map<ResourceLocation, List<LoreKnowledgeHolder>> holdersByLoreId,
-            Map<ResourceLocation, Map<ResourceLocation, List<SocialRelationTag>>> socialTagsBySourceGodId) {
+            Map<ResourceLocation, Map<ResourceLocation, List<SocialRelationTag>>> socialTagsBySourceGodId,
+            List<CommonKnowledgeEntry> publicCommonKnowledge) {
     }
 
     public record Snapshot(Map<ResourceLocation, GodContentProfile> godsByContentId,
@@ -717,6 +769,7 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             Map<ResourceLocation, Map<ResourceLocation, Integer>> knowledgeLevelsByGodId,
             Map<ResourceLocation, List<LoreKnowledgeHolder>> holdersByLoreId,
             Map<ResourceLocation, Map<ResourceLocation, List<SocialRelationTag>>> socialTagsBySourceGodId,
+            List<CommonKnowledgeEntry> publicCommonKnowledge,
             long generation) {
         private static Snapshot empty() {
             return new Snapshot(Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), 0);
@@ -732,6 +785,23 @@ public final class AiContentRegistry extends SimplePreparableReloadListener<AiCo
             knowledgeLevelsByGodId = immutableNestedMap(knowledgeLevelsByGodId);
             holdersByLoreId = immutableListMap(holdersByLoreId);
             socialTagsBySourceGodId = immutableNestedListMap(socialTagsBySourceGodId);
+            publicCommonKnowledge = List.copyOf(publicCommonKnowledge);
+            if (publicCommonKnowledge.size() > CommonKnowledgeEntry.MAX_ENTRIES) {
+                throw new IllegalArgumentException("Too many public common knowledge entries");
+            }
+        }
+
+        /** Source/binary compatibility for consumers that construct the previous snapshot shape. */
+        public Snapshot(Map<ResourceLocation, GodContentProfile> godsByContentId,
+                Map<ResourceLocation, GodContentProfile> godsByGodId, Map<ResourceLocation, LoreEntry> loreById,
+                Map<ResourceLocation, DialogueExample> examplesById, Map<ResourceLocation, SocialRelation> socialRelationsById,
+                Map<ResourceLocation, QuestListDefinition> questListsById,
+                Map<ResourceLocation, Map<ResourceLocation, Integer>> knowledgeLevelsByGodId,
+                Map<ResourceLocation, List<LoreKnowledgeHolder>> holdersByLoreId,
+                Map<ResourceLocation, Map<ResourceLocation, List<SocialRelationTag>>> socialTagsBySourceGodId,
+                long generation) {
+            this(godsByContentId, godsByGodId, loreById, examplesById, socialRelationsById, questListsById,
+                    knowledgeLevelsByGodId, holdersByLoreId, socialTagsBySourceGodId, List.of(), generation);
         }
     }
 

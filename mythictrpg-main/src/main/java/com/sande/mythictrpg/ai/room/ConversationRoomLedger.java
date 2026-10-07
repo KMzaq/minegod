@@ -40,13 +40,17 @@ public final class ConversationRoomLedger {
         }
     }
 
-    public record TurnLease(UUID roomId, long revision, UUID turnId, UUID playerId, String godId) {
+    public record TurnLease(UUID roomId, long revision, UUID turnId, UUID playerId, String godId, long sequence) {
+        /** Legacy fixture/caller has no game-issued ordering proof. Zero is explicitly unknown. */
+        public TurnLease(UUID roomId, long revision, UUID turnId, UUID playerId, String godId) {
+            this(roomId, revision, turnId, playerId, godId, 0);
+        }
         public TurnLease {
             Objects.requireNonNull(roomId);
             Objects.requireNonNull(turnId);
             Objects.requireNonNull(playerId);
             ConversationRoomSnapshot.validateGodId(godId);
-            if (revision < 1) throw new IllegalArgumentException("Invalid turn revision");
+            if (revision < 1 || sequence < 0) throw new IllegalArgumentException("Invalid turn revision/sequence");
         }
     }
 
@@ -54,6 +58,7 @@ public final class ConversationRoomLedger {
     private final Map<UUID, UUID> selectedPrivate = new HashMap<>();
     private final Map<UUID, RoomInvitation> invitations = new LinkedHashMap<>();
     private final Map<UUID, TurnLease> pendingTurns = new HashMap<>();
+    private final Map<UUID, Long> turnSequences = new HashMap<>();
 
     public synchronized ConversationRoomSnapshot create(RoomType type, UUID creator,
             Collection<String> godIds, String regionId, RecordingScope recordingScope) {
@@ -292,7 +297,9 @@ public final class ConversationRoomLedger {
         if (!room.playerIds().contains(playerId) || !room.godIds().contains(godId)) {
             throw rejected("Turn participants do not belong to this room");
         }
-        var lease = new TurnLease(roomId, expectedRevision, UUID.randomUUID(), playerId, godId);
+        long sequence = Math.incrementExact(turnSequences.getOrDefault(roomId, 0L));
+        var lease = new TurnLease(roomId, expectedRevision, UUID.randomUUID(), playerId, godId, sequence);
+        turnSequences.put(roomId, sequence);
         pendingTurns.put(roomId, lease);
         return lease;
     }
@@ -308,6 +315,11 @@ public final class ConversationRoomLedger {
         if (!isCurrent(lease)) return false;
         pendingTurns.remove(lease.roomId());
         return true;
+    }
+
+    /** Includes completed turns so an asynchronous observer can reject an older room turn. */
+    public synchronized long latestTurnSequence(UUID roomId) {
+        return turnSequences.getOrDefault(roomId, 0L);
     }
 
     public synchronized Optional<ConversationRoomSnapshot> find(UUID roomId) {
@@ -393,6 +405,7 @@ public final class ConversationRoomLedger {
 
     private void remove(UUID roomId) {
         rooms.remove(roomId);
+        turnSequences.remove(roomId); // Only a destroyed identity resets; join/revision does not reset ordering.
         invalidate(roomId);
         selectedPrivate.values().removeIf(selected -> selected.equals(roomId));
     }

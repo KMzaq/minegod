@@ -45,6 +45,9 @@ public final class RewardExecutionService {
                     && !BuiltInRegistries.MOB_EFFECT.containsKey(blessing.effectId())) {
                 return Validation.reject("Reward blessing is no longer registered: " + blessing.effectId());
             }
+            if (reward instanceof BlessingRewardEntry blessing && blessing.permanent()
+                    && BuiltInRegistries.MOB_EFFECT.get(blessing.effectId()).isInstantenous())
+                return Validation.reject("Instant effects cannot be permanent blessings: " + blessing.effectId());
             if (reward instanceof AffinityRewardEntry affinity
                     && purpose == RewardGrantPurpose.AI_ACTION && affinity.amount() > 50) {
                 return Validation.reject("AI action affinity rewards may not exceed +50");
@@ -61,6 +64,9 @@ public final class RewardExecutionService {
         for (RewardEntry entry : rewards) if (entry instanceof WatchRewardEntry watch
                 && !RewardClaimState.get(player.server).hasWatch(player.getUUID(), watch.godId()))
             return Result.reject("Watch reward has no committed personal claim");
+        for (RewardEntry entry : rewards) if (entry instanceof BlessingRewardEntry blessing && blessing.permanent()
+                && !RewardClaimState.get(player.server).ownsPermanentBlessing(player.getUUID(), godId, blessing))
+            return Result.reject("Permanent blessing has no committed authored grant");
         List<String> descriptions = new ArrayList<>();
         for (RewardEntry reward : rewards) {
             switch (reward) {
@@ -86,9 +92,14 @@ public final class RewardExecutionService {
         if (!validation.allowed()) {
             return validation;
         }
+        Validation itemValidation = validateItemComponents(player.registryAccess(), rewards);
+        if (!itemValidation.allowed()) return itemValidation;
         if (rewards.stream().anyMatch(WatchRewardEntry.class::isInstance)
                 && !RewardClaimState.get(player.server).canGrantWatches(player.getUUID(), rewards))
             return Validation.reject("Watch entitlement storage unavailable; existing ownership is preserved");
+        if (rewards.stream().anyMatch(reward -> reward instanceof BlessingRewardEntry blessing && blessing.permanent())
+                && !RewardClaimState.get(player.server).canGrantPermanentBlessings(player.getUUID(), rewards))
+            return Validation.reject("Permanent blessing ownership storage unavailable");
         long currencyTotal = 0L;
         for (RewardEntry reward : rewards) {
             if (reward instanceof CurrencyRewardEntry currency) {
@@ -118,13 +129,41 @@ public final class RewardExecutionService {
     }
 
     private static void grantItem(ServerPlayer player, NpcRewardEntry reward) {
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(reward.itemId()), reward.count());
+        ItemStack stack = reward.createStack(player.registryAccess());
         ItemStack history = stack.copy();
-        player.getInventory().add(stack);
-        if (!stack.isEmpty()) {
-            player.drop(stack, false);
+        try {
+            int before = java.util.stream.IntStream.range(0, player.getInventory().getContainerSize()).mapToObj(player.getInventory()::getItem)
+                    .filter(item -> ItemStack.isSameItemSameComponents(item, history))
+                    .mapToInt(ItemStack::getCount).sum();
+            player.getInventory().add(stack);
+            int after = java.util.stream.IntStream.range(0, player.getInventory().getContainerSize()).mapToObj(player.getInventory()::getItem)
+                    .filter(item -> ItemStack.isSameItemSameComponents(item, history))
+                    .mapToInt(ItemStack::getCount).sum();
+            // Creative overflow may consume the input without inserting it. Only a positive delta or live dropped entity proves delivery.
+            boolean delivered = after > before;
+            if (!stack.isEmpty()) {
+                var dropped = player.drop(stack, false);
+                delivered |= dropped != null && !dropped.isRemoved();
+            }
+            if (delivered) com.sande.mythictrpg.power.CombatPowerRuntime.rewardItemDelivered(player, history);
+            else com.sande.mythictrpg.power.CombatPowerRuntime.rewardDeliveryUncertain(player);
+        } catch (RuntimeException deliveryFailure) {
+            com.sande.mythictrpg.power.CombatPowerRuntime.rewardDeliveryUncertain(player);
+            throw deliveryFailure;
         }
         PlayerMythHistoryService.recordItemObtained(player, history);
+    }
+
+    /** Run before recording a non-repeatable completion, including offline batch claims. */
+    public static Validation validateItemComponents(net.minecraft.core.HolderLookup.Provider registries,
+            List<RewardEntry> rewards) {
+        try {
+            for (RewardEntry reward : rewards) if (reward instanceof NpcRewardEntry item)
+                item.createStack(registries);
+            return Validation.allow();
+        } catch (RuntimeException invalid) {
+            return Validation.reject("Invalid reward item components: " + invalid.getMessage());
+        }
     }
 
     private static void grantAffinity(ServerPlayer player, ResourceLocation godId,
@@ -138,12 +177,16 @@ public final class RewardExecutionService {
     }
 
     private static void grantBlessing(ServerPlayer player, BlessingRewardEntry reward) {
+        if (reward.permanent()) {
+            PermanentBlessingRuntime.applyGranted(player, reward.effectId());
+            return;
+        }
         Holder.Reference<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(reward.effectId())
                 .orElseThrow(() -> new IllegalStateException("Reward effect disappeared after validation"));
         MobEffectInstance current = player.getEffect(effect);
         if (current != null && (current.getAmplifier() > reward.amplifier()
                 || current.getAmplifier() == reward.amplifier()
-                && current.getDuration() >= reward.durationTicks())) {
+                && (current.isInfiniteDuration() || current.getDuration() >= reward.durationTicks()))) {
             return;
         }
         player.addEffect(new MobEffectInstance(effect, reward.durationTicks(), reward.amplifier(),

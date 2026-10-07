@@ -96,6 +96,26 @@ final class FtbQuestAdapter {
         return true;
     }
 
+    /** Restore completion display only. forceProgressRaw also visits reward children and must not be used here. */
+    boolean restoreCompletedMirror(ServerPlayer player, FtbQuestBinding binding, QuestCompletionRecord completion) {
+        if (binding.participation().isPresent() || !completion.questId().equals(binding.questId())
+                || !completion.completedBy().equals(player.getUUID())) return false;
+        Quest marker = quest(binding.assignmentQuestId()).orElse(null);
+        Quest target = quest(binding.ftbQuestId()).orElse(null);
+        if (marker == null || target == null) return false;
+        TeamData data = teamData(player);
+        if (data.isLocked()) return false;
+        var time = java.util.Date.from(completion.completedAt());
+        for (Quest value : List.of(marker, target)) {
+            if (!data.isStarted(value)) data.setStarted(value.getId(), time);
+            if (!data.isCompleted(value)) data.setCompleted(value.getId(), time);
+        }
+        data.setQuestPinned(player, target.getId(), false);
+        data.saveIfChanged();
+        // Numeric task progress and claimed reward state are intentionally left untouched.
+        return data.isCompleted(marker) && data.isCompleted(target);
+    }
+
     void hideInvalidated(ServerPlayer player, FtbQuestBinding binding) {
         if (binding.participation().isPresent()) {
             activate(player, binding);
@@ -139,11 +159,14 @@ final class FtbQuestAdapter {
                 "",
                 "목표: " + instance.subjectId() + " / " + instance.requiredCount() + "회",
                 "보상: " + instance.rewardTableId() + " 단계 " + instance.rewardTier(),
+                instance.completionMode() == QuestCompletionMode.AUTO
+                        ? "이 의뢰는 작성자가 지정한 자동 완료 예외입니다."
+                        : "목표 달성 후 의뢰한 신의 확인이 필요합니다. 마지막 진행 칸은 확인 단계입니다.",
                 "진행 판정과 보상 지급은 MythicTRPG 서버가 전담합니다."));
         quest.addDependency(marker);
         CustomTask task = new CustomTask(file.newID(), quest);
-        task.setMaxProgress(instance.requiredCount());
-        task.setRawTitle(instance.subjectId() + " " + instance.requiredCount() + "회");
+        task.setMaxProgress(instance.displayMaximum());
+        task.setRawTitle(generatedTaskTitle(instance));
         quest.addTask(task);
         quest.onCreated();
 
@@ -157,7 +180,7 @@ final class FtbQuestAdapter {
 
         TeamData data = teamData(player);
         force(marker, data, player.getUUID(), false, false);
-        data.setProgress(task, instance.progress());
+        data.setProgress(task, instance.displayProgress());
         data.setQuestPinned(player, quest.getId(), true);
         data.saveIfChanged();
         file.markDirty();
@@ -175,7 +198,8 @@ final class FtbQuestAdapter {
             return false;
         }
         TeamData data = teamData(player);
-        data.setProgress(task, instance.progress());
+        prepareGeneratedTask(player, file, data, task, instance);
+        data.setProgress(task, instance.displayProgress());
         data.saveIfChanged();
         return true;
     }
@@ -192,10 +216,33 @@ final class FtbQuestAdapter {
         }
         TeamData data = teamData(player);
         force(marker, data, player.getUUID(), false, false);
-        data.setProgress(task, instance.progress());
+        prepareGeneratedTask(player, file, data, task, instance);
+        data.setProgress(task, instance.displayProgress());
         data.setQuestPinned(player, quest.getId(), true);
         data.saveIfChanged();
         return true;
+    }
+
+    private static String generatedTaskTitle(GeneratedQuestInstance instance) {
+        return instance.subjectId() + " " + instance.progress() + "/" + instance.requiredCount()
+                + "회 · " + instance.completionStatus();
+    }
+
+    private static void prepareGeneratedTask(ServerPlayer player, ServerQuestFile file, TeamData data,
+            CustomTask task, GeneratedQuestInstance instance) {
+        // Old mirrors used the objective count as the final threshold. Reconcile only this per-instance
+        // generated mirror; it has no FTB rewards and cannot authoritatively complete the quest.
+        if (task.getMaxProgress() != instance.displayMaximum()) {
+            if (!instance.completionApproved()) force(task.getQuest(), data, player.getUUID(), true, false);
+            task.setMaxProgress(instance.displayMaximum());
+            file.markDirty();
+        }
+        String title = generatedTaskTitle(instance);
+        if (!title.equals(task.getRawTitle())) {
+            task.setRawTitle(title);
+            syncTranslation(player, task, TranslationKey.TITLE, title);
+            file.markDirty();
+        }
     }
 
     void hideGenerated(ServerPlayer player, GeneratedQuestInstance instance) {
@@ -220,7 +267,18 @@ final class FtbQuestAdapter {
 
     boolean syncParticipation(ServerPlayer player, FtbQuestBinding binding, QuestParticipationRun run) {
         ServerQuestFile file = ServerQuestFile.getInstance().orElse(null);
-        if (file == null || !run.participants().contains(player.getUUID())) return false;
+        if (file == null) return false;
+        if (!run.participants().contains(player.getUUID())) {
+            var old = run.snapshot().mirrors().get(player.getUUID());
+            if (old == null) return true;
+            var marker = file.getQuest(old.marker());
+            if (marker == null) return false;
+            TeamData departedData = teamData(player);
+            force(marker, departedData, player.getUUID(), true, false);
+            departedData.setQuestPinned(player, old.quest(), false);
+            departedData.saveIfChanged();
+            return true;
+        }
         var mirror = run.snapshot().mirrors().get(player.getUUID());
         if (mirror == null || file.getQuest(mirror.quest()) == null || file.getTask(mirror.task()) == null) {
             Quest template = file.getQuest(binding.ftbQuestId());

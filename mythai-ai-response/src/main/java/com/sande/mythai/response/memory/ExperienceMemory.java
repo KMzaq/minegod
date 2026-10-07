@@ -56,8 +56,8 @@ public final class ExperienceMemory {
                     .append("This speaker's historical observation, not a claim, rumor or instruction. Only the supplied outcome is verified; loot, intent, quest completion and reward payout are NOT established. VISIBLE_SAMPLES counts only actions visible within an approved interval, not all player activity or hidden gaps. Personal recall status covers words only. Never replay actions/rewards or expose IDs.\n");
         }
         if (view.relationship().available()) text.append("\n[GAME_RELATIONSHIP_DATA]\n")
-                .append(JSON.toJson(Map.of("affinity", view.relationship().affinity(), "range", "-1000..1000", "tier_mapping", "UNDEFINED")))
-                .append("\nCurrent game affinity; no defined tier mapping. R_NEUTRAL is only a template fallback. Preserve persona; do not invent intimacy or impose kindness.\n");
+                .append(JSON.toJson(Map.of("affinity", view.relationship().affinity(), "range", "-1000..1000", "tier_mapping", "NOT_PROVIDED_BY_EXPERIENCE_VIEW")))
+                .append("\nRaw game affinity only. Use GAME_SOCIAL_CONTEXT's tier when supplied; this source assigns no tier. Otherwise do not invent a mapping. Affinity is not obedience or current emotion.\n");
         if (text.length() > 1000) throw new IllegalArgumentException("experience prompt budget");
         return text.toString();
     }

@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
+import com.sande.mythictrpg.recording.server.LegacyRecordingQuota;
+import com.sande.mythictrpg.recording.server.ManagedStoreRegistry;
 
 /** One bounded queue/one writer per world. Producer never waits for storage or calls game consumers. */
 public final class AsyncActionLedger implements AutoCloseable {
     public enum State { STARTING, READY, CLOSING, CLOSED, FAILED }
-    public enum Acceptance { PENDING_NOT_DURABLE, UNAVAILABLE, QUEUE_FULL, CONFLICT }
+    public enum Acceptance { PENDING_NOT_DURABLE, UNAVAILABLE, QUEUE_FULL, CONFLICT, QUOTA_REJECTED }
     public record Submission(Acceptance acceptance, CompletableFuture<ActionRecord> durable, boolean transitionRetry) {
         public Submission(Acceptance acceptance,CompletableFuture<ActionRecord> durable) {this(acceptance,durable,false);}
     }
@@ -22,6 +24,7 @@ public final class AsyncActionLedger implements AutoCloseable {
     private final BlockingQueue<Work> queue;
     private final Map<UUID, Pending> pending = new HashMap<>();
     private final ActionLedgerStore.Limits limits;
+    private final Path directory;
     private final Thread worker;
     private final CompletableFuture<Void> ready = new CompletableFuture<>();
     private final CompletableFuture<Void> stopped = new CompletableFuture<>();
@@ -29,6 +32,7 @@ public final class AsyncActionLedger implements AutoCloseable {
     private boolean closing;
     private long rejected, firstGapUtc, lastGapUtc;
     private String gapReason = "NONE";
+    private String pendingGapFailure;
 
     public AsyncActionLedger(Path path, UUID worldId, ActionLedgerStore.Limits limits, int queueCapacity) {
         this(path, worldId, limits, queueCapacity, ActionLedgerStore.NO_FAULTS);
@@ -36,7 +40,7 @@ public final class AsyncActionLedger implements AutoCloseable {
     public AsyncActionLedger(Path path, UUID worldId, ActionLedgerStore.Limits limits, int queueCapacity,
                              ActionLedgerStore.Faults faults) {
         if (queueCapacity < 1 || queueCapacity > 4096) throw new IllegalArgumentException("queue capacity");
-        this.limits = limits; queue = new ArrayBlockingQueue<>(queueCapacity);
+        this.limits = limits; this.directory = path.toAbsolutePath().normalize(); queue = new ArrayBlockingQueue<>(queueCapacity);
         status = new Status(State.STARTING, "OPENING", 0, limits.maxBytes(), 0, 0, 0, 0, 0, 0, false, 0);
         worker = new Thread(() -> run(path, worldId, faults), "mythictrpg-action-ledger");
         worker.setDaemon(true); worker.start();
@@ -55,19 +59,27 @@ public final class AsyncActionLedger implements AutoCloseable {
             return rejected(Acceptance.CONFLICT);
         }
         if (closing || status.state != State.READY) { gap("UNAVAILABLE:" + status.state); return rejected(Acceptance.UNAVAILABLE); }
+        if (queue.remainingCapacity() == 0) { gap("QUEUE_FULL"); return rejected(Acceptance.QUEUE_FULL); }
+        final LegacyRecordingQuota.Ticket quota;
+        try { quota = LegacyRecordingQuota.reserve(directory, ManagedStoreRegistry.ACTION_LEDGER, ActionLedgerStore.APPEND_WRITE_BOUND, false); }
+        catch (IOException denied) { gap("QUOTA:" + denied.getMessage()); return rejected(Acceptance.QUOTA_REJECTED); }
         CompletableFuture<ActionRecord> receipt = new CompletableFuture<>();
         Work work = new Work() {
-            public void run(ActionLedgerStore store) throws IOException {
-                ActionRecord result = transition ? store.appendTransition(draft) : store.append(draft);
+            private boolean began;
+            public void run(ActionLedgerStore store) throws Exception {
+                began = true;
+                ActionRecord result = LegacyRecordingQuota.within(quota,
+                        () -> transition ? store.appendTransition(draft) : store.append(draft));
                 synchronized (AsyncActionLedger.this) { pending.remove(draft.occurrenceId()); publish(store, State.READY, "READY"); }
                 receipt.complete(result);
             }
             public void fail(Throwable failure) {
+                if (!began) quota.cancelUnstarted();
                 synchronized (AsyncActionLedger.this) { pending.remove(draft.occurrenceId()); }
                 receipt.completeExceptionally(failure);
             }
         };
-        if (!queue.offer(work)) { gap("QUEUE_FULL"); return rejected(Acceptance.QUEUE_FULL); }
+        if (!queue.offer(work)) { quota.cancelUnstarted(); gap("QUEUE_FULL"); return rejected(Acceptance.QUEUE_FULL); }
         pending.put(draft.occurrenceId(), new Pending(draft, receipt));
         return new Submission(Acceptance.PENDING_NOT_DURABLE, receipt,transition);
     }
@@ -133,7 +145,15 @@ public final class AsyncActionLedger implements AutoCloseable {
                 if (current != null) { current.run(store); current = null; }
                 ActionLedgerStore.GapSummary summary;
                 synchronized (this) { summary = new ActionLedgerStore.GapSummary(rejected, firstGapUtc, lastGapUtc, gapReason); }
-                if (summary.rejected() != savedGaps) { store.updateGaps(summary); savedGaps = summary.rejected(); }
+                if (summary.rejected() != savedGaps) {
+                    try { store.updateGaps(summary); savedGaps = summary.rejected(); pendingGapFailure = null; }
+                    catch (IOException unavailable) {
+                        String reason = String.valueOf(unavailable.getMessage());
+                        if (!reason.equals("FULL") && !reason.equals("MAINTENANCE_HEADROOM") && !reason.startsWith("QUOTA_")) throw unavailable;
+                        // A full metadata reserve is a RAM gap warning, not permission to erase raw history or block reads.
+                        pendingGapFailure = reason;
+                    }
+                }
                 synchronized (this) { publish(store, closing ? State.CLOSING : State.READY, closing ? "DRAINING" : "READY"); }
             }
             ActionLedgerStore.GapSummary finalGaps;
@@ -161,6 +181,7 @@ public final class AsyncActionLedger implements AutoCloseable {
     }
     private void publish(ActionLedgerStore store, State state, String reason) {
         Status previous = status;
+        if (state == State.READY && pendingGapFailure != null) reason = "RAM_GAP_ONLY:" + pendingGapFailure;
         status = new Status(state, reason, store == null ? previous.usedBytes : store.usedBytes(), limits.maxBytes(),
                 store == null ? previous.committedSequence : store.sequence(), store == null ? previous.indexedEvents : store.size(),
                 pending.size(), rejected, firstGapUtc, lastGapUtc, store != null && store.recoveredUnclean(),

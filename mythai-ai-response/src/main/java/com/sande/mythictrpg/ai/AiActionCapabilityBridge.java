@@ -60,6 +60,8 @@ final class AiActionCapabilityBridge {
                     .append("God targets, results or other parameters. The authored transition supplies its participants ")
                     .append("and changes; only the game's confirmation and validation can apply it.\n");
         }
+        if (capabilities.stream().anyMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:npc_activity_request"))))
+            context.append(NpcActivityPrompt.policy());
     }
 
     static AiDialogueModels.Proposal normalize(AiDialogueModels.Proposal proposal,
@@ -94,6 +96,49 @@ final class AiActionCapabilityBridge {
             ResourceLocation godId, String playerText, List<AiActionCapability> capabilities,
             Function<ResourceLocation, Optional<GodRelationTransition>> transitions) {
         String type = canonicalType(proposal.type());
+        if ("quest_roster_request".equals(type)) {
+            if (!Set.of(type, "mythictrpg:" + type).contains(proposal.type().trim().toLowerCase(Locale.ROOT))
+                    || !proposal.targetParticipantIds().isEmpty() || !proposal.parameters().keySet().equals(Set.of("quest_id"))
+                    || capabilities.stream().noneMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:" + type)))) return null;
+            String rawId = proposal.parameters().get("quest_id");
+            var id = rawId == null ? null : ResourceLocation.tryParse(rawId);
+            if (id == null || !id.toString().equals(rawId)) return null;
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(), Map.of("quest_id", rawId));
+        }
+        if ("npc_activity_request".equals(type)) {
+            String rawType = proposal.type().trim().toLowerCase(Locale.ROOT);
+            if (!(rawType.equals(type) || rawType.equals("mythictrpg:" + type))
+                    || !proposal.targetParticipantIds().isEmpty() || !proposal.parameters().keySet().equals(Set.of("choice_id"))
+                    || capabilities.stream().noneMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:" + type)))) return null;
+            String choice = proposal.parameters().get("choice_id");
+            if (!"STOP".equals(choice) && !"CONTINUE".equals(choice)) {
+                try { if (choice == null || !java.util.UUID.fromString(choice).toString().equals(choice)) return null; }
+                catch (IllegalArgumentException malformed) { return null; }
+            }
+            // Structural validation only. The game binds opaque choices to this actor/room/revision and hard policy.
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(), Map.of("choice_id", choice));
+        }
+        if ("npc_visit_request".equals(type)) {
+            if (!Set.of(type, "mythictrpg:" + type).contains(proposal.type().trim().toLowerCase(Locale.ROOT))
+                    || !proposal.parameters().isEmpty() || !proposal.targetParticipantIds().isEmpty()
+                    || capabilities.stream().noneMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:" + type)))) return null;
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(), Map.of());
+        }
+        if ("raid_offer".equals(type)) {
+            String rawType = proposal.type().trim().toLowerCase(Locale.ROOT);
+            if (!(rawType.equals(type) || rawType.equals("mythictrpg:" + type))
+                    || !proposal.targetParticipantIds().isEmpty()
+                    || !proposal.parameters().keySet().equals(Set.of("raid_id"))) return null;
+            String rawId = proposal.parameters().get("raid_id");
+            ResourceLocation id = rawId == null ? null : ResourceLocation.tryParse(rawId);
+            if (id == null || !id.toString().equals(rawId)) return null;
+            boolean offered = capabilities.stream().anyMatch(capability ->
+                    capability.actionType().equals(ResourceLocation.parse("mythictrpg:raid_offer"))
+                            && capability.templateId().filter(id::equals).isPresent());
+            if (!offered) return null;
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(),
+                    Map.of("raid_id", id.toString()));
+        }
         if ("god_relation_transition".equals(type)) {
             String rawType = proposal.type().trim().toLowerCase(Locale.ROOT);
             if (!(rawType.equals(type) || rawType.equals("mythictrpg:" + type))

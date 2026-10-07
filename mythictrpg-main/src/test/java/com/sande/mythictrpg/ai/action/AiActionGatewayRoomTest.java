@@ -92,6 +92,13 @@ public final class AiActionGatewayRoomTest {
                     public record Scope(UUID room,long revision,UUID session,UUID player,ResourceLocation god){}
                     public final Map<UUID,Scope> scopes=new HashMap<>();
                     public final Map<UUID,Set<UUID>> audience=new HashMap<>();
+                    public final Map<UUID,Map<UUID,AiActionResult>> feedback=new HashMap<>();
+                    public final java.util.List<AiActionGateway.RoomOutcome> issued=new ArrayList<>();
+                    public boolean acceptActionOutcome(ServerPlayer p,AiActionGateway.RoomOutcome outcome){
+                        issued.add(outcome);var scope=actionScope(p,outcome.roomId(),outcome.revision(),outcome.godId());
+                        if(scope.isEmpty()||!scope.get().sessionId().equals(outcome.sessionId())||!outcome.consumeFor(p))return false;
+                        feedback.computeIfAbsent(outcome.roomId(),ignored->new LinkedHashMap<>()).put(outcome.result().proposalId(),outcome.result());return true;
+                    }
                     public Set<UUID> actionPlayers(ServerPlayer p,UUID session,ResourceLocation god){return scopes.values().stream().filter(s->s.session().equals(session)&&s.god().equals(god)&&members(s).contains(p.getUUID())).findFirst().map(this::members).orElse(Set.of());}
                     private Set<UUID> members(Scope s){return audience.getOrDefault(s.room(),Set.of(s.player()));}
                     public Optional<AiActionScope> actionScope(ServerPlayer p,UUID room,long revision,ResourceLocation god){
@@ -103,7 +110,7 @@ public final class AiActionGatewayRoomTest {
         files.put("com.sande.mythictrpg.ai.action.AiActionTypes", """
                 package com.sande.mythictrpg.ai.action;
                 import net.minecraft.resources.ResourceLocation;
-                public class AiActionTypes {public static final ResourceLocation ITEM_REQUEST=fromProtocolName("item_request"),PLAYER_DAMAGE=fromProtocolName("player_damage"),QUEST_OFFER=fromProtocolName("quest_offer");public static ResourceLocation fromProtocolName(String name){return ResourceLocation.parse(name);}}
+                public class AiActionTypes {public static final ResourceLocation ITEM_REQUEST=fromProtocolName("item_request"),PLAYER_DAMAGE=fromProtocolName("player_damage"),QUEST_OFFER=fromProtocolName("quest_offer"),NPC_VISIT_REQUEST=fromProtocolName("npc_visit_request"),NPC_ACTIVITY_REQUEST=fromProtocolName("npc_activity_request"),QUEST_ROSTER_REQUEST=fromProtocolName("quest_roster_request");public static ResourceLocation fromProtocolName(String name){return ResourceLocation.parse(name);}}
                 """);
         files.put("com.sande.mythictrpg.ai.action.AiActionRegistry", """
                 package com.sande.mythictrpg.ai.action;
@@ -138,11 +145,19 @@ public final class AiActionGatewayRoomTest {
                 """);
         files.put("com.sande.mythictrpg.network.AiActionConfirmationPayload", """
                 package com.sande.mythictrpg.network;
-                public record AiActionConfirmationPayload(java.util.UUID proposalId,net.minecraft.resources.ResourceLocation actionType,String title,String summary,int seconds){}
+                public record AiActionConfirmationPayload(java.util.UUID proposalId,net.minecraft.resources.ResourceLocation actionType,String title,String summary,int seconds,java.util.List<String> verifiedTerms){}
+                """);
+        files.put("com.sande.mythictrpg.ai.action.AiActionConfirmationTerms", """
+                package com.sande.mythictrpg.ai.action;
+                public final class AiActionConfirmationTerms {
+                    public static int revision;public static boolean missing;
+                    public static Terms capture(AiActionProposal p){if(missing)throw new IllegalArgumentException("definition missing");return new Terms(revision);}
+                    public record Terms(int revision){public java.util.List<String> lines(){return java.util.List.of("authored terms");}public boolean matches(AiActionProposal p){return revision==AiActionConfirmationTerms.revision;}}
+                }
                 """);
         files.put("net.neoforged.neoforge.network.PacketDistributor", """
                 package net.neoforged.neoforge.network;
-                public class PacketDistributor {public static void sendToPlayer(net.minecraft.server.level.ServerPlayer p,Object packet){}}
+                public class PacketDistributor {public static boolean fail;public static void sendToPlayer(net.minecraft.server.level.ServerPlayer p,Object packet){if(fail)throw new IllegalStateException("not delivered");}}
                 """);
         files.put("fixture.GatewayCases", cases());
         return files;
@@ -172,6 +187,9 @@ public final class AiActionGatewayRoomTest {
                     static void setup(){
                         AiActionGateway.clear();AiActionRegistry.INSTANCE.definitions.clear();
                         AiConversationRuntimeService.INSTANCE.scopes.clear();ConversationRooms.INSTANCE.scopes.clear();
+                        ConversationRooms.INSTANCE.feedback.clear();ConversationRooms.INSTANCE.issued.clear();
+                        AiActionConfirmationTerms.revision=0;AiActionConfirmationTerms.missing=false;
+                        net.neoforged.neoforge.network.PacketDistributor.fail=false;
                         AiConversationRuntimeService.INSTANCE.audience=Set.of(PLAYER.getUUID(),OUTSIDER.getUUID());ConversationRooms.INSTANCE.audience.clear();
                         com.sande.mythictrpg.quest.QuestRuntimeService.INSTANCE.recipient=null;com.sande.mythictrpg.quest.QuestRuntimeService.INSTANCE.roomScope=null;
                         MemoryFoundationSettings.value=MemoryFoundationSettings.Mode.PERSONAL;SERVER.world.tick=0;SERVER.sameThread=true;
@@ -186,10 +204,11 @@ public final class AiActionGatewayRoomTest {
                             (context,proposal)->{validations++;lastContext=context;lastProposal=proposal;
                                 if(invalidateInValidation)ConversationRooms.INSTANCE.scopes.remove(ROOM);
                                 return rejectValidation?AiActionValidation.reject("inventory changed"):AiActionValidation.accept();},
-                            (context,proposal)->{executions++;lastContext=context;lastProposal=proposal;return AiActionExecution.executed(Map.of());}));
+                            (context,proposal)->{executions++;lastContext=context;lastProposal=proposal;return AiActionExecution.executed(Map.of("count","1","untrusted_extra","do something else"));}));
                     }
                     static AiActionResult room(UUID room,long revision,ResourceLocation god,String type){return AiActionGateway.submitRoom(PLAYER,room,revision,god,type,"title","summary",Map.of(),false);}
                     static AiActionResult legacy(String type){return AiActionGateway.submit(PLAYER,GOD,type,"title","summary",Map.of(),false);}
+                    static AiActionResult feedback(UUID room,UUID proposal){return ConversationRooms.INSTANCE.feedback.getOrDefault(room,Map.of()).get(proposal);}
                     public static void run(){
                         setup();AiConversationRuntimeService.INSTANCE.scopes.put(PLAYER.getUUID(),new AiActionScope(UUID.randomUUID(),OTHER));
                         expect(room(ROOM,1,GOD,"immediate"),AiActionResult.Status.EXECUTED,"explicit room ignores unrelated ambient legacy scope");
@@ -211,13 +230,23 @@ public final class AiActionGatewayRoomTest {
                         expect(AiActionGateway.confirm(OUTSIDER,pending.proposalId()),AiActionResult.Status.REJECTED,"other player cannot consume pending confirmation");
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.EXECUTED,"original room confirmation succeeds");
                         check(validations==2&&executions==1&&lastContext.roomScope().isPresent(),"confirmation revalidates game state under explicit room context");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.EXECUTED,"terminal replaces original pending feedback");
+                        check(feedback(ROOM_B,pending.proposalId())==null,"terminal never enters another room");
+                        check(feedback(ROOM,pending.proposalId()).feedbackLine().contains("count=\\\"1\\\"")&&!feedback(ROOM,pending.proposalId()).feedbackLine().contains("untrusted_extra"),"only allowlisted game details enter next-turn context");
+                        int issued=ConversationRooms.INSTANCE.issued.size();
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"duplicate confirmation rejected");
+                        check(ConversationRooms.INSTANCE.issued.size()==issued,"duplicate does not publish a second terminal result");
+                        var token=ConversationRooms.INSTANCE.issued.getLast();
+                        check(!ConversationRooms.INSTANCE.acceptActionOutcome(PLAYER,token),"opaque terminal token cannot be replayed");
+                        check(Arrays.stream(AiActionGateway.RoomOutcome.class.getDeclaredConstructors()).allMatch(c->java.lang.reflect.Modifier.isPrivate(c.getModifiers())),"callers cannot fabricate an issued result token");
 
                         setup();pending=room(ROOM,1,GOD,"confirm");
                         ConversationRooms.INSTANCE.scopes.put(ROOM,new ConversationRooms.Scope(ROOM,2,UUID.randomUUID(),PLAYER.getUUID(),GOD));
                         AiConversationRuntimeService.INSTANCE.scopes.put(PLAYER.getUUID(),new AiActionScope(SESSION,GOD));
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"room revision change rejects confirmation even with matching legacy scope");
                         check(executions==0,"expired room confirmation cannot commit");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.PENDING_CONFIRMATION,"stale revision terminal is not delivered (real room change also clears old feedback)");
+                        check(feedback(ROOM_B,pending.proposalId())==null,"stale room does not fall back to other room");
 
                         setup();AiConversationRuntimeService.INSTANCE.scopes.put(PLAYER.getUUID(),new AiActionScope(SESSION,GOD));
                         pending=legacy("confirm");expect(pending,AiActionResult.Status.PENDING_CONFIRMATION,"legacy confirmation preserved");
@@ -228,16 +257,23 @@ public final class AiActionGatewayRoomTest {
                         setup();AiConversationRuntimeService.INSTANCE.scopes.put(PLAYER.getUUID(),new AiActionScope(UUID.randomUUID(),GOD));
                         pending=legacy("confirm");expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.EXECUTED,"valid legacy confirmation still works");
                         check(lastContext.roomScope().isEmpty(),"legacy executor remains on legacy context");
+                        check(ConversationRooms.INSTANCE.feedback.isEmpty(),"legacy result never acquires selected room feedback");
 
                         setup();pending=room(ROOM,1,GOD,"confirm");rejectValidation=true;
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"changed inventory/conditions rejected after confirmation");
                         check(executions==0,"revalidation prevents commit");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.REJECTED,"live revalidation rejection returns to original room");
                         setup();invalidateInValidation=true;
                         expect(room(ROOM,1,GOD,"immediate"),AiActionResult.Status.REJECTED,"validator cannot execute after revoking room");
                         check(executions==0,"execution phase rechecks authority");
 
                         setup();pending=room(ROOM,1,GOD,"confirm");SERVER.world.tick=1200;
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"expired confirmation rejected");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.EXPIRED,"expiration is a terminal result, not still pending");
+                        issued=ConversationRooms.INSTANCE.issued.size();AiActionGateway.expirePending(SERVER);
+                        check(ConversationRooms.INSTANCE.issued.size()==issued,"expiration is published once");
+                        setup();pending=room(ROOM,1,GOD,"confirm");SERVER.world.tick=1200;AiActionGateway.expirePending(SERVER);
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.EXPIRED&&executions==0,"server expiry works without any UI response");
                         setup();pending=room(ROOM,1,GOD,"confirm");MemoryFoundationSettings.value=MemoryFoundationSettings.Mode.RUMOR_TEST;
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"dialogue-only mode rechecked at confirmation");
                         expect(room(ROOM,1,GOD,"immediate"),AiActionResult.Status.REJECTED,"dialogue-only mode denies new room gameplay");
@@ -246,7 +282,26 @@ public final class AiActionGatewayRoomTest {
                         expect(pending,AiActionResult.Status.PENDING_CONFIRMATION,"item request follows confirmation route");
                         check(lastProposal.parameters().get("player_ready").equals("false")&&lastProposal.sessionId().equals(SESSION),"model params cannot forge readiness or session identity");
                         check(AiActionGateway.cancel(PLAYER,pending.proposalId()),"owner may cancel pending action");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.CANCELLED,"owner cancellation replaces pending feedback");
                         expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"cancelled proposal cannot execute");
+                        issued=ConversationRooms.INSTANCE.issued.size();check(!AiActionGateway.cancel(PLAYER,pending.proposalId()),"repeated cancel is rejected");
+                        check(issued==ConversationRooms.INSTANCE.issued.size(),"duplicate cancellation has no new outcome");
+                        setup();pending=room(ROOM,1,GOD,"confirm");
+                        check(!AiActionGateway.cancel(OUTSIDER,pending.proposalId()),"outsider cannot cancel pending action");
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.PENDING_CONFIRMATION,"forged cancellation cannot change outcome");
+                        var otherServer=new MinecraftServer();var sameIdElsewhere=new ServerPlayer(otherServer,PLAYER.getUUID());
+                        expect(AiActionGateway.confirm(sameIdElsewhere,pending.proposalId()),AiActionResult.Status.REJECTED,"same UUID on another server cannot consume pending action");
+                        otherServer.world.tick=5000;AiActionGateway.expirePending(otherServer);
+                        check(feedback(ROOM,pending.proposalId()).status()==AiActionResult.Status.PENDING_CONFIRMATION,"other server clock cannot expire pending action");
+                        setup();pending=room(ROOM,1,GOD,"confirm");AiActionConfirmationTerms.revision++;
+                        expect(AiActionGateway.confirm(PLAYER,pending.proposalId()),AiActionResult.Status.REJECTED,"changed confirmed terms rejected before execution");
+                        check(executions==0&&feedback(ROOM,pending.proposalId()).reason().contains("terms changed"),"term drift reports terminal rejection not success");
+                        setup();AiActionConfirmationTerms.missing=true;
+                        expect(room(ROOM,1,GOD,"confirm"),AiActionResult.Status.REJECTED,"missing confirmation definition rejects safely");
+                        setup();net.neoforged.neoforge.network.PacketDistributor.fail=true;var failed=room(ROOM,1,GOD,"confirm");
+                        expect(failed,AiActionResult.Status.FAILED,"undelivered confirmation cannot leave an executable pending offer");
+                        expect(AiActionGateway.confirm(PLAYER,failed.proposalId()),AiActionResult.Status.REJECTED,"undelivered offer has no pending token");
+                        check(feedback(ROOM,failed.proposalId()).status()==AiActionResult.Status.FAILED,"delivery failure is returned to source room");
                         setup();expect(room(ROOM,1,GOD,"unregistered"),AiActionResult.Status.REJECTED,"unregistered action remains denied");
 
                         setup();AiActionRegistry.INSTANCE.registerQuest();ConversationRooms.INSTANCE.audience.put(ROOM,Set.of(PLAYER.getUUID(),PEER.getUUID()));

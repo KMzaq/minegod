@@ -1,15 +1,20 @@
 package com.sande.mythai.response.memory;
 
 import com.google.gson.Gson;
+import com.sande.mythictrpg.ai.api.RoomConversationEngine;
 import com.sande.mythictrpg.ai.api.RoomDialogueEvent;
 import com.sande.mythictrpg.ai.api.RoomEvidenceReference;
 import com.sande.mythictrpg.ai.room.RecordingScope;
 import com.sande.mythictrpg.ai.room.RoomType;
 import com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode;
+import com.sande.mythictrpg.recording.api.MemoryReadSession;
+import net.minecraft.resources.ResourceLocation;
 import java.nio.file.*;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /** Real JSONL/restart/search and production projection/DAG checks, without a server, LLM or authored outcome. */
@@ -27,13 +32,169 @@ public final class RoomMemoryStoreTest {
     static int run(Path root) throws Exception {
         checks = 0;
         projection();
+        shadowFailureIsolation();
+        shadowBoundedPagination();
         modeIsolation(root.resolve("heard-modes"));
         searchAndRestart(root.resolve("heard-room-store"));
+        questionEchoSuppression(root.resolve("heard-question-echo"));
+        temporalSearch(root.resolve("heard-temporal-search"));
         ancestryRestart(root.resolve("heard-room-ancestry"));
         legacyReferences(root.resolve("heard-legacy-source"));
         iterativeGraph();
         persistenceFailures(root.resolve("heard-room-failures"));
         return checks;
+    }
+    private static void shadowFailureIsolation() {
+        var god=ResourceLocation.parse(SELF);
+        var request=new RoomConversationEngine.Request(ROOM,1,UUID.randomUUID(),PLAYER,"player",List.of(god),god,
+                "shadow query",List.of(),true,true,false,List.of(new RoomConversationEngine.GodState(god,"","","",null)),false,Set.of(PLAYER));
+        var before=RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> { throw new IllegalStateException("private diagnostic must not be logged"); },request,Runnable::run);
+        RecordedMemoryShadow.compare(Optional::empty,request,Runnable::run);
+        RecordedMemoryShadow.compare(() -> Optional.of(shadowSession(1)),request,Runnable::run);
+        RecordedMemoryShadow.compare(() -> Optional.of(shadowSession(0)),request,
+                task -> { throw new java.util.concurrent.RejectedExecutionException("stopped dispatcher"); });
+        RecordedMemoryShadow.compare(() -> Optional.of(shadowSession(3)),request,Runnable::run);
+        RecordedMemoryShadow.compare(() -> Optional.of(shadowSession(2)),request,Runnable::run);
+        var after=RecordedMemoryShadow.diagnostics();
+        check(after.get("unavailable")==before.get("unavailable")+5&&after.get("completed").equals(before.get("completed")),
+                "optional SHADOW opener/query/dispatch/proof/future failures are isolated as aggregate diagnostics");
+        RecordedMemoryShadow.compare(() -> Optional.of(shadowSession(0)),request,Runnable::run);
+        var recovered=RecordedMemoryShadow.diagnostics();
+        check(recovered.get("completed")==before.get("completed")+1
+                &&recovered.get("recentHistoryMatches").equals(before.get("recentHistoryMatches"))
+                &&recovered.keySet().equals(Set.of("completed","unavailable","recentHistoryMatches","legacySelected","legacyMatches")),
+                "failed SHADOW comparison cannot prevent later comparison or expose raw diagnostic details");
+        var shared = UUID.randomUUID(); var onlyLegacy = UUID.randomUUID();
+        var archived = new MemoryReadSession() {
+            public CompletableFuture<Page> query(Query q, Optional<Cursor> c, Budget b) {
+                return CompletableFuture.completedFuture(new Page(Status.PARTIAL, List.of(new Entry(shared,
+                        new com.sande.mythictrpg.recording.api.RecordingRecords.ActorRef(
+                                com.sande.mythictrpg.recording.api.RecordingRecords.ActorKind.PLAYER, PLAYER.toString()),
+                        Instant.now(), "private quote is never logged", false)), Optional.empty()));
+            }
+            public boolean current(Page p) { return true; }
+        };
+        RecordedMemoryShadow.compare(() -> Optional.of(archived), request, Runnable::run, Set.of(shared, onlyLegacy));
+        var compared = RecordedMemoryShadow.diagnostics();
+        check(compared.get("legacySelected") == recovered.get("legacySelected") + 2
+                && compared.get("legacyMatches") == recovered.get("legacyMatches") + 1,
+                "SHADOW compares actual existing reader selection without adding a legacy query or changing its result");
+    }
+    private static MemoryReadSession shadowSession(int failure) {
+        return new MemoryReadSession() {
+            @Override public CompletableFuture<Page> query(Query query,Optional<Cursor> cursor,Budget budget) {
+                if(failure==1)throw new IllegalStateException("query unavailable");
+                if(failure==2)return CompletableFuture.failedFuture(new IllegalStateException("reader failed"));
+                return CompletableFuture.completedFuture(new Page(Status.PARTIAL,List.of(),Optional.empty()));
+            }
+            @Override public boolean current(Page page) {
+                if(failure==3)throw new IllegalStateException("proof unavailable");
+                return true;
+            }
+        };
+    }
+    private static final class ShadowSequence implements MemoryReadSession {
+        final List<CompletableFuture<Page>> answers;
+        final List<Budget> budgets = new ArrayList<>();
+        final Set<Page> revoked = Collections.newSetFromMap(new IdentityHashMap<>());
+        final List<Optional<Cursor>> cursors = new ArrayList<>();
+        Query originalQuery;
+        ShadowSequence(List<CompletableFuture<Page>> answers) { this.answers = answers; }
+        @Override public CompletableFuture<Page> query(Query query, Optional<Cursor> cursor, Budget budget) {
+            if (originalQuery == null) originalQuery = query;
+            check(originalQuery.equals(query), "SHADOW continuation keeps exact original query");
+            int call = budgets.size(); budgets.add(budget); cursors.add(cursor);
+            check(call < 3 && call < answers.size(), "SHADOW is bounded to three sequential archive queries");
+            if (call == 0) check(cursor.isEmpty(), "first SHADOW page has no forged cursor");
+            else check(answers.get(call - 1).isDone() && answers.get(call - 1).join().next().equals(cursor), "later SHADOW page uses only preceding returned cursor");
+            return answers.get(call);
+        }
+        @Override public boolean current(Page page) { return !revoked.contains(page); }
+    }
+    private static MemoryReadSession.Page shadowPage(List<UUID> ids, String text, boolean more) {
+        var actor = new com.sande.mythictrpg.recording.api.RecordingRecords.ActorRef(
+                com.sande.mythictrpg.recording.api.RecordingRecords.ActorKind.PLAYER, PLAYER.toString());
+        return new MemoryReadSession.Page(MemoryReadSession.Status.PARTIAL,
+                ids.stream().map(id -> new MemoryReadSession.Entry(id, actor, Instant.now(), text, false)).toList(),
+                more ? Optional.of(MemoryReadSession.Cursor.unregistered()) : Optional.empty());
+    }
+    private static ShadowSequence shadowSequence(MemoryReadSession.Page... pages) {
+        return new ShadowSequence(Arrays.stream(pages).map(CompletableFuture::completedFuture).toList());
+    }
+    private static void shadowBoundedPagination() {
+        var firstId = UUID.randomUUID(); var lateId = UUID.randomUUID(); var neverRead = UUID.randomUUID();
+        var god = ResourceLocation.parse(SELF);
+        var request = new RoomConversationEngine.Request(ROOM, 1, UUID.randomUUID(), PLAYER, "player", List.of(god), god,
+                "shadow query", List.of(new RoomConversationEngine.HistoryLine("PLAYER", PLAYER.toString(), "player", "old text", ROOM, firstId)),
+                true, true, false, List.of(new RoomConversationEngine.GodState(god, "", "", "", null)), false, Set.of(PLAYER));
+        var one = shadowPage(List.of(firstId), "first", true);
+        var two = shadowPage(List.of(firstId), "duplicate", true);
+        var three = shadowPage(List.of(lateId), "later private text must never escape", true);
+        var sequence = shadowSequence(one, two, three, shadowPage(List.of(neverRead), "must not query", false));
+        var before = RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> Optional.of(sequence), request, Runnable::run, Set.of(firstId, lateId, neverRead));
+        var after = RecordedMemoryShadow.diagnostics();
+        check(sequence.budgets.size() == 3 && after.get("completed") == before.get("completed") + 1,
+                "later pages contribute without exceeding three-page comparison bound");
+        check(after.get("legacyMatches") == before.get("legacyMatches") + 2 && after.get("recentHistoryMatches") == before.get("recentHistoryMatches") + 1,
+                "duplicate message IDs count once and later-page legacy selection is compared");
+        check(after.get("legacySelected") == before.get("legacySelected") + 3,
+                "actual legacy selection is counted once for the whole comparison");
+        check(sequence.budgets.get(1).rows() == 3 && sequence.budgets.get(2).rows() == 3
+                        && sequence.budgets.get(2).utf8Bytes() == 4096 - "first".length() - "duplicate".length(),
+                "remaining row budget counts unique messages but aggregate bytes count duplicate content too");
+
+        var firstFuture = new CompletableFuture<MemoryReadSession.Page>();
+        var secondFuture = new CompletableFuture<MemoryReadSession.Page>();
+        var delayed = new ShadowSequence(List.of(firstFuture, secondFuture));
+        before = RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> Optional.of(delayed), request, Runnable::run, Set.of(firstId, lateId));
+        check(delayed.budgets.size() == 1 && RecordedMemoryShadow.diagnostics().get("completed").equals(before.get("completed")),
+                "no speculative parallel page queries or early diagnostics while first page pending");
+        firstFuture.complete(one);
+        check(delayed.budgets.size() == 2 && RecordedMemoryShadow.diagnostics().get("legacyMatches").equals(before.get("legacyMatches")),
+                "next page starts only after first returns and no first-page hits are published early");
+        delayed.revoked.add(one); secondFuture.complete(shadowPage(List.of(lateId), "still current second page", false));
+        after = RecordedMemoryShadow.diagnostics();
+        check(after.get("unavailable") == before.get("unavailable") + 1 && after.get("completed").equals(before.get("completed"))
+                        && after.get("legacyMatches").equals(before.get("legacyMatches")) && after.get("legacySelected").equals(before.get("legacySelected")),
+                "withdrawn first-page proof invalidates entire comparison even when last page is current");
+
+        var fourIds = List.of(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        var four = shadowSequence(shadowPage(fourIds, "x", true));
+        RecordedMemoryShadow.compare(() -> Optional.of(four), request, Runnable::run, Set.copyOf(fourIds));
+        check(four.budgets.size() == 1, "four unique messages stop further pagination");
+        var bytes = shadowSequence(shadowPage(List.of(firstId), "x".repeat(3000), true), shadowPage(List.of(lateId), "y".repeat(1000), true));
+        RecordedMemoryShadow.compare(() -> Optional.of(bytes), request, Runnable::run);
+        check(bytes.budgets.size() == 2 && bytes.budgets.get(1).utf8Bytes() == 1096,
+                "all pages share one 4KiB budget and <256 remaining bytes stop next query");
+
+        var oversize = shadowSequence(shadowPage(List.of(firstId), "가".repeat(2000), false));
+        before = RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> Optional.of(oversize), request, Runnable::run, Set.of(firstId));
+        after = RecordedMemoryShadow.diagnostics();
+        check(after.get("unavailable") == before.get("unavailable") + 1 && after.get("completed").equals(before.get("completed")),
+                "misbehaving response exceeding requested UTF-8 bytes contributes no diagnostics");
+        var unavailablePage = shadowSequence(new MemoryReadSession.Page(MemoryReadSession.Status.UNAVAILABLE, List.of(), Optional.empty()));
+        before = RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> Optional.of(unavailablePage), request, Runnable::run);
+        check(RecordedMemoryShadow.diagnostics().get("unavailable") == before.get("unavailable") + 1,
+                "unavailable status is not a successful empty comparison even if fake current returns true");
+
+        var finalProofCalls = new AtomicInteger();
+        var lastMoment = new MemoryReadSession() {
+            public CompletableFuture<Page> query(Query query, Optional<Cursor> cursor, Budget budget) {
+                return CompletableFuture.completedFuture(shadowPage(List.of(firstId), "quote", false));
+            }
+            public boolean current(Page page) { return finalProofCalls.incrementAndGet() < 3; }
+        };
+        before = RecordedMemoryShadow.diagnostics();
+        RecordedMemoryShadow.compare(() -> Optional.of(lastMoment), request, Runnable::run, Set.of(firstId));
+        after = RecordedMemoryShadow.diagnostics();
+        check(finalProofCalls.get() == 3 && after.get("unavailable") == before.get("unavailable") + 1
+                        && after.get("legacyMatches").equals(before.get("legacyMatches")),
+                "all pages are checked again immediately before writing aggregate diagnostics");
     }
     private static void modeIsolation(Path root) throws Exception {
         check(!RoomMemoryBridge.directory(Mode.PERSONAL).equals(RoomMemoryBridge.directory(Mode.RUMOR_TEST)),
@@ -134,6 +295,14 @@ public final class RoomMemoryStoreTest {
             check(prompt.contains("검은 수정은 지하 제단") && prompt.contains("NPC_UTTERANCE") && prompt.contains("PLAYER_STATEMENT")
                     && prompt.contains(PLAYER.toString()) && prompt.contains(OTHER) && prompt.contains("excerpt_start"),
                     "bounded prompt excerpt finds relevant tail without losing original speaker/source identity");
+            var projection = RoomMemoryBridge.projectRecall(List.of(longRow, player, other), "검은 수정");
+            check(projection.context().equals(prompt) && projection.promptVariants().size() == 3
+                    && projection.promptVariants().get(1).equals(RoomMemoryBridge.prompt(List.of(longRow, player), "검은 수정"))
+                    && projection.promptVariants().get(2).equals(RoomMemoryBridge.prompt(List.of(longRow), "검은 수정")),
+                    "budget variants preserve ranked whole records with each original source and excerpt attribution");
+            check(projection.sourceMessageIds().equals(Set.of(longRow.messageId(), player.messageId(), other.messageId())),
+                    "budget selection retains conservative complete source revalidation dependency set");
+            check(RoomMemoryBridge.Recall.EMPTY.promptVariants().isEmpty(), "no recall remains no recall, not a fabricated empty event");
             check(store.append(longRow).get(5, TimeUnit.SECONDS) == RoomMemoryStore.Result.DUPLICATE, "publication callback duplicates are idempotent");
             var conflict = new RoomMemoryStore.Record(longRow.messageId(), WORLD, ROOM, 1, NOW, "NPC", OTHER, OTHER,
                     "변조된 원문", true, PEOPLE, GODS, List.of(), Set.of());
@@ -146,6 +315,143 @@ public final class RoomMemoryStoreTest {
                     "cross-questioner NPC recall survives actual writer close/reopen");
             check(search(store, scope(PLAYER, PEOPLE, GODS, true), "신전 봉인").isEmpty(), "private-room origin is not forgotten after restart");
         }
+    }
+    private static void questionEchoSuppression(Path directory) throws Exception {
+        String question = "내가 신전 봉인을 뭐라고 했지?";
+        var currentQuestion = row("PLAYER", PLAYER.toString(), "가람", question, false, PEOPLE, GODS, List.of(), Set.of());
+        var previousQuestion = row("PLAYER", PLAYER.toString(), "가람", "내가 신전 봉인을 뭐라고 말했지?", false, PEOPLE, GODS, List.of(), Set.of());
+        var followUp = row("PLAYER", PLAYER.toString(), "가람", "다시 알려줘", false, PEOPLE, GODS, List.of(), Set.of());
+        var statement = row("PLAYER", PLAYER.toString(), "가람", "신전 봉인은 지하 제단에 있어", false, PEOPLE, GODS, List.of(), Set.of());
+        var ordinaryQuestion = row("PLAYER", PLAYER.toString(), "가람", "신전 봉인을 언제 열어?", false, PEOPLE, GODS, List.of(), Set.of());
+        var npcQuestion = row("NPC", SELF, SELF, "네가 신전 봉인을 뭐라고 했지?", false, PEOPLE, GODS, List.of(), Set.of());
+        var scope = scope(PLAYER, PEOPLE, GODS, false);
+        try (var store = new RoomMemoryStore(directory)) {
+            for (var row : List.of(currentQuestion, previousQuestion, followUp, npcQuestion)) stored(store, row);
+            check(search(store, scope, question).isEmpty(),
+                    "current and previous explicit recall questions cannot answer the player's recall request");
+            check(search(store, scope, "다시 알려줘 기억나?").isEmpty(),
+                    "a bare follow-up remains recorded words, not an answer to explicit recall");
+            check(search(store, scope, "네가 신전 봉인을 뭐라고 했지?").isEmpty(),
+                    "NPC recall questions cannot become the God's recalled answer either");
+            check(store.record(currentQuestion.messageId()).isPresent() && store.record(followUp.messageId()).isPresent(),
+                    "recall filtering preserves original questions and their evidence identities");
+            for (var row : List.of(statement, ordinaryQuestion)) stored(store, row);
+            check(new HashSet<>(search(store, scope, question)).equals(Set.of(statement, ordinaryQuestion)),
+                    "meaningful ordinary questions and statements remain eligible attributed words");
+            check(!search(store, scope, statement.text()).contains(statement),
+                    "current non-recall input is not immediately echoed as earlier memory");
+            check(search(store, scope, "내가 신전 봉인 지하 제단을 뭐라고 말했지?").contains(statement),
+                    "excluding identical current input does not erase its later explicit recall");
+        }
+    }
+    private static void temporalSearch(Path directory) throws Exception {
+        Files.createDirectories(directory);
+        Path config = directory.resolve("ai-recall.json");
+        Files.writeString(config, "{\"schemaVersion\":1,\"recallV2\":true,\"timeBasis\":\"REAL_KST\"}");
+        long askedAt = Instant.parse("2026-09-15T14:59:30Z").toEpochMilli();
+        long yesterday = askedAt - Duration.ofDays(1).toMillis();
+        var scope = scope(PLAYER, PEOPLE, GODS, false);
+        var todayPlan = at(row("PLAYER", PLAYER.toString(), "가람", "내일 바다 성소에 가기로 했어", false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 60_000);
+        var yesterdayPlan = at(row("PLAYER", PLAYER.toString(), "가람", todayPlan.text(), false, PEOPLE, GODS, List.of(), Set.of()), yesterday);
+        var question = roomQuery(scope, "내가 내일 바다 성소 계획을 뭐라고 했지?", askedAt);
+        try (var store = new RoomMemoryStore(directory.resolve("real"), null, config)) {
+            stored(store, todayPlan); stored(store, yesterdayPlan);
+            check(store.recallSettings().equals(new RecallSettings(true, RecallSettings.TimeBasis.REAL_KST)),
+                    "room writer loads existing recall policy from the supplied server config path");
+            check(search(store, scope, question, askedAt).equals(List.of(todayPlan)),
+                    "identical tomorrow plans retain their original KST dates instead of shifting to retrieval day");
+            var saidYesterday = roomQuery(scope, "내가 어제 말한 내일 바다 성소 일정이 뭐였지?", askedAt);
+            check(search(store, scope, saidYesterday, askedAt).equals(List.of(yesterdayPlan)),
+                    "recorded day and planned day remain distinct in yesterday's tomorrow question");
+
+            long afterMidnight = askedAt + 60_000;
+            var laterPlan = at(row("PLAYER", PLAYER.toString(), "가람", todayPlan.text(), false, PEOPLE, GODS, List.of(), Set.of()), askedAt + 40_000);
+            stored(store, laterPlan);
+            var followUp = RecallQuery.plan(question.scope(), "다시 알려줘", 2, afterMidnight, question.focus());
+            check(followUp.followUp() && search(store, scope, followUp, afterMidnight).equals(List.of(todayPlan)),
+                    "follow-up crossing KST midnight keeps the original question's day and excludes the newly dated plan");
+            var nextDayQuestion = roomQuery(scope, question.text(), afterMidnight);
+            check(search(store, scope, nextDayQuestion, afterMidnight).equals(List.of(laterPlan)),
+                    "a fresh question after midnight receives its own calendar anchor");
+
+            var oldWords = at(row("PLAYER", PLAYER.toString(), "가람", "푸른 동굴의 봉인은 닫혀 있어", false, PEOPLE, GODS, List.of(), Set.of()), yesterday);
+            var newWords = at(row("PLAYER", PLAYER.toString(), "가람", oldWords.text(), false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 30_000);
+            stored(store, oldWords); stored(store, newWords);
+            check(search(store, scope, roomQuery(scope, "내가 어제 말한 푸른 동굴 봉인이 뭐였지?", askedAt), askedAt).equals(List.of(oldWords)),
+                    "recording-date filter also applies to non-plan statements");
+            check(search(store, scope, roomQuery(scope, "내가 오늘 말한 푸른 동굴 봉인이 뭐였지?", askedAt), askedAt).equals(List.of(newWords)),
+                    "today's recorded words do not select yesterday's identical utterance");
+
+            var undatedPlan = at(row("PLAYER", PLAYER.toString(), "가람", "바다 성소에 갈 계획은 날짜 미정이야", false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 20_000);
+            var cancelledPlan = at(row("PLAYER", PLAYER.toString(), "가람", "내일 바다 성소 일정은 취소야", false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 10_000);
+            stored(store, undatedPlan); stored(store, cancelledPlan);
+            check(new HashSet<>(search(store, scope, question, askedAt)).equals(Set.of(todayPlan, undatedPlan, cancelledPlan)),
+                    "unknown dates and an explicit cancellation stay attributed raw alternatives without invented completion or supersession");
+            var currentQuestion = at(row("PLAYER", PLAYER.toString(), "가람", question.text(), false, PEOPLE, GODS, List.of(), Set.of()), askedAt);
+            stored(store, currentQuestion);
+            check(!search(store, scope, question, askedAt).contains(currentQuestion),
+                    "typed temporal retrieval preserves current-question self-echo exclusion");
+
+            var godPlan = at(row("NPC", SELF, SELF, "내일 바다 성소에서 만나기로 했어", false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 60_000);
+            var oldGodPlan = at(row("NPC", SELF, SELF, godPlan.text(), false, PEOPLE, GODS, List.of(), Set.of()), yesterday);
+            stored(store, godPlan); stored(store, oldGodPlan);
+            check(search(store, scope, roomQuery(scope, "네가 내일 바다 성소 계획을 뭐라고 했지?", askedAt), askedAt).equals(List.of(godPlan)),
+                    "God-word source filters and original plan dates compose without selecting player words");
+            var publicScope = scope(PLAYER, PEOPLE, GODS, true);
+            check(search(store, publicScope, roomQuery(publicScope, question.text(), askedAt), askedAt).isEmpty(),
+                    "date constraints do not widen private words into public recall");
+            var mismatched = roomQuery(scope(PEER, PEOPLE, GODS, false), question.text(), askedAt);
+            check(search(store, scope, mismatched, askedAt).isEmpty(), "typed query requester must match the current game scope");
+
+            String longText = "긴 원문 설명 ".repeat(300) + "내일 별빛 항구에 가기로 했어";
+            var longPlan = at(row("PLAYER", PLAYER.toString(), "가람", longText, false, PEOPLE, GODS, List.of(), Set.of()), askedAt - 60_000);
+            var oldLongPlan = at(row("PLAYER", PLAYER.toString(), "가람", longText, false, PEOPLE, GODS, List.of(), Set.of()), yesterday);
+            stored(store, longPlan); stored(store, oldLongPlan);
+            check(search(store, scope, roomQuery(scope, "내가 내일 별빛 항구 일정을 뭐라고 했지?", askedAt), askedAt).equals(List.of(longPlan)),
+                    "full room text keeps date and topic evidence beyond legacy entry length limits");
+            var ancient = at(row("PLAYER", PLAYER.toString(), "가람", "먼 별의 수정 봉인을 지켰어", false, PEOPLE, GODS, List.of(), Set.of()), askedAt - Duration.ofDays(400).toMillis());
+            stored(store, ancient);
+            check(search(store, scope, roomQuery(scope, "내가 먼 별의 수정 봉인을 뭐라고 했지?", askedAt), askedAt).contains(ancient),
+                    "typed temporal retrieval does not import a legacy age-based expiration");
+
+            var projection = RoomMemoryBridge.projectRecall(List.of(todayPlan, cancelledPlan, undatedPlan), followUp, store.recallSettings());
+            check(projection.context().contains("Question date=2026-09-15")
+                    && projection.context().contains("mentioned_plan_date_kst_not_completion")
+                    && projection.context().contains("2026-09-16"),
+                    "prompt preserves the original question date and labels planned dates as uncompleted claims");
+            check(projection.sourceMessageIds().equals(Set.of(todayPlan.messageId(), cancelledPlan.messageId(), undatedPlan.messageId()))
+                    && projection.promptVariants().size() == 3,
+                    "temporal prompt variants retain all source dependencies and whole-record budgeting");
+            check(store.retire(todayPlan.messageId()).get(5, TimeUnit.SECONDS) == RoomMemoryStore.Result.STORED
+                    && !search(store, scope, question, askedAt).contains(todayPlan),
+                    "a date match cannot resurrect a retired source");
+        }
+        try (var reopened = new RoomMemoryStore(directory.resolve("real"), null, config)) {
+            check(reopened.awaitIdle(Duration.ofSeconds(5))
+                    && search(reopened, scope, roomQuery(scope, "내가 어제 말한 내일 바다 성소 일정이 뭐였지?", askedAt), askedAt).equals(List.of(yesterdayPlan)),
+                    "typed date filtering survives real writer close/reopen without changing raw storage format");
+        }
+        for (String policy : List.of("{\"schemaVersion\":1,\"recallV2\":false,\"timeBasis\":\"REAL_KST\"}",
+                "{\"schemaVersion\":1,\"recallV2\":true,\"timeBasis\":\"UNSPECIFIED\"}")) {
+            Path other = directory.resolve(policy.contains("false") ? "disabled" : "unspecified");
+            Files.createDirectories(other); Path otherConfig = other.resolve("ai-recall.json"); Files.writeString(otherConfig, policy);
+            try (var store = new RoomMemoryStore(other.resolve("store"), null, otherConfig)) {
+                stored(store, todayPlan); stored(store, yesterdayPlan);
+                check(new HashSet<>(search(store, scope, question, askedAt)).equals(Set.of(todayPlan, yesterdayPlan)),
+                        "disabled or unspecified calendar policy does not guess dates or discard permitted words");
+            }
+        }
+    }
+    private static RoomMemoryStore.Record at(RoomMemoryStore.Record row, long occurredAt) {
+        return new RoomMemoryStore.Record(row.messageId(), row.worldId(), row.sourceRoomId(), row.sourceRevision(), occurredAt,
+                row.role(), row.speakerId(), row.speakerName(), row.text(), row.publicSpeech(), row.fullPlayerAudience(), row.heardGodIds(), row.evidenceRefs(), row.sourceMessageIds());
+    }
+    private static RecallQuery roomQuery(RoomMemoryStore.Scope scope, String text, long askedAt) {
+        return RecallQuery.plan(new RecallQuery.Scope(new MemoryJournal.Key(scope.worldId(), scope.readerGodId(), scope.requesterId()),
+                ROOM, scope.playerAudience()), text, 1, askedAt, null);
+    }
+    private static List<RoomMemoryStore.Record> search(RoomMemoryStore store, RoomMemoryStore.Scope scope, RecallQuery query, long now) {
+        return store.candidates(scope, query, Set.of(), 32, TimeUnit.SECONDS.toNanos(5), now);
     }
     private static void legacyReferences(Path directory) throws Exception {
         var entry = new MemoryJournal.Entry(UUID.randomUUID(), new MemoryJournal.Key(WORLD, SELF, PLAYER), UUID.randomUUID(), 1,

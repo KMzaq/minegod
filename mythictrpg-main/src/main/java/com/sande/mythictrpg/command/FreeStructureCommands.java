@@ -7,6 +7,9 @@ import com.sande.mythictrpg.quest.structure.FreeStructureService;
 import com.sande.mythictrpg.quest.structure.PlayerConstructionState;
 import com.sande.mythictrpg.quest.structure.StructureEvaluationPolicyManager;
 import com.sande.mythictrpg.quest.structure.StructureEvaluationState;
+import com.sande.mythictrpg.quest.structure.StructureQuestRegistrationService;
+import com.sande.mythictrpg.quest.FtbQuestBindingManager;
+import com.sande.mythictrpg.quest.MythicQuestState;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -22,6 +25,15 @@ public final class FreeStructureCommands {
         dispatcher.register(Commands.literal("mythstructure").requires(source -> source.getEntity() instanceof ServerPlayer)
                 .then(Commands.literal("pos1").executes(context -> point(context, false)))
                 .then(Commands.literal("pos2").executes(context -> point(context, true)))
+                .then(Commands.literal("quest").then(Commands.literal("confirm")
+                        .then(Commands.argument("questId", ResourceLocationArgument.id())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggestResource(
+                                        MythicQuestState.get(context.getSource().getServer())
+                                                .assignmentsFor(context.getSource().getPlayerOrException().getUUID())
+                                                .stream().map(value -> value.questId())
+                                                .filter(id -> FtbQuestBindingManager.INSTANCE.find(id)
+                                                        .filter(binding -> binding.structureEvaluationPolicyId().isPresent()).isPresent()), builder))
+                                .executes(FreeStructureCommands::confirmQuest))))
                 .then(Commands.literal("register").then(Commands.argument("name", StringArgumentType.string())
                         .executes(FreeStructureCommands::registerSelection)))
                 .then(Commands.literal("discover").then(Commands.argument("name", StringArgumentType.string())
@@ -40,6 +52,19 @@ public final class FreeStructureCommands {
                         .executes(FreeStructureCommands::delete)))
                 .then(Commands.literal("list").executes(FreeStructureCommands::list))
                 .then(Commands.literal("status").executes(FreeStructureCommands::status)));
+    }
+
+    private static int confirmQuest(CommandContext<CommandSourceStack> context)
+            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        // No target-player argument: a non-operator can only register their own assigned quest.
+        var result = StructureQuestRegistrationService.INSTANCE.confirm(
+                context.getSource().getPlayerOrException(), ResourceLocationArgument.getId(context, "questId"));
+        if (!result.accepted()) { context.getSource().sendFailure(Component.literal(result.reason())); return 0; }
+        var build = result.build().orElseThrow();
+        context.getSource().sendSuccess(() -> Component.literal("퀘스트 건축 영역 확정: "
+                + build.region().width() + "x" + build.region().depth() + ", 참가자 "
+                + build.eligibleContributors().size() + "명. 기존 원장은 초기화되며 지금부터 건축을 기록합니다."), false);
+        return 1;
     }
 
     private static int point(CommandContext<CommandSourceStack> context, boolean second)

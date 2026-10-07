@@ -25,7 +25,13 @@ public final class QuestParticipationRun {
     public record Snapshot(UUID runId, String questId, String giverId, QuestParticipationType type,
             List<QuestParticipationPolicy.Objective> objectives, QuestRankingPolicy ranking,
             long startedAt, Map<UUID, List<Integer>> progress, Map<UUID, Submission> submissions,
-            Map<UUID, Mirror> mirrors, boolean closed, Set<UUID> awarded) {
+            Map<UUID, Mirror> mirrors, boolean closed, Set<UUID> awarded, QuestRoster roster) {
+        public Snapshot(UUID runId, String questId, String giverId, QuestParticipationType type,
+                List<QuestParticipationPolicy.Objective> objectives, QuestRankingPolicy ranking, long startedAt,
+                Map<UUID, List<Integer>> progress, Map<UUID, Submission> submissions, Map<UUID, Mirror> mirrors,
+                boolean closed, Set<UUID> awarded) {
+            this(runId, questId, giverId, type, objectives, ranking, startedAt, progress, submissions, mirrors, closed, awarded, null);
+        }
         public Snapshot {
             Objects.requireNonNull(runId); Objects.requireNonNull(questId); Objects.requireNonNull(giverId);
             Objects.requireNonNull(type);
@@ -35,8 +41,20 @@ public final class QuestParticipationRun {
             progress.forEach((id, counts) -> copied.put(id, List.copyOf(counts)));
             progress = Map.copyOf(copied);
             submissions = Map.copyOf(submissions); mirrors = Map.copyOf(mirrors); awarded = Set.copyOf(awarded);
-            new QuestParticipationPolicy(type, objectives, java.util.Optional.ofNullable(ranking));
-            if (startedAt < 0 || progress.isEmpty() || progress.size() > 16
+            new QuestParticipationPolicy(type, objectives, java.util.Optional.ofNullable(ranking),
+                    java.util.Optional.ofNullable(roster).map(QuestRoster::policy));
+            Set<UUID> active = new java.util.HashSet<>(progress.keySet());
+            if (roster != null) {
+                active.removeAll(roster.departed().keySet());
+                if (!progress.keySet().containsAll(roster.departed().keySet())
+                        || !progress.keySet().equals(roster.lastSeen().keySet())
+                        || !progress.keySet().containsAll(roster.deposits().keySet())
+                        || !java.util.Collections.disjoint(submissions.keySet(), roster.departed().keySet())
+                        || active.size() > roster.initialSize()
+                        || roster.lastSeen().values().stream().anyMatch(t -> t < startedAt))
+                    throw new IllegalArgumentException("Invalid reorganization roster");
+            }
+            if (startedAt < 0 || progress.isEmpty() || progress.size() > (roster == null ? 16 : 64) || active.size() > 16
                     || (type == QuestParticipationType.SOLO && progress.size() != 1)
                     || (type == QuestParticipationType.COMPETITIVE && submissions.size() > 1)
                     || !progress.keySet().containsAll(submissions.keySet()) || !progress.keySet().containsAll(mirrors.keySet())
@@ -59,11 +77,12 @@ public final class QuestParticipationRun {
                         throw new IllegalArgumentException("Submitted without completing objectives");
             }
             if (!submissions.keySet().containsAll(awarded)
-                    || (closed && type != QuestParticipationType.RANKING && submissions.isEmpty())
-                    || (closed && type == QuestParticipationType.GROUP && submissions.size() != progress.size()))
+                    || (closed && type != QuestParticipationType.RANKING && submissions.isEmpty() && !active.isEmpty())
+                    || (closed && type == QuestParticipationType.GROUP && submissions.size() != active.size())
+                    || (closed && roster != null && !active.isEmpty() && active.size() < roster.policy().minimumParticipants()))
                 throw new IllegalArgumentException("Invalid settlement state");
             if (closed && ranking != null && ranking.endMode() == QuestRankingPolicy.EndMode.ALL_SUBMITTED
-                    && submissions.size() != progress.size()) throw new IllegalArgumentException("Ranking closed before all submissions");
+                    && submissions.size() != active.size()) throw new IllegalArgumentException("Ranking closed before all submissions");
         }
     }
 
@@ -76,12 +95,51 @@ public final class QuestParticipationRun {
         Map<UUID, List<Integer>> progress = new LinkedHashMap<>();
         players.forEach(player -> progress.put(player, policy.objectives().stream().map(o -> 0).toList()));
         data = new Snapshot(id, quest, giver, policy.type(), policy.objectives(), policy.ranking().orElse(null),
-                now, progress, Map.of(), Map.of(), false, Set.of());
+                now, progress, Map.of(), Map.of(), false, Set.of(), policy.reorganization()
+                    .map(p -> QuestRoster.create(p, players, now)).orElse(null));
     }
 
     public QuestParticipationRun(Snapshot snapshot) { data = Objects.requireNonNull(snapshot); }
     public Snapshot snapshot() { return data; }
-    public Set<UUID> participants() { return data.progress().keySet(); }
+    public Set<UUID> participants() {
+        if (data.roster() == null) return data.progress().keySet();
+        var active = new java.util.HashSet<>(data.progress().keySet()); active.removeAll(data.roster().departed().keySet());
+        return Set.copyOf(active);
+    }
+    public long rosterRevision() { return data.roster() == null ? 0 : data.roster().revision(); }
+    public void seen(UUID player, long now) {
+        if (data.roster() != null && participants().contains(player) && now >= data.startedAt()
+                && now > data.roster().lastSeen().get(player)) roster(data.roster().seen(player, now));
+    }
+    public boolean absent(UUID player, long now) {
+        return data.roster() != null && data.roster().policy().absentAfterTicks() > 0 && participants().contains(player)
+                && !data.submissions().containsKey(player) && now >= data.roster().lastSeen().get(player)
+                && now - data.roster().lastSeen().get(player) >= data.roster().policy().absentAfterTicks();
+    }
+    public boolean remove(UUID player, boolean voluntary, long now) {
+        if (data.closed() || data.roster() == null || !participants().contains(player)
+                || data.submissions().containsKey(player) || now < data.startedAt()
+                || (voluntary ? !data.roster().policy().allowWithdrawal() : !absent(player, now))) return false;
+        roster(data.roster().remove(player, voluntary ? "WITHDRAWN" : "ABSENT_REMOVED"));
+        return true;
+    }
+    public boolean canRecruit(UUID player) {
+        return !data.closed() && data.roster() != null && data.roster().policy().allowReplacement()
+                && !data.progress().containsKey(player) && data.progress().size() < 64
+                && !participants().isEmpty() && participants().size() < data.roster().initialSize();
+    }
+    public boolean recruit(UUID player, long now) {
+        if (!canRecruit(player) || now < data.startedAt()) return false;
+        Map<UUID, List<Integer>> progress = new LinkedHashMap<>(data.progress());
+        progress.put(player, data.objectives().stream().map(o -> 0).toList());
+        data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
+                data.startedAt(), progress, data.submissions(), data.mirrors(), false, data.awarded(), data.roster().joined(player, now));
+        return true;
+    }
+    public void roster(QuestRoster roster) {
+        data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
+                data.startedAt(), data.progress(), data.submissions(), data.mirrors(), data.closed(), data.awarded(), roster);
+    }
     public boolean ready(UUID player) {
         List<Integer> progress = data.progress().get(player);
         if (progress == null) return false;
@@ -118,7 +176,7 @@ public final class QuestParticipationRun {
         counts.set(objective, value);
         Map<UUID, List<Integer>> progress = new LinkedHashMap<>(data.progress()); progress.put(player, counts);
         data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
-                data.startedAt(), progress, data.submissions(), data.mirrors(), data.closed(), data.awarded());
+                data.startedAt(), progress, data.submissions(), data.mirrors(), data.closed(), data.awarded(), data.roster());
         return true;
     }
 
@@ -127,12 +185,16 @@ public final class QuestParticipationRun {
         Map<UUID, Submission> submissions = new LinkedHashMap<>(data.submissions());
         submissions.put(player, new Submission(score, npc, now));
         data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
-                data.startedAt(), data.progress(), submissions, data.mirrors(), false, data.awarded());
+                data.startedAt(), data.progress(), submissions, data.mirrors(), false, data.awarded(), data.roster());
         return true;
     }
 
     public boolean shouldClose(long now) {
         if (data.closed()) return false;
+        if (data.roster() != null) {
+            if (participants().isEmpty()) return true;
+            if (participants().size() < data.roster().policy().minimumParticipants()) return false;
+        }
         return switch (data.type()) {
             case SOLO, COMPETITIVE -> !data.submissions().isEmpty();
             case GROUP -> data.submissions().keySet().containsAll(participants());
@@ -157,17 +219,17 @@ public final class QuestParticipationRun {
     public void close(long now) {
         if (!shouldClose(now)) throw new IllegalStateException("Quest is not ready to close");
         data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
-                data.startedAt(), data.progress(), data.submissions(), data.mirrors(), true, data.awarded());
+                data.startedAt(), data.progress(), data.submissions(), data.mirrors(), true, data.awarded(), data.roster());
     }
     public void awarded(UUID player) {
         if (!winners().contains(player)) throw new IllegalArgumentException("Not a successful participant");
         Set<UUID> awarded = new java.util.LinkedHashSet<>(data.awarded()); awarded.add(player);
         data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
-                data.startedAt(), data.progress(), data.submissions(), data.mirrors(), true, awarded);
+                data.startedAt(), data.progress(), data.submissions(), data.mirrors(), true, awarded, data.roster());
     }
     public void mirror(UUID player, Mirror mirror) {
         Map<UUID, Mirror> mirrors = new LinkedHashMap<>(data.mirrors()); mirrors.put(player, mirror);
         data = new Snapshot(data.runId(), data.questId(), data.giverId(), data.type(), data.objectives(), data.ranking(),
-                data.startedAt(), data.progress(), data.submissions(), mirrors, data.closed(), data.awarded());
+                data.startedAt(), data.progress(), data.submissions(), mirrors, data.closed(), data.awarded(), data.roster());
     }
 }

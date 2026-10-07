@@ -14,6 +14,8 @@ public final class StorySignalTypes {
     public static final ResourceLocation SCHEDULED_DUE = id("scheduled_due");
     public static final ResourceLocation STORY_HOOK_ACCEPTED = id("story_hook_accepted");
     public static final ResourceLocation ADMIN_TRIGGERED = id("admin_triggered");
+    public static final ResourceLocation RAID_VICTORY = id("raid_victory");
+    public static final ResourceLocation RAID_FAILED = id("raid_failed");
 
     private StorySignalTypes() {}
 

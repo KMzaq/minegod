@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "questListId": "mythictrpg:affiliation_name",
+  "progressTrackId": "mythictrpg:progress_affiliation_name",
+  "displayName": "[작성] 캐릭터 전용 또는 세력 공용 퀘스트 목록",
+  "quests": [
+    {
+      "questId": "mythictrpg:affiliation_quest_name",
+      "title": "[작성] 퀘스트 제목",
+      "content": "[작성] 배경·부탁의 이유·해결해야 할 문제",
+      "disclosure": {
+        "mode": "PUBLIC",
+        "allowedGodIds": []
+      },
+      "objectives": [
+        {
+          "type": "collect_item",
+          "description": "[작성] 요구 물품과 수량. 아래 밀 1개는 양식 예시이며 확정 콘텐츠가 아니다.",
+          "parameters": {
+            "itemId": "minecraft:wheat",
+            "count": 1
+          }
+        }
+      ],
+      "rewards": [
+        {
+          "type": "item",
+          "description": "[작성] 보상 설명. 아래 에메랄드 1개는 양식 예시이며 확정 밸런스가 아니다.",
+          "parameters": {
+            "itemId": "minecraft:emerald",
+            "count": 1
+          }
+        }
+      ],
+      "acceptanceConditions": [
+        {
+          "type": "world_quest_progress_range",
+          "description": "[작성] 서버 공용 진행도 허용 구간. 이 예시는 0일 때만 수주한다.",
+          "parameters": {
+            "progressTrackId": "mythictrpg:progress_affiliation_name",
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      ],
+      "progressOnClear": 0
+    }
+  ]
+}

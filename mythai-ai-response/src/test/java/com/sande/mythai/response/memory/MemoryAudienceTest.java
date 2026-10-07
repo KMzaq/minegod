@@ -33,6 +33,7 @@ public final class MemoryAudienceTest {
         checks += RoomListeningMemoryTest.run(root);
         checks += RoomRecallSourceTest.run(root);
         checks += RoomMemoryStoreTest.run(root);
+        checks += RecordedInterpretationShadowTest.run();
         System.out.println("MemoryAudienceTest: " + checks + " checks PASS");
     }
 

@@ -1,5 +1,15 @@
 # MythAI Local AI Response
 
+> **대화 의미·실행 근거 개발 조합(2026-10-07, HanesTest·미배포):** AI **0.1.30** / 게임 **1.0.27 이상**. 발화 주체·대상 해석, typed 게임 결과, 선택적 초안 검토·최대 1회 수정이 추가됐다. [계약·검증·남은 한계](../인수인계/브랜치실험/HanesTest/DIALOGUE_GROUNDING_20261007.md)를 따른다. 실 Gemma 합성 평가와 모의 LLM 개발 GameTest를 수행했으며 운영 인게임 검증은 하지 않았다.
+
+> **퀘스트 재편성 개발 조합(2026-10-02, 미배포):** AI **0.1.27** / 게임 **1.0.24 이상** / 콘텐츠 **0.1.3**, protocol 10. `quest_roster_request`는 현재 화자의 게임 제공 목록에 있는 `quest_id`로 관리 메뉴만 연다. 동의·참가자 변경·제출품 반환은 게임 소유다. [게임/AI 계약과 설정](../mythictrpg-main/docs/QUEST_REORGANIZATION_GUIDE.md)을 따른다. 실제 모델 대화·운영 배포는 미확인이다.
+
+> **생활활동 후속 개발 조합(2026-09-30, 미배포):** AI **0.1.26**는 게임 **1.0.23 이상**의 새 활동 API를 사용한다. 콘텐츠 **0.1.3**, 게임 protocol **10**. [활동 AI 계약](NPC_ACTIVITY_AI_GUIDE.md)과 [게임 실행 계약](../mythictrpg-main/docs/NPC_ACTIVITY_SYSTEM.md)을 함께 읽는다. 아래 이전 버전 배너는 당시 이력이며 현재 조합이 아니다.
+
+> **시점 주의:** 아래 `최신` 표시는 2026-09-14 당시의 배포 이력이다. 현재 개발·설치·검증 범위는 [작업 시작 안내](../인수인계/START_HERE.md), 해당 브랜치 기록, Gradle 입력과 `server/mods`를 대조한다.
+
+> **HanesTest 개발 조합(2026-09-30, 미배포):** AI `0.1.24` / 게임 `1.0.21` / 콘텐츠 `0.1.3`. AI의 실제 최소 게임 의존성은 `1.0.21`이다. 아래 LP 시점의 의존성·파일명은 현재 조합의 설치 안내가 아니다. [최신 작업표](../인수인계/브랜치실험/HanesTest/SYSTEM_COMPLETION_TRACKER.md), [기록 v2 권한 조회·SHADOW](../인수인계/브랜치실험/HanesTest/RECORDING_V2_AUTHORIZED_READ_20260930.md), [기존 기억·평판 재사용](../인수인계/브랜치실험/HanesTest/MEMORY_REPUTATION_REUSE_20260929.md), [건축물 방문 계약](../mythictrpg-main/docs/GOD_HOME_VISITS.md)을 따른다.
+
 > 2026-09-14 최신: 회상 개선본 **AI 0.1.3**을 배치했다. 게임/클라이언트 **1.0.2**, 콘텐츠 0.1.0, PERSONAL은 유지한다. LP 원본과 수정 직전 상태를 보존했고 빌드/오프라인 710개 검사를 통과했다. 서버는 실행하지 않았으며 실제 모델 비교는 Ollama 미실행으로 연결 실패했다. [회상 개선 기록](../docs/MEMORY_RECALL_TUNING_20260914.md)과 [서버 시험 안내](../docs/LP_PERSONAL_MEMORY_TEST_SETUP.md)를 따른다.
 
 새 MythicTRPG와 정적 콘텐츠 레지스트리 사이에서 로컬 LLM 응답을 생성하는 별도 NeoForge 모드다.
@@ -14,7 +24,7 @@ MythicTRPG interaction/chat
   -> MythicTRPG Dialogue HUD
 ```
 
-현재 구현은 이전 결합형 JAR에서 실제 Ollama 테스트에 사용한 AI 패키지만 빌드 시 추출한다. 최종 JAR에는 이전 `MythicTrpg` 게임 클래스나 `mythictrpg` 모드 정의가 포함되지 않는다.
+현재 HanesTest 브랜치는 AI 엔진을 `src/engine/java`의 소유 소스로 이관하여 `src/main/java`와 함께 직접 빌드한다. `mine/mine` 소스·결합형 JAR을 빌드 때 읽지 않는다. 이전 overlay Gradle 파일은 과거 구현 기록이며 더 이상 실행하지 않는다. 이관/검증 상태는 [작업표](../인수인계/브랜치실험/HanesTest/SYSTEM_COMPLETION_TRACKER.md)를 따른다.
 
 ## 빌드
 
@@ -27,7 +37,7 @@ cd C:\Users\ADMIN\Desktop\markmar
 
 결과물: `build/libs/mythai_ai_response-0.1.3.jar`
 
-`dev-tools/Test-MemoryFoundationRelease.ps1 -ServerProfile PERSONAL`로 LP 백업·현재 배포/개발 JAR 및 패키지 분리를 검사한다. 기본 LP profile은 LP 상태 검사용이다. `Test-LPBuild.ps1` 기본 실행은 새 응답 모듈에 `NOT LP`가 정상이다. 기존 `mine/mine` AI 추출은 유지하며 게임 계약 입력은 `mythictrpg-main/build/libs/mythictrpg-1.0.2.jar`다. 기억 연결은 Java helper와 `memory-foundation-overlay.gradle`에서 관리한다. 게임의 `ai.memorycontract`와 기존 AI의 `ai.memory` 패키지를 합치지 않는다.
+현재 빌드 입력 버전은 `build.gradle`의 `mythicTrpgApiJar`에서 확인한다. `verifyEngineOwnership`과 `verifyEnginePackage`는 `check`/빌드에 연결되어 구 체크아웃 의존과 게임 클래스 중복을 거부한다. 기억 연결도 이제 Java 소스에서 수정하며 게임의 `ai.memorycontract`와 AI의 `ai.memory` 패키지는 합치지 않는다. 아래 과거 LP 안내와 옛 테스트 스크립트는 당시 버전 기준이므로 새 독립 빌드 판정을 대신하지 않는다.
 
 ## 런타임 의존성
 

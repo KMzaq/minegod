@@ -44,6 +44,17 @@ public final class NpcRewardGrantService {
         }
         NpcRewardTier selected = NpcRewardTableManager.INSTANCE.find(tableId).orElseThrow()
                 .tier(tier).orElseThrow();
+        // Preserve the existing table/God/tier and AI_ACTION checks before committing permanent ownership.
+        // Repeated authorized table grants retain one source per effect; unrelated temporary/item rewards keep their behavior.
+        if (selected.rewards().stream().anyMatch(reward -> reward instanceof BlessingRewardEntry blessing && blessing.permanent())) {
+            if (!player.server.isSameThread()) return Result.reject("Reward grant requires server thread");
+            var live = RewardExecutionService.validateGrant(player, selected.rewards(), purpose);
+            if (!live.allowed()) return Result.reject(live.reason());
+            try {
+                RewardClaimState.get(player.server).acquireTableBlessings(player.getUUID(), npcId, tableId, tier,
+                        selected.rewards(), player.server.overworld().getGameTime());
+            } catch (RuntimeException invalid) { return Result.reject(invalid.getMessage()); }
+        }
         RewardExecutionService.Result result = RewardExecutionService.grant(
                 player, npcId, selected.rewards(), purpose);
         return result.granted() ? Result.granted(result.rewards()) : Result.reject(result.reason());

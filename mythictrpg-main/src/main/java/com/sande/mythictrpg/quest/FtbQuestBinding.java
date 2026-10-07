@@ -25,8 +25,19 @@ public record FtbQuestBinding(
         Optional<QuestEvaluationPolicy> evaluationPolicy,
         Optional<ResourceLocation> structureEvaluationPolicyId,
         Optional<QuestRewardPolicy> rewardPolicy,
-        Optional<QuestParticipationPolicy> participation
+        Optional<QuestParticipationPolicy> participation,
+        Optional<QuestContactLocation> returnLocation
 ) {
+    public FtbQuestBinding(ResourceLocation questId, long ftbQuestId, long assignmentQuestId,
+            QuestCompletionMode completionMode, Set<ResourceLocation> completionNpcIds,
+            ResourceLocation progressTrackId, int progressOnClear, QuestNarrativeRole narrativeRole,
+            int minimumAffinity, Optional<QuestReminderPolicy> reminderPolicy,
+            Optional<QuestEvaluationPolicy> evaluationPolicy, Optional<ResourceLocation> structureEvaluationPolicyId,
+            Optional<QuestRewardPolicy> rewardPolicy, Optional<QuestParticipationPolicy> participation) {
+        this(questId, ftbQuestId, assignmentQuestId, completionMode, completionNpcIds, progressTrackId, progressOnClear,
+                narrativeRole, minimumAffinity, reminderPolicy, evaluationPolicy, structureEvaluationPolicyId, rewardPolicy,
+                participation, Optional.empty());
+    }
     /** Keep the existing Java/binary constructor for external modules and old content. */
     public FtbQuestBinding(ResourceLocation questId, long ftbQuestId, long assignmentQuestId,
             QuestCompletionMode completionMode, Set<ResourceLocation> completionNpcIds,
@@ -50,6 +61,7 @@ public record FtbQuestBinding(
         structureEvaluationPolicyId = structureEvaluationPolicyId == null ? Optional.empty() : structureEvaluationPolicyId;
         rewardPolicy = rewardPolicy == null ? Optional.empty() : rewardPolicy;
         participation = participation == null ? Optional.empty() : participation;
+        returnLocation = returnLocation == null ? Optional.empty() : returnLocation;
         if (participation.isPresent()) {
             boolean evaluates = participation.orElseThrow().objectives().stream()
                     .anyMatch(o -> o.kind() == QuestParticipationPolicy.ObjectiveKind.EVALUATION);

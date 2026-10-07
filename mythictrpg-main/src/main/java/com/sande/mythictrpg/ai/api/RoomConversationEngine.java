@@ -20,6 +20,11 @@ public interface RoomConversationEngine {
      * Recording consumers enqueue immutable data only; they must not execute proposals or block the game thread.
      */
     default void dialoguePublished(RoomDialogueEvent event) { }
+    /** Optional historical-source preparation; never grants room identity or broad archive access. */
+    default CompletableFuture<Boolean> prepareRecordedEvidence(Request request, List<RoomEvidenceReference> evidence) {
+        return CompletableFuture.completedFuture(evidence.isEmpty());
+    }
+    default boolean recordedEvidenceCurrent(Request request, List<RoomEvidenceReference> evidence) { return evidence.isEmpty(); }
     default void stop() { }
 
     record HistoryLine(String role, String speakerId, String name, String text, UUID sourceRoomId, UUID messageId) {
@@ -35,10 +40,32 @@ public interface RoomConversationEngine {
                     ConversationMemoryContext memoryContext) {
         public GodState { Objects.requireNonNull(godId); Objects.requireNonNull(relationshipTier); Objects.requireNonNull(emotionTag); Objects.requireNonNull(gameContext); }
     }
+    /** Bounded game-result projection, not permission to execute or proof of an ongoing world state. */
+    record ActionOutcome(UUID proposalId, String actionType, ActionStatus status, String reason, Map<String, String> details) {
+        public ActionOutcome {
+            Objects.requireNonNull(proposalId); Objects.requireNonNull(actionType); Objects.requireNonNull(status);
+            Objects.requireNonNull(reason); details = Map.copyOf(details);
+            if (ResourceLocation.tryParse(actionType) == null || reason.length() > 320 || details.size() > 12
+                    || status != ActionStatus.EXECUTED && !details.isEmpty()
+                    || details.entrySet().stream().anyMatch(e -> e.getKey().isBlank() || e.getKey().length() > 64
+                    || e.getValue().length() > 160))
+                throw new IllegalArgumentException("Invalid bounded action outcome");
+        }
+    }
+    enum ActionStatus { EXECUTED, PENDING_CONFIRMATION, CANCELLED, EXPIRED, REJECTED, FAILED }
     record Request(UUID roomId, long revision, UUID turnId, UUID playerId, String playerName,
                    List<ResourceLocation> godIds, ResourceLocation speakerGodId, String currentText,
                    List<HistoryLine> history, boolean readOnly, boolean recording, boolean publicRoom,
-                   List<GodState> godStates, boolean secondary, Set<UUID> audiencePlayerIds) {
+                   List<GodState> godStates, boolean secondary, Set<UUID> audiencePlayerIds,
+                   List<ActionOutcome> actionOutcomes) {
+        /** Existing callers have no supplied action-result evidence. */
+        public Request(UUID roomId, long revision, UUID turnId, UUID playerId, String playerName,
+                List<ResourceLocation> godIds, ResourceLocation speakerGodId, String currentText,
+                List<HistoryLine> history, boolean readOnly, boolean recording, boolean publicRoom,
+                List<GodState> godStates, boolean secondary, Set<UUID> audiencePlayerIds) {
+            this(roomId, revision, turnId, playerId, playerName, godIds, speakerGodId, currentText,
+                    history, readOnly, recording, publicRoom, godStates, secondary, audiencePlayerIds, List.of());
+        }
         public Request(UUID roomId, long revision, UUID turnId, UUID playerId, String playerName,
                 List<ResourceLocation> godIds, ResourceLocation speakerGodId, String currentText,
                 List<HistoryLine> history, boolean readOnly, boolean recording, boolean publicRoom,
@@ -61,12 +88,16 @@ public interface RoomConversationEngine {
             Objects.requireNonNull(playerName); Objects.requireNonNull(speakerGodId); Objects.requireNonNull(currentText);
             godIds = List.copyOf(godIds); history = List.copyOf(history); godStates = List.copyOf(godStates);
             audiencePlayerIds = Set.copyOf(audiencePlayerIds);
+            actionOutcomes = List.copyOf(actionOutcomes);
             if (revision < 0 || godIds.isEmpty() || godIds.size() > 16 || !godIds.contains(speakerGodId)
                     || new HashSet<>(godIds).size() != godIds.size() || history.size() > 128
                     || currentText.length() > 8192 || godStates.size() != 1
                     || godStates.stream().filter(s -> s.godId().equals(speakerGodId)).count() != 1
                     || !audiencePlayerIds.contains(playerId) || !publicRoom && audiencePlayerIds.size() > 64)
                 throw new IllegalArgumentException("Invalid room turn scope");
+            if (actionOutcomes.size() > 16 || (secondary || readOnly) && !actionOutcomes.isEmpty()
+                    || actionOutcomes.stream().map(ActionOutcome::proposalId).distinct().count() != actionOutcomes.size())
+                throw new IllegalArgumentException("Invalid room action-outcome scope");
             var memory = godStates.getFirst().memoryContext();
             if (memory != null && (!memory.godId().equals(speakerGodId.toString())
                     || !memory.playerId().equals(playerId) || !memory.interactionId().equals(roomId)))

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
+import com.sande.mythictrpg.recording.server.LegacyRecordingQuota;
+import com.sande.mythictrpg.recording.server.ManagedStoreRegistry;
 
 /** Game-side ordered coordinator. One bounded worker, no Minecraft state access on its worker. */
 public final class AsyncGodWatch implements AutoCloseable {
@@ -21,26 +23,46 @@ public final class AsyncGodWatch implements AutoCloseable {
         public ReadSnapshot(Audience audience, View view) { this(audience, view, Map.of()); }
     }
     public record Capture(AsyncActionLedger.Submission raw, CompletableFuture<List<Proof>> observed) {}
+    public enum ProofState { CURRENT, REVOKED, DISCLOSURE_CHANGED, UNKNOWN }
+    public record ReconciledProof(UUID observationId, ProofState state, Proof proof, Ref eligibility) {
+        public ReconciledProof {
+            Objects.requireNonNull(observationId); Objects.requireNonNull(state);
+            if (state == ProofState.CURRENT && (proof == null || eligibility == null || !proof.id().equals(observationId)))
+                throw new IllegalArgumentException("current proof requires exact evidence");
+        }
+    }
+    public record ReconciliationSnapshot(UUID worldId, Audience audience, long committedRevision, boolean available,
+                                         String reason, List<ReconciledProof> proofs) {
+        public ReconciliationSnapshot {
+            Objects.requireNonNull(worldId); Objects.requireNonNull(audience); Objects.requireNonNull(reason); proofs = List.copyOf(proofs);
+            if (committedRevision < 0 || proofs.size() > 64) throw new IllegalArgumentException("reconciliation budget");
+        }
+    }
     private interface Operation<T> { T run(WatchStore store) throws Exception; }
     private interface Work { void run(WatchStore store) throws Exception; void fail(Throwable t); }
     private final Thread owner = Thread.currentThread();
     private final UUID world, captureSession;
     private final AsyncActionLedger raw;
+    private final Path directory;
+    private final Limits limits;
     private final BlockingQueue<Work> queue;
     private final CompletableFuture<Void> ready = new CompletableFuture<>(), stopped = new CompletableFuture<>();
     private volatile boolean closing;
     private volatile Status status;
+    private volatile long committedRevision;
     private long rejected, lastCaptureOrder;
     // Fail closed immediately on the game thread, before asynchronous mutation commits.
     private final Set<UUID> invalidEvents = new HashSet<>(), invalidProofs = new HashSet<>();
     private final Set<Ref> invalidRefs = new HashSet<>();
     private final Map<String, Disclosure> changedDisclosure = new HashMap<>();
+    private final Set<UUID> invalidWatchIds = new HashSet<>();
 
     public AsyncGodWatch(Path path, UUID world, UUID captureSession, AsyncActionLedger raw, Limits limits) {
         this(path, world, captureSession, raw, limits, point -> {});
     }
     AsyncGodWatch(Path path, UUID world, UUID captureSession, AsyncActionLedger raw, Limits limits, WatchJournal.Faults faults) {
         this.world = Objects.requireNonNull(world); this.captureSession = Objects.requireNonNull(captureSession); this.raw = Objects.requireNonNull(raw);
+        this.directory = path.toAbsolutePath().normalize(); this.limits = limits;
         queue = new ArrayBlockingQueue<>(limits.queueCapacity()); status = new Status("STARTING", 0, limits.maxBytes(), 0, 0, "OPENING");
         var fence = raw.fence();
         Thread worker = new Thread(() -> run(path, limits, faults, fence), "mythictrpg-god-watch"); worker.setDaemon(true); worker.start();
@@ -57,7 +79,7 @@ public final class AsyncGodWatch implements AutoCloseable {
         requireOwner();
         validateCapture(draft, scene);
         lastCaptureOrder = draft.captureOrder();
-        return submit(store -> {
+        return submit(1, false, store -> {
             ActionRecord committed = await(submission.durable());
             if(submission.transitionRetry() && !committed.event().equals(draft)
                     && ActionRecord.sameTransition(committed.event(),draft)) return List.of(); // No retroactive Scene on retry/relogin.
@@ -73,24 +95,32 @@ public final class AsyncGodWatch implements AutoCloseable {
     }
     public CompletableFuture<Watch> start(UUID watchId, Approval approval) {
         requireOwner(); var fence = raw.fence();
-        return submit(store -> store.start(watchId, approval, Math.addExact(await(fence), 1)));
+        return submit(1, false, store -> store.start(watchId, approval, Math.addExact(await(fence), 1)));
     }
     public CompletableFuture<Watch> transition(UUID id, long expectedRevision, State next, Ref cause) {
-        requireOwner(); var fence = raw.fence();
-        return submit(store -> store.transition(id, expectedRevision, next, Math.addExact(await(fence), 1), cause));
+        requireOwner(); invalidWatchIds.add(id); var fence = raw.fence();
+        return submit(1, true, store -> store.transition(id, expectedRevision, next, Math.addExact(await(fence), 1), cause));
     }
     /** Logout/target-generation invalidation is technical suspension, not an authored relationship threshold. */
     public CompletableFuture<List<Watch>> suspendTarget(UUID target, Ref cause) {
         requireOwner(); var fence = raw.fence();
-        return submit(store -> store.suspendTarget(target, Math.addExact(await(fence), 1), cause));
+        return submit(limits.maxEntries(), true, store -> store.suspendTarget(target, Math.addExact(await(fence), 1), cause));
     }
-    public CompletableFuture<Void> revokeEvent(UUID eventId) { requireOwner(); invalidEvents.add(eventId); return submit(store -> { store.revokeEvent(eventId); return null; }); }
-    public CompletableFuture<Void> revokeProof(UUID proofId) { requireOwner(); invalidProofs.add(proofId); return submit(store -> { store.revokeProof(proofId); return null; }); }
-    public CompletableFuture<Void> revokeRef(Ref ref) { requireOwner(); invalidRefs.add(ref); return submit(store -> { store.revokeRef(ref); return null; }); }
-    public CompletableFuture<Void> disclose(Disclosure rule) { requireOwner(); changedDisclosure.put(rule.ref().id(), rule); return submit(store -> { store.disclose(rule); return null; }); }
-    public CompletableFuture<List<Watch>> states() { return submit(WatchStore::states); }
+    public CompletableFuture<Void> revokeEvent(UUID eventId) { requireOwner(); invalidEvents.add(eventId); return submit(1, true, store -> { store.revokeEvent(eventId); return null; }); }
+    public CompletableFuture<Void> revokeProof(UUID proofId) { requireOwner(); invalidProofs.add(proofId); return submit(1, true, store -> { store.revokeProof(proofId); return null; }); }
+    public CompletableFuture<Void> revokeRef(Ref ref) { requireOwner(); invalidRefs.add(ref); return submit(1, true, store -> { store.revokeRef(ref); return null; }); }
+    public CompletableFuture<Void> disclose(Disclosure rule) { requireOwner(); changedDisclosure.put(rule.ref().id(), rule); return submit(1, false, store -> { store.disclose(rule); return null; }); }
+    public CompletableFuture<List<Watch>> states() { return submit(0, true, WatchStore::states); }
+    /** Exact durable start returned in this boot, with immediate invalidation before queued stop/revoke. */
+    public boolean currentWatch(Watch value) {
+        requireOwner();
+        return value != null && value.state() == State.ACTIVE && !closing && status.state().equals("READY")
+                && raw.status().state() == AsyncActionLedger.State.READY && !invalidWatchIds.contains(value.id())
+                && !invalidRefs.contains(value.approval().policy().ref())
+                && !invalidRefs.contains(value.approval().eligibility());
+    }
     public CompletableFuture<ReadSnapshot> read(Audience audience, int limit) {
-        return submit(store -> {
+        return submit(0, true, store -> {
             View view = checkedView(store, audience, limit);
             return new ReadSnapshot(audience, view, store.eligibilityRefs(view.proofs()));
         });
@@ -98,9 +128,27 @@ public final class AsyncGodWatch implements AutoCloseable {
     public CompletableFuture<ReadSnapshot> readExact(Audience audience, Set<UUID> observationIds) {
         Set<UUID> ids = Set.copyOf(observationIds);
         if (ids.size() > 64) throw new IllegalArgumentException("exact observation budget");
-        return submit(store -> {
+        return submit(0, true, store -> {
             View view = checkedView(store, store.viewExact(audience, ids));
             return new ReadSnapshot(audience, view, store.eligibilityRefs(view.proofs()));
+        });
+    }
+    /** Game-only archive reconciliation; never enumerates or backfills unrequested observations. */
+    public CompletableFuture<ReconciliationSnapshot> reconcileExact(Audience audience, Set<UUID> observationIds) {
+        Set<UUID> ids = Set.copyOf(observationIds);
+        if (ids.isEmpty() || ids.size() > 64) throw new IllegalArgumentException("reconciliation budget");
+        return submit(0, true, store -> {
+            if (raw.status().state() != AsyncActionLedger.State.READY)
+                return new ReconciliationSnapshot(world, audience, store.committedRevision(), false, "SOURCE_UNAVAILABLE", List.of());
+            var initial = store.reconcileExact(audience, ids);
+            if (!initial.available()) return initial;
+            for (var value : initial.proofs()) if (value.state() == ProofState.CURRENT) {
+                View checked = checkedView(store, new View(true, "READY", List.of(value.proof())));
+                // SOURCE_INVALID durably revoked that event; report the new exact state below.
+                if (!checked.available() && !checked.reason().equals("SOURCE_INVALID"))
+                    return new ReconciliationSnapshot(world, audience, store.committedRevision(), false, "SOURCE_UNAVAILABLE", List.of());
+            }
+            return store.reconcileExact(audience, ids);
         });
     }
     /** Synchronous, memory-only final-use guard: no tick blocking and no read/commit TOCTOU window. */
@@ -122,7 +170,7 @@ public final class AsyncGodWatch implements AutoCloseable {
     }
     /** Relevant evidence/fields + exact game session, not an unrelated player's global revision. Stage4 must call before use. */
     public CompletableFuture<Boolean> revalidate(ReadSnapshot previous, Audience current) {
-        return submit(store -> {
+        return submit(0, true, store -> {
             if (!previous.audience().equals(current) || !previous.view().available()) return false;
             View now = checkedView(store, store.viewExact(current, previous.view().proofs().stream()
                     .map(Proof::id).collect(java.util.stream.Collectors.toSet())));
@@ -152,20 +200,27 @@ public final class AsyncGodWatch implements AutoCloseable {
         }
         return view;
     }
-    private synchronized <T> CompletableFuture<T> submit(Operation<T> operation) {
+    private synchronized <T> CompletableFuture<T> submit(int maximumFrames, boolean maintenance, Operation<T> operation) {
         requireOwner();
         if (closing || !status.state().equals("READY")) { rejected++; return CompletableFuture.failedFuture(new IOException("WATCH_UNAVAILABLE")); }
+        if (queue.remainingCapacity() == 0) { rejected++; return CompletableFuture.failedFuture(new IOException("WATCH_QUEUE_FULL")); }
+        final LegacyRecordingQuota.Ticket quota;
+        try { quota = maximumFrames == 0 ? null : LegacyRecordingQuota.reserve(directory, ManagedStoreRegistry.GOD_WATCH,
+                Math.multiplyExact((long)maximumFrames, WatchJournal.WRITE_BOUND), maintenance); }
+        catch (IOException denied) { rejected++; return CompletableFuture.failedFuture(denied); }
         CompletableFuture<T> result = new CompletableFuture<>();
         Work work = new Work() {
+            private boolean began;
             public void run(WatchStore store) throws Exception {
+                began = true;
                 T value;
-                try { value = operation.run(store); }
+                try { value = quota == null ? operation.run(store) : LegacyRecordingQuota.within(quota, () -> operation.run(store)); }
                 catch (IllegalArgumentException | NullPointerException invalid) { result.completeExceptionally(invalid); return; }
                 publish(store, "READY", "READY"); result.complete(value);
             }
-            public void fail(Throwable t) { result.completeExceptionally(t); }
+            public void fail(Throwable t) { if (!began && quota != null) quota.cancelUnstarted(); result.completeExceptionally(t); }
         };
-        if (!queue.offer(work)) { rejected++; result.completeExceptionally(new IOException("WATCH_QUEUE_FULL")); }
+        if (!queue.offer(work)) { if (quota != null) quota.cancelUnstarted(); rejected++; result.completeExceptionally(new IOException("WATCH_QUEUE_FULL")); }
         return result;
     }
     private void run(Path path, Limits limits, WatchJournal.Faults faults, CompletableFuture<Long> fence) {
@@ -188,8 +243,11 @@ public final class AsyncGodWatch implements AutoCloseable {
         }
     }
     private synchronized void publish(WatchStore store, String state, String reason) {
+        if (store != null) committedRevision = store.committedRevision();
         status = new Status(state, store == null ? status.usedBytes() : store.bytes(), status.maxBytes(), store == null ? status.observationCursor() : store.cursor(), rejected, reason);
     }
+    /** Durable journal transaction revision, including revocation/disclosure changes. */
+    public long committedRevision() { return committedRevision; }
     public synchronized Status status() { return new Status(status.state(), status.usedBytes(), status.maxBytes(), status.observationCursor(), rejected, status.reason()); }
     public CompletableFuture<Void> ready() { return ready; }
     private static <T> T await(CompletableFuture<T> value) throws Exception { return value.get(5, TimeUnit.SECONDS); }

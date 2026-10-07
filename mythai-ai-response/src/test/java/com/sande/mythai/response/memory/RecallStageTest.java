@@ -69,6 +69,20 @@ public final class RecallStageTest {
         check(search(List.of(oldDate, plan), "내일 내가 어디 가기로 했지").selected().equals(List.of(plan)), "utterance-relative calendar day");
         check(search(List.of(oldDate), "내일 내가 어디 가기로 했지").selected().isEmpty(), "fallback cannot resurrect wrong date");
         check(search(List.of(oldDate, plan), "어제 말한 내일 일정이 뭐였지").selected().equals(List.of(oldDate)), "recorded day vs event day");
+        check(RecallSearch.semanticEligible(plan, q, REAL, NOW) && !RecallSearch.semanticEligible(oldDate, q, REAL, NOW),
+                "semantic eligibility reuses the same utterance-relative date constraints as raw search");
+        var yesterdayQuestion = query("어제 말한 내일 일정이 뭐였지");
+        check(RecallSearch.semanticEligible(oldDate, yesterdayQuestion, REAL, NOW)
+                        && !RecallSearch.semanticEligible(plan, yesterdayQuestion, REAL, NOW),
+                "semantic eligibility keeps recording day separate from scheduled day");
+        var undated = entry("나중에 바다에 가기로 했어", NOW - 1000);
+        check(RecallSearch.semanticEligible(undated, q, REAL, NOW), "an unresolved plan date is not silently invented or rejected");
+        check(RecallSearch.semanticEligible(oldDate, q, new RecallSettings(true, RecallSettings.TimeBasis.UNSPECIFIED), NOW),
+                "semantic temporal helper preserves unknown-time fallback");
+        var recordedOld = entry("푸른 동굴의 봉인은 닫혀 있어", NOW - Duration.ofDays(1).toMillis());
+        var recordedNew = entry(recordedOld.text(), NOW - 1000);
+        check(search(List.of(recordedOld, recordedNew), "내가 어제 말한 푸른 동굴 봉인이 뭐였지?").selected().equals(List.of(recordedOld)),
+                "raw search preserves recorded-date filtering for non-plan statements after helper extraction");
         check(RecallSearch.date("내일", Instant.parse("2026-09-15T15:01:00Z").toEpochMilli(), REAL.timeBasis())
                 .equals(LocalDate.of(2026,9,17)), "KST midnight");
         check(RecallSearch.date("내일", NOW, RecallSettings.TimeBasis.UNSPECIFIED) == null, "unapproved time policy not guessed");

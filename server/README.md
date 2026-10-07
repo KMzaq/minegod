@@ -1,14 +1,14 @@
 # MythicTRPG + Local AI 통합 테스트 서버
 
-> 2026-09-23 최신 배포: 게임 `mythictrpg-1.0.16.jar`, 콘텐츠 `mythaiaicontent-0.1.1.jar`, 서버 전용 AI `mythai_ai_response-0.1.17.jar`. 파일 배치 뒤 아직 부팅하지 않았다. 버전 해시·백업·검증 범위는 [전체 대화방 통합 배포 기록](../docs/FULL_ROOM_DIALOGUE_INTEGRATION_20260923.md)을 확인한다. 클라이언트 필수 모드 폴더는 서버와 같은 게임1.0.16이다. 이 안내의 실제 런처 준비 절차는 계속 별도다.
+> 2026-09-27 **HanesTest 실험본 배포:** 게임 `mythictrpg-1.0.16.jar`는 유지하고 콘텐츠 `mythaiaicontent-0.1.2.jar`, 서버 전용 AI `mythai_ai_response-0.1.19.jar`를 설치했다. 페르소나 하네스 개선과 Minecraft 공용 기본 지식 17개를 포함한다. 이번 배포 후 서버를 부팅하거나 실제 LLM 대화를 확인하지는 않았다. 해시·백업·검증 범위는 [HanesTest 전용 인수인계](../인수인계/브랜치실험/HanesTest/PROJECT_HANDOFF.md)의 배포 기록을 확인한다. 공용 인수인계의 이전 설치 목록과 구분하며, 클라이언트 필수 파일은 변경하지 않았다.
 
 Minecraft 1.21.1 / NeoForge 21.1.248 전용 서버다. RisuAI를 사용하지 않고 같은 PC의 Ollama `gemma4:12b`를 호출한다.
 
 ## 설치된 서버 모드
 
 - `mods/mythictrpg-1.0.16.jar`: 게임 상태, 신 관계/사건 시스템, 대화방·Dialogue HUD/Network와 게임 권한 검증
-- `mods/mythaiaicontent-0.1.1.jar`: 신 프로필, 지식, 예시·퀘스트와 청중별 공개 정책
-- `mods/mythai_ai_response-0.1.17.jar`: 콘텐츠·청취 기억, Ollama 호출, 다중 신 반응/Story 응답 연결
+- `mods/mythaiaicontent-0.1.2.jar`: 신 프로필, 지식, 예시·퀘스트와 청중별 공개 정책, 공개 기본 지식
+- `mods/mythai_ai_response-0.1.19.jar`: 콘텐츠·청취 기억, Ollama 호출, 다중 신 반응/Story 응답 연결, 페르소나 하네스·공용 지식 조회
 
 이전 결합형 `mythictrpg` JAR을 동시에 넣으면 안 된다.
 

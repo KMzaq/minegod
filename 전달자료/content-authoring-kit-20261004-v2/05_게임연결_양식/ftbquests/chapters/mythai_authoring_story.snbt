@@ -1,0 +1,33 @@
+{
+	default_hide_dependency_lines: true
+	default_quest_shape: "circle"
+	filename: "mythai_authoring_story"
+	group: ""
+	title: "[작성] 퀘스트 챕터 이름"
+	icon: { id: "minecraft:enchanted_book" }
+	id: "1000000000000010"
+	order_index: 0
+	quests: [{
+		dependencies: ["1000000000000002"]
+		hide_details_until_startable: true
+		hide_until_deps_complete: true
+		title: "[작성] 퀘스트 제목"
+		description: ["[작성] 밀 1개를 제출한 뒤 의뢰한 신에게 확인받는 문법 예시"]
+		id: "1000000000000001"
+		rewards: []
+		tasks: [
+			{
+				consume_items: true
+				id: "1000000000000003"
+				item: { count: 1, id: "minecraft:wheat" }
+				type: "item"
+			},
+			{
+				id: "1000000000000004"
+				type: "custom"
+			}
+		]
+		x: 0.0d
+		y: 0.0d
+	}]
+}

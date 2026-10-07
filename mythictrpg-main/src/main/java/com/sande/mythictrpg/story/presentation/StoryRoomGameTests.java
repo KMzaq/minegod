@@ -27,7 +27,7 @@ public final class StoryRoomGameTests {
     private static final ResourceLocation FULL = id("000_room_test_full"), COVER_POLICY = id("000_room_test_cover_policy"), COVER = id("000_room_test_cover");
     private static final ResourceLocation LEAVE_EVENT = id("000_room_test_leave_event"), LEAVE_PRESENTATION = id("000_room_test_leave_presentation");
 
-    @GameTest(templateNamespace="minecraft", template="bastion/mobs/empty", batch="story_room_disclosure", timeoutTicks=100)
+    @GameTest(templateNamespace="mythictrpg_story_evidence", template="empty", batch="story_room_disclosure", timeoutTicks=100)
     public static void canonicalReceiptsCoverStoriesAndPortableAuthority(GameTestHelper helper) throws Exception {
         var manager = StoryDefinitionManager.INSTANCE;
         var original = manager.snapshot();
@@ -101,8 +101,14 @@ public final class StoryRoomGameTests {
                     Set.of(owner.getUUID(),peer.getUUID(),newcomer.getUUID()));
             service.clear(); // Portable refs survive loss of transient request maps (server restart boundary).
             helper.assertTrue(service.evidenceCurrent(owner.server,request,canonical.getFirst().evidence()),"explicit public proof survives request cache reset and a different reader/new audience");
+            helper.assertTrue(service.evidenceCurrent(owner.server,request,coverLines.getFirst().evidence()),"authored cover is independently valid without granting its hidden fact");
+            var malformed = com.google.gson.JsonParser.parseString(canonical.getFirst().evidence().payload()).getAsJsonObject();
+            malformed.addProperty("grantKnowledge",true);
+            helper.assertTrue(!service.evidenceCurrent(owner.server,request,new RoomEvidenceReference("STORY_DISCLOSURE_V1",malformed.toString())),"additional caller-provided authority field is rejected by actual Story owner");
+            helper.assertTrue(!service.evidenceCurrent(owner.server,request,new RoomEvidenceReference("STORY_DISCLOSURE_V2",canonical.getFirst().evidence().payload())),"unknown Story proof version is not granted by a valid payload");
             helper.assertValueEqual(state.knowledgeLevel(StoryKnowledgeHolder.player(newcomer.getUUID()),FACT),0,"new observer did not retroactively receive knowledge");
             state.grantKnowledge(StoryKnowledgeHolder.actor(ACTOR),COVER_FACT,1,FULL,"room_test_source",0);
+            helper.assertTrue(!service.evidenceCurrent(owner.server,request,coverLines.getFirst().evidence()),"changed disclosure policy withdraws old cover rather than turning cover into truth");
             var testRoom=rooms.create(owner,RoomType.PRIVATE,List.of(GOD,LISTENER),RecordingScope.TEST_EPHEMERAL);
             var testContext=service.snapshot(owner,testRoom.roomId(),testRoom.revision(),GOD,"",false).orElseThrow();
             var secretAlias=testContext.statements().entrySet().stream().filter(e->e.getValue().proof().id().equals(COVER_FACT.toString()))
@@ -128,6 +134,8 @@ public final class StoryRoomGameTests {
                     owner.getUUID(),PresentationStatus.PENDING,0);
             state.putActorState(ACTOR,ExistenceState.ACTIVE,AvailabilityState.ABSENT,Optional.empty(),0,LEAVE_EVENT);
             var departure=service.forOpportunity(owner,opportunity).orElseThrow();
+            var presentationProof=departure.evidenceReferences().stream().filter(ref->ref.payload().contains("\"PRESENTATION\"")).findFirst().orElseThrow();
+            helper.assertTrue(service.evidenceCurrent(owner.server,request,presentationProof),"actual resolved presentation proof survives strict parser and current outcome validation");
             helper.assertValueEqual(departure.roomId(),testRoom.roomId(),"authored presentation deterministically prefers its safe private room");
             helper.assertTrue(rooms.publishStory(owner,departure.roomId(),departure.roomRevision(),GOD,"departure",departure.evidenceReferences()).isEmpty(),"ordinary absent God cannot speak");
             helper.assertTrue(rooms.publishStoryPresentation(owner,departure.roomId(),departure.roomRevision(),GOD,"departure",departure.evidenceReferences(),departure.snapshot().requestId()).isEmpty(),"inactive presentation context is not a publication capability");

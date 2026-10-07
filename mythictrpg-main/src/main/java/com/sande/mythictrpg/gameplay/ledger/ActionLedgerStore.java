@@ -9,12 +9,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.zip.CRC32;
+import com.sande.mythictrpg.recording.server.LegacyRecordingQuota;
+import com.sande.mythictrpg.recording.server.ManagedStoreRegistry;
 
 /** Blocking storage. Only the dedicated ledger worker may call it. No game/AI callbacks. */
 public final class ActionLedgerStore implements AutoCloseable {
     private static final Gson JSON = new Gson();
     private static final int MAX_FRAME = 16_384;
     private static final int CONTROL_RESERVE = 4_096;
+    static final long APPEND_WRITE_BOUND = MAX_FRAME + 8L + CONTROL_RESERVE;
     public record Limits(long maxBytes, int segmentBytes, int maxIndexedEvents) {
         public Limits {
             if (maxBytes < 65_536 || maxBytes > 1L << 40 || segmentBytes < MAX_FRAME + 8
@@ -63,8 +66,11 @@ public final class ActionLedgerStore implements AutoCloseable {
     public ActionLedgerStore(Path directory, UUID worldId, Limits limits, Faults faults) throws IOException {
         this.directory = directory.toAbsolutePath().normalize(); this.worldId = Objects.requireNonNull(worldId);
         this.limits = limits; this.faults = faults;
+        LegacyRecordingQuota.legacyLimits(this.directory, ManagedStoreRegistry.ACTION_LEDGER, limits.maxBytes(),
+                limits.maxIndexedEvents(), MAX_FRAME, "INDEX_LIMIT_OR_CAPACITY_LIMIT");
         boolean unclean = false; long checkpointUtc = 0;
-        try {
+        try (var startup = LegacyRecordingQuota.reserve(this.directory, ManagedStoreRegistry.ACTION_LEDGER, 0, true)) {
+            startup.validateBeforeWrite();
             Files.createDirectories(this.directory);
             lockChannel = FileChannel.open(this.directory.resolve("writer.lock"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
             lock = lockChannel.tryLock();
@@ -119,6 +125,8 @@ public final class ActionLedgerStore implements AutoCloseable {
         if (bytes.length > MAX_FRAME) throw new IOException("FRAME_TOO_LARGE");
         int length = bytes.length + 8;
         if (segmentBytes + length + CONTROL_RESERVE > limits.maxBytes) throw new IOException("CAPACITY_LIMIT");
+        try (var admission = LegacyRecordingQuota.reserve(directory, ManagedStoreRegistry.ACTION_LEDGER, length, false)) {
+        admission.validateBeforeWrite();
         if (segment == null || segmentSize + length > limits.segmentBytes) {
             if (segment != null) segment.close();
             segmentPath = directory.resolve(String.format(Locale.ROOT, "segment-%020d.alog", record.sequence()));
@@ -138,6 +146,7 @@ public final class ActionLedgerStore implements AutoCloseable {
         add(record, new Pointer(segmentPath, offset, length, draft.actorId(), draft.occurrenceId()));
         checkpoint(false); // Receipt/cursor is published only after data and checkpoint force.
         return record;
+        }
     }
     public ActionRecord appendTransition(ActionRecord.Draft draft) throws IOException {
         requireOpen();
@@ -230,6 +239,8 @@ public final class ActionLedgerStore implements AutoCloseable {
     private void atomicControl(Path path, Object value) throws IOException {
         byte[] bytes = JSON.toJson(value).getBytes(StandardCharsets.UTF_8);
         if (bytes.length > CONTROL_RESERVE / 4) throw new IOException("CONTROL_WRITE_BUDGET");
+        try (var admission = LegacyRecordingQuota.reserve(directory, ManagedStoreRegistry.ACTION_LEDGER, bytes.length, true)) {
+        admission.validateBeforeWrite();
         Path temporary = path.resolveSibling(path.getFileName() + ".tmp");
         // Only this writer's bounded control temp is replaced. Never alter raw segments on recovery.
         try (FileChannel file = FileChannel.open(temporary, StandardOpenOption.CREATE,
@@ -247,6 +258,7 @@ public final class ActionLedgerStore implements AutoCloseable {
                 try { Thread.sleep(10L << attempt); }
                 catch (InterruptedException interrupted) { Thread.currentThread().interrupt(); throw new IOException("CONTROL_MOVE_INTERRUPTED", interrupted); }
             }
+        }
         }
     }
     public void updateGaps(GapSummary summary) throws IOException { gaps = summary; checkpoint(false); }

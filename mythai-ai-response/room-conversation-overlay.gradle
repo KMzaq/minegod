@@ -29,7 +29,7 @@ ext.patchRoomConversationAdapter = { String source ->
             || roomGeneration.contains('candidatesFor(')) throw new GradleException('Room prompt retained an ambient player access')
 
     String wrapper = '''
-    /** Request-local wrapper around the SAME tested classifier, retrieval, persona, directive and generation code. */
+    /** Request-local retrieval and capability gate; social interpretation belongs to the persona prompt. */
     static final class RoomPrompt {
         private final com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request;
         private final Session session;
@@ -46,6 +46,7 @@ ext.patchRoomConversationAdapter = { String source ->
                 Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents, String priorActivity) {
             this.request = request;
             this.contents = Map.copyOf(contents);
+            RoomPersonaPrompt.validateMemoryScope(request, memory);
             var state = request.speakerState();
             var content = contents.get(request.speakerGodId());
             this.session = new Session(request.playerId(), request.godIds(), state.relationshipTier(),
@@ -62,7 +63,8 @@ ext.patchRoomConversationAdapter = { String source ->
         }
 
         List<AiDialogueModels.OllamaMessage> classificationMessages() {
-            return classifierMessages(session, request.currentText(), intentClassificationExamples(contents));
+            return MinecraftCommonKnowledge.classification(
+                    classifierMessages(session, request.currentText(), intentClassificationExamples(contents)), request);
         }
         String activity() { return session.playActivity; }
         ConversationIntent fastIntent() {
@@ -73,7 +75,17 @@ ext.patchRoomConversationAdapter = { String source ->
         }
 
         List<AiDialogueModels.OllamaMessage> generation(ConversationIntent classified) {
-            var intent = resolveConversationIntent(classified, request.currentText(), session);
+            return generation(classified, false);
+        }
+
+        /** Offline frozen-context comparison only. The runtime always uses generation(). */
+        List<AiDialogueModels.OllamaMessage> legacyGeneration(ConversationIntent classified) {
+            return generation(classified, true);
+        }
+
+        private List<AiDialogueModels.OllamaMessage> generation(ConversationIntent classified, boolean legacy) {
+            var advisory = classified == null ? ConversationIntent.heuristicFallback() : classified;
+            var intent = resolveConversationIntent(advisory, request.currentText(), session);
             intent = MemoryRecallPolicy.effectiveIntent(intent, session.memoryTurn.recalling());
             var directive = session.memoryTurn.recalling() ? DialogueTurnDirective.recall()
                     : DialogueTurnDirective.plan(request.currentText(), session.history.stream().map(Transcript::text).toList(),
@@ -81,7 +93,8 @@ ext.patchRoomConversationAdapter = { String source ->
             plan = new GenerationPlan(directive, intent, List.of(request.speakerGodId()));
             var content = contents.get(request.speakerGodId());
             // The registry already intersected ownership and explicit disclosure for this exact audience.
-            var lore = directive.isSocialOnly() ? List.<AiTestContentRegistryBridge.Lore>of() : selectedLore(content, intent);
+            var lore = legacy ? (directive.isSocialOnly() ? List.<AiTestContentRegistryBridge.Lore>of() : selectedLore(content, intent))
+                    : selectedLore(content, advisory);
             String gameContext = request.speakerState().gameContext()
                     + "\\n[ROOM_SCOPE]\\nroom_id=" + request.roomId() + "\\nrevision=" + request.revision()
                     + "\\npublic=" + request.publicRoom() + "\\nread_only=" + request.readOnly()
@@ -95,6 +108,10 @@ ext.patchRoomConversationAdapter = { String source ->
             gameContext += "\\nA supplied STORY context may explicitly permit story_disclose (canonical fact selection) and story_event_hook."
                     + " These use only its supplied aliases and audience permissions, independently of social intent."
                     + " Never invent an event or claim a proposed hook already occurred. Read-only still forbids story_event_hook.";
+            if (!legacy) {
+                return RoomPersonaPrompt.messages(request, content, session.memoryTurn, lore, advisory,
+                        session.playActivity, gameplayProposalsAllowed(), gameContext);
+            }
             while (true) {
                 try {
                     return roomGenerationMessages(request.playerName(), gameContext, session, request.currentText(), contents,
@@ -107,10 +124,13 @@ ext.patchRoomConversationAdapter = { String source ->
         }
 
         List<AiDialogueModels.Speech> speech(AiDialogueModels.StructuredAiResult output) {
-            return usableSpeeches(output, plan, session);
+            return RoomPersonaPrompt.speech(request, output);
         }
         boolean needsRepair(AiDialogueModels.StructuredAiResult output) {
-            return speech(output).stream().anyMatch(speech -> requiresCasualRepair(plan.directive(), speech.text()));
+            return !validationIssue(output).isEmpty();
+        }
+        String validationIssue(AiDialogueModels.StructuredAiResult output) {
+            return RoomPersonaPrompt.validationIssue(request, output);
         }
         boolean gameplayProposalsAllowed() { return !request.readOnly() && plan.directive().proposalsAllowed(); }
     }

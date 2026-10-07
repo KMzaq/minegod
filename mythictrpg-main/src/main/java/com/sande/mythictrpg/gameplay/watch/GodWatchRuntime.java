@@ -44,6 +44,25 @@ public final class GodWatchRuntime {
         catch (RuntimeException failure) { MythicTrpg.LOGGER.error("Watch trial unavailable; raw ledger remains independent", failure); }
     }
     public GameWatchGateway gateway() { return gateway; }
+    /** A current acquired observation session AND today's authored scene bounds, never entitlement alone. */
+    public static boolean watchingNow(ServerPlayer player, ResourceLocation god) {
+        var runtime = current(player.server);
+        if (runtime == null || !player.isAlive() || player.server.getPlayerList().getPlayer(player.getUUID()) != player) return false;
+        var value = runtime.acquiredActive.get(new Key(god.toString(), player.getUUID()));
+        var rule = runtime.rules.settings.rule(god.toString()).orElse(null);
+        if (value == null || rule == null || !runtime.gateway.currentWatch(value, player)
+                || !rule.policy().equals(value.approval().policy())
+                || !rule.policy().fields().contains(Field.ACTOR)
+                || !com.sande.mythictrpg.quest.reward.RewardClaimState.get(player.server).hasWatch(player.getUUID(), god)) return false;
+        var pos = player.blockPosition();
+        java.util.function.Predicate<Area> here = area -> area.dimensionId().equals(player.level().dimension().location().toString())
+                && pos.getX() >= area.minX() && pos.getX() <= area.maxX() && pos.getY() >= area.minY() && pos.getY() <= area.maxY()
+                && pos.getZ() >= area.minZ() && pos.getZ() <= area.maxZ();
+        return rule.policy().places().stream().anyMatch(here)
+                && (!rule.requiresSky() || player.serverLevel().canSeeSky(pos))
+                && runtime.rules.settings.barriers().stream().noneMatch(barrier -> here.test(barrier.area())
+                    && (barrier.blockAll() || !barrier.allowedGods().contains(god.toString())));
+    }
     public CompletableFuture<Watch> startTrial(MinecraftServer server, ResourceLocation god, ServerPlayer player, int radius) {
         if (current(server) != this || !gateway.gameCurrent()) return CompletableFuture.failedFuture(new IllegalStateException("stale runtime"));
         if (!trialEnabled) return CompletableFuture.failedFuture(new IllegalStateException("development trial disabled"));
@@ -61,9 +80,15 @@ public final class GodWatchRuntime {
     public static void observed(MinecraftServer server, ActionRecord.Draft draft, AsyncActionLedger.Submission receipt) {
         var runtime = current(server); if (runtime == null) return;
         try {
-            runtime.gateway.observeSubmitted(draft, receipt).whenComplete((proofs, failure) -> {
-                if (failure != null) server.execute(() -> { if (current(server) == runtime) runtime.rejected++; });
-            });
+            runtime.gateway.observeSubmitted(draft, receipt).thenCombine(receipt.durable(), (proofs, raw) -> Map.entry(raw, proofs))
+                    .whenComplete((committed, failure) -> server.execute(() -> {
+                        if (current(server) != runtime) return;
+                        if (failure != null) { runtime.rejected++; return; }
+                        try {
+                            com.sande.mythictrpg.recording.server.RecordingRuntime.watchCapture(server)
+                                    .ifPresent(capture -> capture.capture(server, runtime.gateway, committed.getKey(), committed.getValue()));
+                        } catch (RuntimeException unavailable) { runtime.rejected++; }
+                    }));
         } catch (RuntimeException unavailable) { runtime.rejected++; }
     }
     public static void tick(MinecraftServer server) {

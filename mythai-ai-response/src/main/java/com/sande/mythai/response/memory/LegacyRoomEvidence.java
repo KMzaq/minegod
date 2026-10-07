@@ -61,9 +61,11 @@ final class LegacyRoomEvidence {
                     request.godIds().stream().map(Object::toString).collect(java.util.stream.Collectors.toSet()));
         }
         if (RUMOR.equals(reference.kind())) {
-            // The old rumor proof certifies only one God; no implicit transfer to a new God audience.
-            if (request.godIds().size() != 1 || !request.speakerGodId().toString().equals(source.god())) return false;
-            return state.heard(server, source.subject(), source.god(), request.audiencePlayerIds()).stream()
+            // A quoted origin God's stance stays attributed to that God. Each current God must already
+            // have received the same claim; this check creates neither receipts nor shared beliefs.
+            return com.sande.mythictrpg.rumor.RoomRumorAccess.referenced(server, source.subject(), source.god(),
+                    request.audiencePlayerIds(), request.godIds().stream().map(Object::toString)
+                            .collect(java.util.stream.Collectors.toUnmodifiableSet()), request.publicRoom()).stream()
                     .anyMatch(row -> row.rootId().equals(source.source()) && DerivedMemory.hash(JSON.toJson(row)).equals(source.fingerprint()));
         }
         return false;

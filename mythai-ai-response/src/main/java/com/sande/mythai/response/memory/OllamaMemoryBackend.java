@@ -20,6 +20,35 @@ public final class OllamaMemoryBackend {
     private final MemoryIndexSettings settings;private final Transport transport;
     public OllamaMemoryBackend(MemoryIndexSettings settings){this(settings,new HttpTransport());}
     public OllamaMemoryBackend(MemoryIndexSettings settings,Transport transport){this.settings=settings;this.transport=transport;}
+    /** Neutral scoped archive extraction. The caller owns background admission; no legacy journal is fabricated.
+     * The package-private caller supplies a fixed code-owned instruction and an independently validated schema. */
+    JsonObject extractRecorded(String instruction, JsonArray input, JsonObject schema) throws Exception {
+        if (!settings.enabled() || !settings.consolidate()) throw new IllegalStateException("recorded extraction disabled");
+        if (instruction == null || instruction.length() > 8192 || input == null || input.isEmpty() || input.size() > 6
+                || schema == null) throw new IllegalArgumentException("recorded extraction budget");
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException("recorded extraction preempted");
+        var execution = settings.execution(); var options = new LinkedHashMap<String,Object>();
+        options.put("temperature", 0); options.put("num_predict", execution.extractionMaxTokens());
+        if (execution.extractionCpu()) options.put("num_gpu", 0);
+        if (execution.extractionThreads() > 0) options.put("num_thread", execution.extractionThreads());
+        if (execution.extractionContext() > 0) options.put("num_ctx", execution.extractionContext());
+        var request = new LinkedHashMap<String,Object>(); request.put("model", settings.extractionModel());
+        request.put("stream", false); request.put("think", false); request.put("format", schema); request.put("options", options);
+        request.put("messages", List.of(Map.of("role", "system", "content", instruction), Map.of("role", "user", "content", JSON.toJson(input))));
+        if (execution.extractionKeepAliveSeconds() > 0) request.put("keep_alive", execution.extractionKeepAliveSeconds() + "s");
+        String body = JSON.toJson(request);
+        if (body.getBytes(StandardCharsets.UTF_8).length > 65536) throw new IllegalArgumentException("recorded request byte budget");
+        var envelope = verified(settings.extractionModel(), settings.extractionRevision(), "/api/chat", body, settings.backgroundTimeoutMs());
+        if (!settings.extractionModel().equals(envelope.get("model").getAsString())
+                || !envelope.get("done").getAsJsonPrimitive().isBoolean() || !envelope.get("done").getAsBoolean()
+                || envelope.has("done_reason") && !envelope.get("done_reason").getAsString().equals("stop"))
+            throw new IllegalArgumentException("incomplete recorded extraction");
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException("recorded extraction preempted");
+        var content = envelope.getAsJsonObject("message").get("content");
+        if (!content.isJsonPrimitive() || !content.getAsJsonPrimitive().isString() || content.getAsString().length() > 16384)
+            throw new IllegalArgumentException("recorded response budget");
+        return JsonParser.parseString(content.getAsString()).getAsJsonObject();
+    }
     public SemanticIndex.Vector embed(String input,boolean background)throws Exception {
         if(input==null||input.isBlank()||input.length()>1600)throw new IllegalArgumentException("embedding input budget");
         var request=new LinkedHashMap<String,Object>();
