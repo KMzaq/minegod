@@ -1,0 +1,104 @@
+{
+  "caseCount": 28,
+  "newReviewTurns": 28,
+  "newReviewCalls": 46,
+  "runPurpose": "CANDIDATE_ONLY_REUSED_REGRESSION_AND_FIVE_NEW_CONTROLS",
+  "prior23BaselineReference": {
+    "method": "VERIFIED_PRIOR_V6_23_CASE_REFERENCE_NOT_NEW_MEASUREMENT",
+    "caseCount": 23,
+    "newBaselineCalls": 0,
+    "sourceLiveDirectory": "C:\\Users\\ADMIN\\Desktop\\markmar\\검토결과\\grounding-claims-20261008\\run-v7\\live",
+    "sourceSummary": "C:\\Users\\ADMIN\\Desktop\\markmar\\검토결과\\grounding-claims-20261008\\run-v7\\live\\summary.json",
+    "sourceManifestSha256": "563965e7f1de8457bb4df5c3a8f7c718dec89b07e368039dec23aba8d6bda83c",
+    "sourceSummarySha256": "e82c2643898dbdafbfb24d14c281f8a7bc0dd42fd3a4f94fe2e7bf845c649444",
+    "sourceResultSha256": {
+      "actor_correction_understood.baselineV6.json": "1753bbc1edb1fef7c1932d77be9c1a2e8333da8102bbece326550ae4fdc51128",
+      "busy_false_completion_and_actor.baselineV6.json": "ba4ea79a565f733d25946660890e5ad4b6883484660571fd203e6f5e97b35013",
+      "conditional_capability_presupposition.baselineV6.json": "1cdf4050c59868b579c71fd866cb3a4808c8a72a6f8675c95c0509660dc43544",
+      "conditional_reported_book_repair.baselineV6.json": "f391e892eac9bcfa766123ee15b8f81e1e01eecb347bbdb511b14e1503a79de1",
+      "delivery_executed.baselineV6.json": "9c1d5e351eb2a26f25f5591c4a62ff3fa33db7e327192cb8ba4cce8f725dcac8",
+      "delivery_pending.baselineV6.json": "0b18910ddf8f3b0c4c9c5f21b3cfed4e486971efc4493fda3b5d2f079274a88b",
+      "figurative_threat_and_opinion.baselineV6.json": "475e1431e307464e88bcbdd9b00829b302da8b04383456b08b2fd8e26821c100",
+      "fixed_current_speaker_old_rejected_id.baselineV6.json": "2f6ce2e5caf5d9b0aec32f0fc56d94255b768f8b97c0f8b4fb60dcc11728b280",
+      "heldout_inventory_finished_done_claim.baselineV6.json": "b5b00d619037dceae365724345b661257c3f2660562d9d84557b1dca9794d1af",
+      "heldout_inventory_future_possibility.baselineV6.json": "8c8b417f79fb5ce599d9bd144c6dbc84c75960e3af322def48564824f65714d2",
+      "heldout_inventory_past_accomplishment.baselineV6.json": "ac061145256383a60307f853e92e4f3d0c94fced5dcfb381123279586241dbb4",
+      "heldout_inventory_unfinished_done_claim.baselineV6.json": "58c8d5102b0c729b6b76af570700c2d0cc4b156de201a4e6af81116d9efaead2",
+      "heldout_other_promise_new_offer.baselineV6.json": "0924d67f8eb41d149c7a19262f421bad5bdbcb9ecf06c65ffa3815d927e8e854",
+      "heldout_other_promise_old_ownership.baselineV6.json": "e6040bf42553ce7619aaf20a342191b1de3cf6185a679d177b6fd044a1e48554",
+      "heldout_other_speaker_past_promise.baselineV6.json": "010fc263f02007e722a81c2113055ccd619037288faf0833f1527015febd1b72",
+      "heldout_self_speaker_past_promise.baselineV6.json": "8b8d42fcb70caec9d84269b1d2770f9caaec45c8879ddb81759a86bc4945a151",
+      "new_intention_not_past_promise.baselineV6.json": "975f9b408c5a0d836c6abfea42ab101e4153826bb59d0c664c6fefc4981aeefb",
+      "no_memory_no_fabrication.baselineV6.json": "1442ad0223f3d7ceee321aa8764d1488157be9abca920e4a0506d24dff89d54e",
+      "ordinary_future_intention.baselineV6.json": "e261f5d4730cb99ec9e89fb78811942f828c77bd1e09907c6359ba732dd001a0",
+      "other_god_promise.baselineV6.json": "f0931a1c167bae7164113e20ef9424cec92b4403af526c539e83c9060fab9f3d",
+      "own_promise_same_draft.baselineV6.json": "9cdb1f5dd7215d5a8153b19398ede13ef2721b0f69ae72f23ddd16a78e98ee7f",
+      "player_claim_acknowledgement.baselineV6.json": "b273bad31afeaff4d871549a4592bbe492a216bb4ea4410fb12047a118593ff0",
+      "witnessed_book_supported.baselineV6.json": "a290e6153d3ba8facf803e27d2346de79ff4cbe21cf7d3aaccbd09e95ead3cb2"
+    },
+    "baselineV6": {
+      "validCorrect": 19,
+      "falseAccept": 3,
+      "falseReject": 1,
+      "invalidReview": 0,
+      "callFailure": 0,
+      "expectedCodeMismatch": 3,
+      "totalLatencyMs": 37484,
+      "meanLatencyMs": 1629.7391304347825,
+      "inputTokens": 82379,
+      "outputTokens": 766
+    },
+    "verification": "Same 23 labels/drafts/canonical scenes/frozen V6 messages and wire controls; all old review responses reparsed and quoted against their unchanged draft. Five new controls have no baseline measurement."
+  },
+  "candidate": {
+    "validCorrect": 27,
+    "falseAccept": 0,
+    "falseReject": 0,
+    "invalidReview": 1,
+    "callFailure": 0,
+    "expectedCodeMismatch": 1,
+    "totalLatencyMs": 111508,
+    "meanLatencyMs": 3982.4285714285716,
+    "inputTokens": 83196,
+    "outputTokens": 6477
+  },
+  "cohorts": {
+    "REUSED_REGRESSION": {
+      "count": 23,
+      "candidate": {
+        "validCorrect": 22,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 1,
+        "callFailure": 0,
+        "expectedCodeMismatch": 1,
+        "totalLatencyMs": 100017,
+        "meanLatencyMs": 4348.565217391304,
+        "inputTokens": 71814,
+        "outputTokens": 5816
+      }
+    },
+    "NEW_FINAL_CONTROL": {
+      "count": 5,
+      "candidate": {
+        "validCorrect": 5,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 11491,
+        "meanLatencyMs": 2298.2,
+        "inputTokens": 11382,
+        "outputTokens": 661
+      }
+    }
+  },
+  "definitions": {
+    "invalidReview": "Schema/coverage/current-draft quote invalid; fail-closed, not a semantic REVISE",
+    "falseReject": "valid REVISE for expected PASS",
+    "falseAccept": "valid PASS for expected REVISE",
+    "callFailure": "No usable review response or request failure; fail-closed, not a semantic verdict"
+  },
+  "limits": "Small fixed regression set, not general naturalness, in-game behavior or unbiased product acceptance. Candidate may consume a larger declared output budget; exact token counts and latency remain separate."
+}

@@ -11,6 +11,7 @@ import com.sande.mythictrpg.godavatar.GodAvatarRegistryState;
 import com.sande.mythictrpg.godavatar.GodAvatarService;
 import com.sande.mythictrpg.quest.reward.ResolvedQuestReward;
 import com.sande.mythictrpg.quest.reward.RewardClaimService;
+import com.sande.mythictrpg.raid.trial.SealedGuardianEntity;
 import com.sande.mythictrpg.story.runtime.StoryEventService;
 import com.sande.mythictrpg.story.runtime.StoryTeamResolver;
 import com.sande.mythictrpg.story.signal.StorySignal;
@@ -70,6 +71,8 @@ public final class RaidRuntime {
         checkThread(server);
         RaidDefinition definition = RaidCatalog.INSTANCE.find(raidId).orElse(null);
         if (definition == null) return Result.no("작성된 레이드 정의가 없습니다.");
+        if (SealedGuardianEncounter.RAID_ID.equals(raidId) && !TrialRaidArenaService.isReady(server))
+            return Result.no("시험 전장을 먼저 준비하세요: 운영자 /mythraid trial prepare");
         RaidState state = RaidState.get(server);
         if (!state.ready()) return Result.no("레이드 저장 데이터가 복구 대기 중입니다.");
         if (definition.boss().godId().isPresent()) {
@@ -258,6 +261,9 @@ public final class RaidRuntime {
     }
 
     private void tryStart(MinecraftServer server, RaidState.Attempt attempt, long now) {
+        if (SealedGuardianEncounter.RAID_ID.equals(attempt.definition.id()) && !TrialRaidArenaService.isReady(server)) {
+            finish(server, attempt, RaidState.Status.FAILED, "TRIAL_ARENA_NOT_READY"); return;
+        }
         RaidState state = RaidState.get(server);
         for (RaidState.Member member : attempt.members.values()) {
             ServerPlayer player = server.getPlayerList().getPlayer(member.playerId);
@@ -300,6 +306,8 @@ public final class RaidRuntime {
                 attempt.spawnedEntities.add(boss.getUUID());
                 attempt.startedAt = now;
                 attempt.status = RaidState.Status.ACTIVE;
+                if (boss instanceof SealedGuardianEntity guardian)
+                    SealedGuardianEncounter.begin(server, attempt, guardian, now);
                 state.changed();
                 notifyRoster(server, attempt, "전투가 시작됐습니다.");
                 return;
@@ -373,6 +381,10 @@ public final class RaidRuntime {
         }
         if (attempt.members.values().stream().allMatch(member -> member.eliminated)) {
             finish(server, attempt, RaidState.Status.FAILED, "ALL_ELIMINATED"); return;
+        }
+        if (boss instanceof SealedGuardianEntity guardian) {
+            SealedGuardianEncounter.tick(server, attempt, guardian, now);
+            return;
         }
         if (server.getTickCount() % 20 == 0) {
             ServerPlayer target = attempt.members.values().stream().filter(member -> !member.eliminated && !member.awaitingRespawn)
@@ -555,11 +567,13 @@ public final class RaidRuntime {
         attempt.status = RaidState.Status.SUCCEEDED;
         RaidState.get(server).changed();
         publishOutcome(server, attempt, "VICTORY");
-        for (UUID id : attempt.rewardRecipients) {
+        for (UUID id : attempt.definition.rewards().isEmpty() ? Set.<UUID>of() : attempt.rewardRecipients) {
             ServerPlayer online = server.getPlayerList().getPlayer(id);
             if (online != null) RewardClaimService.INSTANCE.deliverQueued(online);
         }
-        notifyRoster(server, attempt, "승리했습니다. 작성된 보상 영수증이 등록됐습니다.");
+        notifyRoster(server, attempt, attempt.definition.rewards().isEmpty()
+                ? "승리했습니다. 이 레이드에는 작성된 보상이 없습니다."
+                : "승리했습니다. 작성된 보상 영수증이 등록됐습니다.");
     }
 
     private void finish(MinecraftServer server, RaidState.Attempt attempt, RaidState.Status terminal, String reason) {
@@ -590,6 +604,7 @@ public final class RaidRuntime {
 
     /** Returns false while an entity or region cannot be proven safe to release. No duplicate God lease. */
     private boolean cleanup(MinecraftServer server, RaidState.Attempt attempt) {
+        SealedGuardianEncounter.stop(attempt.id);
         if (attempt.arena != null) {
             ServerLevel level = level(server, attempt.arena.dimension());
             if (level == null || !tickets.isHeld(attempt.id)
@@ -669,6 +684,8 @@ public final class RaidRuntime {
         if (attempt.storyPublished || attempt.arena == null) return;
         // The result transition is authoritative even when the optional ledger or Story projection is unavailable.
         attempt.storyPublished = true; RaidState.get(server).changed();
+        // A repeatable development trial must not advance canonical world-story or God history.
+        if (SealedGuardianEncounter.RAID_ID.equals(attempt.definition.id())) return;
         ServerLevel level = level(server, attempt.arena.dimension());
         if (level != null) ImportantEvents.battle(server, attempt.id, attempt.definition.id(), attempt.leader,
                 Set.copyOf(attempt.members.keySet()), level, BlockPos.containing(attempt.arena.bossSpawn()),
@@ -691,7 +708,7 @@ public final class RaidRuntime {
     }
 
     private void onStopped(MinecraftServer server) {
-        if (activeServer == server) { tickets.releaseAll(); deathObserved.clear(); activeServer = null; }
+        if (activeServer == server) { SealedGuardianEncounter.stopAll(); tickets.releaseAll(); deathObserved.clear(); activeServer = null; }
     }
 
     private void abortInterrupted(MinecraftServer server, RaidState.Attempt attempt) {

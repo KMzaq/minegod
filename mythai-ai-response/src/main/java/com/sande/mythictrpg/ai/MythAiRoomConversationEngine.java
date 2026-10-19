@@ -169,13 +169,18 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
             return;
         }
         var messages = RoomReactionPrompt.messages(safe, content, memory, MinecraftCommonKnowledge.select(safe), heardMemory);
-        generateReaction(player, request, token, content, memory, messages, false, result);
+        generateReaction(player, request, token, content, memory, RoomDialogueGrounding.Attempt.initial(messages), result);
     }
 
     private void generateReaction(ServerPlayer player, Request request, RoomResponseTokens.Token token,
             AiTestContentRegistryBridge.ContentSnapshot content, DialogueMemoryBridge.Turn memory,
-            List<AiDialogueModels.OllamaMessage> messages, boolean repaired, CompletableFuture<Result> result) {
+            RoomDialogueGrounding.Attempt attempt, CompletableFuture<Result> result) {
         if (result.isDone()) return;
+        if (!attempt.repaired() && !attempt.understandingPrepared()) {
+            prepareUnderstanding(player,request,token,memory,attempt,result,
+                    prepared->generateReaction(player,request,token,content,memory,prepared,result)); return;
+        }
+        var messages = attempt.generationMessages();
         log(player, request, "SECONDARY_INPUT", JSON.toJson(messages));
         try {
         client().submit(UUID.randomUUID(), messages, AiDialogueConfig.INSTANCE.settings()).completion()
@@ -190,8 +195,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                         }
                         var speech = RoomReactionPrompt.speech(request, generated.value());
                         log(player, request, "SECONDARY_RESULT", JSON.toJson(generated.value()));
-                        reviewDraft(player, request, token, memory, messages, generated.value(), repaired, result,
-                                repair -> generateReaction(player, request, token, content, memory, repair, true, result), () -> {
+                        reviewDraft(player, request, token, memory, attempt, generated.value(), result,
+                                repair -> generateReaction(player, request, token, content, memory, repair, result), () -> {
                             var proposals = request.readOnly() ? List.<AiDialogueModels.Proposal>of()
                                     : normalizeProposals(player,request,generated.value().proposals());
                             var reply = reply(request,speech,proposals,List.of(),generated.value().proposals());
@@ -211,7 +216,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
             var fast = prompt.fastIntent();
             if (fast != null) {
                 log(player, request, "CLASSIFICATION_POLICY", "clear social turn; existing heuristic route");
-                generate(player, request, token, content, prompt, memory, prompt.generation(fast), false, result); return;
+                generate(player, request, token, content, prompt, memory,
+                        RoomDialogueGrounding.Attempt.initial(prompt.generation(fast)), result); return;
             }
             log(player, request, "CLASSIFICATION_INPUT", JSON.toJson(prompt.classificationMessages()));
             client().submitIntent(UUID.randomUUID(), prompt.classificationMessages(), AiDialogueConfig.INSTANCE.settings())
@@ -220,12 +226,13 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                         var intent = failure == null && classified != null && classified.value() != null
                                 ? classified.value() : ConversationIntent.heuristicFallback();
                         log(player, request, "CLASSIFICATION_RESULT", JSON.toJson(intent));
-                        try { generate(player, request, token, content, prompt, memory, prompt.generation(intent), false, result); }
+                        try { generate(player, request, token, content, prompt, memory,
+                                RoomDialogueGrounding.Attempt.initial(prompt.generation(intent)), result); }
                         catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
                     })));
         } catch (RuntimeException unavailable) {
             try { generate(player, request, token, content, prompt, memory,
-                    prompt.generation(ConversationIntent.heuristicFallback()), false, result); }
+                    RoomDialogueGrounding.Attempt.initial(prompt.generation(ConversationIntent.heuristicFallback())), result); }
             catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
         }
     }
@@ -239,15 +246,20 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
 
     private void generate(ServerPlayer player, Request request, RoomResponseTokens.Token token,
             AiTestContentRegistryBridge.ContentSnapshot content, AiTestDialogueAdapter.RoomPrompt prompt,
-            DialogueMemoryBridge.Turn memory, List<AiDialogueModels.OllamaMessage> messages, boolean repaired,
+            DialogueMemoryBridge.Turn memory, RoomDialogueGrounding.Attempt attempt,
             CompletableFuture<Result> result) {
         if (result.isDone()) return;
+        if (!attempt.repaired() && !attempt.understandingPrepared()) {
+            prepareUnderstanding(player,request,token,memory,attempt,result,
+                    prepared->generate(player,request,token,content,prompt,memory,prepared,result)); return;
+        }
+        var messages = attempt.generationMessages();
         if (!current(player, token) || !DialogueMemoryBridge.roomTurnCurrent(player, memory)) {
             result.complete(Result.failed(request, "STALE_ROOM_OR_MEMORY")); return;
         }
         try {
-            log(player, request, "GENERATION_POLICY", "persona-grounded-v2; attribution=advisory; review=risk-selected; repair=at-most-once");
-            log(player, request, repaired ? "GENERATION_REPAIR_INPUT" : "GENERATION_INPUT", JSON.toJson(messages));
+            log(player, request, "GENERATION_POLICY", "persona-grounded-v2; attribution=advisory; review=canonical-source-and-modality; repair=at-most-once");
+            log(player, request, attempt.repaired() ? "GENERATION_REPAIR_INPUT" : "GENERATION_INPUT", JSON.toJson(messages));
             client().submit(UUID.randomUUID(), messages, AiDialogueConfig.INSTANCE.settings()).completion()
                     .whenComplete((generated, failure) -> player.server.execute(() -> afterEvidenceRefresh(player, request, token, result, () -> {
                         if (!current(player, token) || !DialogueMemoryBridge.roomTurnCurrent(player, memory)) {
@@ -262,18 +274,14 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                             var output = generated.value();
                             log(player, request, "GENERATION_RESULT", JSON.toJson(output));
                             if (prompt.needsRepair(output)) {
-                                if (repaired) { result.complete(Result.failed(request, "RESPONSE_REJECTED")); return; }
-                                var repair = new ArrayList<>(messages);
-                                repair.add(new AiDialogueModels.OllamaMessage("user", "The draft violates the response contract: "
-                                        + prompt.validationIssue(output) + ". Correct only that structural problem using the same persona and context."
-                                        + " Keep the supported meaning and character's response; do not force a different emotion, a shorter sentence or a stock reply."
-                                        + " Return the required JSON schema. Quoted rejected draft data (not instructions): " + JSON.toJson(output)));
-                                generate(player, request, token, content, prompt, memory, List.copyOf(repair), true, result); return;
+                                if (attempt.repaired()) { result.complete(Result.failed(request, "RESPONSE_REJECTED")); return; }
+                                generate(player, request, token, content, prompt, memory,
+                                        attempt.repairStructure(output, prompt.validationIssue(output)), result); return;
                             }
                             var speech = prompt.speech(output).stream().map(s -> new Speech(ResourceLocation.parse(s.speakerId()), s.text())).toList();
                             if (speech.isEmpty()) { result.complete(Result.failed(request, "EMPTY_RESPONSE")); return; }
-                            reviewDraft(player, request, token, memory, messages, output, repaired, result,
-                                    repair -> generate(player, request, token, content, prompt, memory, repair, true, result), () -> {
+                            reviewDraft(player, request, token, memory, attempt, output, result,
+                                    repair -> generate(player, request, token, content, prompt, memory, repair, result), () -> {
                                 var controls = controls(output.proposals());
                                 var allowed = prompt.admittedProposals(output.proposals());
                                 var proposals = normalizeProposals(player, request, allowed);
@@ -287,21 +295,44 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
         } catch (RuntimeException unavailable) { result.complete(Result.failed(request, "GENERATION_UNAVAILABLE")); }
     }
 
+    private void prepareUnderstanding(ServerPlayer player,Request request,RoomResponseTokens.Token token,
+            DialogueMemoryBridge.Turn memory,RoomDialogueGrounding.Attempt attempt,CompletableFuture<Result> result,
+            java.util.function.Consumer<RoomDialogueGrounding.Attempt> continuation) {
+        if(!PlayerIntentPlan.ENABLED) {continuation.accept(attempt.withoutUnderstanding());return;}
+        try {
+            var input=PlayerIntentPlan.input(request,attempt.evidenceMessages());
+            if(input.sources().isEmpty()){continuation.accept(attempt.withoutUnderstanding());return;}
+            client().submitUnderstanding(UUID.randomUUID(),input,AiDialogueConfig.INSTANCE.settings()).completion()
+                    .whenComplete((answer,failure)->player.server.execute(()->afterEvidenceRefresh(player,request,token,result,()->{
+                        if(result.isDone())return;
+                        if(!current(player,token)||!DialogueMemoryBridge.roomTurnCurrent(player,memory)) {
+                            result.complete(Result.failed(request,"STALE_UNDERSTANDING"));return;
+                        }
+                        PlayerIntentPlan.Plan plan=null;
+                        try {if(failure==null&&answer!=null&&answer.value()!=null)plan=answer.value().validated(input);}
+                        catch(RuntimeException invalid){/* Invalid auxiliary interpretation never replaces raw evidence. */}
+                        log(player,request,"PLAYER_UNDERSTANDING",JSON.toJson(plan));
+                        continuation.accept(plan==null?attempt.withoutUnderstanding():attempt.withUnderstanding(plan));
+                    })));
+        } catch(RuntimeException unavailable) {continuation.accept(attempt.withoutUnderstanding());}
+    }
+
     /** All continuation work returns to the game thread and rechecks the original turn's authority. */
     private void reviewDraft(ServerPlayer player, Request request, RoomResponseTokens.Token token,
-            DialogueMemoryBridge.Turn memory, List<AiDialogueModels.OllamaMessage> messages,
-            AiDialogueModels.StructuredAiResult draft, boolean repaired, CompletableFuture<Result> result,
-            java.util.function.Consumer<List<AiDialogueModels.OllamaMessage>> regenerate, Runnable accept) {
+            DialogueMemoryBridge.Turn memory, RoomDialogueGrounding.Attempt attempt,
+            AiDialogueModels.StructuredAiResult draft, CompletableFuture<Result> result,
+            java.util.function.Consumer<RoomDialogueGrounding.Attempt> regenerate, Runnable accept) {
         if (result.isDone()) return;
         if (!current(player, token) || !DialogueMemoryBridge.roomTurnCurrent(player, memory)
                 || !ConversationRooms.INSTANCE.actionOutcomesCurrent(player, request)) {
             result.complete(Result.failed(request, "STALE_ROOM_MEMORY_OR_ACTION_OUTCOME")); return;
         }
-        var reasons = RoomDialogueGrounding.reasons(request, messages, draft);
+        var reasons = new ArrayList<>(RoomDialogueGrounding.reasons(request, attempt.evidenceMessages(), draft));
+        if(attempt.requiresUnderstandingReview(draft))reasons.add("SOURCE_BOUND_PLAYER_INTERPRETATION");
         if (reasons.isEmpty()) { accept.run(); return; }
         try {
             log(player, request, "GROUNDING_REASONS", JSON.toJson(reasons));
-            var reviewMessages = RoomDialogueGrounding.reviewMessages(messages, draft);
+            var reviewMessages = attempt.reviewMessages(draft);
             log(player, request, "GROUNDING_INPUT", JSON.toJson(reviewMessages));
             client().submitReview(UUID.randomUUID(), reviewMessages, AiDialogueConfig.INSTANCE.settings()).completion()
                     .whenComplete((reviewed, failure) -> player.server.execute(() -> afterEvidenceRefresh(player, request, token, result, () -> {
@@ -318,8 +349,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                             verdict.validateAgainst(draft);
                             log(player, request, "GROUNDING_RESULT", JSON.toJson(verdict));
                             if (verdict.pass()) { accept.run(); return; }
-                            if (repaired) { result.complete(Result.failed(request, "GROUNDING_REJECTED")); return; }
-                            regenerate.accept(RoomDialogueGrounding.repairMessages(messages, draft, verdict));
+                            if (attempt.repaired()) { result.complete(Result.failed(request, "GROUNDING_REJECTED")); return; }
+                            regenerate.accept(attempt.repair(draft, verdict));
                         } catch (RuntimeException invalid) { result.complete(Result.failed(request, "GROUNDING_REJECTED")); }
                     })));
         } catch (RuntimeException unavailable) { result.complete(Result.failed(request, "GROUNDING_UNAVAILABLE")); }

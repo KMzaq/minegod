@@ -1,0 +1,29 @@
+{
+  "caseCount": 14,
+  "baseline": {
+    "falseAccept": 2,
+    "callFailure": 0,
+    "validCorrect": 11,
+    "invalidReview": 1,
+    "totalLatencyMs": 27555,
+    "meanLatencyMs": 1968.2142857142858,
+    "falseReject": 0,
+    "expectedCodeMismatch": 2
+  },
+  "candidate": {
+    "falseAccept": 1,
+    "callFailure": 0,
+    "validCorrect": 12,
+    "invalidReview": 1,
+    "totalLatencyMs": 22832,
+    "meanLatencyMs": 1630.857142857143,
+    "falseReject": 0,
+    "expectedCodeMismatch": 1
+  },
+  "definitions": {
+    "callFailure": "request/transport/timeout failure; fail-closed, not a semantic verdict",
+    "invalidReview": "invalid schema or non-current-draft quote; fail-closed, excluded from valid semantic confusion counts",
+    "falseReject": "valid REVISE for an expected PASS",
+    "falseAccept": "valid PASS for an expected REVISE"
+  }
+}

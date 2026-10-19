@@ -110,7 +110,7 @@ public final class DialogueGroundingLiveEvaluation {
     }
     static RoomDialogueGrounding.Review review(LocalOllamaClient llm,List<AiDialogueModels.OllamaMessage> original,AiDialogueModels.StructuredAiResult draft,AiDialogueConfig.Settings settings,Map<String,Object> row,String key) throws Exception {
         var id=UUID.randomUUID(); observe(id,row,key+"Wire");
-        var verdict=llm.submitReview(id,RoomDialogueGrounding.reviewMessages(original,draft),settings).completion().get(190,TimeUnit.SECONDS).value();
+        var verdict=llm.submitReview(id,RoomDialogueGrounding.reviewMessages(original,draft),settings).completion().get(250,TimeUnit.SECONDS).value();
         row.put(key,verdict); verdict.validateAgainst(draft); return verdict;
     }
     private static void observe(UUID id,Map<String,Object> row,String key) {

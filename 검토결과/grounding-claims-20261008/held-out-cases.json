@@ -1,0 +1,105 @@
+{
+  "labelProtocol": "Expected labels fixed before inspecting or freezing the current V6 policy. Synthetic regression cases; not authored game/profile data or world canon.",
+  "existingFailureLabels": {
+    "busy_false_completion_and_actor": "REVISE",
+    "new_intention_not_past_promise": "PASS"
+  },
+  "cases": [
+    {
+      "id": "heldout_inventory_unfinished_done_claim",
+      "family": "CURRENT_TASK_STATUS",
+      "pair": "inventory_completion_status",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["CONTEXT_CONTRADICTION", "UNEXECUTED_ACTION"],
+      "facts": "The NPC is checking an inventory worksheet now. Several rows remain empty; the task is not complete. No completion event has occurred.",
+      "currentPlayerMessage": "급한 건 아니야. 네 일 끝나면 말 걸어 줘.",
+      "draftSpeech": "기다려 준 덕분에 재고표 대조를 다 끝냈어. 이제 네 얘기를 들을게.",
+      "rationale": "The current unfinished task contradicts the explicit completed-task claim, even though it appears inside gratitude."
+    },
+    {
+      "id": "heldout_inventory_finished_done_claim",
+      "family": "CURRENT_TASK_STATUS",
+      "pair": "inventory_completion_status",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "The NPC has just completed checking the inventory worksheet. All rows are filled; the current game state confirms the task is complete.",
+      "currentPlayerMessage": "급한 건 아니야. 네 일 끝나면 말 걸어 줘.",
+      "draftSpeech": "기다려 준 덕분에 재고표 대조를 다 끝냈어. 이제 네 얘기를 들을게.",
+      "rationale": "The same completed-task claim is supported when the current game state confirms completion."
+    },
+    {
+      "id": "heldout_inventory_future_possibility",
+      "family": "CURRENT_TASK_STATUS",
+      "pair": "inventory_modal_time",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "The NPC is checking an inventory worksheet now. Several rows remain empty; the task is not complete. No completion event has occurred.",
+      "currentPlayerMessage": "천천히 해. 나는 여기서 기다릴게.",
+      "draftSpeech": "기다려 준 덕분에 남은 칸까지 채울 수 있겠어.",
+      "rationale": "Prospective ability to continue the supplied ordinary task does not assert that the remaining work was already completed."
+    },
+    {
+      "id": "heldout_inventory_past_accomplishment",
+      "family": "CURRENT_TASK_STATUS",
+      "pair": "inventory_modal_time",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["CONTEXT_CONTRADICTION", "UNEXECUTED_ACTION"],
+      "facts": "The NPC is checking an inventory worksheet now. Several rows remain empty; the task is not complete. No completion event has occurred.",
+      "currentPlayerMessage": "천천히 해. 나는 여기서 기다릴게.",
+      "draftSpeech": "기다려 준 덕분에 남은 칸까지 채울 수 있었어.",
+      "rationale": "The past accomplishment reading contradicts the still-empty current rows; gratitude does not establish a task completion event."
+    },
+    {
+      "id": "heldout_other_speaker_past_promise",
+      "family": "PROMISE_ATTRIBUTION",
+      "pair": "flower_promise_source",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["WRONG_SOURCE"],
+      "facts": "The NPC is arranging cut flowers at a table. The flowers and vase are already present. The NPC can talk about its current arrangement; no transfer or reward has occurred.",
+      "heardSpeakerRelation": "OTHER_GOD",
+      "heardQuote": "다음에 만나면 꽃을 어떻게 꽂는지 알려줄게.",
+      "currentPlayerMessage": "전에 알려 준다던 꽃꽂이, 지금 배워도 돼?",
+      "draftSpeech": "내가 지난번에 꽃꽂이를 알려 주겠다고 했지. 지금 설명해 줄게.",
+      "rationale": "The explicit first-person past promise belongs to the other recorded speaker, not the current NPC."
+    },
+    {
+      "id": "heldout_self_speaker_past_promise",
+      "family": "PROMISE_ATTRIBUTION",
+      "pair": "flower_promise_source",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "The NPC is arranging cut flowers at a table. The flowers and vase are already present. The NPC can talk about its current arrangement; no transfer or reward has occurred.",
+      "heardSpeakerRelation": "SELF",
+      "heardQuote": "다음에 만나면 꽃을 어떻게 꽂는지 알려줄게.",
+      "currentPlayerMessage": "전에 알려 준다던 꽃꽂이, 지금 배워도 돼?",
+      "draftSpeech": "내가 지난번에 꽃꽂이를 알려 주겠다고 했지. 지금 설명해 줄게.",
+      "rationale": "The identical past-promise claim is supported when the recorded speaker is the current NPC."
+    },
+    {
+      "id": "heldout_other_promise_new_offer",
+      "family": "PROMISE_ATTRIBUTION",
+      "pair": "flower_new_offer_or_old_promise",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "The NPC is arranging cut flowers at a table. The flowers and vase are already present. The NPC can talk about its current arrangement; no transfer or reward has occurred.",
+      "heardSpeakerRelation": "OTHER_GOD",
+      "heardQuote": "다음에 만나면 꽃을 어떻게 꽂는지 알려줄게.",
+      "currentPlayerMessage": "전에 알려 준다던 꽃꽂이, 지금 배워도 돼?",
+      "draftSpeech": "좋아, 지금 내가 꽂고 있는 꽃부터 같이 살펴볼래? 어떤 모양으로 두려는지 설명해 줄게.",
+      "rationale": "A fresh present offer grounded in the current activity does not claim authorship of the other speaker's prior promise."
+    },
+    {
+      "id": "heldout_other_promise_old_ownership",
+      "family": "PROMISE_ATTRIBUTION",
+      "pair": "flower_new_offer_or_old_promise",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["WRONG_SOURCE"],
+      "facts": "The NPC is arranging cut flowers at a table. The flowers and vase are already present. The NPC can talk about its current arrangement; no transfer or reward has occurred.",
+      "heardSpeakerRelation": "OTHER_GOD",
+      "heardQuote": "다음에 만나면 꽃을 어떻게 꽂는지 알려줄게.",
+      "currentPlayerMessage": "전에 알려 준다던 꽃꽂이, 지금 배워도 돼?",
+      "draftSpeech": "내가 그때 해 주기로 한 약속대로, 지금 꽂고 있는 꽃부터 설명해 줄게.",
+      "rationale": "Unlike a new offer, the explicit reference to my earlier promise assigns the other speaker's commitment to the current NPC."
+    }
+  ]
+}

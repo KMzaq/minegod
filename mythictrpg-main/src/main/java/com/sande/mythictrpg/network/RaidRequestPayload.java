@@ -10,7 +10,8 @@ import java.util.UUID;
 /** No player UUID, status, price, roster, arena or reward is accepted from clients. */
 public record RaidRequestPayload(UUID token, Action action, int row) implements CustomPacketPayload {
     public enum Action {
-        REFRESH(0), PREVIOUS(0), NEXT(0), CLOSE(0), CREATE(1), JOIN(2), START(4), CANCEL(8), LEAVE(16);
+        REFRESH(0), PREVIOUS(0), NEXT(0), CLOSE(0), CREATE(1), JOIN(2), START(4), CANCEL(8), LEAVE(16),
+        SHOW_RECRUITING(0), SHOW_IN_PROGRESS(0), SHOW_HISTORY(0);
         private final int bit;
         Action(int bit) { this.bit = bit; }
         public int bit() { return bit; }

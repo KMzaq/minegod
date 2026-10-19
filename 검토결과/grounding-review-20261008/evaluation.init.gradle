@@ -1,0 +1,35 @@
+// Test-only bounded comparison. No production build file or source-set changes.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def base = new File(p.projectDir.parentFile, '검토결과/grounding-review-20261008')
+    def output = p.findProperty('groundingComparisonOutput') ?: new File(base, 'run').absolutePath
+    ['groundingComparisonPreflight': '--preflight', 'groundingComparisonLive': '--execute-loopback'].each { task, mode ->
+        p.tasks.register(task, JavaExec) {
+            dependsOn p.tasks.named('testClasses')
+            classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+            mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingComparisonEvaluation'
+            workingDir = base
+            args p.projectDir.parentFile.absolutePath, output, mode
+        }
+    }
+    p.tasks.register('groundingComparisonCandidate', JavaExec) {
+        dependsOn p.tasks.named('testClasses')
+        classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingComparisonEvaluation'
+        workingDir = base
+        doFirst {
+            def baseline = p.findProperty('groundingComparisonBaseline')
+            if (!baseline) throw new GradleException('Required: -PgroundingComparisonBaseline=<existing run/live directory>')
+            setArgs([p.projectDir.parentFile.absolutePath, output, '--execute-candidate-loopback', baseline.toString()])
+        }
+    }
+    p.tasks.register('groundingComparisonFinalControl', JavaExec) {
+        dependsOn p.tasks.named('testClasses')
+        classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingComparisonEvaluation'
+        workingDir = base
+        args p.projectDir.parentFile.absolutePath,
+                p.findProperty('groundingComparisonOutput') ?: new File(base, 'run-final').absolutePath,
+                '--candidate-only'
+    }
+}

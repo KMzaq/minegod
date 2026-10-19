@@ -1,0 +1,65 @@
+{
+  "labelProtocol": "Five expected labels fixed before the receipt-policy replacement is inspected. Synthetic evidence only. Original eight-case held-out file remains unchanged; previously measured 23 cases are now reused regression cases.",
+  "cases": [
+    {
+      "id": "control_fresh_receipt_immediate_acknowledgement",
+      "family": "TRANSFER_TIME_AND_CUSTODY",
+      "pair": "transfer_receipt_time",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "Game snapshot: the item-transfer receipt below was issued just now in this turn. The NPC transferred one totem to the current player. No intervening loss, consumption, return or other inventory change has occurred.",
+      "actionOutcomes": [{"proposalId":"7a59f26a-6caa-43a0-84eb-e10de1d42963","actionType":"mythictrpg:item_request","status":"EXECUTED","reason":"Item transfer completed just now","details":{"item_id":"minecraft:totem_of_undying","count":"1","recipient_id":"e99a7a80-f65a-3062-ac86-2dd2cdaeb535"}}],
+      "currentPlayerMessage": "이제 받은 거야?",
+      "draftSpeech": "응, 방금 토템 하나를 네게 건넸어. 잘 써.",
+      "rationale": "Immediate acknowledgment of the fresh successful transfer is supported by its matching EXECUTED receipt and current snapshot."
+    },
+    {
+      "id": "control_old_transfer_lost_current_custody",
+      "family": "TRANSFER_TIME_AND_CUSTODY",
+      "pair": "old_transfer_past_or_current",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["CONTEXT_CONTRADICTION", "UNSUPPORTED_FACT"],
+      "facts": "Game snapshot: the receipt below records an earlier successful transfer to this player. After that transfer the player lost the totem. The current inventory no longer contains it. No replacement was issued.",
+      "actionOutcomes": [{"proposalId":"d3e3f05a-5a0f-4cb6-963e-7e7b10b00192","actionType":"mythictrpg:item_request","status":"EXECUTED","reason":"Earlier item transfer completed","details":{"item_id":"minecraft:totem_of_undying","count":"1","recipient_id":"e99a7a80-f65a-3062-ac86-2dd2cdaeb535"}}],
+      "currentPlayerMessage": "그 토템은 어떻게 된 거야?",
+      "draftSpeech": "아까 건넨 토템은 아직 네가 가지고 있잖아.",
+      "rationale": "An earlier transfer does not establish current custody after the current snapshot explicitly reports loss."
+    },
+    {
+      "id": "control_old_transfer_past_acknowledgement",
+      "family": "TRANSFER_TIME_AND_CUSTODY",
+      "pair": "old_transfer_past_or_current",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "Game snapshot: the receipt below records an earlier successful transfer to this player. After that transfer the player lost the totem. The current inventory no longer contains it. No replacement was issued.",
+      "actionOutcomes": [{"proposalId":"d3e3f05a-5a0f-4cb6-963e-7e7b10b00192","actionType":"mythictrpg:item_request","status":"EXECUTED","reason":"Earlier item transfer completed","details":{"item_id":"minecraft:totem_of_undying","count":"1","recipient_id":"e99a7a80-f65a-3062-ac86-2dd2cdaeb535"}}],
+      "currentPlayerMessage": "그 토템은 어떻게 된 거야?",
+      "draftSpeech": "아까 토템 하나를 네게 건넨 건 맞아.",
+      "rationale": "Acknowledging the supported past transfer alone does not assert current possession or a second grant."
+    },
+    {
+      "id": "control_wait_request_actor_inversion_only",
+      "family": "SPEECH_ACTOR_ATTRIBUTION",
+      "pair": "wait_request_speaker",
+      "expectedVerdict": "REVISE",
+      "expectedCodesAnyOf": ["WRONG_SOURCE", "ROLE_CONFUSION", "CONTEXT_CONTRADICTION"],
+      "facts": "The NPC and current player are beside the same table. No task completion or game action is established. The supplied history records who asked whom to wait.",
+      "history": [{"role":"NPC","speakerId":"mythictrpg:test_deity","name":"시험 NPC","text":"잠깐만 기다려 줄래?"},{"role":"PLAYER","speakerId":"e99a7a80-f65a-3062-ac86-2dd2cdaeb535","name":"시험 플레이어","text":"응, 여기서 기다릴게."}],
+      "currentPlayerMessage": "아까 누가 기다려 달라고 했지?",
+      "draftSpeech": "네가 내게 잠깐 기다려 달라고 했었지.",
+      "rationale": "The draft reverses the requesting speaker and recipient. No completion claim is present to explain away this independent actor error."
+    },
+    {
+      "id": "control_wait_request_correct_actor",
+      "family": "SPEECH_ACTOR_ATTRIBUTION",
+      "pair": "wait_request_speaker",
+      "expectedVerdict": "PASS",
+      "expectedCodesAnyOf": [],
+      "facts": "The NPC and current player are beside the same table. No task completion or game action is established. The supplied history records who asked whom to wait.",
+      "history": [{"role":"NPC","speakerId":"mythictrpg:test_deity","name":"시험 NPC","text":"잠깐만 기다려 줄래?"},{"role":"PLAYER","speakerId":"e99a7a80-f65a-3062-ac86-2dd2cdaeb535","name":"시험 플레이어","text":"응, 여기서 기다릴게."}],
+      "currentPlayerMessage": "아까 누가 기다려 달라고 했지?",
+      "draftSpeech": "내가 네게 잠깐 기다려 달라고 했었지.",
+      "rationale": "The same history supports the NPC correctly identifying itself as the requester and the player as the recipient."
+    }
+  ]
+}

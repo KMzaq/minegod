@@ -60,6 +60,7 @@ public final class MythicTrpg {
     public MythicTrpg(IEventBus modEventBus) {
         ModItems.register(modEventBus);
         com.sande.mythictrpg.godavatar.GodAvatarEntities.register(modEventBus);
+        com.sande.mythictrpg.raid.trial.TrialRaidEntities.register(modEventBus);
         ModAttachments.register(modEventBus);
         modEventBus.addListener(DialogueNetwork::register);
         ConditionChangeDispatcher.registerHandler(GodUnlockService.INSTANCE);

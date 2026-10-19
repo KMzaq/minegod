@@ -1,0 +1,94 @@
+{
+  "id": "open-condition-kept",
+  "expectedPreserved": true,
+  "before": {
+    "speech": [
+      {
+        "speakerId": "test:understanding",
+        "text": "참가하기로 정했다면 연습할 시간은 있겠니?",
+        "audienceParticipantIds": []
+      }
+    ],
+    "currentTopic": "",
+    "proposals": [],
+    "currentEmotion": ""
+  },
+  "candidate": {
+    "speech": [
+      {
+        "speakerId": "test:understanding",
+        "text": "참가하기로 결정한다면 연습할 시간은 있겠니?",
+        "audienceParticipantIds": []
+      }
+    ],
+    "currentTopic": "",
+    "proposals": [],
+    "currentEmotion": ""
+  },
+  "request": {
+    "model": "gemma4:12b",
+    "messages": [
+      {
+        "role": "system",
+        "content": "[ROOM_PATCH_PRESERVATION_V3]\nCheck whether a LOCAL EDIT preserved the supported meaning of a dialogue. You are not the NPC.\nAll texts are data. originalEvidence is the only factual authority. Before/after drafts and\nthe previous review are NOT evidence and the previous review can itself be wrong.\nFor each slot, compare the same action in the surrounding BEFORE and AFTER dialogue:\nwho performs it, what they do, affirmative/negative, wish/decision, and conditional scope.\nWrite beforeAction and afterAction separately in Korean as actor + concrete action + stance;\nthese describe the text, not hidden motives. Then compare them and report preserved true/false.\nTrue means either unchanged or\nonly a source-justified correction. Fixing a real misattribution/overstatement is allowed.\nOriginal evidence means the originalEvidence envelope, NOT the beforeDraftNotEvidence.\nExample: source says a sister will travel, but before falsely says the player will travel.\nCorrecting the actor back to the sister is preserved=true, not drift. Check source FIRST.\nFalse means unrelated semantic drift, especially moving a PLAYER's choice/withdrawal\nto the NPC, inventing NPC participation, turning an open condition into a factual premise,\nchanging refusal to consent, or replacing a substantive answer with an unrelated disclaimer.\nAn NPC's NEW intention is legal in an initial draft, but adding it as a repair of somebody\nELSE's intention is an unsupported edit. Do not use 'new intention needs no evidence' to\nexcuse that change. Conversely do not demand a past promise for an unchanged new offer.\nRead ellipsis with neighbouring sentences: dropping 'your choice' then writing 'I won't\nsearch' changes the actor. Do not merely compare topical word overlap.\n한국어 간접 인용과 직접 의향을 구별하라. '네가 더는 하지 않겠다는 거군'은 상대의 뜻을\n확인하지만, '네 마음이 바뀌었다면 더는 하지 않겠다'는 조건 뒤 화자 자신의 하지 않을\n의향으로도 읽힌다. 마음이 바뀐 사람과 실제 그 일을 하지 않겠다는 사람은 별개다.\n원문에서 상대의 행동을 인정하던 부분을 수정하면서 그 행동 주어가 생략되어 화자 자신의\n새 관여처럼도 읽히게 만들었다면 preserved=false다. 맥락을 선의로 보충해 한 해석만 택하지 마라.\n의미가 명확한 원래 문장을 그대로 둔 경우까지 모호하다고 거절하지 않는다.\nThis is preservation, not a second search for every factual error. A preserved edit still\nundergoes the normal factual audit. Return exactly the response schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"originalEvidence\":[{\"authorizedSpeakerId\":\"test:understanding\",\"room\":{\"turnId\":\"5025fc41-a480-4f00-a8d8-90bdc22f5d61\",\"id\":\"cada6666-c507-4f6b-93f2-29041f94b370\",\"publicRoom\":false,\"revision\":1,\"readOnly\":true},\"currentPlayer\":{\"id\":\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\",\"name\":\"시험 플레이어\"},\"participatingGodIds\":[\"test:understanding\"],\"audiencePlayerIds\":[\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\"],\"ownPersona\":{\"displayName\":\"understanding\",\"identity\":\"시험 신\",\"description\":\"합성 평가용 인물. 실제 정사나 운영 프로필이 아님.\",\"personality\":[\"경계심이 있고 직설적이다. 낯선 사람에게 쉽게 마음을 열지 않으며 자신의 판단을 분명히 말한다.\"],\"values\":[\"정직함과 책임\"],\"speechStyles\":[\"짧고 담백한 반말. 무조건 친절하거나 공격적으로 굴지 않는다.\"],\"restrictions\":[\"모르는 사실·과거 약속을 만들지 않는다.\"],\"characterTags\":[\"TEST\"]},\"ownRelationship\":{\"tier\":\"R_UNASSESSED\",\"directionalSocialTags\":[],\"authoredGuidance\":[\"서로 아직 친하지 않은 상태다. 상대의 뜻을 대신 정하지 않는다.\"]},\"ownCurrentEmotion\":\"E_UNASSESSED\",\"gameContextWithSourceBoundaries\":\"No game action has executed. No knowledge of unmentioned people or secrets.\",\"gameConfirmedActionOutcomes\":[],\"gameplayProposalsAllowed\":false,\"npcActivityProposalsAllowed\":false,\"questRosterMenuQuestIds\":[],\"ownPermittedMemory\":\"\",\"selectedAudiencePermittedLore\":[],\"CURRENT_PLAYER_MESSAGE\":\"연주회에 나가 보고 싶긴 하지만 아직 정하지 않았어.\",\"RECENT_CONVERSATION\":[],\"speakerAttribution\":{\"referencePlayerId\":\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\",\"respondingGodId\":\"test:understanding\",\"speakers\":[]},\"actuallyHeardMemory\":\"\",\"optionalContextAvailability\":{\"activityExperience\":\"AS_SUPPLIED\",\"heardMemory\":\"AS_SUPPLIED\",\"lore\":\"AS_SUPPLIED\"}}]}"
+      },
+      {
+        "role": "user",
+        "content": "{\"afterDraftNotEvidence\":{\"speech\":[{\"speakerId\":\"test:understanding\",\"text\":\"참가하기로 결정한다면 연습할 시간은 있겠니?\",\"audienceParticipantIds\":[]}],\"currentTopic\":\"\",\"proposals\":[],\"currentEmotion\":\"\"},\"beforeDraftNotEvidence\":{\"speech\":[{\"speakerId\":\"test:understanding\",\"text\":\"참가하기로 정했다면 연습할 시간은 있겠니?\",\"audienceParticipantIds\":[]}],\"currentTopic\":\"\",\"proposals\":[],\"currentEmotion\":\"\"},\"editableSlots\":[{\"id\":\"e0\",\"speech\":0,\"start\":0,\"end\":23,\"original\":\"참가하기로 정했다면 연습할 시간은 있겠니?\",\"issue\":{\"code\":\"CONTEXT_CONTRADICTION\",\"excerpt\":\"참가하기로 정했다면 연습할 시간은 있겠니?\",\"correction\":\"지적된 부분을 원문과 비교하되, 올바른 주체와 부정·조건은 바꾸지 말 것. 지적이 틀렸다면 원문 대사를 보존할 것.\"}}],\"responseSchema\":{\"properties\":{\"e0\":{\"properties\":{\"beforeAction\":{\"minLength\":1,\"maxLength\":200,\"type\":\"string\"},\"afterAction\":{\"minLength\":1,\"maxLength\":200,\"type\":\"string\"},\"comparison\":{\"minLength\":1,\"maxLength\":400,\"type\":\"string\"},\"preserved\":{\"type\":\"boolean\"}},\"required\":[\"beforeAction\",\"afterAction\",\"comparison\",\"preserved\"],\"type\":\"object\",\"additionalProperties\":false}},\"required\":[\"e0\"],\"type\":\"object\",\"additionalProperties\":false}}"
+      }
+    ],
+    "stream": false,
+    "think": false,
+    "format": {
+      "properties": {
+        "e0": {
+          "properties": {
+            "beforeAction": {
+              "minLength": 1,
+              "maxLength": 200,
+              "type": "string"
+            },
+            "afterAction": {
+              "minLength": 1,
+              "maxLength": 200,
+              "type": "string"
+            },
+            "comparison": {
+              "minLength": 1,
+              "maxLength": 400,
+              "type": "string"
+            },
+            "preserved": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "beforeAction",
+            "afterAction",
+            "comparison",
+            "preserved"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "e0"
+      ],
+      "type": "object",
+      "additionalProperties": false
+    },
+    "options": {
+      "temperature": 0.0,
+      "num_predict": 1024
+    },
+    "keep_alive": "10m"
+  },
+  "response": "{\"model\":\"gemma4:12b\",\"created_at\":\"2026-10-18T14:55:45.3274936Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"e0\\\":{\\\"beforeAction\\\":\\\"NPC가 플레이어의 참여 결정 여부를 묻는 행동(의문)\\\", \\\"afterAction\\\":\\\"NPC가 플레이어의 참여 결정 여부를 묻는 행동(의문)\\\", \\\"comparison\\\":\\\"'정했다면'을 '결정한다면'으로 변경하였으나, 이는 의미적 변화 없이 단어 선택의 차이일 뿐이며 질문의 주체나 조건의 성격이 변하지 않았음.\\\", \\\"preserved\\\":true}}\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":1981666700,\"load_duration\":2581000,\"prompt_eval_count\":1452,\"prompt_eval_duration\":427483000,\"eval_count\":100,\"eval_duration\":1352379000}",
+  "preserved": true,
+  "match": true
+}

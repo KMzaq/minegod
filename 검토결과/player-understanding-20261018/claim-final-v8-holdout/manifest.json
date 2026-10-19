@@ -1,0 +1,76 @@
+{
+  "stage": "audit-holdout",
+  "model": "gemma4:12b",
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "cases": [
+    {
+      "id": "festival-versus-rest",
+      "current": "내가 하겠다는 게 아니라 세라가 축제에서 춤추겠다는 거야. 난 쉬고 싶고.",
+      "history": [],
+      "bad": "축제에서 춤추겠다는 네 계획을 들었어.",
+      "good": "춤추려는 건 세라고, 네 쪽은 쉬고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "herb-aspiration",
+      "current": "언제 한번 약초 재배도 배워 보면 좋겠어. 이번 달에 시작할지는 모르겠지만.",
+      "history": [],
+      "bad": "이번 달에 약초 재배를 시작하겠다는 뜻은 확인했어.",
+      "good": "약초 재배에 관심은 있지만 이번 달에 시작할지는 아직 모르는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "suggestion-not-acceptance",
+      "current": "네가 권한 건 기억해. 하지만 내가 경비대를 돕겠다고 답한 건 아니야.",
+      "history": [],
+      "bad": "경비대를 돕기로 한 네 선택은 존중해.",
+      "good": "내 권유를 기억하는 것과 네가 수락한 건 별개지.",
+      "secondary": false
+    },
+    {
+      "id": "new-own-decision",
+      "current": "생각을 마쳤어. 내일은 내가 직접 화분을 옮길게.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "내일 내가 화분을 옮길 거야."
+        },
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "누가 옮길지는 아직 모르겠네."
+        }
+      ],
+      "bad": "",
+      "good": "이제 네가 내일 직접 화분을 옮기겠다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "two-plans-one-sentence",
+      "current": "요한은 탑에 가기로 했고, 나는 언젠가 항구를 구경하고 싶어.",
+      "history": [],
+      "bad": "요한은 탑에 가기로 했고, 너는 항구에 가기로 정했군.",
+      "good": "요한은 탑에 가기로 했고, 너는 항구를 보고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "secondary-reported-wish",
+      "current": "",
+      "history": [
+        {
+          "role": "NPC",
+          "speakerId": "test:other",
+          "name": "이웃 신",
+          "text": "리나가 화가를 만나고 싶다고 했어. 나는 그 이야기를 전하는 거야."
+        }
+      ],
+      "bad": "네가 화가를 만나기로 정한 건 알겠어.",
+      "good": "화가를 만나고 싶은 건 리나라는 거군.",
+      "secondary": true
+    }
+  ],
+  "persona": "baseline"
+}

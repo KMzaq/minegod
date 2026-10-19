@@ -50,6 +50,8 @@ public final class ActionLedgerStore implements AutoCloseable {
     private final NavigableMap<Long, Pointer> order = new TreeMap<>();
     private final Map<UUID, Long> ids = new HashMap<>();
     private final Map<UUID, NavigableMap<Long, Pointer>> actors = new HashMap<>();
+    private final Map<UUID, Pointer> understandingControls = new HashMap<>();
+    private final Map<UUID, Map<String, Pointer>> understandingFeedback = new HashMap<>();
     private FileChannel lockChannel, segment;
     private FileLock lock;
     private Path segmentPath;
@@ -177,12 +179,37 @@ public final class ActionLedgerStore implements AutoCloseable {
         sequence = record.sequence(); lastEventId = record.event().occurrenceId();
         order.put(sequence, pointer); ids.put(lastEventId, sequence);
         actors.computeIfAbsent(pointer.actor, ignored -> new TreeMap<>()).put(sequence, pointer);
+        if (record.event().type() == ActionRecord.Type.PLAYER_UNDERSTANDING_CONTROL)
+            understandingControls.put(pointer.actor, pointer);
+        if (record.event().type() == ActionRecord.Type.PLAYER_UNDERSTANDING_FEEDBACK) {
+            String key = record.event().payload().get("key");
+            if (com.sande.mythictrpg.understanding.PlayerUnderstanding.validFeedbackKey(key))
+                understandingFeedback.computeIfAbsent(pointer.actor, ignored -> new HashMap<>()).put(key, pointer);
+        }
         if(record.event().details()!=null)for(UUID participant:record.event().details().participants())
             actors.computeIfAbsent(participant,ignored->new TreeMap<>()).put(sequence,pointer);
     }
     public Optional<ActionRecord> find(UUID eventId) throws IOException {
         requireOpen(); Long number = ids.get(eventId);
         return number == null ? Optional.empty() : Optional.of(read(order.get(number)));
+    }
+    /** Internal self-view only. Callers must bind actor to the authenticated player; never send raw rows to clients/NPCs. */
+    public com.sande.mythictrpg.understanding.PlayerUnderstanding.Slice understanding(UUID actor) throws IOException {
+        requireOpen(); Objects.requireNonNull(actor);
+        var pointer = understandingControls.get(actor);
+        var control = pointer == null ? null : read(pointer);
+        var events = new ArrayList<ActionRecord>();
+        var feedback = new ArrayList<ActionRecord>();
+        boolean truncated = false;
+        if (control != null && "START".equals(control.event().payload().get("operation"))) {
+            var index = actors.getOrDefault(actor, Collections.emptyNavigableMap());
+            for (var entry : index.tailMap(control.sequence(), false).descendingMap().entrySet()) {
+                if (events.size() == com.sande.mythictrpg.understanding.PlayerUnderstanding.MAX_EVENTS) { truncated = true; break; }
+                events.add(read(entry.getValue()));
+            }
+            for (var value : understandingFeedback.getOrDefault(actor, Map.of()).values()) feedback.add(read(value));
+        }
+        return new com.sande.mythictrpg.understanding.PlayerUnderstanding.Slice(control, events, feedback, sequence, truncated);
     }
     /** Admin/internal durable stream only. Consumers persist next only after their own idempotent commit. */
     public Page after(Cursor cursor, UUID actor, int limit) throws IOException {

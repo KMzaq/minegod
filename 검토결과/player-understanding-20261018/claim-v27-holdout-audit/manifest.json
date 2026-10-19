@@ -1,0 +1,100 @@
+{
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "cases": [
+    {
+      "id": "wish-praise",
+      "current": "언젠가 유리 공예를 배워 보고 싶어. 당장 시작할 형편은 아니지만.",
+      "history": [],
+      "bad": "유리 공예를 시작하기로 한 네 결단이 멋지구나.",
+      "good": "유리 공예를 배워 보고 싶은 거구나. 언젠가 기회가 생기면 좋겠네.",
+      "secondary": false
+    },
+    {
+      "id": "whether-not-why",
+      "current": "강 건너 숲이 궁금해. 갈지는 아직 고민 중이야.",
+      "history": [],
+      "bad": "숲으로 떠나기로 결심한 이유가 뭐지?",
+      "good": "나중에 숲에 가기로 정한다면 무엇부터 보고 싶니?",
+      "secondary": false
+    },
+    {
+      "id": "reported-person-not-reporter",
+      "current": "루카가 종을 고치겠대. 나는 그 말을 전하러 왔을 뿐이야.",
+      "history": [],
+      "bad": "네가 종을 고치겠다는 말은 잘 들었어.",
+      "good": "종을 고치겠다는 건 루카고, 너는 그 말을 전하는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "recaller-not-promiser",
+      "current": "네가 전에 해준 약속은 기억하고 있어.",
+      "history": [
+        {
+          "role": "NPC",
+          "speakerId": "test:understanding",
+          "name": "응답 신",
+          "text": "다음에는 내 이야기를 들려줄게."
+        }
+      ],
+      "bad": "네가 이야기를 들려주기로 약속했었지.",
+      "good": "내가 이야기해 주겠다고 했던 걸 기억하는구나.",
+      "secondary": false
+    },
+    {
+      "id": "fresh-accept-same-topic",
+      "current": "그 사람 일정과 별개로 나는 오늘 다리를 살펴보기로 했어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 내일 다리를 살펴볼 거야."
+        }
+      ],
+      "bad": "네가 내일 다리를 살펴보기로 한 거지?",
+      "good": "너는 오늘 다리를 살펴보기로 했다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "withdraw-only-one-action",
+      "current": "등대에 가려던 생각은 접었어. 대신 해변은 걸어 보고 싶어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "등대와 해변을 돌아볼 거야."
+        }
+      ],
+      "bad": "등대와 해변을 모두 방문하기로 한 네 계획은 그대로군.",
+      "good": "등대는 그만두고 해변을 걸어 보고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "motive-open-paraphrase",
+      "current": "내가 요즘 나무 씨앗만 모으는 이유를 짐작하겠어?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "작은 정원을 한번 가꿔 보고 싶네."
+        }
+      ],
+      "bad": "정원사가 되기로 이미 결심했기 때문이지.",
+      "good": "작은 정원을 가꿔 보고 싶어서 준비하는 걸까?",
+      "secondary": false
+    },
+    {
+      "id": "new-offer-not-old-promise",
+      "current": "함께 잠깐 쉬는 건 어때?",
+      "history": [],
+      "bad": "네가 아까 함께 쉬기로 약속했었지.",
+      "good": "좋아, 잠깐 같이 쉬자.",
+      "secondary": false
+    }
+  ],
+  "persona": "baseline",
+  "stage": "audit-witness",
+  "model": "gemma4:12b"
+}

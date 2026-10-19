@@ -1,0 +1,71 @@
+{
+  "caseCount": 2,
+  "newReviewCalls": 2,
+  "runPurpose": "KNOWN_FAILURE_DEVELOPMENT_FOCUS_NOT_HELD_OUT",
+  "candidate": {
+    "validCorrect": 2,
+    "falseAccept": 0,
+    "falseReject": 0,
+    "invalidReview": 0,
+    "callFailure": 0,
+    "expectedCodeMismatch": 0,
+    "totalLatencyMs": 9622,
+    "meanLatencyMs": 4811.0,
+    "inputTokens": 5394,
+    "outputTokens": 290
+  },
+  "cohorts": {
+    "KNOWN_V6_FAILURE": {
+      "count": 2,
+      "candidate": {
+        "validCorrect": 2,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 9622,
+        "meanLatencyMs": 4811.0,
+        "inputTokens": 5394,
+        "outputTokens": 290
+      }
+    },
+    "EXISTING_CONTROL": {
+      "count": 0,
+      "candidate": {
+        "validCorrect": 0,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 0,
+        "meanLatencyMs": 0.0,
+        "inputTokens": 0,
+        "outputTokens": 0
+      }
+    },
+    "HELD_OUT": {
+      "count": 0,
+      "candidate": {
+        "validCorrect": 0,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 0,
+        "meanLatencyMs": 0.0,
+        "inputTokens": 0,
+        "outputTokens": 0
+      }
+    }
+  },
+  "definitions": {
+    "falseReject": "valid REVISE for expected PASS",
+    "falseAccept": "valid PASS for expected REVISE",
+    "callFailure": "No usable review response or request failure; fail-closed, not a semantic verdict",
+    "invalidReview": "Schema/coverage/current-draft quote invalid; fail-closed, not a semantic REVISE"
+  },
+  "limits": "Small fixed regression set, not general naturalness, in-game behavior or unbiased product acceptance. Candidate may consume a larger declared output budget; exact token counts and latency remain separate."
+}

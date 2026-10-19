@@ -1,0 +1,77 @@
+{
+  "cases": [
+    {
+      "id": "withdrawal-actor",
+      "current": "생각이 바뀌었어. 이제 그를 찾지 않을래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "루브라스를 찾으러 갈 거야."
+        }
+      ],
+      "before": "그렇군. 네가 결정한 일이라면 따를 수밖에 없지. 더는 그를 찾지 않겠다고.",
+      "good": "그렇군. 네가 그를 찾지 않기로 마음을 바꿨다는 거지. 네 선택은 존중하겠다.",
+      "bad": "그렇군. 네 뜻이 바뀌었다면 더 이상 그를 찾지 않겠다.",
+      "code": "CONTEXT_CONTRADICTION"
+    },
+    {
+      "id": "wish-still-player",
+      "current": "언젠가 별을 그리는 법을 배우고 싶어.",
+      "history": [],
+      "before": "별을 그리기로 정한 네 선택을 응원해.",
+      "good": "별을 그리는 법을 배우고 싶은 마음을 응원해.",
+      "bad": "그렇다면 내가 별을 그리는 법을 배우겠어.",
+      "code": "CONTEXT_CONTRADICTION"
+    },
+    {
+      "id": "refusal-kept",
+      "current": "나랑 배를 타고 싶어?",
+      "history": [],
+      "before": "난 가지 않겠어. 네가 가고 싶다면 말리진 않겠지만.",
+      "good": "나는 배를 타지 않겠어. 네가 가고 싶다면 말리지 않겠다.",
+      "bad": "나도 함께 배를 타겠어. 네가 가고 싶다면 따라갈게.",
+      "code": "CONTEXT_CONTRADICTION"
+    },
+    {
+      "id": "fix-real-misattribution",
+      "current": "민수가 성문을 지키겠다고 했어. 나는 쉬고 싶어.",
+      "history": [],
+      "before": "네가 성문을 지키겠다는 거군.",
+      "good": "성문을 지키려는 건 민수고, 너는 쉬고 싶은 거군.",
+      "bad": "그럼 내가 성문을 지키겠어.",
+      "code": "WRONG_SOURCE"
+    },
+    {
+      "id": "open-condition-kept",
+      "current": "연주회에 나가 보고 싶긴 하지만 아직 정하지 않았어.",
+      "history": [],
+      "before": "참가하기로 정했다면 연습할 시간은 있겠니?",
+      "good": "참가하기로 결정한다면 연습할 시간은 있겠니?",
+      "bad": "참가하기로 정했으니 연습할 시간은 있겠니?",
+      "code": "CONTEXT_CONTRADICTION"
+    },
+    {
+      "id": "new-offer-kept",
+      "current": "이야기를 하나 해줄래?",
+      "history": [],
+      "before": "좋아, 내가 이야기를 들려줄게.",
+      "good": "좋아, 내가 이야기를 하나 들려주지.",
+      "bad": "좋아, 네가 이야기를 들려주기로 했으니 기다리겠다.",
+      "code": "WRONG_SOURCE"
+    },
+    {
+      "id": "copied-player-first-person",
+      "current": "민수가 성문을 지키겠다고 했어. 나는 쉬고 싶어.",
+      "history": [],
+      "before": "네가 성문을 지키겠다는 거군.",
+      "good": "민수가 성문을 지키겠다는 거고, 너는 쉬고 싶은 거군.",
+      "bad": "민수가 성문을 지키겠다고 했어. 나는 쉬고 싶어.",
+      "code": "WRONG_SOURCE"
+    }
+  ],
+  "model": "gemma4:12b",
+  "independentFrameEvaluation": false,
+  "scope": "Synthetic preservation contrasts and actual local edits; not game execution"
+}

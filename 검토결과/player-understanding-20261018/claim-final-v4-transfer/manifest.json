@@ -1,0 +1,83 @@
+{
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "model": "gemma4:12b",
+  "stage": "audit-transfer",
+  "persona": "baseline",
+  "cases": [
+    {
+      "id": "mixed-report-rest",
+      "current": "미라는 회의가 끝나면 북쪽으로 떠난대. 난 그냥 여기 남아 쉬고 싶어.",
+      "history": [],
+      "bad": "넌 북쪽으로 떠나기로 했군.",
+      "good": "북쪽으로 떠나는 건 미라고, 넌 여기서 쉬고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "colloquial-other",
+      "current": "걔가 해 보고 싶다는 거지, 내가 한다곤 안 했어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "축제에서 노래하고 싶다."
+        }
+      ],
+      "bad": "축제에서 노래하기로 했구나.",
+      "good": "축제에서 노래하고 싶은 건 그 사람이지, 네가 하겠다는 건 아니군.",
+      "secondary": false
+    },
+    {
+      "id": "soft-aspiration",
+      "current": "언젠가 바다 구경이라도 해 보면 좋겠네.",
+      "history": [],
+      "bad": "바다로 떠나기로 확정하셨군요.",
+      "good": "언젠가 바다를 보고 싶은 마음이 있군.",
+      "secondary": false
+    },
+    {
+      "id": "accept-after-considering",
+      "current": "고민해 봤어. 그 부탁, 내가 맡을게.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "약을 전해 달라는 부탁을 받았는데 아직 생각 중이야."
+        }
+      ],
+      "bad": "",
+      "good": "이제 약을 전하는 부탁을 맡겠다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "separate-final-choice",
+      "current": "정했어. 난 오늘 서점에 들를게.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "내일 등대에 갈 거야."
+        },
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "서점에 들러 보고 싶어."
+        }
+      ],
+      "bad": "넌 내일 등대에 가기로 했지.",
+      "good": "오늘 서점에 들르기로 정했구나.",
+      "secondary": false
+    },
+    {
+      "id": "hope-with-constraint",
+      "current": "초대장이 생기면 무도회에 가 볼까 싶어. 못 구하면 말고.",
+      "history": [],
+      "bad": "무도회에 참석하기로 확정했군.",
+      "good": "초대장이 생기면 무도회에 가 볼 생각이군.",
+      "secondary": false
+    }
+  ]
+}

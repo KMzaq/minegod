@@ -31,6 +31,10 @@ final class LocalOllamaClient implements LocalLlmClient {
     private final Gson gson = new Gson();
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
     private final LocalLlmRequestScheduler scheduler = new LocalLlmRequestScheduler();
+    private final boolean independentFrameEvaluation;
+    LocalOllamaClient() { this(false); }
+    /** Package-local evaluation opt-in only; no prompt, game config or global property can enable this in production. */
+    LocalOllamaClient(boolean independentFrameEvaluation) { this.independentFrameEvaluation=independentFrameEvaluation; }
 
     @Override
     public LocalLlmRequestScheduler.ScheduledRequest<AiDialogueModels.StructuredAiResult> submit(UUID requestId,
@@ -50,11 +54,57 @@ final class LocalOllamaClient implements LocalLlmClient {
             List<AiDialogueModels.OllamaMessage> messages, AiDialogueConfig.Settings settings) {
         return scheduler.submit(requestId, settings, () -> {
             try {
-                var envelope = JsonParser.parseString(requestBody(requestId, messages, settings, 0.0D, 512,
-                        Math.min(settings.requestTimeoutSeconds(), 60), RoomDialogueGrounding.schema())).getAsJsonObject();
-                return RoomDialogueGrounding.parse(JsonParser.parseString(
-                        envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject());
+                if(!independentFrameEvaluation)return requestBaselineReview(requestId,messages,settings);
+                var sourceMessages = RoomSourceReading.messages(messages);
+                var sourceReading = new JsonObject();
+                var draftReading = new JsonObject();
+                if (!sourceMessages.isEmpty()) {
+                    var sourceEnvelope = JsonParser.parseString(requestBody(requestId, sourceMessages, settings, 0.0D,
+                            RoomSourceReading.outputTokens(messages), Math.min(settings.requestTimeoutSeconds(),60),
+                            RoomSourceReading.schema(messages))).getAsJsonObject();
+                    sourceReading = RoomSourceReading.parse(JsonParser.parseString(sourceEnvelope.getAsJsonObject("message")
+                            .get("content").getAsString()).getAsJsonObject(), messages);
+                }
+                var draftMessages=RoomDraftReading.messages(messages);
+                if(!draftMessages.isEmpty()) {
+                    var draftEnvelope=JsonParser.parseString(requestBody(requestId,draftMessages,settings,0.0D,
+                            RoomDraftReading.outputTokens(messages),Math.min(settings.requestTimeoutSeconds(),60),RoomDraftReading.schema(messages))).getAsJsonObject();
+                    draftReading=RoomDraftReading.parse(JsonParser.parseString(draftEnvelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),messages);
+                }
+                var envelope = JsonParser.parseString(requestBody(requestId, messages, settings, 0.0D, RoomDialogueGrounding.outputTokens(messages),
+                        Math.min(settings.requestTimeoutSeconds(), 60), RoomDialogueGrounding.schema(messages))).getAsJsonObject();
+                var general=RoomDialogueGrounding.parse(JsonParser.parseString(
+                        envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(), messages);
+                if(!general.pass())return general;
+                var claimMessages=RoomClaimWitnessAudit.messages(messages);
+                if(claimMessages.isEmpty())return general;
+                var claims=JsonParser.parseString(requestBody(requestId,RoomClaimWitnessAudit.sealedMessages(messages,draftReading,sourceReading),settings,0.0D,RoomClaimWitnessAudit.outputTokens(messages),
+                        Math.min(settings.requestTimeoutSeconds(),60),RoomClaimWitnessAudit.sealedSchema(messages,draftReading,sourceReading))).getAsJsonObject();
+                return RoomClaimWitnessAudit.parseSealed(JsonParser.parseString(claims.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),messages,draftReading,sourceReading);
             } finally { WIRE_OBSERVERS.remove(requestId); }
+        });
+    }
+
+    private RoomDialogueGrounding.Review requestBaselineReview(UUID requestId,List<AiDialogueModels.OllamaMessage> messages,AiDialogueConfig.Settings settings) {
+        var envelope=JsonParser.parseString(requestBody(requestId,messages,settings,0.0D,RoomDialogueGrounding.outputTokens(messages),
+                Math.min(settings.requestTimeoutSeconds(),60),RoomDialogueGrounding.schema(messages))).getAsJsonObject();
+        var general=RoomDialogueGrounding.parse(JsonParser.parseString(envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),messages);
+        if(!general.pass())return general;
+        var claimsMessages=BaselineRoomClaimWitnessAudit.messages(messages);if(claimsMessages.isEmpty())return general;
+        var claims=JsonParser.parseString(requestBody(requestId,claimsMessages,settings,0.0D,BaselineRoomClaimWitnessAudit.outputTokens(messages),
+                Math.min(settings.requestTimeoutSeconds(),60),BaselineRoomClaimWitnessAudit.schema(messages))).getAsJsonObject();
+        return BaselineRoomClaimWitnessAudit.parse(JsonParser.parseString(claims.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),messages);
+    }
+
+    /** Optional bounded interpretation over an already audience-projected scene. */
+    @Override public LocalLlmRequestScheduler.ScheduledRequest<PlayerIntentPlan.Plan> submitUnderstanding(UUID requestId,
+            PlayerIntentPlan.Input input,AiDialogueConfig.Settings settings) {
+        return scheduler.submit(requestId,settings,()->{
+            try {
+                var envelope=JsonParser.parseString(requestBody(requestId,PlayerIntentPlan.messages(input),settings,0.0D,512,
+                        Math.min(settings.requestTimeoutSeconds(),45),PlayerIntentPlan.schema())).getAsJsonObject();
+                return PlayerIntentPlan.parse(JsonParser.parseString(envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),input);
+            } finally {WIRE_OBSERVERS.remove(requestId);}
         });
     }
 
@@ -72,12 +122,21 @@ final class LocalOllamaClient implements LocalLlmClient {
     private AiDialogueModels.StructuredAiResult request(UUID requestId, List<AiDialogueModels.OllamaMessage> messages,
             AiDialogueConfig.Settings settings) {
         try {
+            var patch = RoomDialoguePatch.fromMessages(messages);
+            if (patch != null) {
+                // Validate the same frozen room identity contract before editing. No whole-response retry.
+                RoomSpeechSchema.forMessages(messages, STRUCTURED_DIALOGUE_SCHEMA);
+                try { return requestPatch(requestId, patch, settings); }
+                finally { WIRE_OBSERVERS.remove(requestId); }
+            }
+        } catch (RuntimeException invalidPatch) { WIRE_OBSERVERS.remove(requestId); throw invalidPatch; }
+        try {
             return parse(requestBody(requestId, messages, settings, 0.60D, settings.maxOutputTokens(),
-                    settings.requestTimeoutSeconds(), STRUCTURED_DIALOGUE_SCHEMA));
+                    settings.requestTimeoutSeconds(), RoomSpeechSchema.forMessages(messages, STRUCTURED_DIALOGUE_SCHEMA)));
         } catch (RuntimeException firstFailure) {
             try {
                 return parse(requestBody(requestId, messages, settings, 0.35D, settings.maxOutputTokens(),
-                        settings.requestTimeoutSeconds(), STRUCTURED_DIALOGUE_SCHEMA));
+                        settings.requestTimeoutSeconds(), RoomSpeechSchema.forMessages(messages, STRUCTURED_DIALOGUE_SCHEMA)));
             } catch (RuntimeException retryFailure) {
                 retryFailure.addSuppressed(firstFailure);
                 throw retryFailure;
@@ -85,6 +144,18 @@ final class LocalOllamaClient implements LocalLlmClient {
         } finally {
             WIRE_OBSERVERS.remove(requestId);
         }
+    }
+
+    private AiDialogueModels.StructuredAiResult requestPatch(UUID requestId, RoomDialoguePatch.Plan patch,
+            AiDialogueConfig.Settings settings) {
+        var envelope = JsonParser.parseString(requestBody(requestId, patch.editMessages(), settings, 0.0D,
+                512 + 512 * patch.slots().size(), settings.requestTimeoutSeconds(), patch.schema())).getAsJsonObject();
+        var edited = patch.apply(JsonParser.parseString(envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject());
+        if (edited.equals(patch.draft())) return edited; // No semantic edit to verify; normal full review still follows.
+        var review = JsonParser.parseString(requestBody(requestId, patch.preservationMessages(edited), settings, 0.0D,
+                512 + 384 * patch.slots().size(), Math.min(settings.requestTimeoutSeconds(), 60), patch.preservationSchema())).getAsJsonObject();
+        patch.requirePreserved(JsonParser.parseString(review.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject());
+        return edited;
     }
 
     private ConversationIntent requestIntent(UUID requestId, List<AiDialogueModels.OllamaMessage> messages,

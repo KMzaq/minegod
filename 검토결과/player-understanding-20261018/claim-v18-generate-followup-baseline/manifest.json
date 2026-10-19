@@ -1,0 +1,100 @@
+{
+  "stage": "generate-followup",
+  "persona": "baseline",
+  "cases": [
+    {
+      "id": "hope-versus-chosen-path",
+      "current": "언젠가 설산 정상에서 해 뜨는 걸 보고 싶다.",
+      "history": [],
+      "bad": "설산에 오르기로 한 네 선택을 응원한다.",
+      "good": "설산에서 일출을 보고 싶은 거구나. 무엇이 그렇게 끌려?",
+      "secondary": false
+    },
+    {
+      "id": "conditional-decision",
+      "current": "대회에 나가 보고 싶긴 해. 아직 결정하진 않았고.",
+      "history": [],
+      "bad": "참가하기로 한 네 결심이 있으니, 결과가 어떻든 즐겨 봐.",
+      "good": "참가하기로 마음먹었다면 결과에 너무 얽매이지 마.",
+      "secondary": false
+    },
+    {
+      "id": "three-separate-intents",
+      "current": "민수는 낚시를 갈 거래. 지아는 요리를 배우고 싶대. 나는 내일 창고 정리를 맡았어.",
+      "history": [],
+      "bad": "민수는 낚시를 가고, 지아와 너는 요리를 배우기로 했군.",
+      "good": "민수는 낚시를 가고, 지아는 요리를 배우고 싶고, 너는 창고 정리를 맡았구나.",
+      "secondary": false
+    },
+    {
+      "id": "accept-current-not-other",
+      "current": "그건 리아의 일정이고, 나는 지금 성문을 지키기로 정했어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "저녁에 공연을 보러 가기로 했어."
+        }
+      ],
+      "bad": "네가 공연을 보러 가기로 했다는 말이지?",
+      "good": "리아는 공연을 보러 가고, 너는 성문을 지키기로 정했군.",
+      "secondary": false
+    },
+    {
+      "id": "hope-with-own-refusal",
+      "current": "고래를 한번 보고 싶어. 너는 같이 갈 생각 있어?",
+      "history": [],
+      "bad": "고래를 보러 가기로 정한 네 마음은 알겠지만 난 안 간다.",
+      "good": "고래가 보고 싶다니 취향은 알겠네. 그래도 난 안 간다.",
+      "secondary": false
+    },
+    {
+      "id": "request-occurrence",
+      "current": "부탁했었다는 건 맞아. 네가 수락했다는 뜻은 아니야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "내일 물을 길어다 줄래?"
+        }
+      ],
+      "bad": "네 부탁을 내가 이미 수락했었지.",
+      "good": "네가 부탁한 건 기억해. 하지만 내가 하겠다고 답한 건 아니지.",
+      "secondary": false
+    },
+    {
+      "id": "negative-choice",
+      "current": "이번 사냥은 가지 않기로 했어. 쉬면서 도구나 손보려고.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "사냥을 가 보고 싶어."
+        }
+      ],
+      "bad": "이번 사냥에 참가하기로 정했군.",
+      "good": "이번에는 사냥에 가지 않고 쉬려는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "hypothesis-open",
+      "current": "왜 자꾸 악보를 모으는 것 같아?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "작곡을 배워 보고 싶어서 책도 찾아봤어."
+        }
+      ],
+      "bad": "작곡가가 되기로 결심했으니 악보를 모으는 거군.",
+      "good": "작곡을 배우고 싶어서 참고할 곡을 찾는 걸까?",
+      "secondary": false
+    }
+  ],
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "model": "gemma4:12b"
+}

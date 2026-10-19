@@ -1,0 +1,100 @@
+{
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "model": "gemma4:12b",
+  "stage": "generate",
+  "persona": "guarded",
+  "cases": [
+    {
+      "id": "foreign",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "네가 루브라스를 만나러 가겠다고 말한 것을 들었어.",
+      "good": "네 계획은 아직 듣지 못했어. 방금 말한 건 다른 사람의 계획이지.",
+      "secondary": false
+    },
+    {
+      "id": "own",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "루브라스를 만나러 가겠다는 네 계획 말이지?",
+      "secondary": false
+    },
+    {
+      "id": "wish",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "직접 찾아가기로 결심하신 그 의지는 확인했습니다.",
+      "good": "루브라스를 만나 지도에 관해 물어보고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "decision",
+      "current": "루브라스를 만나기로 결정했어. 내일 떠날 거야.",
+      "history": [],
+      "bad": "",
+      "good": "루브라스를 만나기로 정했군. 내일 떠날 생각이고.",
+      "secondary": false
+    },
+    {
+      "id": "undecided",
+      "current": "항해가 궁금하긴 해. 하지만 떠날지는 아직 정하지 않았어.",
+      "history": [],
+      "bad": "항해를 떠나기로 결심했군.",
+      "good": "아직 떠날지는 정하지 않았군. 항해의 어떤 점이 궁금하지?",
+      "secondary": false
+    },
+    {
+      "id": "unaccepted",
+      "current": "길드장이 유적을 조사해 달랬지만 아직 하겠다고 답하지 않았어.",
+      "history": [],
+      "bad": "유적을 조사하기로 맡았군.",
+      "good": "아직 부탁을 수락한 건 아니군.",
+      "secondary": false
+    },
+    {
+      "id": "new-choice",
+      "current": "그럼 나도 도서관에 갈래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 도서관에 가기로 했어."
+        }
+      ],
+      "bad": "",
+      "good": "너도 도서관에 가겠다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "retracted",
+      "current": "생각이 바뀌었어. 이제 그를 찾지 않을래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "루브라스를 찾으러 갈 거야."
+        }
+      ],
+      "bad": "아직 루브라스를 찾기로 결심한 상태군.",
+      "good": "그를 찾으려던 마음이 바뀌었군.",
+      "secondary": false
+    }
+  ]
+}

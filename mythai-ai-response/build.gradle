@@ -4,6 +4,136 @@ plugins {
 }
 
 version = mod_version
+
+// Candidate semantic frames remain evaluation-only until all quality gates pass.
+tasks.withType(JavaExec).configureEach {
+    if (name in ['playerClaimBoundaryEvaluation', 'playerClaimGeneralRegression', 'roomPatchLiveEvaluation', 'roomPatchReplayEvaluation']) {
+        systemProperty 'mythai.eval.independentFrames', providers.gradleProperty('independentFrameEvaluation').orElse('false').get()
+    }
+}
+
+tasks.register('roomSpeakerAttributionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomSpeakerAttributionTest'
+}
+tasks.named('check') { dependsOn 'roomSpeakerAttributionTest' }
+
+tasks.register('playerIntentComparisonPreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentModelComparison'
+    args '--preflight'
+}
+tasks.register('playerIntentModelComparison', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentModelComparison'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback',
+            providers.gradleProperty('understandingModels').get(), providers.gradleProperty('understandingStage').orElse('extract').get(),
+            providers.gradleProperty('understandingGenerationModel').orElse('gemma4:12b').get(),
+            providers.gradleProperty('understandingPersona').orElse('baseline').get()
+    }
+}
+
+tasks.register('playerClaimBoundaryEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerClaimBoundaryEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback',
+            providers.gradleProperty('claimStage').orElse('audit').get(),
+            providers.gradleProperty('claimPersona').orElse('baseline').get()
+    }
+}
+
+tasks.register('roomPlayerClaimAuditTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPlayerClaimAuditTest'
+}
+tasks.named('check') { dependsOn 'roomPlayerClaimAuditTest' }
+tasks.register('roomPlayerClaimTransportTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPlayerClaimTransportTest'
+}
+tasks.named('check') { dependsOn 'roomPlayerClaimTransportTest' }
+
+tasks.register('roomSpeechSchemaTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomSpeechSchemaTest'
+}
+tasks.named('check') { dependsOn 'roomSpeechSchemaTest' }
+
+['roomClaimWitnessAuditTest': 'RoomClaimWitnessAuditTest', 'roomDialoguePatchTest': 'RoomDialoguePatchTest'].each { taskName, entry ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.' + entry
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+
+tasks.register('playerClaimGeneralRegression', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingClaimsEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args projectDir.parentFile.absolutePath,
+            providers.gradleProperty('understandingEvaluationOutput').get() + '/general-regression', '--candidate-only'
+    }
+}
+
+tasks.register('roomPatchLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPatchLiveEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get() + '/patch-preservation', '--execute-loopback'
+    }
+}
+
+tasks.register('roomPatchReplayEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPatchReplayEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args projectDir.parentFile.absolutePath, providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback'
+    }
+}
+
+tasks.register('playerIntentPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentPlanTest'
+}
+tasks.named('check') { dependsOn 'playerIntentPlanTest' }
+tasks.register('playerIntentPlanEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentPlanEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback', providers.gradleProperty('understandingRepeats').orElse('3').get()
+    }
+}
+
+tasks.register('playerUnderstandingPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerUnderstandingPromptTest'
+}
+tasks.named('check') { dependsOn 'playerUnderstandingPromptTest' }
+tasks.register('playerUnderstandingLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerUnderstandingLiveEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback'
+    }
+}
 group = mod_group_id
 
 base {
@@ -522,6 +652,31 @@ tasks.register('compactDialogueLiveEvaluation', JavaExec) {
     args file(providers.gradleProperty('dialogueEvaluationOutput')
             .orElse('../검토결과/compact-dialogue-20261007/paired').get()).absolutePath,
             '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('3').get()
+}
+
+tasks.register('roomPerspectivePromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPerspectivePromptTest'
+}
+tasks.named('check') { dependsOn 'roomPerspectivePromptTest' }
+
+tasks.register('perspectiveDialoguePreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PerspectiveDialogueLiveEvaluation'
+    args '--preflight'
+}
+
+// Explicit opt-in: same local model, synthetic evidence, no Minecraft state or deployment.
+tasks.register('perspectiveDialogueLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PerspectiveDialogueLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput')
+            .orElse('../검토결과/npc-perspective-20261007/paired').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('3').get(), '--with-rollout'
 }
 
 ['recordedRetrievalCoordinatorTest': 'RecordedRetrievalCoordinatorTest',

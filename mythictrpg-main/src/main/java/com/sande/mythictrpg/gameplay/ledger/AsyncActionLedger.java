@@ -103,6 +103,18 @@ public final class AsyncActionLedger implements AutoCloseable {
     public synchronized void gap(String reason) {
         gap(reason, 1);
     }
+    /** Bounded derived self-view read on the existing ledger worker. No second store or raw-history scan. */
+    public synchronized CompletableFuture<com.sande.mythictrpg.understanding.PlayerUnderstanding.Slice> understanding(UUID actor) {
+        Objects.requireNonNull(actor);
+        var result = new CompletableFuture<com.sande.mythictrpg.understanding.PlayerUnderstanding.Slice>();
+        if (closing || status.state != State.READY) return CompletableFuture.failedFuture(new IOException("LEDGER_UNAVAILABLE"));
+        Work work = new Work() {
+            public void run(ActionLedgerStore store) throws IOException { result.complete(store.understanding(actor)); }
+            public void fail(Throwable failure) { result.completeExceptionally(failure); }
+        };
+        if (!queue.offer(work)) result.completeExceptionally(new IOException("QUERY_QUEUE_FULL"));
+        return result;
+    }
     public synchronized void gap(String reason, long count) {
         if (count < 1) return;
         rejected += count; long now = System.currentTimeMillis(); if (firstGapUtc == 0) firstGapUtc = now;

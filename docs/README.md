@@ -20,6 +20,7 @@
 | FTB Quests, 퀘스트 참여·생성·보상 | [FTB 연동](../mythictrpg-main/docs/FTB_QUESTS_INTEGRATION_GUIDE.md), [참여 유형](../mythictrpg-main/docs/QUEST_PARTICIPATION_GUIDE.md), [생성 퀘스트](../mythictrpg-main/docs/GENERATED_QUESTS_GUIDE.md), [보상](../mythictrpg-main/docs/REWARD_SYSTEM_GUIDE.md) |
 | 사건·Story 연출·신 간 관계 | [사건 엔진](../mythictrpg-main/docs/STORY_EVENT_ENGINE_GUIDE.md), [AI 연출](../mythictrpg-main/docs/STORY_AI_PRESENTATION_GUIDE.md), [신 간 관계](../mythictrpg-main/docs/GOD_RELATION_SYSTEM_GUIDE.md) |
 | 상점·건축 평가 | [상점·경제](../mythictrpg-main/docs/SHOP_ECONOMY_GUIDE.md), [건축 평가](../mythictrpg-main/docs/STRUCTURE_EVALUATION_GUIDE.md) |
+| 레이드 실행·첫 시험 보스(HanesTest 개발) | [런타임 계약](../mythictrpg-main/docs/RAID_RUNTIME.md), [봉인된 석상 수호자 시련](../mythictrpg-main/docs/raid-trial-guide.md). 서버 배포 상태는 브랜치 기록을 확인. |
 | NPC 공간 인식·생활활동(HanesTest 개발) | [활동 실행·권한](../mythictrpg-main/docs/NPC_ACTIVITY_SYSTEM.md), [활동 JSON](../mythictrpg-main/docs/NPC_ACTIVITY_AUTHORING_GUIDE.md), [AI 연동](../mythai-ai-response/NPC_ACTIVITY_AI_GUIDE.md). 운영 적용 상태는 브랜치 기록을 확인. |
 | 신 프로필·로어·예시·퀘스트 목록 JSON | [콘텐츠 구조](../mythai-ai-content-registry/AI_CONTENT_REGISTRY_CONTENT_AUTHORING_GUIDE.md), [프로필](../mythai-ai-content-registry/NPC_PROFILE_AUTHORING_GUIDE.md), [퀘스트 목록](../mythai-ai-content-registry/QUEST_LIST_AUTHORING_GUIDE.md) |
 
@@ -27,6 +28,7 @@
 
 ## 기억·관찰·사회 시스템의 정책과 이력
 
+- 플레이어 성향·목적 이해: [설계·단계별 구현 입구](../추가개발/플레이어이해/README.md). HanesTest 자기 화면·레이드 선택 집계/시험 생산자 구현. [2026-10-19 독립 해석 실험·수정문 출처 차단](../추가개발/플레이어이해/13-independent-semantic-frames.md)은 현재 Gemma 유지, 악화된 후보는 평가 전용으로 격리했다. AI0.1.43 기본 경로도 일반27/28·실제 수정6/7이며 새 생성에서 과잉거절/화행 변화가 남아 **전체 gate 실패·배포 보류**다. 자동 목적 추론 비활성. 정식 레이드 계측/목적 영속화/관찰자 통합/콘텐츠 추천은 미완료·미배포다.
 - 기록 범위의 정책 출발점: [ACTION_RECORDING_POLICY_20260917.md](ACTION_RECORDING_POLICY_20260917.md). 이전 [ACTION_OBSERVATION_MEMORY_ROADMAP_20260915.md](ACTION_OBSERVATION_MEMORY_ROADMAP_20260915.md)의 일부 조건은 나중에 조정되었다.
 - 행동·주시 단계별 당시 구현: [ACTION_LEDGER_STAGE02_20260915.md](ACTION_LEDGER_STAGE02_20260915.md), [GOD_WATCH_STAGE03_20260915.md](GOD_WATCH_STAGE03_20260915.md), [EXPERIENCE_STAGE04_20260915.md](EXPERIENCE_STAGE04_20260915.md), [MEMORY_STAGE05_20260916.md](MEMORY_STAGE05_20260916.md), [MEMORY_STAGE05_COMPLETION_20260917.md](MEMORY_STAGE05_COMPLETION_20260917.md), [MEMORY_POLICY_IMPLEMENTATION_20260920.md](MEMORY_POLICY_IMPLEMENTATION_20260920.md).
 - 기억 설계·측정·복구 이력: [LP_LONG_TERM_MEMORY_DESIGN.md](LP_LONG_TERM_MEMORY_DESIGN.md), [EPISODIC_MEMORY_UPGRADE_DESIGN_20260915.md](EPISODIC_MEMORY_UPGRADE_DESIGN_20260915.md), [MEMORY_MODEL_CONNECTION_20260920.md](MEMORY_MODEL_CONNECTION_20260920.md), [LP_MEMORY_FOUNDATION_GUIDE.md](LP_MEMORY_FOUNDATION_GUIDE.md). 모델 측정 JSON은 `evidence/`에 있다.

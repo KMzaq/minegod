@@ -1,0 +1,112 @@
+{
+  "protocols": [
+    "[DIALOGUE_EVIDENCE_AUDIT_V7]\n",
+    "[ROOM_CLAIM_WITNESS_V6]\n"
+  ],
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "independentFrameEvaluation": false,
+  "model": "gemma4:12b",
+  "persona": "baseline",
+  "cases": [
+    {
+      "id": "two-owners-one-task",
+      "current": "나는 맡지 않았어. 지수가 맡겠다고 한 거야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "내가 화로를 고칠게."
+        }
+      ],
+      "bad": "화로를 고쳐 주기로 한 네 결정을 기억할게.",
+      "good": "화로를 맡겠다는 건 지수의 말이고, 네가 맡은 건 아니군.",
+      "secondary": false
+    },
+    {
+      "id": "same-place-new-purpose",
+      "current": "난 약속하러 가는 게 아니라 정원을 구경하고 싶을 뿐이야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 정원에서 서약하기로 했어."
+        }
+      ],
+      "bad": "너도 정원에서 서약하기로 했구나.",
+      "good": "너는 서약이 아니라 정원 구경에 마음이 있군.",
+      "secondary": false
+    },
+    {
+      "id": "two-desires-one-commitment",
+      "current": "호수는 언젠가 보고 싶어. 오늘은 약속대로 공방에 갈게.",
+      "history": [],
+      "bad": "오늘 호수와 공방에 가기로 정했군.",
+      "good": "오늘 공방에 가겠다는 거군. 호수는 나중에 보고 싶고.",
+      "secondary": false
+    },
+    {
+      "id": "conditional-refusal",
+      "current": "그 사람이 오면 나는 빠질 거야. 아직 누가 오는지는 몰라.",
+      "history": [],
+      "bad": "넌 이미 불참하기로 확정했군.",
+      "good": "그 사람이 오느냐에 따라 네 참석도 달라지는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "corrected-reporter",
+      "current": "아까 내가 간다고 전한 건 잘못됐어. 가는 건 동생이고 나는 안 가.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "내가 항구에 갈 거야."
+        }
+      ],
+      "bad": "넌 여전히 항구에 갈 계획이군.",
+      "good": "항구에 가는 건 동생이고 너는 안 가는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "accept-not-execute",
+      "current": "이번엔 내가 안내를 맡을게. 출발은 아직이야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 안내를 맡지 않을래."
+        }
+      ],
+      "bad": "다른 사람이 안내를 맡겠다는 거군.",
+      "good": "이번에는 네가 안내를 맡겠다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "wish-confirmation-not-choice",
+      "current": "응, 해 보고 싶은 건 맞아. 하겠다고 약속하는 건 아니야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "한번 연주해 보고 싶어."
+        }
+      ],
+      "bad": "연주하겠다는 네 의지가 확인됐군.",
+      "good": "연주해 보고 싶은 마음은 있지만 약속한 건 아니라는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "npc-new-offer-with-other",
+      "current": "친구는 같이 기다리겠대. 넌 어떻게 할 거야?",
+      "history": [],
+      "bad": "내가 아까 너와 기다리기로 약속했지.",
+      "good": "나도 잠시 기다리지.",
+      "secondary": false
+    }
+  ],
+  "stage": "generate-source-view"
+}

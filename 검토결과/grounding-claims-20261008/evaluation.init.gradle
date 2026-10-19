@@ -1,0 +1,33 @@
+// Explicit isolated V6/current comparison. No production build inputs or normal checks are changed.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def base = new File(p.projectDir.parentFile, '검토결과/grounding-claims-20261008')
+    def output = p.findProperty('groundingClaimsOutput') ?: new File(base, 'run').absolutePath
+    ['groundingClaimsPreflight': '--preflight', 'groundingClaimsLive': '--execute-loopback',
+     'groundingClaimsFocus': '--focus'].each { task, mode ->
+        p.tasks.register(task, JavaExec) {
+            dependsOn p.tasks.named('testClasses')
+            classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+            mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingClaimsEvaluation'
+            workingDir = base
+            args p.projectDir.parentFile.absolutePath, output, mode
+            doFirst {
+                if (mode != '--preflight' && p.findProperty('groundingClaimsLive') != 'true')
+                    throw new GradleException('Required explicit opt-in: -PgroundingClaimsLive=true')
+            }
+        }
+    }
+    p.tasks.register('groundingClaimsFinalControl', JavaExec) {
+        dependsOn p.tasks.named('testClasses')
+        classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingClaimsEvaluation'
+        workingDir = base
+        args p.projectDir.parentFile.absolutePath,
+                p.findProperty('groundingClaimsOutput') ?: new File(base, 'run-final').absolutePath,
+                '--candidate-only'
+        doFirst {
+            if (p.findProperty('groundingClaimsLive') != 'true')
+                throw new GradleException('Required explicit opt-in: -PgroundingClaimsLive=true')
+        }
+    }
+}

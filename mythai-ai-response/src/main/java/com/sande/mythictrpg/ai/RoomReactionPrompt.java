@@ -23,6 +23,7 @@ final class RoomReactionPrompt {
             AiTestContentRegistryBridge.ContentSnapshot content, DialogueMemoryBridge.Turn memory,
             List<MinecraftCommonKnowledge.Fact> selectedBasics, List<String> heardMemory) {
         if (!request.secondary()) throw new IllegalArgumentException("Not a secondary request");
+        RoomPersonaPrompt.validateMemoryScope(request, memory);
         Objects.requireNonNull(heardMemory);
         String system = "You portray ONE God in a Minecraft RPG. This is an OPTIONAL SECONDARY reaction, not another answer to a new player turn. "
                 + "The history is the conversation already delivered by the game. React to its latest God speech only when your own persona, "
@@ -41,6 +42,9 @@ final class RoomReactionPrompt {
         system += "\n" + NpcActivityPrompt.policy();
         system += "\n" + MinecraftCommonKnowledge.policy();
         system += "\n" + NaturalConversationPolicy.text();
+        system += NpcPerspectivePrompt.policy(true);
+        system += PlayerUnderstandingPrompt.productionPolicy(true);
+        system += RoomSpeakerAttribution.policy();
         var history = new ArrayList<>(request.history());
         int requiredHistory = RoomPersonaPrompt.requiredHistoryTail(history);
         var basics = new ArrayList<>(selectedBasics);
@@ -68,11 +72,15 @@ final class RoomReactionPrompt {
                     ? "OMITTED_CONTEXT_BUDGET" : "AS_SUPPLIED", "lore", lore.size() < selectedLoreCount
                     ? "OMITTED_CONTEXT_BUDGET" : "AS_SUPPLIED", "activityExperience", activityExperienceOmitted
                     ? "OMITTED_CONTEXT_BUDGET" : "AS_SUPPLIED"));
-            scene.put("alreadyDeliveredConversation", history);
+            scene.put("alreadyDeliveredConversation", RoomSpeakerAttribution.history(request, history));
+            scene.put("speakerAttribution", RoomSpeakerAttribution.view(request, history));
             if (!basics.isEmpty()) scene.put("publicMinecraftReference", MinecraftCommonKnowledge.reference(basics));
             try {
-                return List.of(new AiDialogueModels.OllamaMessage("system", system),
-                        new AiDialogueModels.OllamaMessage("user", MemoryRecallPolicy.fitContext(JSON.toJson(scene), true)));
+                String fitted = MemoryRecallPolicy.fitContext(JSON.toJson(scene), true);
+                String withMemory = NpcPerspectivePrompt.withMemory(system, memory.referenceContext(),
+                        heardVariants.isEmpty() ? "" : heardVariants.getFirst());
+                return List.of(new AiDialogueModels.OllamaMessage("system", withMemory),
+                        new AiDialogueModels.OllamaMessage("user", fitted));
             } catch (IllegalArgumentException tooLarge) {
                 if (!activityExperienceOmitted && !withoutActivityExperience.equals(gameContext)) {
                     gameContext = withoutActivityExperience; activityExperienceOmitted = true;

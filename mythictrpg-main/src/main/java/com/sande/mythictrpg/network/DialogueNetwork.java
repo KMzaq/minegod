@@ -17,7 +17,7 @@ import com.sande.mythictrpg.story.runtime.StoryChoiceUiService;
 import com.sande.mythictrpg.story.runtime.StoryEventService;
 
 public final class DialogueNetwork {
-    public static final String PROTOCOL_VERSION = "10";
+    public static final String PROTOCOL_VERSION = "11";
 
     private DialogueNetwork() {
     }

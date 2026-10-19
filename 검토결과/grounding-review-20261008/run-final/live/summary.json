@@ -1,0 +1,21 @@
+{
+  "caseCount": 15,
+  "candidate": {
+    "validCorrect": 13,
+    "invalidReview": 0,
+    "totalLatencyMs": 27116,
+    "meanLatencyMs": 1807.7333333333333,
+    "falseReject": 1,
+    "expectedCodeMismatch": 2,
+    "falseAccept": 1,
+    "callFailure": 0
+  },
+  "newReviewCalls": 15,
+  "measurementCaveat": "Candidate-only control run; no fresh or reused baseline. One additional saved generated draft tests independent present intention without claiming a past promise.",
+  "definitions": {
+    "invalidReview": "invalid schema or non-current-draft quote; fail-closed, excluded from valid semantic confusion counts",
+    "falseReject": "valid REVISE for an expected PASS",
+    "falseAccept": "valid PASS for an expected REVISE",
+    "callFailure": "request/transport/timeout failure; fail-closed, not a semantic verdict"
+  }
+}

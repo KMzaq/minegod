@@ -19,6 +19,12 @@ interface LocalLlmClient extends AutoCloseable {
         throw new UnsupportedOperationException("This local LLM backend does not support intent routing");
     }
 
+    /** Optional player interpretation from already-disclosed sources; never execution authority. */
+    default LocalLlmRequestScheduler.ScheduledRequest<PlayerIntentPlan.Plan> submitUnderstanding(UUID requestId,
+            PlayerIntentPlan.Input input, AiDialogueConfig.Settings settings) {
+        throw new UnsupportedOperationException("This backend does not support source-bound understanding");
+    }
+
     /** Review only the already-disclosed scene and a draft; never execute its proposals. */
     default LocalLlmRequestScheduler.ScheduledRequest<RoomDialogueGrounding.Review> submitReview(UUID requestId,
             List<AiDialogueModels.OllamaMessage> messages, AiDialogueConfig.Settings settings) {

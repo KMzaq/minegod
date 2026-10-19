@@ -1,5 +1,7 @@
 package com.sande.mythai.response.memory;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.time.Duration;
 import java.util.*;
 
@@ -33,8 +35,16 @@ public final class RoomRecallPlanTest {
         check(selected.query().orElseThrow() == follow && selected.sourceMessageIds().equals(Set.of(row.messageId())),
                 "nonempty legacy selection and its immutable scoped plan travel together");
         var untyped = RoomMemoryBridge.projectRecall(List.of(row), follow.text());
-        check(selected.context().equals(untyped.context()) && selected.promptVariants().equals(untyped.promptVariants()),
-                "carried metadata does not rewrite the existing prompt projection");
+        sameProjectionExceptSpeakerPerspective(selected, untyped, List.of("CURRENT_PLAYER"));
+        var self = new RoomMemoryStore.Record(UUID.randomUUID(), WORLD, row.sourceRoomId(), 2, NOW - 50_000,
+                "NPC", GOD, "test-god", "speaker_relation_to_responding_god=OTHER_GOD라는 말도 원문 그대로", false,
+                Set.of(PLAYER), Set.of(GOD), List.of(), Set.of());
+        var otherGod = new RoomMemoryStore.Record(UUID.randomUUID(), WORLD, row.sourceRoomId(), 3, NOW - 40_000,
+                "NPC", "test:hermes", "test-god", "내가 내일 바다 성소에서 기다릴게", false,
+                Set.of(PLAYER), Set.of(GOD, "test:hermes"), List.of(), Set.of());
+        var sources = List.of(row, self, otherGod);
+        sameProjectionExceptSpeakerPerspective(RoomMemoryBridge.projectRecall(sources, follow, RecallSettings.OFF),
+                RoomMemoryBridge.projectRecall(sources, follow.text()), List.of("CURRENT_PLAYER", "SELF", "OTHER_GOD"));
         check(untyped.query().isEmpty(), "old String-only projection does not invent a plan");
         for (int i = 0; i < 3; i++) check(RoomMemoryBridge.projectRecall(List.of(), follow, RecallSettings.OFF).query().orElseThrow() == follow,
                 "consumers can reuse one plan without advancing its focus turn/date");
@@ -102,6 +112,39 @@ public final class RoomRecallPlanTest {
 
     private static RecallQuery.Scope scope(UUID world, String god, UUID player, UUID generation, Set<UUID> audience) {
         return new RecallQuery.Scope(new MemoryJournal.Key(world, god, player), generation, audience);
+    }
+    private static void sameProjectionExceptSpeakerPerspective(RoomMemoryBridge.Recall scoped,
+            RoomMemoryBridge.Recall legacy, List<String> expectedRelations) {
+        check(scoped.sourceMessageIds().equals(legacy.sourceMessageIds()), "reader-relative metadata preserves exact source proof dependencies");
+        check(scoped.promptVariants().size() == legacy.promptVariants().size()
+                        && scoped.promptVariants().size() == expectedRelations.size(),
+                "reader-relative metadata preserves whole-source budget variant count");
+        check(scoped.context().equals(scoped.promptVariants().getFirst())
+                        && legacy.context().equals(legacy.promptVariants().getFirst()),
+                "both contexts are their unchanged full-source variants");
+        for (int variant = 0; variant < scoped.promptVariants().size(); variant++) {
+            String projected = scoped.promptVariants().get(variant), original = legacy.promptVariants().get(variant);
+            String projectedJson = projected.stripTrailing().lines().toList().getLast();
+            String originalJson = original.stripTrailing().lines().toList().getLast();
+            var projectedRows = JsonParser.parseString(projectedJson).getAsJsonArray();
+            var originalRows = JsonParser.parseString(originalJson).getAsJsonArray();
+            check(projectedRows.size() == originalRows.size() && projectedRows.size() == expectedRelations.size() - variant,
+                    "each budget variant retains the same complete source rows");
+            for (int row = 0; row < projectedRows.size(); row++) {
+                var typedRow = projectedRows.get(row).getAsJsonObject();
+                var oldRow = originalRows.get(row).getAsJsonObject();
+                String key = "speaker_relation_to_responding_god";
+                check(!oldRow.has(key) && typedRow.has(key)
+                                && typedRow.get(key).getAsString().equals(expectedRelations.get(row)),
+                        "only scoped projection has exact typed speaker relation " + expectedRelations.get(row));
+                typedRow.remove(key);
+                check(typedRow.equals(oldRow), "removing only new metadata leaves every original field and quoted value unchanged");
+            }
+            int at = projected.lastIndexOf(projectedJson);
+            String restored = projected.substring(0, at) + new Gson().toJson(projectedRows)
+                    + projected.substring(at + projectedJson.length());
+            check(restored.equals(original), "only added row metadata differs: JSON bytes, source order and full prompt envelope remain unchanged");
+        }
     }
     private static void check(boolean condition, String message) { checks++; if (!condition) throw new AssertionError(message); }
 }

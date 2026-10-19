@@ -229,7 +229,7 @@ tasks.named('processResources', ProcessResources) {
      'mythictrpg_god_avatar', 'mythictrpg_npc_activity_body', 'mythictrpg_npc_activity', 'mythictrpg_npc_activity_memory', 'mythictrpg_npc_work', 'mythictrpg_npc_activity_schema', 'mythictrpg_raid', 'mythictrpg_raid_offer', 'mythictrpg_power',
      'mythictrpg_generated_rewards', 'mythictrpg_blessings', 'mythictrpg_quest_contact', 'mythictrpg_quest_participation', 'mythictrpg_recording_channels', 'mythictrpg_recording_read', 'mythictrpg_native_evidence',
      'mythai_native_content_evidence', 'mythictrpg_native_interpretation', 'mythictrpg_story_evidence', 'mythictrpg_home_visit',
-     'mythictrpg_action_confirmation', 'mythictrpg_quest_access', 'mythictrpg_quest_roster', 'mythictrpg_raid_ui'].each { testNamespace ->
+     'mythictrpg_action_confirmation', 'mythictrpg_quest_access', 'mythictrpg_quest_roster', 'mythictrpg_raid_ui', 'mythictrpg_understanding', 'mythictrpg_raid_choice'].each { testNamespace ->
         from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
             include 'data/minecraft/structure/bastion/mobs/empty.nbt'
             eachFile { path = "data/${testNamespace}/structure/empty.nbt" }
@@ -682,6 +682,15 @@ tasks.register('nativeRoomEvidenceCacheTest', JavaExec) {
     mainClass = 'com.sande.mythictrpg.recording.server.NativeRoomEvidenceCacheTest'
 }
 tasks.named('check') { dependsOn 'nativeMemoryEvidenceTest', 'nativeRoomEvidenceCacheTest' }
+
+['raidAttackGeometryTest': 'RaidAttackGeometryTest', 'raidPatternTimelineTest': 'RaidPatternTimelineTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = "com.sande.mythictrpg.raid.combat.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}
 tasks.register('nativeInterpretationEvidenceTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
@@ -705,6 +714,33 @@ tasks.register('recordedNativeEvidenceStoreTest', JavaExec) {
     args layout.buildDirectory.dir('recorded-native-evidence-test').get().asFile.absolutePath
 }
 tasks.named('check') { dependsOn 'recordedNativeEvidenceStoreTest' }
+
+// NeoForge 1.21.1 GameTestServer constructs only the FLAT preset, bypassing normal mod-dimension injection.
+// Add the production trial stem to a development-only preset; never ship a minecraft:flat override in the mod.
+if (providers.gradleProperty('roomTestNamespaces').orElse('').get().split(',').contains('mythictrpg_raid_trial')) {
+    def trialFixtureRoot = file(providers.gradleProperty('roomTestDirectory').orElse('build/raid-trial-runtime').get())
+    def trialBuildRoot = layout.buildDirectory.get().asFile.canonicalFile.toPath()
+    def trialPresetSource = file('src/test/resources/raid-trial/flat-preset.json')
+    def trialDimensionSource = file('src/main/resources/data/mythictrpg/dimension/raid_trial.json')
+    tasks.register('prepareRaidTrialFixture') {
+        inputs.files(trialPresetSource, trialDimensionSource)
+        doLast {
+            if (!trialFixtureRoot.canonicalFile.toPath().startsWith(trialBuildRoot))
+                throw new GradleException('Raid trial GameTest must use a development build/ directory')
+            def preset = new groovy.json.JsonSlurper().parse(trialPresetSource)
+            preset.dimensions['mythictrpg:raid_trial'] = new groovy.json.JsonSlurper().parse(trialDimensionSource)
+            def packRoot = new File(trialFixtureRoot, 'world/datapacks/mythictrpg-raid-trial-fixture')
+            def output = new File(packRoot, 'data/minecraft/worldgen/world_preset/flat.json')
+            if (!output.canonicalFile.toPath().startsWith(trialBuildRoot))
+                throw new GradleException('Raid trial fixture output escaped build/')
+            output.parentFile.mkdirs()
+            output.setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(preset)), 'UTF-8')
+            new File(packRoot, 'pack.mcmeta').setText(groovy.json.JsonOutput.toJson([
+                    pack: [pack_format: 48, description: 'Development-only raid trial dimension fixture']]), 'UTF-8')
+        }
+    }
+    tasks.named('runRoomIntegrationGameTestServer') { dependsOn 'prepareRaidTrialFixture' }
+}
 
 // Reproducible isolated authority fixture. Missing OFF-by-default config otherwise waits until GameTest timeout.
 if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictrpg_recording_read'
@@ -746,3 +782,11 @@ if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictr
     }
     tasks.named('runRoomIntegrationGameTestServer') { dependsOn 'prepareRecordedAuthorityFixture' }
 }
+
+tasks.register('playerUnderstandingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.understanding.PlayerUnderstandingTest'
+    args layout.buildDirectory.dir('player-understanding-tests').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'playerUnderstandingTest' }

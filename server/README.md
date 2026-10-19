@@ -1,12 +1,14 @@
 # MythicTRPG + Local AI 통합 테스트 서버
 
+> **2026-10-13 레이드 파일 배포 완료:** 서버·`client-required-mods`의 게임을 `mythictrpg-1.0.28.jar`로 교체했다. 기존 서버 전용 AI `0.1.19`·콘텐츠 `0.1.2`와 FTB/Architectury는 유지했다. 게임 protocol 10이므로 실제 클라이언트도 반드시 새 게임 JAR로 교체한다. 월드·설정·모드 557개 파일을 `backups/raid-trial-20261013-224022-732/`에 백업하고 보존 파일 해시를 확인했다. **이번 배포에서 서버는 부팅하지 않았고 실제 런처 파일도 변경하지 않았다.** [레이드 테스트 방법](../mythictrpg-main/docs/raid-trial-guide.md)과 [검증·배포 기록](../인수인계/브랜치실험/HanesTest/RAID_TRIAL_20261013.md)을 따른다. 아래 9월 배너는 당시 기록이다.
+
 > 2026-09-27 **HanesTest 실험본 배포:** 게임 `mythictrpg-1.0.16.jar`는 유지하고 콘텐츠 `mythaiaicontent-0.1.2.jar`, 서버 전용 AI `mythai_ai_response-0.1.19.jar`를 설치했다. 페르소나 하네스 개선과 Minecraft 공용 기본 지식 17개를 포함한다. 이번 배포 후 서버를 부팅하거나 실제 LLM 대화를 확인하지는 않았다. 해시·백업·검증 범위는 [HanesTest 전용 인수인계](../인수인계/브랜치실험/HanesTest/PROJECT_HANDOFF.md)의 배포 기록을 확인한다. 공용 인수인계의 이전 설치 목록과 구분하며, 클라이언트 필수 파일은 변경하지 않았다.
 
 Minecraft 1.21.1 / NeoForge 21.1.248 전용 서버다. RisuAI를 사용하지 않고 같은 PC의 Ollama `gemma4:12b`를 호출한다.
 
 ## 설치된 서버 모드
 
-- `mods/mythictrpg-1.0.16.jar`: 게임 상태, 신 관계/사건 시스템, 대화방·Dialogue HUD/Network와 게임 권한 검증
+- `mods/mythictrpg-1.0.28.jar`: 게임 상태·대화방·권한 검증과 첫 시험 레이드/보스/전장
 - `mods/mythaiaicontent-0.1.2.jar`: 신 프로필, 지식, 예시·퀘스트와 청중별 공개 정책, 공개 기본 지식
 - `mods/mythai_ai_response-0.1.19.jar`: 콘텐츠·청취 기억, Ollama 호출, 다중 신 반응/Story 응답 연결, 페르소나 하네스·공용 지식 조회
 
@@ -17,10 +19,12 @@ Minecraft 1.21.1 / NeoForge 21.1.248 전용 서버다. RisuAI를 사용하지 �
 클라이언트도 Minecraft 1.21.1 / NeoForge 21.1.248을 사용한다. 우측 AI UI와 Network 호환을 위해 다음 파일을 클라이언트 `mods` 폴더에 넣는다.
 
 ```text
-client-required-mods/mythictrpg-1.0.16.jar
+client-required-mods/mythictrpg-1.0.28.jar
 ```
 
 클라이언트에 이전 `mythictrpg-*.jar`가 있다면 새 파일 하나만 남긴다. AI 응답 모드와 콘텐츠 모드는 서버 전용이며 클라이언트에 설치하지 않는다.
+
+FTB/Architectury 4종도 [클라이언트 필수 폴더](client-required-mods/README.md)의 서버와 같은 파일을 사용한다. 레이드만 시험하는 데에는 AI 모델 호출이 필요하지 않다. 서버 부팅 후 OP가 `/mythraid trial prepare`, 필요시 빈 인벤토리 9칸을 확보하고 `/mythraid trial kit`, 리더가 `/mythraid trial create`를 실행한다. 모집 UUID로 `/mythraid start <UUID>`를 실행하면 입장한다. 장비는 직접 착용하고 `/gamemode survival`에서 시험한다. 여러 명이면 start 전에 `/mythraid join <UUID>`로 참가한다.
 
 ## 실행
 

@@ -184,19 +184,30 @@ public final class RoomMemoryStore implements AutoCloseable {
     /** Candidate search is permission-scoped and off-thread. Game evidence is revalidated before prompt construction. */
     public List<Record> candidates(Scope scope, String question, Set<UUID> recent, int maximum, long budgetNanos) {
         return candidates(scope, question, RecallQuery.explicitRecall(question), false, null, recent, maximum,
-                budgetNanos, System.currentTimeMillis());
+                budgetNanos, System.currentTimeMillis(), List.of());
     }
     public List<Record> candidates(Scope scope, RecallQuery query, Set<UUID> recent, int maximum,
             long budgetNanos, long now) {
+        return candidates(scope, query, recent, List.of(), maximum, budgetNanos, now);
+    }
+    /** Already-visible player words may resolve a dependent association, never widen read permissions. */
+    public List<Record> candidates(Scope scope, RecallQuery query, Set<UUID> recent, List<String> recentPlayerTexts,
+            int maximum, long budgetNanos, long now) {
         var key = query.scope().key();
         if (!key.world().equals(scope.worldId()) || !key.god().equals(scope.readerGodId())
                 || !key.player().equals(scope.requesterId()) || !query.scope().audience().equals(scope.playerAudience())) return List.of();
         var settings = recallSettings;
         return candidates(scope, query.text(), query.explicit(), settings.enabled() && query.planQuestion(),
-                settings.enabled() ? RecallSearch.temporal(query, settings.timeBasis()) : null, recent, maximum, budgetNanos, now);
+                settings.enabled() ? RecallSearch.temporal(query, settings.timeBasis()) : null, recent, maximum, budgetNanos, now,
+                associationQueries(query, recentPlayerTexts));
+    }
+    static List<String> associationQueries(RecallQuery query, List<String> recentPlayerTexts) {
+        // Explicit recall retains its exact actor/topic/time scope; topic changes must not revive an old topic.
+        return query.explicit() || RecallQuery.topicChange(query.text()) ? List.of()
+                : MemoryRecallPolicy.contextQueries(query.text(), recentPlayerTexts);
     }
     private List<Record> candidates(Scope scope, String question, boolean explicit, boolean planQuestion,
-            RecallSearch.Temporal temporal, Set<UUID> recent, int maximum, long budgetNanos, long now) {
+            RecallSearch.Temporal temporal, Set<UUID> recent, int maximum, long budgetNanos, long now, List<String> associations) {
         if (!ready() || maximum < 1 || budgetNanos < 1) return List.of();
         long start = System.nanoTime();
         var read = snapshot;
@@ -206,6 +217,7 @@ public final class RoomMemoryStore implements AutoCloseable {
                 .forEach(row -> all.putIfAbsent(row.messageId(), row));
         var role = RecallSourceScope.resolve(question);
         var query = MemoryJournal.lexical(RecallSourceScope.lexicalQuery(question));
+        var contextQueries = associations.stream().map(MemoryJournal::lexical).toList();
         var namedPlayers = new HashSet<String>();
         var matchedNames = new HashMap<String,Boolean>();
         if (explicit && role.role() == RecallSourceScope.Role.UNSPECIFIED) for (var row : all.values())
@@ -226,14 +238,23 @@ public final class RoomMemoryStore implements AutoCloseable {
             if (temporal != null && !temporal.allows(row.text(), row.occurredAt())) continue;
             var terms = read.terms().get(row.messageId());
             if (terms == null) terms = MemoryJournal.lexical(row.text()).terms(); // accepted, not yet durable write
-            long overlap = query.terms().stream().filter(terms::contains).count();
-            if (overlap < 2 || overlap / (double)Math.max(1, query.terms().size()) < .2) continue;
-            hits.add(new Hit(row, overlap / (double)Math.max(1, query.terms().size())));
+            double direct = lexicalScore(query.terms(), terms);
+            double contextual = 0;
+            if (direct == 0) for (var context : contextQueries)
+                contextual = Math.max(contextual, lexicalScore(context.terms(), terms));
+            if (direct == 0 && contextual == 0) continue;
+            // Every direct match outranks every association; no latest-row or role-only fallback.
+            hits.add(new Hit(row, direct > 0 ? 1 + direct : .65 * contextual));
         }
         hits.sort(Comparator.comparingDouble(Hit::score).reversed().thenComparing(Comparator.comparingLong((Hit h) -> h.row().occurredAt()).reversed()));
         // Proof validation precedes prompt-level duplicate suppression: a newer revoked duplicate must
         // not erase an older, still-permitted utterance with the same words.
         return hits.stream().map(Hit::row).limit(Math.min(64, maximum)).toList();
+    }
+    private static double lexicalScore(Set<String> query, Set<String> candidate) {
+        long overlap = query.stream().filter(candidate::contains).count();
+        double score = overlap / (double)Math.max(1, query.size());
+        return overlap >= 2 && score >= .2 ? score : 0;
     }
     private static boolean sourceAllowed(Record row, Scope scope, RecallSourceScope role) {
         if (row.role().equals("PLAYER")) return role.role() == RecallSourceScope.Role.UNSPECIFIED

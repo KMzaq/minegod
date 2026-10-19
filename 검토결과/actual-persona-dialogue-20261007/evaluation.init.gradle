@@ -1,0 +1,24 @@
+// Isolated evaluation tasks; does not modify production source sets or build files.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def base = new File(p.projectDir.parentFile, '검토결과/actual-persona-dialogue-20261007')
+    def cp = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+    def compile = p.tasks.register('compileActualPersonaEvaluation', JavaCompile) {
+        dependsOn p.tasks.named('testClasses')
+        source = new File(base, 'ActualPersonaDialogueEvaluation.java')
+        classpath = cp
+        destinationDirectory = new File(base, 'classes')
+        javaCompiler = p.javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(21) }
+        options.encoding = 'UTF-8'
+    }
+    ['actualPersonaPreflight': '--preflight', 'actualPersonaLive': '--execute-loopback',
+     'actualPersonaStructuralRecovery': '--resume-structural'].each { task, mode ->
+        p.tasks.register(task, JavaExec) {
+            dependsOn compile
+            classpath = p.files(new File(base, 'classes')) + cp
+            mainClass = 'com.sande.mythictrpg.ai.ActualPersonaDialogueEvaluation'
+            workingDir = base
+            args p.projectDir.parentFile.absolutePath, mode
+        }
+    }
+}

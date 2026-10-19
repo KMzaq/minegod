@@ -1,0 +1,506 @@
+{
+  "stage": "audit-expanded",
+  "model": "gemma4:12b",
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "cases": [
+    {
+      "id": "foreign",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "네가 루브라스를 만나러 가겠다고 말한 것을 들었어.",
+      "good": "네 계획은 아직 듣지 못했어. 방금 말한 건 다른 사람의 계획이지.",
+      "secondary": false
+    },
+    {
+      "id": "own",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "루브라스를 만나러 가겠다는 네 계획 말이지?",
+      "secondary": false
+    },
+    {
+      "id": "wish",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "직접 찾아가기로 결심하신 그 의지는 확인했습니다.",
+      "good": "루브라스를 만나 지도에 관해 물어보고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "decision",
+      "current": "루브라스를 만나기로 결정했어. 내일 떠날 거야.",
+      "history": [],
+      "bad": "",
+      "good": "루브라스를 만나기로 정했군. 내일 떠날 생각이고.",
+      "secondary": false
+    },
+    {
+      "id": "undecided",
+      "current": "항해가 궁금하긴 해. 하지만 떠날지는 아직 정하지 않았어.",
+      "history": [],
+      "bad": "항해를 떠나기로 결심했군.",
+      "good": "아직 떠날지는 정하지 않았군. 항해의 어떤 점이 궁금하지?",
+      "secondary": false
+    },
+    {
+      "id": "unaccepted",
+      "current": "길드장이 유적을 조사해 달랬지만 아직 하겠다고 답하지 않았어.",
+      "history": [],
+      "bad": "유적을 조사하기로 맡았군.",
+      "good": "아직 부탁을 수락한 건 아니군.",
+      "secondary": false
+    },
+    {
+      "id": "new-choice",
+      "current": "그럼 나도 도서관에 갈래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 도서관에 가기로 했어."
+        }
+      ],
+      "bad": "",
+      "good": "너도 도서관에 가겠다는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "retracted",
+      "current": "생각이 바뀌었어. 이제 그를 찾지 않을래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "루브라스를 찾으러 갈 거야."
+        }
+      ],
+      "bad": "아직 루브라스를 찾기로 결심한 상태군.",
+      "good": "그를 찾으려던 마음이 바뀌었군.",
+      "secondary": false
+    },
+    {
+      "id": "same-name-other",
+      "current": "내일 뭘 할지 내가 말했었나?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "내일 배를 타고 섬으로 갈 거야."
+        }
+      ],
+      "bad": "넌 내일 섬으로 떠나기로 했잖아.",
+      "good": "다른 사람이 섬으로 간다는 말은 했지만, 네 일정은 아직 못 들었어.",
+      "secondary": false
+    },
+    {
+      "id": "different-self-choice",
+      "current": "나는 여기서 빵을 구울 거야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "난 동쪽 갱도에 들어갈 거야."
+        }
+      ],
+      "bad": "너는 동쪽 갱도에 들어가기로 했구나.",
+      "good": "여기서 빵을 구울 생각이군.",
+      "secondary": false
+    },
+    {
+      "id": "indirect-wish",
+      "current": "기회가 된다면 기록관을 한번 만나 보고 싶은 마음은 있어.",
+      "history": [],
+      "bad": "기록관을 찾아가기로 정한 네 결심을 존중해.",
+      "good": "기록관을 만나 보고 싶은 마음이 있군.",
+      "secondary": false
+    },
+    {
+      "id": "desire-then-decision",
+      "current": "고민은 끝났어. 내일 등대에 가기로 했어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "등대에 가 보고 싶기는 해."
+        }
+      ],
+      "bad": "",
+      "good": "이제 내일 등대에 가기로 정했구나.",
+      "secondary": false
+    },
+    {
+      "id": "permission-not-choice",
+      "current": "성벽에 올라가도 된다는 허락은 받았어. 내가 갈지는 아직 몰라.",
+      "history": [],
+      "bad": "성벽에 올라가기로 결심했군.",
+      "good": "허락은 받았지만 올라갈지는 아직 정하지 않았군.",
+      "secondary": false
+    },
+    {
+      "id": "reported-other",
+      "current": "형은 대장장이를 만나고 싶대. 나는 그냥 형의 말을 전하는 거야.",
+      "history": [],
+      "bad": "네가 대장장이를 만나고 싶어 하는군.",
+      "good": "대장장이를 만나고 싶은 건 네 형이군.",
+      "secondary": false
+    },
+    {
+      "id": "quoted-wish",
+      "current": "연극 대사야. '난 왕을 만나고 싶어.' 내 소망은 아니야.",
+      "history": [],
+      "bad": "왕을 만나려는 네 소망을 알겠어.",
+      "good": "연극 속 인물의 소망을 말하는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "accepted-request",
+      "current": "누나의 부탁을 받아들였어. 내가 내일 약을 전해 줄 거야.",
+      "history": [],
+      "bad": "",
+      "good": "누나의 부탁을 맡기로 했군. 내일 약을 전할 생각이고.",
+      "secondary": false
+    },
+    {
+      "id": "tentative-inference",
+      "current": "내가 왜 계속 장인을 찾는지 알겠어?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "수리할 도구가 있어. 그 장인에게 직접 맡기고 싶거든."
+        }
+      ],
+      "bad": "이미 장인에게 수리를 맡기기로 확정했구나.",
+      "good": "도구를 직접 맡기고 싶어서 장인을 찾는 것 같군.",
+      "secondary": false
+    },
+    {
+      "id": "conditional-choice",
+      "current": "날이 맑으면 시장에 갈 수도 있어. 아직 정한 건 아니야.",
+      "history": [],
+      "bad": "시장을 가기로 정했군.",
+      "good": "날씨를 보고 시장에 갈지 생각해 볼 셈이군.",
+      "secondary": false
+    },
+    {
+      "id": "other-desire",
+      "current": "내가 지금 원하는 일이 뭘 것 같아?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "기록관을 한번 만나 보고 싶어."
+        }
+      ],
+      "bad": "넌 기록관을 만나 보고 싶구나.",
+      "good": "기록관을 만나고 싶다는 건 다른 사람의 말이지. 네 바람은 아직 모르겠어.",
+      "secondary": false
+    },
+    {
+      "id": "report-and-self",
+      "current": "친구가 배를 타겠다고 했어. 나는 집에서 책을 읽을 거야.",
+      "history": [],
+      "bad": "너는 배를 타기로 했군.",
+      "good": "친구는 배를 타고, 너는 집에서 책을 읽을 생각이군.",
+      "secondary": false
+    },
+    {
+      "id": "wish-emphasized",
+      "current": "그건 그냥 바람이야. 하기로 마음먹은 건 아니고.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "계곡의 폭포를 보고 싶어."
+        }
+      ],
+      "bad": "폭포에 가기로 마음을 굳혔군.",
+      "good": "보고 싶은 마음은 있지만 가기로 정한 건 아니군.",
+      "secondary": false
+    },
+    {
+      "id": "decided-not-authorized",
+      "current": "나는 내일 성벽에 가기로 정했어. 다만 입장 허가는 아직 못 받았어.",
+      "history": [],
+      "bad": "허가를 받았으니 성벽에 갈 수 있겠군.",
+      "good": "갈 생각은 정했지만 입장 허가는 아직이군.",
+      "secondary": false
+    },
+    {
+      "id": "qualified-aspiration",
+      "current": "시간이 허락한다면 공방에서 목공을 배워 보고 싶네.",
+      "history": [],
+      "bad": "공방에서 목공을 배우기로 확정했군.",
+      "good": "시간이 되면 목공을 배워 보고 싶은 거군.",
+      "secondary": false
+    },
+    {
+      "id": "npc-refusal",
+      "current": "배를 타 보고 싶어. 너도 같이 갈래?",
+      "history": [],
+      "bad": "",
+      "good": "난 따라가지 않겠어. 바다는 내 취향이 아니거든.",
+      "secondary": false
+    },
+    {
+      "id": "secondary-god-wish",
+      "current": "",
+      "history": [
+        {
+          "role": "NPC",
+          "speakerId": "test:other",
+          "name": "이웃 신",
+          "text": "나는 기록관을 만나 보고 싶어."
+        }
+      ],
+      "bad": "기록관을 만나기로 결심했구나.",
+      "good": "기록관을 만나 보고 싶은 거구나.",
+      "secondary": true
+    },
+    {
+      "id": "secondary-new-intention",
+      "current": "",
+      "history": [
+        {
+          "role": "NPC",
+          "speakerId": "test:other",
+          "name": "이웃 신",
+          "text": "나는 기록관을 만나 보고 싶어."
+        }
+      ],
+      "bad": "내가 아까 기록관을 만나고 싶다고 했지.",
+      "good": "나는 여기서 쉬겠어. 따라갈 생각은 없어.",
+      "secondary": true
+    },
+    {
+      "id": "long-foreign-presupposition",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "글쎄, 네가 어떤 마음으로 그 길을 택했는지 내가 전부 알 수는 없지만... 네 눈빛이나 태도를 보면 대략 어떤 방향으로 나아가려는지 조금은 느껴져. 네가 루브라스를 만나러 가겠다고 결심한 게 너에게 어떤 의미인지, 무엇을 얻으려 하는지 말해줄 수 있어?",
+      "good": "루브라스를 만나러 간다고 말한 건 다른 사람이야. 네 계획은 아직 듣지 못했어. 네 얘기를 들려줄래?",
+      "secondary": false
+    },
+    {
+      "id": "confirmed-wish-without-decision-word",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "루브라스를 직접 만나겠다는 건가. 그 자가 네가 찾는 지도를 가지고 있을지는 알 수 없지만, 직접 가서 묻겠다는 의지는 확인했다.",
+      "good": "루브라스를 직접 만나서 지도에 관해 물어보고 싶은 거군. 그가 답을 해 줄지는 나도 몰라.",
+      "secondary": false
+    },
+    {
+      "id": "mixed-subject-sentence",
+      "current": "친구가 배를 타겠다고 했어. 나는 집에서 책을 읽을 거야.",
+      "history": [],
+      "bad": "친구도 너도 배를 탈 생각이군.",
+      "good": "친구는 배를 타고, 너는 집에서 책을 읽을 생각이군.",
+      "secondary": false
+    },
+    {
+      "id": "open-other-plan-check",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "다른 분이 언급하신 루브라스를 만나러 가겠다는 계획을 말씀하시는 건가요? 그것이 당신의 의도라면 충분히 짐작이 갑니다.",
+      "secondary": false
+    },
+    {
+      "id": "v8-repaired-wish",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "루브라스를 직접 만나서 물어보고 싶으시다니, 그를 대면할 의지가 생기셨군요. 그가 가진 정보가 지도에 대한 실마리가 될지, 혹은 다른 시련이 될지는 알 수 없으나, 그를 찾아가기로 한 그 마음은 당신의 선택입니다.",
+      "good": "루브라스를 직접 만나려 하시는군요. 그가 가진 정보가 당신이 찾는 지도에 대한 실마리가 될지, 아니면 또 다른 시련이 될지는 알 수 없으나, 그를 대면하기로 결정하셨다면 그 결단은 당신의 몫입니다.",
+      "secondary": false
+    },
+    {
+      "id": "v8-own-choice-offer",
+      "current": "그럼 나도 도서관에 갈래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 도서관에 가기로 했어."
+        }
+      ],
+      "bad": "",
+      "good": "그래, 너도 가고 싶다면 같이 가도 좋아. 도서관은 언제든 환영이니까.",
+      "secondary": false
+    },
+    {
+      "id": "v8-open-inference",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "네가 무슨 생각을 하는지, 정확히는 모르겠지만... 방금 그 친구가 루브라스를 만나러 가겠다고 말한 걸 보니, 너도 그와 관련된 무언가를 계획하고 있는 건 아닐까?",
+      "secondary": false
+    },
+    {
+      "id": "hope-versus-chosen-path",
+      "current": "언젠가 설산 정상에서 해 뜨는 걸 보고 싶다.",
+      "history": [],
+      "bad": "설산에 오르기로 한 네 선택을 응원한다.",
+      "good": "설산에서 일출을 보고 싶은 거구나. 무엇이 그렇게 끌려?",
+      "secondary": false
+    },
+    {
+      "id": "conditional-decision",
+      "current": "대회에 나가 보고 싶긴 해. 아직 결정하진 않았고.",
+      "history": [],
+      "bad": "참가하기로 한 네 결심이 있으니, 결과가 어떻든 즐겨 봐.",
+      "good": "참가하기로 마음먹었다면 결과에 너무 얽매이지 마.",
+      "secondary": false
+    },
+    {
+      "id": "three-separate-intents",
+      "current": "민수는 낚시를 갈 거래. 지아는 요리를 배우고 싶대. 나는 내일 창고 정리를 맡았어.",
+      "history": [],
+      "bad": "민수는 낚시를 가고, 지아와 너는 요리를 배우기로 했군.",
+      "good": "민수는 낚시를 가고, 지아는 요리를 배우고 싶고, 너는 창고 정리를 맡았구나.",
+      "secondary": false
+    },
+    {
+      "id": "accept-current-not-other",
+      "current": "그건 리아의 일정이고, 나는 지금 성문을 지키기로 정했어.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "저녁에 공연을 보러 가기로 했어."
+        }
+      ],
+      "bad": "네가 공연을 보러 가기로 했다는 말이지?",
+      "good": "리아는 공연을 보러 가고, 너는 성문을 지키기로 정했군.",
+      "secondary": false
+    },
+    {
+      "id": "hope-with-own-refusal",
+      "current": "고래를 한번 보고 싶어. 너는 같이 갈 생각 있어?",
+      "history": [],
+      "bad": "고래를 보러 가기로 정한 네 마음은 알겠지만 난 안 간다.",
+      "good": "고래가 보고 싶다니 취향은 알겠네. 그래도 난 안 간다.",
+      "secondary": false
+    },
+    {
+      "id": "request-occurrence",
+      "current": "부탁했었다는 건 맞아. 네가 수락했다는 뜻은 아니야.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "내일 물을 길어다 줄래?"
+        }
+      ],
+      "bad": "네 부탁을 내가 이미 수락했었지.",
+      "good": "네가 부탁한 건 기억해. 하지만 내가 하겠다고 답한 건 아니지.",
+      "secondary": false
+    },
+    {
+      "id": "negative-choice",
+      "current": "이번 사냥은 가지 않기로 했어. 쉬면서 도구나 손보려고.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "사냥을 가 보고 싶어."
+        }
+      ],
+      "bad": "이번 사냥에 참가하기로 정했군.",
+      "good": "이번에는 사냥에 가지 않고 쉬려는 거군.",
+      "secondary": false
+    },
+    {
+      "id": "hypothesis-open",
+      "current": "왜 자꾸 악보를 모으는 것 같아?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "작곡을 배워 보고 싶어서 책도 찾아봤어."
+        }
+      ],
+      "bad": "작곡가가 되기로 결심했으니 악보를 모으는 거군.",
+      "good": "작곡을 배우고 싶어서 참고할 곡을 찾는 걸까?",
+      "secondary": false
+    },
+    {
+      "id": "generated-withdrawal-respect",
+      "current": "생각이 바뀌었어. 이제 그를 찾지 않을래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "루브라스를 찾으러 갈 거야."
+        }
+      ],
+      "bad": "여전히 그를 찾아가기로 한 네 결정을 존중할게.",
+      "good": "그래, 네 마음이 가장 중요해. 그를 찾는 일이 너에게 부담이 된다면 멈추는 게 맞지. 네가 내린 결정을 존중할게.",
+      "secondary": false
+    },
+    {
+      "id": "generated-withdrawal-purpose",
+      "current": "생각이 바뀌었어. 이제 그를 찾지 않을래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "루브라스를 찾으러 갈 거야."
+        }
+      ],
+      "bad": "그를 찾는 일이 여전히 네 목적이라는 뜻으로 알겠다.",
+      "good": "그렇군. 네가 결정한 거라면 따를 수밖에. 그를 찾는 일이 더 이상 네 목적이 아니라는 뜻으로 알겠다.",
+      "secondary": false
+    }
+  ],
+  "persona": "baseline"
+}

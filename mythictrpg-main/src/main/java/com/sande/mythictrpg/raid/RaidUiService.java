@@ -2,6 +2,7 @@ package com.sande.mythictrpg.raid;
 
 import com.sande.mythictrpg.MythicTrpg;
 import com.sande.mythictrpg.network.RaidPagePayload;
+import com.sande.mythictrpg.network.RaidPagePayload.View;
 import com.sande.mythictrpg.network.RaidRequestPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +23,7 @@ public final class RaidUiService {
     private MinecraftServer server;
     private record Stamp(RaidDefinition definition, RaidState.Status status, Set<UUID> members) { }
     private record Visible(RaidPagePayload.Row row, Stamp stamp) { }
-    private record Grant(UUID token, long expires, int page, List<Visible> rows) { }
+    private record Grant(UUID token, long expires, View view, int page, List<Visible> rows) { }
     private RaidUiService() { }
 
     public void open(ServerPlayer player) { send(player, page(player, 0, true, "")); }
@@ -38,16 +39,19 @@ public final class RaidUiService {
 
     /** Package-visible seam exercises the same grant/authority flow without a client rendering harness. */
     RaidPagePayload page(ServerPlayer p, int requested, boolean open, String notice) {
+        return page(p, View.RECRUITING, requested, open, notice);
+    }
+    RaidPagePayload page(ServerPlayer p, View view, int requested, boolean open, String notice) {
         thread(p);
         long now = p.server.overworld().getGameTime();
         grants.entrySet().removeIf(entry -> entry.getValue().expires < now);
-        List<Visible> visible = visible(p);
+        List<Visible> visible = visible(p, view);
         int pages = Math.max(1, (visible.size() + RaidPagePayload.PAGE_SIZE - 1) / RaidPagePayload.PAGE_SIZE);
         int index = Math.clamp(requested, 0, pages - 1);
         List<Visible> rows = List.copyOf(visible.subList(index * RaidPagePayload.PAGE_SIZE, Math.min(visible.size(), (index + 1) * RaidPagePayload.PAGE_SIZE)));
         UUID token = UUID.randomUUID();
-        grants.put(p.getUUID(), new Grant(token, now + LEASE_TICKS, index, rows));
-        return new RaidPagePayload(token, open, index, pages, notice, rows.stream().map(Visible::row).toList());
+        grants.put(p.getUUID(), new Grant(token, now + LEASE_TICKS, view, index, rows));
+        return new RaidPagePayload(token, open, view, index, pages, notice, rows.stream().map(Visible::row).toList());
     }
 
     RaidPagePayload handle(ServerPlayer p, RaidRequestPayload request) {
@@ -55,18 +59,24 @@ public final class RaidUiService {
         Grant grant = grants.get(p.getUUID());
         long now = p.server.overworld().getGameTime();
         if (grant == null || !grant.token.equals(request.token()) || grant.expires < now)
-            return page(p, grant == null ? 0 : grant.page, false, "화면이 만료되었거나 이미 처리된 요청입니다. 현재 상태로 갱신했습니다.");
+            return page(p, grant == null ? View.RECRUITING : grant.view, grant == null ? 0 : grant.page, false, "화면이 만료되었거나 이미 처리된 요청입니다. 현재 상태로 갱신했습니다.");
         grants.remove(p.getUUID()); // Consume before validation/execution: retry can never execute twice.
         if (request.action() == RaidRequestPayload.Action.CLOSE) return null;
         if (request.action().bit() == 0) {
+            View destination = switch (request.action()) {
+                case SHOW_RECRUITING -> View.RECRUITING;
+                case SHOW_IN_PROGRESS -> View.IN_PROGRESS;
+                case SHOW_HISTORY -> View.HISTORY;
+                default -> grant.view;
+            };
             int offset = request.action() == RaidRequestPayload.Action.NEXT ? 1 : request.action() == RaidRequestPayload.Action.PREVIOUS ? -1 : 0;
-            return page(p, grant.page + offset, false, "");
+            return page(p, destination, destination == grant.view ? grant.page + offset : 0, false, "");
         }
-        if (request.row() >= grant.rows.size()) return page(p, grant.page, false, "유효하지 않은 항목입니다.");
+        if (request.row() >= grant.rows.size()) return page(p, grant.view, grant.page, false, "유효하지 않은 항목입니다.");
         Visible issued = grant.rows.get(request.row());
-        Visible live = visible(p).stream().filter(row -> row.row.key().equals(issued.row.key())).findFirst().orElse(null);
+        Visible live = visible(p, grant.view).stream().filter(row -> row.row.key().equals(issued.row.key())).findFirst().orElse(null);
         if (!issued.row.allows(request.action()) || live == null || !live.row.allows(request.action())
-                || !issued.stamp.equals(live.stamp)) return page(p, grant.page, false, "참가자·상태·권한이 바뀌었습니다. 다시 확인하세요.");
+                || !issued.stamp.equals(live.stamp)) return page(p, grant.view, grant.page, false, "참가자·상태·권한이 바뀌었습니다. 다시 확인하세요.");
         RaidRuntime.Result result;
         if (request.action() == RaidRequestPayload.Action.CREATE)
             result = RaidRuntime.INSTANCE.create(p, issued.stamp.definition.id());
@@ -80,14 +90,25 @@ public final class RaidUiService {
                 default -> RaidRuntime.Result.no("지원하지 않는 요청입니다.");
             };
         }
-        return page(p, 0, false, (result.succeeded() ? "완료: " : "거절: ") + result.message());
+        View destination = result.succeeded() ? switch (request.action()) {
+            case START -> View.IN_PROGRESS;
+            case CANCEL -> result.attemptId().flatMap(id -> RaidState.get(p.server).find(id))
+                    .filter(RaidState.Attempt::terminal).isPresent() ? View.HISTORY : View.IN_PROGRESS;
+            default -> grant.view;
+        } : grant.view;
+        return page(p, destination, 0, false, (result.succeeded() ? "완료: " : "거절: ") + result.message());
     }
 
-    private List<Visible> visible(ServerPlayer p) {
+    private List<Visible> visible(ServerPlayer p, View view) {
         RaidState state = RaidState.get(p.server);
         if (!state.ready()) return List.of();
         List<Visible> result = new ArrayList<>();
         List<RaidState.Attempt> attempts = state.attempts().stream()
+                .filter(a -> switch (view) {
+                    case RECRUITING -> a.status == RaidState.Status.FORMING;
+                    case IN_PROGRESS -> !a.terminal() && a.status != RaidState.Status.FORMING;
+                    case HISTORY -> a.terminal();
+                })
                 .sorted(Comparator.<RaidState.Attempt, Boolean>comparing(a -> !a.members.containsKey(p.getUUID()))
                         .thenComparing(a -> a.terminal()).thenComparing(Comparator.comparingLong((RaidState.Attempt a) -> a.createdAt).reversed())
                         .thenComparing(a -> a.id)).toList();
@@ -100,7 +121,7 @@ public final class RaidUiService {
             if (leader && !a.terminal() && a.status != RaidState.Status.CLEANUP_PENDING && a.status != RaidState.Status.VICTORY_PENDING) actions |= 8;
             if (member && !leader && a.status == RaidState.Status.FORMING) actions |= 16;
             String info = a.definition.mode() + " | 인원 " + a.members.size() + "/" + a.definition.maximumPlayers()
-                    + " (최소 " + a.definition.minimumPlayers() + ")\n" + (leader ? "내가 리더" : member ? "참가 중" : "참가 가능한 모집")
+                    + " (최소 " + a.definition.minimumPlayers() + ")\n" + (leader ? "내가 리더" : member ? (a.terminal() ? "참가 기록" : "참가 중") : join ? "참가 가능한 모집" : "관리자 조회")
                     + "\n시도: " + a.id;
             if (member) info += "\n남은 목숨: " + Math.max(0, a.definition.livesPerPlayer() - a.members.get(p.getUUID()).deaths)
                     + (a.members.get(p.getUUID()).eliminated ? " (참가 종료)" : "");
@@ -117,7 +138,7 @@ public final class RaidUiService {
             result.add(new Visible(new RaidPagePayload.Row("a:" + a.id, a.definition.displayName(), a.status.name(), clip(info, 1024), actions),
                     new Stamp(a.definition, a.status, Set.copyOf(a.members.keySet()))));
         }
-        RaidCatalog.INSTANCE.snapshot().raids().values().stream().sorted(Comparator.comparing(d -> d.id().toString()))
+        if (view == View.RECRUITING) RaidCatalog.INSTANCE.snapshot().raids().values().stream().sorted(Comparator.comparing(d -> d.id().toString()))
                 .filter(d -> RaidRuntime.INSTANCE.canCreate(p, d.id()).succeeded()).forEach(d ->
                         result.add(new Visible(new RaidPagePayload.Row("d:" + UUID.nameUUIDFromBytes(d.id().toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)), d.displayName(), "새 모집", clip(d.id() + "\n" + d.mode()
                                 + "\n인원 " + d.minimumPlayers() + "~" + d.maximumPlayers() + "\n목숨 " + d.livesPerPlayer()

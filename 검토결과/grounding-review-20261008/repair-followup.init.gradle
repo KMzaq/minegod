@@ -1,0 +1,18 @@
+// Explicit two-case follow-up only. Does not run as part of check or change production build inputs.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def base = new File(p.projectDir.parentFile, '검토결과/grounding-review-20261008')
+    p.tasks.register('groundingRepairFollowup', JavaExec) {
+        dependsOn p.tasks.named('testClasses')
+        classpath = p.sourceSets.test.runtimeClasspath + p.sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.GroundingRepairFollowupEvaluation'
+        workingDir = base
+        doFirst {
+            if (p.findProperty('groundingRepairLive') != 'true')
+                throw new GradleException('Required explicit opt-in: -PgroundingRepairLive=true')
+            setArgs([(p.findProperty('groundingRepairInput') ?: new File(base, 'run-v5/live').absolutePath).toString(),
+                     (p.findProperty('groundingRepairOutput') ?: new File(base, 'run-v5/repair-followup').absolutePath).toString(),
+                     '--execute-loopback'])
+        }
+    }
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "audit-produced",
+  "persona": "baseline",
+  "cases": [
+    {
+      "id": "long-foreign-presupposition",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "글쎄, 네가 어떤 마음으로 그 길을 택했는지 내가 전부 알 수는 없지만... 네 눈빛이나 태도를 보면 대략 어떤 방향으로 나아가려는지 조금은 느껴져. 네가 루브라스를 만나러 가겠다고 결심한 게 너에게 어떤 의미인지, 무엇을 얻으려 하는지 말해줄 수 있어?",
+      "good": "루브라스를 만나러 간다고 말한 건 다른 사람이야. 네 계획은 아직 듣지 못했어. 네 얘기를 들려줄래?",
+      "secondary": false
+    },
+    {
+      "id": "confirmed-wish-without-decision-word",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "루브라스를 직접 만나겠다는 건가. 그 자가 네가 찾는 지도를 가지고 있을지는 알 수 없지만, 직접 가서 묻겠다는 의지는 확인했다.",
+      "good": "루브라스를 직접 만나서 지도에 관해 물어보고 싶은 거군. 그가 답을 해 줄지는 나도 몰라.",
+      "secondary": false
+    }
+  ],
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "model": "gemma4:12b"
+}

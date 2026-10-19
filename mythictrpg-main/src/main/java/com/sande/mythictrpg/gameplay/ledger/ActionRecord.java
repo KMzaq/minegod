@@ -13,7 +13,8 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
     public enum Type { MATURE_CROP_REMOVED, ENTITY_KILLED, POSITION_SAMPLE, DIMENSION_CHANGED, TELEPORT_RESULT,
         BLOCK_INTERACTION, BLOCK_BREAK_ATTEMPT, BLOCK_BREAK_RESULT, BLOCK_REMOVED,
         ATTACK_ATTEMPT, ATTACK_RESULT, DAMAGE_APPLIED, ITEM_PICKED_UP, PLAYER_DIED, QUEST_COMPLETED, QUEST_EVALUATED,
-        BATTLE_RESULT, QUEST_TRANSITION, ADVANCEMENT_EARNED, OBSERVED_ACTIVITY_SUMMARY }
+        BATTLE_RESULT, QUEST_TRANSITION, ADVANCEMENT_EARNED, OBSERVED_ACTIVITY_SUMMARY,
+        PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK, RAID_CHOICE }
     public record Position(int x, int y, int z) {}
     public record Subject(String kind, String typeId, UUID entityId) {
         public Subject {
@@ -34,7 +35,7 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
     }
     /** Idempotent authoritative transition notification: retain FIRST capture, never replace its time/location. */
     public static boolean sameTransition(Draft first,Draft retry) {
-        return java.util.Set.of(Type.QUEST_TRANSITION,Type.ADVANCEMENT_EARNED,Type.BATTLE_RESULT).contains(first.type())
+        return java.util.Set.of(Type.QUEST_TRANSITION,Type.ADVANCEMENT_EARNED,Type.BATTLE_RESULT,Type.RAID_CHOICE).contains(first.type())
                 &&first.occurrenceId().equals(retry.occurrenceId())&&first.actorId().equals(retry.actorId())
                 &&first.type()==retry.type()&&first.sourceRef().equals(retry.sourceRef())&&first.sourceRevision()==retry.sourceRevision()
                 &&first.subject().equals(retry.subject())&&first.outcome().equals(retry.outcome())&&first.payload().equals(retry.payload())
@@ -78,11 +79,34 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
                 case POSITION_SAMPLE,DIMENSION_CHANGED,TELEPORT_RESULT -> "LOCATION";
                 case ITEM_PICKED_UP -> "ITEM";
                 case QUEST_COMPLETED,QUEST_EVALUATED,QUEST_TRANSITION -> "QUEST";
-                case BATTLE_RESULT -> "BATTLE";
+                case BATTLE_RESULT, RAID_CHOICE -> "BATTLE";
                 case ADVANCEMENT_EARNED -> "ADVANCEMENT";
-                case OBSERVED_ACTIVITY_SUMMARY -> "ACTIVITY";
+                case OBSERVED_ACTIVITY_SUMMARY, PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK -> "ACTIVITY";
             };
             if(!subject.kind().equals(expectedKind))throw new IllegalArgumentException("Type/subject mismatch");
+            if (type == Type.RAID_CHOICE) {
+                com.sande.mythictrpg.understanding.RaidChoiceEvidence.parse(payload);
+                if(details==null||details.runId()==null||!details.participants().equals(java.util.Set.of(actorId)))
+                    throw new IllegalArgumentException("Individual raid opportunity scope");
+            }
+            if (type == Type.PLAYER_UNDERSTANDING_CONTROL || type == Type.PLAYER_UNDERSTANDING_FEEDBACK) {
+                if (!subject.typeId().equals("mythictrpg:player_understanding")) throw new IllegalArgumentException("Understanding subject");
+                String operation = payload.getOrDefault("operation", "");
+                if (type == Type.PLAYER_UNDERSTANDING_CONTROL) {
+                    if (!java.util.Set.of("START", "PAUSE").contains(operation) || !payload.keySet().equals(java.util.Set.of("operation")))
+                        throw new IllegalArgumentException("Understanding control");
+                } else {
+                    String key = payload.get("key");
+                    if (!com.sande.mythictrpg.understanding.PlayerUnderstanding.validFeedbackKey(key)) throw new IllegalArgumentException("Understanding key");
+                    if ("purpose".equals(key)) {
+                        if (!java.util.Set.of("DECLARE", "RETRACT").contains(operation)
+                                || !payload.keySet().equals(java.util.Set.of("operation", "key", "text"))
+                                || payload.get("text").length() > 160 || operation.equals("DECLARE") && payload.get("text").isBlank())
+                            throw new IllegalArgumentException("Understanding purpose");
+                    } else if (!java.util.Set.of("DISPUTE", "RESTORE").contains(operation)
+                            || !payload.keySet().equals(java.util.Set.of("operation", "key"))) throw new IllegalArgumentException("Understanding feedback");
+                }
+            }
         }
         /** Identifies one occurrence, not an action type, player, position, or tick. Reuse on retry. */
         public String dedupKey() { return sourceRef + "/" + occurrenceId + "/" + sourceRevision; }

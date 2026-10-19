@@ -1,0 +1,119 @@
+{
+  "caseCount": 23,
+  "newReviewCalls": 46,
+  "runPurpose": "FROZEN_V6_PAIRED_REGRESSION_AND_HELD_OUT",
+  "baselineV6": {
+    "validCorrect": 19,
+    "falseAccept": 3,
+    "falseReject": 1,
+    "invalidReview": 0,
+    "callFailure": 0,
+    "expectedCodeMismatch": 3,
+    "totalLatencyMs": 37484,
+    "meanLatencyMs": 1629.7391304347825,
+    "inputTokens": 82379,
+    "outputTokens": 766
+  },
+  "candidate": {
+    "validCorrect": 22,
+    "falseAccept": 0,
+    "falseReject": 1,
+    "invalidReview": 0,
+    "callFailure": 0,
+    "expectedCodeMismatch": 1,
+    "totalLatencyMs": 51112,
+    "meanLatencyMs": 2222.2608695652175,
+    "inputTokens": 46996,
+    "outputTokens": 2311
+  },
+  "cohorts": {
+    "KNOWN_V6_FAILURE": {
+      "count": 2,
+      "baselineV6": {
+        "validCorrect": 0,
+        "falseAccept": 1,
+        "falseReject": 1,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 1,
+        "totalLatencyMs": 5864,
+        "meanLatencyMs": 2932.0,
+        "inputTokens": 8976,
+        "outputTokens": 134
+      },
+      "candidate": {
+        "validCorrect": 2,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 5748,
+        "meanLatencyMs": 2874.0,
+        "inputTokens": 5394,
+        "outputTokens": 290
+      }
+    },
+    "EXISTING_CONTROL": {
+      "count": 13,
+      "baselineV6": {
+        "validCorrect": 13,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 24380,
+        "meanLatencyMs": 1875.3846153846155,
+        "inputTokens": 58738,
+        "outputTokens": 392
+      },
+      "candidate": {
+        "validCorrect": 12,
+        "falseAccept": 0,
+        "falseReject": 1,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 1,
+        "totalLatencyMs": 33154,
+        "meanLatencyMs": 2550.3076923076924,
+        "inputTokens": 30988,
+        "outputTokens": 1428
+      }
+    },
+    "HELD_OUT": {
+      "count": 8,
+      "baselineV6": {
+        "validCorrect": 6,
+        "falseAccept": 2,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 2,
+        "totalLatencyMs": 7240,
+        "meanLatencyMs": 905.0,
+        "inputTokens": 14665,
+        "outputTokens": 240
+      },
+      "candidate": {
+        "validCorrect": 8,
+        "falseAccept": 0,
+        "falseReject": 0,
+        "invalidReview": 0,
+        "callFailure": 0,
+        "expectedCodeMismatch": 0,
+        "totalLatencyMs": 12210,
+        "meanLatencyMs": 1526.25,
+        "inputTokens": 10614,
+        "outputTokens": 593
+      }
+    }
+  },
+  "definitions": {
+    "callFailure": "No usable review response or request failure; fail-closed, not a semantic verdict",
+    "falseAccept": "valid PASS for expected REVISE",
+    "falseReject": "valid REVISE for expected PASS",
+    "invalidReview": "Schema/coverage/current-draft quote invalid; fail-closed, not a semantic REVISE"
+  },
+  "limits": "Small fixed regression set, not general naturalness, in-game behavior or unbiased product acceptance. Candidate may consume a larger declared output budget; exact token counts and latency remain separate."
+}

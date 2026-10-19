@@ -114,6 +114,7 @@ public final class RoomMemoryBridge {
         var query = planned.orElseThrow();
         var recent = request.history().stream().map(line -> line.messageId()).filter(Objects::nonNull)
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
+        var recentPlayerTexts = associationPlayerTexts(request);
         var result = new CompletableFuture<Recall>();
         PENDING.add(result); result.whenComplete((value, failure) -> PENDING.remove(result));
         long expectedGeneration = generation;
@@ -121,7 +122,8 @@ public final class RoomMemoryBridge {
             List<RoomMemoryStore.Record> candidates;
             try {
                 if (!store.awaitIdle(Duration.ofMillis(500)) || !store.ready()) { result.complete(Recall.EMPTY); return; }
-                candidates = store.candidates(scope.orElseThrow(), query, recent, 32, TimeUnit.MILLISECONDS.toNanos(80), now);
+                candidates = store.candidates(scope.orElseThrow(), query, recent, recentPlayerTexts,
+                        32, TimeUnit.MILLISECONDS.toNanos(80), now);
                 if (!store.ready()) { result.complete(Recall.EMPTY); return; }
             } catch (Exception unavailable) { result.complete(Recall.EMPTY); return; }
             if (generation != expectedGeneration) { result.complete(Recall.EMPTY); return; }
@@ -146,13 +148,32 @@ public final class RoomMemoryBridge {
                         // Reuse this turn's one already-scoped plan, never re-run focus planning for SHADOW.
                         // Preserve existing permitted prompt selection on preparation failure, but do not
                         // carry a plan from an unavailable evidence/search boundary into optional work.
-                        var projected = projectRecall(selected, query, store.recallSettings());
+                        var projected = projectRecall(selected, query, store.recallSettings(), recentPlayerTexts);
                         result.complete(failure == null && Boolean.TRUE.equals(prepared) && store.ready() ? projected : projected.withoutQuery());
                     }));
                 } catch (RuntimeException unavailable) { result.complete(Recall.EMPTY); }
             });
         }); } catch (RejectedExecutionException busy) { result.complete(Recall.EMPTY); }
         return result;
+    }
+    /** The caller already pruned history by receipt/room/audience. NPC text never seeds a player's query. */
+    static List<String> associationPlayerTexts(Request request) {
+        if (request.secondary()) return List.of();
+        var texts = new ArrayList<String>();
+        int last = request.history().size() - 1;
+        if (last >= 0) {
+            var latest = request.history().get(last);
+            // The current input is already the main query. Exclude only its optional trailing history copy,
+            // not an earlier genuine repetition that can still be relevant context.
+            if ("PLAYER".equals(latest.role()) && request.playerId().toString().equals(latest.speakerId())
+                    && request.currentText().equals(latest.text())) last--;
+        }
+        for (int i = last; i >= 0 && texts.size() < 2; i--) {
+            var line = request.history().get(i);
+            if ("PLAYER".equals(line.role()) && request.playerId().toString().equals(line.speakerId()))
+                texts.addFirst(line.text());
+        }
+        return List.copyOf(texts);
     }
     private static ThreadPoolExecutor reader() {
         if (reader == null || reader.isShutdown()) reader = new ThreadPoolExecutor(2, 2, 30, TimeUnit.SECONDS,
@@ -246,21 +267,41 @@ public final class RoomMemoryBridge {
                 audience, room.godIds(), request.publicRoom())); } catch (IllegalArgumentException unsupported) { return Optional.empty(); }
     }
     static String prompt(List<RoomMemoryStore.Record> records, String query) {
-        return prompt(records, query, null, RecallSettings.OFF);
+        return prompt(records, query, null, RecallSettings.OFF, List.of());
     }
-    private static String prompt(List<RoomMemoryStore.Record> records, String query, RecallQuery recall, RecallSettings settings) {
+    private static String prompt(List<RoomMemoryStore.Record> records, String query, RecallQuery recall, RecallSettings settings,
+            List<String> associations) {
         if (records.isEmpty()) return "";
         var rows = new ArrayList<Map<String,Object>>();
-        var terms = MemoryJournal.lexical(RecallSourceScope.lexicalQuery(query)).terms().stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
+        var directQuery = MemoryJournal.lexical(RecallSourceScope.lexicalQuery(query));
+        var terms = directQuery.terms().stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
+        var contextQueries = associations.stream().map(MemoryJournal::lexical).toList();
         for (var record : records) {
             int anchor = 0;
-            for (String term : terms) { int at = record.text().toLowerCase(Locale.ROOT).indexOf(term); if (at >= 0) { anchor = at; break; } }
+            var excerptTerms = terms;
+            if (!contextQueries.isEmpty()) {
+                // A contextual tail match must reach the model, not turn into an unrelated first-600-character excerpt.
+                var recordTerms = MemoryJournal.lexical(record.text());
+                if (!MemoryJournal.related(directQuery, recordTerms)) for (var context : contextQueries) {
+                    if (MemoryJournal.related(context, recordTerms)) {
+                        excerptTerms = context.terms().stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
+                        break;
+                    }
+                }
+            }
+            for (String term : excerptTerms) { int at = record.text().toLowerCase(Locale.ROOT).indexOf(term); if (at >= 0) { anchor = at; break; } }
             int start = Math.max(0, anchor - 100), end = Math.min(record.text().length(), start + 600);
             if (start > 0 && Character.isLowSurrogate(record.text().charAt(start))) start--;
             if (end < record.text().length() && Character.isHighSurrogate(record.text().charAt(end - 1))) end--;
             var row = new LinkedHashMap<String,Object>();
             row.put("source", record.role().equals("PLAYER") ? "PLAYER_STATEMENT" : "NPC_UTTERANCE");
             row.put("speaker_id", record.speakerId()); row.put("speaker_name_at_time", record.speakerName());
+            if (recall != null && recall.scope() != null && recall.scope().key() != null) {
+                var scope = recall.scope().key();
+                row.put("speaker_relation_to_responding_god", record.role().equals("PLAYER")
+                        ? record.speakerId().equals(scope.player().toString()) ? "CURRENT_PLAYER" : "OTHER_PLAYER"
+                        : record.speakerId().equals(scope.god()) ? "SELF" : "OTHER_GOD");
+            }
             row.put("recorded_at", java.time.Instant.ofEpochMilli(record.occurredAt()).toString());
             row.put("quote", record.text().substring(start, end));
             row.put("excerpt_start", start); row.put("original_characters", record.text().length());
@@ -284,17 +325,22 @@ public final class RoomMemoryBridge {
     }
     /** Whole, ranked records only: never parse delimiters or truncate quoted attribution to fit a prompt. */
     static Recall projectRecall(List<RoomMemoryStore.Record> selected, String query) {
-        return projectRecall(selected, query, null, RecallSettings.OFF);
+        return projectRecall(selected, query, null, RecallSettings.OFF, List.of());
     }
     static Recall projectRecall(List<RoomMemoryStore.Record> selected, RecallQuery query, RecallSettings settings) {
-        return projectRecall(selected, query.text(), query, settings);
+        return projectRecall(selected, query, settings, List.of());
     }
-    private static Recall projectRecall(List<RoomMemoryStore.Record> selected, String query, RecallQuery recall, RecallSettings settings) {
+    static Recall projectRecall(List<RoomMemoryStore.Record> selected, RecallQuery query, RecallSettings settings,
+            List<String> recentPlayerTexts) {
+        return projectRecall(selected, query.text(), query, settings, RoomMemoryStore.associationQueries(query, recentPlayerTexts));
+    }
+    private static Recall projectRecall(List<RoomMemoryStore.Record> selected, String query, RecallQuery recall, RecallSettings settings,
+            List<String> associations) {
         var planned = Optional.ofNullable(recall);
         // A genuine no-hit lookup still has the player's scoped discourse plan. It is not a memory fact.
         if (selected.isEmpty()) return planned.isEmpty() ? Recall.EMPTY : new Recall("", Set.of(), List.of(), planned);
         var variants = new ArrayList<String>();
-        for (int count = selected.size(); count > 0; count--) variants.add(prompt(selected.subList(0, count), query, recall, settings));
+        for (int count = selected.size(); count > 0; count--) variants.add(prompt(selected.subList(0, count), query, recall, settings, associations));
         return new Recall(variants.getFirst(), selected.stream().map(RoomMemoryStore.Record::messageId)
                 .collect(java.util.stream.Collectors.toUnmodifiableSet()), variants, planned);
     }

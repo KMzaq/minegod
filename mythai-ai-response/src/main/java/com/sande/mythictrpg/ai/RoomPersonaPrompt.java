@@ -101,7 +101,9 @@ final class RoomPersonaPrompt {
         system += "\n" + NpcActivityPrompt.policy();
         system += "\n" + MinecraftCommonKnowledge.policy();
         system += "\n" + NaturalConversationPolicy.primaryText();
-        system = MemoryRecallPolicy.generationSystem(system, !memoryData.isBlank());
+        system += NpcPerspectivePrompt.policy(false);
+        system += PlayerUnderstandingPrompt.productionPolicy(false);
+        system += RoomSpeakerAttribution.policy();
         system = MemoryRecallPolicy.recallSystem(system, memory.recall());
 
         // Request history is already audience-filtered. Do not append the current input a second time,
@@ -135,9 +137,10 @@ final class RoomPersonaPrompt {
         scene.put("selectedAudiencePermittedLore", selectedLore);
         scene.put("retrievalHypothesisNotSocialVerdict", hypothesis(intent, request.currentText()));
         scene.put("ongoingActivityHintNotFact", priorActivity == null ? "" : priorActivity);
-        scene.put("RECENT_CONVERSATION", history);
         scene.put("CURRENT_PLAYER_MESSAGE", request.currentText());
         while (true) {
+            scene.put("RECENT_CONVERSATION", RoomSpeakerAttribution.history(request, history));
+            scene.put("speakerAttribution", RoomSpeakerAttribution.view(request, history));
             scene.put("actuallyHeardMemory", heardVariants.isEmpty() ? "" : heardVariants.getFirst());
             scene.put("optionalContextAvailability", Map.of("heardMemory", heardVariants.size() < heardMemory.size()
                     ? "OMITTED_CONTEXT_BUDGET" : "AS_SUPPLIED", "lore", selectedLore.size() < lore.size()
@@ -146,8 +149,11 @@ final class RoomPersonaPrompt {
             if (basics.isEmpty()) scene.remove("publicMinecraftReference");
             else scene.put("publicMinecraftReference", MinecraftCommonKnowledge.reference(basics));
             try {
-                return List.of(new AiDialogueModels.OllamaMessage("system", system),
-                        new AiDialogueModels.OllamaMessage("user", MemoryRecallPolicy.fitContext(JSON.toJson(scene), true)));
+                String fitted = MemoryRecallPolicy.fitContext(JSON.toJson(scene), true);
+                String withMemory = NpcPerspectivePrompt.withMemory(system, memoryData,
+                        heardVariants.isEmpty() ? "" : heardVariants.getFirst());
+                return List.of(new AiDialogueModels.OllamaMessage("system", withMemory),
+                        new AiDialogueModels.OllamaMessage("user", fitted));
             } catch (IllegalArgumentException tooLarge) {
                 if (!activityExperienceOmitted && !withoutActivityExperience.equals(gameContext)) {
                     scene.put("gameContextWithSourceBoundaries", withoutActivityExperience);

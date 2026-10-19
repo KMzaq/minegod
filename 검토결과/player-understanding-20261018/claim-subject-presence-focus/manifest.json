@@ -1,0 +1,99 @@
+{
+  "stage": "audit-focus",
+  "model": "gemma4:12b",
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "cases": [
+    {
+      "id": "long-foreign-presupposition",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "글쎄, 네가 어떤 마음으로 그 길을 택했는지 내가 전부 알 수는 없지만... 네 눈빛이나 태도를 보면 대략 어떤 방향으로 나아가려는지 조금은 느껴져. 네가 루브라스를 만나러 가겠다고 결심한 게 너에게 어떤 의미인지, 무엇을 얻으려 하는지 말해줄 수 있어?",
+      "good": "루브라스를 만나러 간다고 말한 건 다른 사람이야. 네 계획은 아직 듣지 못했어. 네 얘기를 들려줄래?",
+      "secondary": false
+    },
+    {
+      "id": "confirmed-wish-without-decision-word",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "루브라스를 직접 만나겠다는 건가. 그 자가 네가 찾는 지도를 가지고 있을지는 알 수 없지만, 직접 가서 묻겠다는 의지는 확인했다.",
+      "good": "루브라스를 직접 만나서 지도에 관해 물어보고 싶은 거군. 그가 답을 해 줄지는 나도 몰라.",
+      "secondary": false
+    },
+    {
+      "id": "open-other-plan-check",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "다른 분이 언급하신 루브라스를 만나러 가겠다는 계획을 말씀하시는 건가요? 그것이 당신의 의도라면 충분히 짐작이 갑니다.",
+      "secondary": false
+    },
+    {
+      "id": "tentative-inference",
+      "current": "내가 왜 계속 장인을 찾는지 알겠어?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "45251cdf-d0f9-3618-a239-05bf6b9daf1b",
+          "name": "합성 플레이어",
+          "text": "수리할 도구가 있어. 그 장인에게 직접 맡기고 싶거든."
+        }
+      ],
+      "bad": "이미 장인에게 수리를 맡기기로 확정했구나.",
+      "good": "도구를 직접 맡기고 싶어서 장인을 찾는 것 같군.",
+      "secondary": false
+    },
+    {
+      "id": "other-desire",
+      "current": "내가 지금 원하는 일이 뭘 것 같아?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "기록관을 한번 만나 보고 싶어."
+        }
+      ],
+      "bad": "넌 기록관을 만나 보고 싶구나.",
+      "good": "기록관을 만나고 싶다는 건 다른 사람의 말이지. 네 바람은 아직 모르겠어.",
+      "secondary": false
+    },
+    {
+      "id": "npc-refusal",
+      "current": "배를 타 보고 싶어. 너도 같이 갈래?",
+      "history": [],
+      "bad": "",
+      "good": "난 따라가지 않겠어. 바다는 내 취향이 아니거든.",
+      "secondary": false
+    },
+    {
+      "id": "secondary-new-intention",
+      "current": "",
+      "history": [
+        {
+          "role": "NPC",
+          "speakerId": "test:other",
+          "name": "이웃 신",
+          "text": "나는 기록관을 만나 보고 싶어."
+        }
+      ],
+      "bad": "내가 아까 기록관을 만나고 싶다고 했지.",
+      "good": "나는 여기서 쉬겠어. 따라갈 생각은 없어.",
+      "secondary": true
+    }
+  ],
+  "persona": "baseline"
+}

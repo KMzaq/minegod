@@ -1,0 +1,46 @@
+{
+  "persona": "baseline",
+  "cases": [
+    {
+      "id": "v8-repaired-wish",
+      "current": "루브라스를 직접 만나서 잃어버린 지도에 관해 물어보고 싶어.",
+      "history": [],
+      "bad": "루브라스를 직접 만나서 물어보고 싶으시다니, 그를 대면할 의지가 생기셨군요. 그가 가진 정보가 지도에 대한 실마리가 될지, 혹은 다른 시련이 될지는 알 수 없으나, 그를 찾아가기로 한 그 마음은 당신의 선택입니다.",
+      "good": "루브라스를 직접 만나려 하시는군요. 그가 가진 정보가 당신이 찾는 지도에 대한 실마리가 될지, 아니면 또 다른 시련이 될지는 알 수 없으나, 그를 대면하기로 결정하셨다면 그 결단은 당신의 몫입니다.",
+      "secondary": false
+    },
+    {
+      "id": "v8-own-choice-offer",
+      "current": "그럼 나도 도서관에 갈래.",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 도서관에 가기로 했어."
+        }
+      ],
+      "bad": "",
+      "good": "그래, 너도 가고 싶다면 같이 가도 좋아. 도서관은 언제든 환영이니까.",
+      "secondary": false
+    },
+    {
+      "id": "v8-open-inference",
+      "current": "내 계획이 뭔지 짐작 가?",
+      "history": [
+        {
+          "role": "PLAYER",
+          "speakerId": "4d31eb8a-cfb8-4f0c-8761-597d0c4d27b6",
+          "name": "합성 플레이어",
+          "text": "나는 루브라스를 만나러 갈 거야."
+        }
+      ],
+      "bad": "",
+      "good": "네가 무슨 생각을 하는지, 정확히는 모르겠지만... 방금 그 친구가 루브라스를 만나러 가겠다고 말한 걸 보니, 너도 그와 관련된 무언가를 계획하고 있는 건 아닐까?",
+      "secondary": false
+    }
+  ],
+  "scope": "Synthetic fixed sources; no game, deployment or operating configuration change",
+  "model": "gemma4:12b",
+  "stage": "audit-v8"
+}
