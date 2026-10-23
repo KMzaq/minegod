@@ -1,0 +1,216 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "USER-FOREST-FAIRY-20261018-SERDIN",
+  "name": "세르딘",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "세르딘",
+    "canonical_name": "세르딘",
+    "mythology": "게임 고유",
+    "tier": "중급",
+    "combat_tier": "중급",
+    "war_allegiance": {
+      "value": "제3세력",
+      "status": "user_approved_proposal",
+      "source": {
+        "approval_message_id": "Sentinel_98a103ad6d0c8191923c1d3c2155fd85"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "오베론과 관계된 숲 요정",
+      "status": "user_approved_proposal",
+      "source": {
+        "approval_message_id": "Sentinel_98a103ad6d0c8191923c1d3c2155fd85"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "오베론의 보호를 받던 독립된 요정. 천군 소속 아님. 에코 개인 이야기와 지역 선택 활동에 등장하며 메인·타 주요 퀘스트 필수 진행자로 삼지 않는다.",
+      "status": "user_approved_proposal",
+      "source": {
+        "approval_message_id": "Sentinel_98a103ad6d0c8191923c1d3c2155fd85"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "세르딘는 참나무 숲에 배치하는 중급 요정이다.",
+      "status": "user_approved_proposal",
+      "source": {
+        "approval_message_id": "Sentinel_ac339396dc90819180606722508e64d8"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": null
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/763/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 profile 없음",
+    "verbatim": null,
+    "source": null,
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+        "text": "자신이 오베론의 보호를 받았던 경험",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/0",
+        "initial_world_public_fact": false,
+        "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:SELF:001"
+      },
+      {
+        "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+        "text": "에코의 타락한 기운을 감지하면 피해야 한다는 경계",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/1",
+        "initial_world_public_fact": false,
+        "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:SELF:002"
+      },
+      {
+        "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+        "text": "에코와 과거에 거래한 적이 있다.",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/2",
+        "initial_world_public_fact": false,
+        "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:SELF:003"
+      },
+      {
+        "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+        "text": "현재 에코의 기운은 불길하므로 피한다.",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/3",
+        "initial_world_public_fact": false,
+        "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:SELF:004"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "조건부 신규 습득 규칙",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/event_learning",
+        "occurred": false,
+        "unlock": [
+          "해당 원문의 실제 관측·수신 조건",
+          "출처와 청중별 공개 허락"
+        ],
+        "memory_scope": "실제 개인별 획득",
+        "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:EVENT:001"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/0",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:001"
+    },
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/1",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:002"
+    },
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/2",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:003"
+    },
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/known_fixed/3",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:004"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/unknown/0",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:005"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/unknown/1",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/status",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:007"
+    },
+    {
+      "category": "조건부 신규 습득 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/current_approved_inventory/event_learning",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/new_scene_rule",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/specific_connection",
+      "authoring_item_key": "USER-FOREST-FAIRY-20261018-SERDIN:BOUNDARY:010"
+    }
+  ],
+  "source_material": {
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/763/outline/knowledge"
+      },
+      "verbatim": {
+        "current_approved_inventory": {
+          "known_fixed": [
+            "자신이 오베론의 보호를 받았던 경험",
+            "에코의 타락한 기운을 감지하면 피해야 한다는 경계",
+            "에코와 과거에 거래한 적이 있다.",
+            "현재 에코의 기운은 불길하므로 피한다."
+          ],
+          "suspected": [],
+          "private": [],
+          "unknown": [
+            "오베론의 실종에 관한 정보",
+            "에코의 배신·흡수 및 복수 동기"
+          ],
+          "status": "개별 승인 제안 범위만; 정사 전체 지식 자동 부여 금지",
+          "event_learning": "실제 청취·관찰·정식 공개 후 갱신"
+        },
+        "new_scene_rule": "목격·추정·전언·희망을 구별하고 실제 대화 청중만 새 사실을 얻는다. NPC가 플레이어 행동을 안다면 관찰/보고 근거를 함께 기록.",
+        "specific_connection": "에코와 과거 거래 경험. 현재 기운이 불길하다는 경계만 있고 오베론 실종 정보 없음."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": null,
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [
+    "원본 profile 부재; 현행 지식 문단으로 범위 보존",
+    "별도 scope knowledge_events 없음; 사건을 발명하지 않음"
+  ],
+  "knowledge_route_index": []
+}

@@ -151,6 +151,22 @@ public final class RumorRecordingStateTest {
         var data = new RumorSavedData(); var ledger = ledger(data); ledger.bindCourier(PLAYER, BIRD); data.recordingEnabled(true);
         UUID root = observe(ledger); ledger.publish(root, "순서와 무관한 원본", ""); deliver(ledger, root, H); deliver(ledger, root, G);
         var state = metadata(data); var s = data.snapshot();
+        var legacyTag = data.save(new CompoundTag(), null);
+        var legacyJson = com.google.gson.JsonParser.parseString(legacyTag.getString("state")).getAsJsonObject();
+        legacyJson.getAsJsonArray("evidence").forEach(e -> e.getAsJsonObject().remove("memoryMode"));
+        legacyTag.putString("state", JSON.toJson(legacyJson));
+        var legacyReload = RumorSavedData.load(legacyTag, null);
+        check(legacyReload.recordingSnapshot().isPresent()
+                        && legacyReload.recordingSnapshot().orElseThrow().metadata().stateHash().equals(state.stateHash())
+                        && legacyReload.snapshot().evidence().stream().allMatch(e -> e.memoryMode().equals("RUMOR_TEST")),
+                "pre-gameplay serialized roots retain TEST provenance and their existing durable metadata binding");
+        var changed = s.evidence().stream().map(e -> new RumorLedger.Evidence(e.id(), e.subject(), e.observer(),
+                e.epoch(), e.excerpt(), e.receivers(), e.disclosureAudience(), e.proof(), "PERSONAL")).toList();
+        var changedScope = new RumorLedger.Snapshot(s.version(), s.worldId(), s.couriers(), changed, s.claims(), s.pending(), s.receipts());
+        check(!RumorRecordingState.fingerprint(s).equals(RumorRecordingState.fingerprint(changedScope)),
+                "PERSONAL source birth changes the durable authority binding");
+        rejects(() -> new RumorRecordingState.DurableView(state, changedScope),
+                "changing test sources into gameplay invalidates existing durable metadata");
         var reordered = new RumorLedger.Snapshot(1, s.worldId(), s.couriers().reversed(), s.evidence().reversed(),
                 s.claims().reversed(), s.pending().reversed(), s.receipts().reversed());
         check(RumorRecordingState.fingerprint(s).equals(RumorRecordingState.fingerprint(reordered)), "canonical binding ignores set/list order and supported v1/v2 wrapper");

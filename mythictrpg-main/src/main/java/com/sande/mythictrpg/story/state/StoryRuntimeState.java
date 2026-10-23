@@ -367,7 +367,9 @@ public final class StoryRuntimeState extends SavedData implements StoryStateView
                     if (event.deterministicRoll().isPresent()) value.putLong("roll", event.deterministicRoll().getAsLong());
                     value.putLong("triggeredAt", event.triggeredAtGameTime());
                     if (event.decidedAtGameTime().isPresent()) value.putLong("decidedAt", event.decidedAtGameTime().getAsLong());
-                    value.put("effects", ids(event.appliedEffectIds())); value.putInt("sequence", event.sequence()); list.add(value); });
+                    value.put("effects", ids(event.appliedEffectIds())); value.putInt("sequence", event.sequence());
+                    if (!event.reservedResources().isEmpty()) value.put("reservedResources", ids(event.reservedResources()));
+                    list.add(value); });
         return list;
     }
 
@@ -465,7 +467,8 @@ public final class StoryRuntimeState extends SavedData implements StoryStateView
                             ? OptionalLong.of(value.getLong("roll")) : OptionalLong.empty(),
                     nonNegative(value.getLong("triggeredAt"), "events.triggeredAt"), value.contains("decidedAt", Tag.TAG_ANY_NUMERIC)
                             ? OptionalLong.of(nonNegative(value.getLong("decidedAt"), "events.decidedAt")) : OptionalLong.empty(),
-                    readIds(value, "effects"), positive(value.getInt("sequence"), "events.sequence"));
+                    readIds(value, "effects"), positive(value.getInt("sequence"), "events.sequence"),
+                    readReservedResources(value));
             if (state.eventInstances.putIfAbsent(instanceId, event) != null) throw duplicate("event", instanceId); }
     }
 
@@ -578,6 +581,13 @@ public final class StoryRuntimeState extends SavedData implements StoryStateView
         for (int index = 0; index < list.size(); index++) {
             ResourceLocation value = id(list.getString(index), field); if (!result.add(value)) throw duplicate(field, value); }
         return Set.copyOf(result);
+    }
+    private static Set<ResourceLocation> readReservedResources(CompoundTag tag) {
+        Tag raw = tag.get("reservedResources");
+        if (raw == null) return Set.of();
+        if (!(raw instanceof ListTag list) || list.size() > 17 || !list.isEmpty() && list.getElementType() != Tag.TAG_STRING)
+            throw new IllegalArgumentException("Invalid Story resource reservations");
+        return readIds(tag, "reservedResources");
     }
     private static Optional<ResourceLocation> optionalId(CompoundTag tag, String field) {
         return tag.contains(field, Tag.TAG_STRING) ? Optional.of(id(tag.getString(field), field)) : Optional.empty();

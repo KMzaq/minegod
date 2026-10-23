@@ -1,0 +1,139 @@
+{
+  "content_id": "H03",
+  "definition_id": "mythictrpg:miyamoto_musashi_clearing_blade",
+  "quest_id": "mythictrpg:musashi_blade_transfer",
+  "kind": "SIDE 양도 훈련",
+  "provider_record_key": "USER-SELECTED-HUMAN-007",
+  "status": "ACQUISITION_AUTHORING_COMPLETE_RUNTIME_UNVERIFIED",
+  "runtime_ready": false,
+  "common_contract": "공통실행계약.json",
+  "main_boundary": "빈터를 바꾸는 걸음 완료와 기존 지도/손질 정산 후 별도 제안을 명시 수락. 본 경로 거절이 MAIN완료·기존 보상을 취소하지 않음. MAIN실습 자체를 learn_skill/새검으로 바꾸지 않음.",
+  "eligibility": "그 MAIN의 유일한 소유자 본인만. H03/H04의 이미 발생한 동일 최초권리가 있으면 새권리0, 기존 미수령 복구만. 인간경로는 수락/수행/수강 때 비레이드 신가호 보유를 검사하며 레이드직접·실제 초기여신 예외만 허용, LEGACY_UNSPECIFIED는 출처확인 대기. 이미 배운 기술 사용을 재수강검사로 막지 않음.",
+  "prerequisites": [
+    "mythictrpg:p11_user_selected_human_007_main:SETTLED",
+    "현재 같은 무사시의 자발적 지도/양도 동의",
+    "기존 최초권리 조회",
+    "실제 안전빈터 사용 허락"
+  ],
+  "site": "무사시 MAIN의 같은 기존 빈터. 새 건물0. O휴식점, 6×6 실습영역, 폭3 통행로를 비움.",
+  "stages": [
+    {
+      "id": "mythictrpg:musashi_blade_transfer_s1",
+      "action": "보관함에서 NPC가 검1자루를 실제 꺼내 양도 예정 serial과 1561내구를 확인. 플레이어는 O에서 실습영역까지6블록 이동하고 훈련대여 동의.",
+      "evidence": "양도예약+대여serial+실제도착",
+      "time": "제한없음"
+    },
+    {
+      "id": "mythictrpg:musashi_blade_transfer_s2",
+      "action": "무사시가 나무연습도구로 3번 예고 근접시연. 회당20tick 예고 뒤 공격, 수강자는 H03과 동일2tick 선딜/4tick 창을 사용하여 정면1회·왼쪽40도1회·오른쪽40도1회 성공. 세 공격 원점은3블록, 50도밖 공격은1회 추가 시연하여 막지 못함을 확인. 피해0 훈련 전용이며 능력 해금 전 실전사용 불가.",
+      "evidence": "3회 적격 패링+1회 부적격 결과+정지 신호 준수",
+      "time": "회차간160tick 쿨 유지, 승인시20마나 차감·실패환급0, 부족시기다려회복. 실패회차만 재시도; 총 제한없음"
+    },
+    {
+      "id": "mythictrpg:musashi_blade_transfer_s3",
+      "action": "훈련도구를 대여원장에 회수한 뒤 같은 검serial1을 양도 인수창으로 보낸다. 소유자가 수령 확정하면 소유권 변경·재고0.",
+      "evidence": "단일serial 인수 영수증",
+      "time": "예상 전체12~18분"
+    }
+  ],
+  "reward": {
+    "definition_id": "mythictrpg:miyamoto_musashi_clearing_blade",
+    "quantity": 1,
+    "recipient": "유일 MAIN소유자인 별도경로 실제 수강자",
+    "first_right_key": "player_uuid + mythictrpg:miyamoto_musashi_clearing_blade + first_acquisition",
+    "repeat": 0,
+    "prior_right_count_increment": 0,
+    "new_definition": false,
+    "note": "기존 미완 콘텐츠 최초획득 연결1건. 이 개정 때문에 추가 권리/동일검/중복 K를 생성하지 않음. 실제 완료 전 보유/지급 증거는 없음."
+  },
+  "recovery": "기획/버전개정은 새권리 아님. 재고예약과 보유/인벤/영수증을 대조하여 누락라인만 인도. 인벤부족·중간장애는 미수령; 정상수령 후 검분실/파괴/소모는 자동복구0. learned_skill은 같은 ID 보유가 확인되면 지급완료로 조정하되 K 추가0.",
+  "abort_death_disconnect": "첫수락 소유권은 유지, 실습 완성회차만 보존. 현재 동작은 취소하고 NPC 대여품만 serial 대조 후 반환. 비용/쿨·재료소비 보존. 현장 허락/인간루트 재검사 후 미완료 재개.",
+  "latecomer": "공개 시연은 실제 시야에서 관찰가능하나 유일 지도권/양도권·보유·사적기억 복제0. 후발 비소유자에게 같은 MAIN독점 보상 대체루트 생성0.",
+  "knowledge": "훈련 성공·양도/습득 사실은 실제 수강자와 관측한 무사시만 기본 개인기억. 공개시연 관객은 본 동작만 알고 장비권리/개인 MAIN결말을 자동으로 알지 않음.",
+  "engine_binding": "현재 카드 콘텐츠ID와 수치를 유지하는 연결 기획. learn_skill/무기 변형/마나쿨 기반 외 신규 판정·VFX/입력스냅샷은 별도 구현 필요. design_skill_visual_execution의 패링/대쉬 실행 설계와 아래 개별 시간·범위로 결속, prototype 값을 덮어쓰지 않음.",
+  "cost_and_stock": {
+    "cost": "재화0·재료0. 무사시가 자기 소유 빈터의 검1자루를 후속 양도하기로 명시 합의한 사건. 제작자라고 새로 단정하지 않음.",
+    "provider_owned_stock": 1,
+    "stock_origin": "이번 소규모 저술에서 무사시 개인 여행 장비함에 보관한 교환용 검1자루로 채택. 기존 MAIN 도구와 다른 serial, 소유권·현존·미양도 상태를 배치시 확인.",
+    "reserve": "별도 SIDE수락 때 유일 serial 예약. 서버공유1, 해당 소유자1, 재보충0. 재고가 실제 없으면 훈련가능/양도대기, 복제 지급0.",
+    "durability": 1561,
+    "initial_durability": 1561,
+    "loan": "시연용으로 대여하면 파손/소모가 성장보상에 섞이지 않도록 대여세션은 공격/내구소모 없는 훈련판정. 실전 대여 사용 불가. 대여원장은 RESERVED→LOANED→RETURNED→TRANSFERRED 단일 serial 상태 전이로 저장한다. 반납은 동일 실물을 플레이어/현장/에스크로에서 제거 또는 회수한 증거 후에만 확정한다. 반환과 양도 commit은 재실행해도 하나의 serial만 남기며, TRANSFERRED 뒤 지연 도착한 대여회수 작업은 새 지급·새 내구 복구 없이 무효화한다. 양도 때 훈련전용 플래그만 해제하고 동일 최초권리와 내구1561을 보존한다."
+  },
+  "fixed_numeric_contract": {
+    "attack_total": 7,
+    "weapon_contribution": 6,
+    "attack_speed": 1.6,
+    "E": 10,
+    "skill_score": 20,
+    "quality": "희귀",
+    "durability": 1561,
+    "skill_id": "mythictrpg:miyamoto_musashi_single_parry",
+    "mana": 20,
+    "cooldown_ticks": 160,
+    "startup_ticks": [
+      0,
+      2
+    ],
+    "active_ticks": [
+      2,
+      6
+    ],
+    "recovery_ticks": [
+      6,
+      14
+    ],
+    "angle_degrees_total": 100,
+    "source_range_blocks": 4,
+    "eligible_hits": 1,
+    "counter_damage": 0,
+    "stun": 0,
+    "KJ_learn": false
+  },
+  "visual_execution": {
+    "assets": [
+      "길이1.1블록 검 모델 및 손목 방어 애니메이션",
+      "100도 호형 얇은 방어선 메시/단색 텍스처",
+      "검날 접점 불꽃 스프라이트",
+      "짧은 준비/금속 충돌/헛시도 음향"
+    ],
+    "prepare": "t0~2 손잡이를 가슴앞으로 당기고 칼끝을0.3블록 올림. 희미한 흰색 선 폭0.03, 검날길이1.1. 준비음은8블록내 볼륨0.25, 아직 성공색 없음.",
+    "active": "t2~6 칼날 주변0.15블록 은빛 잔상만 기본 표시한다. 현재 시선100도·반지름4의 발밑 y+0.05 호선(높이0.03/두께0.02)은 시전자 개인이 선택한 원점검사 가이드로만 표시하며 기본 아군관측에는 숨긴다. 고체 뒤 부분은 잘라낸다. 이 가이드는 광역방패나 아군 보호영역이 아니며 투사체 발사0. 시각 충돌 시 최종 H03 연출 시트의 최종표시결정을 따른다.",
+    "hit": "첫 적격 근접피해가0으로 판정된 tick에만 실제 칼 접점 반경0.18 불꽃6개, 최대높이0.35/지속3tick. 금속음 volume0.55 pitch1.35 12블록. 본인 HUD 한 번 “막음”, 자동반격/적 경직 모션0. 기존무적이 이미 취소한 피해에는 성공연출0.",
+    "miss": "t6까지 적격피해없음이면 흰선이2tick에 흐려지고 마른 스침음0.2만. 부적격 공격에는 정상피격 피드백, 방어성공 불꽃0.",
+    "dissolve": "t6~14 칼을 기본위치로 복귀, 잔광은t10까지 투명도0, 입력잠금은t14 종료. 성공 조기발생해도 후딜 종료14 유지. 사망/로그아웃/주손교체는 즉시 메시제거, 쿨/잠금 원시각 보존.",
+    "geometry": "서버는 현재 시선 수평 총각100도·피해원점4블록 이하·고체가림없음 검사. 높이는 신규 구형방패 판정 아님: 실제 본인 피해사건의 원점을 검사. 수평벡터0/원점미상은 부적격. 투사체/도트/장판/환경/처형 제외. 다부위보스도 같은 tick 첫 적격1건만; 보스명시허용 목록 외 거절.",
+    "visual_tests": [
+      "50도 경계와4블록 경계에 동시 시각가이드/서버판정 비교",
+      "동시2타에 불꽃1회만, 후속피해정상",
+      "벽넘어·뒤쪽·상공원점불명·아군공격에서 성공광0",
+      "작은 네모 투사체나 불투명 입자구름 사용0",
+      "prototype 패링의 다른 각도/쿨을 H03에 복사하지 않음"
+    ]
+  },
+  "balance": "기존 7×1.6=명목11.2 DPS 유지. 내장20점은 신규희귀 참고18점을 초과하지만 기존 확정 보존 예외이며 하향/추가권리0. 20/8=2.5마나초로 기본회복2보다 높고 1회방어·4tick창 제한. 정적 계산, 실플레이 미실행.",
+  "tests": [
+    "동시 2명 수락 시 정확히 1명 소유",
+    "질문만 하고 떠나면 수락0",
+    "팀원이 목표를 대신 하면 소유자 완료0",
+    "사망/로그아웃 후 소유·소비·선택 보존",
+    "인벤 꽉 참과 중간 지급 실패에서 누락라인만 복구",
+    "후발자에게 개인 기억과 최초보상 복제0",
+    "봉인/본체 부재에서 분신대사0",
+    "제3자 소유 부지·상자 허락 없으면 실행0",
+    "성공 전 완료형 대사0",
+    "원문 정체·전투등급·소속·생사 변경0",
+    "50도 경계와4블록 경계에 동시 시각가이드/서버판정 비교",
+    "동시2타에 불꽃1회만, 후속피해정상",
+    "벽넘어·뒤쪽·상공원점불명·아군공격에서 성공광0",
+    "작은 네모 투사체나 불투명 입자구름 사용0",
+    "prototype 패링의 다른 각도/쿨을 H03에 복사하지 않음",
+    "MAIN정산만으로 H03/H04 지급0",
+    "H03와H04 첫권리 각각1, 같은ID개정으로2번째권리0",
+    "인간경로 출처모름은 새수강만대기, 일반대화 허용",
+    "H03/H04 공통시전잠금으로 같은tick 패링/이동 중복승인0",
+    "개인 가이드 OFF/ON, 아군 시점, 고체 차폐에서 100도/4블록 원점판정과 표시 분리 확인",
+    "대여 반환 직후 장애 및 양도 후 지연 반환 작업에서 동일 검 serial1·최초권리1 유지"
+  ],
+  "site_definition_id": "mythictrpg:p11_user_selected_human_007_main_site"
+}

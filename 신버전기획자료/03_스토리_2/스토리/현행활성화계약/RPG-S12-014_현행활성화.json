@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S12-014",
+  "name": "타흐미네",
+  "definition_id": "ACTIVATION-RPG-S12-014",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 공개 생활권 운반 경로 출발 A→인도점/경로확인 B→A 실제 왕복1회. 새 물품납부·혈통표식·NPC 선행응답 없음.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "현재 방문 경로의 공개 출입점에서 접촉 예정 안전점까지 실제 이동해 도달. 세계해금 왕복의 반복 요구0, NPC의 선행 확인0.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-045/RPG-S12-014.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "현재 마스터의 명부·정체·전투등급·미정 소속·접근 분류를 그대로 보존한다. / 이야기상 옛 죽음·귀환·기적을 현재의 새 사망·부활·능력 효과로 자동 확정하지 않는다. / 자료의 종교·문학 배경을 사용한 게임 창작이다. 현실의 신앙 전체를 대신 설명하거나 평가하는 발화로 쓰지 않는다. / 사소한 행동은 기존 공간·도구로 표현한다. 새 차원·필수 건축·퀘스트·보상·실행 JSON을 요구하지 않는다. / 축복과 가호를 구별하며 소개나 도움을 자동 가호·정치 가입·MAIN 수락으로 바꾸지 않는다. / 실제 Story 서버 시험은 하지 않았다. 조건 지원과 런타임 연결·실행 성공은 다른 상태다. / 현재 접근 원본: 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. / 자기 과거 회상 경계: 소흐랍의 어머니라는 자기 관계를 기억한다. 루스탐에게 보낸 현재 증거의 도착 여부는 아직 모른다. 제외된 마야·잉카 인물을 현재 배우로 되살리지 않는다. 현재 정체·등급·신격·미정 소속과 봉인·실제 세계/네더/엔드 접근은 결속 원문 그대로다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-045/RPG-S12-014.json",
+      "record_key": "RPG-S12-014",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "0a162e6ea3b4e0106b406c1d99a077348228c0c2204e3fa6675e307831da6b35"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-045/06_RPG-S12-014_타흐미네_완결기획.json",
+      "record_key": "RPG-S12-014",
+      "pointers": [
+        "/world_unlock_and_encounter"
+      ],
+      "sha256": "5b694109d4c7efcea85a28a5b5d143b00f22ab56ddea655a43c5fffad0e5996e"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

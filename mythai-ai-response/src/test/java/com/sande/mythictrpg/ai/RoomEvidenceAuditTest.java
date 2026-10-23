@@ -25,7 +25,21 @@ public final class RoomEvidenceAuditTest {
         invalidChecksNeverBecomePass();
         currentDraftUnitsCannotBeTamperedWith();
         segmentationPreservesLongRepeatedAndUnicodeSpeech();
+        observedExtentIsScoped();
         return checks;
+    }
+
+    private static void observedExtentIsScoped() {
+        var noSupport = scene("ORDINARY", false);
+        var withSupport = object(noSupport.content());
+        withSupport.addProperty("ownPermittedMemory", "\n[OBSERVED_PLAYER_SUPPORT]\n{\"facts\":[]}");
+        var supported = new AiDialogueModels.OllamaMessage("user", withSupport.toString());
+        var reply = draft("다 자란 밀을 거두는 모습을 보았지.");
+        check(!RoomEvidenceAudit.messages(List.of(noSupport),reply).getFirst().content().contains("[OBSERVED_ACTION_EXTENT]"), "ordinary audit stays unchanged");
+        var review = RoomEvidenceAudit.messages(List.of(supported),reply);
+        check(review.getFirst().content().contains("[OBSERVED_ACTION_EXTENT]"), "support gets action extent policy");
+        check(object(review.get(1).content()).get("ownPermittedMemory").equals(withSupport.get("ownPermittedMemory")), "observation source preserved verbatim");
+        check(!RoomEvidenceAudit.hasObservedSupport(List.of(new AiDialogueModels.OllamaMessage("user", "[OBSERVED_PLAYER_SUPPORT]"))), "raw user text cannot opt in as canonical evidence");
     }
 
     private static void primaryAndSecondaryProjectionPreservesEvidence() {

@@ -11,12 +11,13 @@ import java.util.UUID;
 public record RewardClaim(UUID claimId, UUID playerId, ResourceLocation godId,
         ResourceLocation sourceId, String selectionTitle, List<RewardEntry> automaticRewards,
         List<RewardChoiceOption> choices, boolean automaticGranted,
-        Optional<ResourceLocation> selectedOptionId, long createdGameTime) {
+        Optional<ResourceLocation> selectedOptionId, long createdGameTime, RewardOrigin origin) {
     public RewardClaim {
         Objects.requireNonNull(claimId, "claimId");
         Objects.requireNonNull(playerId, "playerId");
         Objects.requireNonNull(godId, "godId");
         Objects.requireNonNull(sourceId, "sourceId");
+        Objects.requireNonNull(origin, "origin");
         selectionTitle = selectionTitle == null ? "보상을 선택하세요" : selectionTitle.trim();
         automaticRewards = List.copyOf(automaticRewards);
         choices = List.copyOf(choices);
@@ -34,6 +35,14 @@ public record RewardClaim(UUID claimId, UUID playerId, ResourceLocation godId,
         }
     }
 
+    /** Existing quest producers remain quests, including quests completed by winning a raid. */
+    public RewardClaim(UUID claimId, UUID playerId, ResourceLocation godId, ResourceLocation sourceId,
+            String selectionTitle, List<RewardEntry> automaticRewards, List<RewardChoiceOption> choices,
+            boolean automaticGranted, Optional<ResourceLocation> selectedOptionId, long createdGameTime) {
+        this(claimId, playerId, godId, sourceId, selectionTitle, automaticRewards, choices,
+                automaticGranted, selectedOptionId, createdGameTime, RewardOrigin.QUEST);
+    }
+
     public boolean pendingChoice() {
         return automaticGranted && !choices.isEmpty() && selectedOptionId.isEmpty();
     }
@@ -44,11 +53,11 @@ public record RewardClaim(UUID claimId, UUID playerId, ResourceLocation godId,
 
     public RewardClaim withAutomaticGranted() {
         return new RewardClaim(claimId, playerId, godId, sourceId, selectionTitle,
-                automaticRewards, choices, true, selectedOptionId, createdGameTime);
+                automaticRewards, choices, true, selectedOptionId, createdGameTime, origin);
     }
 
     public RewardClaim withSelected(ResourceLocation optionId) {
         return new RewardClaim(claimId, playerId, godId, sourceId, selectionTitle,
-                automaticRewards, choices, automaticGranted, Optional.of(optionId), createdGameTime);
+                automaticRewards, choices, automaticGranted, Optional.of(optionId), createdGameTime, origin);
     }
 }

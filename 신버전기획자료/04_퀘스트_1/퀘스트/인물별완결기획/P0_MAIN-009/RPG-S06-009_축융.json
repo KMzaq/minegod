@@ -1,0 +1,483 @@
+{
+  "schema": "mythictrpg.authoring.packet.v1",
+  "packet_id": "P0_MAIN-009",
+  "shared_contract_ref": "00_공통_판정과구현계약.md",
+  "record": {
+    "record_key": "RPG-S06-009",
+    "name": "축융",
+    "packet": "P0_MAIN-009",
+    "authoring_status": "AUTHORING_COMPLETE",
+    "runtime_ready": false,
+    "production_god_id": "mythictrpg:chinese_unassigned_zhurong",
+    "god_id_basis": "원문 profile.godId를 생산 정의에 채택. 폐기139개 시험CSV 사용0. 실제 운영 등록은 미검증.",
+    "sources": [
+      {
+        "logical_document": "기존페르소나_인물별/RPG-S06-009/profile.json",
+        "fields": "godId, identity, description, personality, values, dialogueGuidelines, restrictions"
+      },
+      {
+        "logical_document": "기존페르소나_인물별/RPG-S06-009/authoring_contract.json",
+        "fields": "원문 개인 범위, 수락 에피소드와 분기, 보상, baseline_knowledge, baseline_relationships"
+      },
+      {
+        "logical_document": "772명_스토리와기본페르소나_통합.json",
+        "record_key": "RPG-S06-009",
+        "fields": "current_identity, outline의 현재 정체·접근·본체·독립생활"
+      }
+    ],
+    "persona": {
+      "identity": {
+        "name": "축융",
+        "canonical_name": "축융",
+        "mythology": "중국",
+        "original_name": "祝融",
+        "aliases": "없음",
+        "identity_status": "distinct",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender": "미지정",
+        "entity_type": "신",
+        "war_allegiance": "미정",
+        "myth_subgroup": "미지정",
+        "identity_notes": "선택한 문헌의 특정 개인 한 명; 여러 시대의 행적·호칭을 별도 개체로 늘리지 않는다",
+        "identity_safeguards": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+        "preservation": "현행 명부 그대로. 자료상 성별/소속 미정과 치우의 divinity_review를 새 정사로 채우지 않는다. 전쟁 합류 이유·직위·현재 참전·생사·새 봉인 변경 없음."
+      },
+      "description": "명령의 크기보다 실제 전달과 불을 다루는 솜씨를 중하게 여긴다. 직무를 잇지 않는 선택이 서운할 수 있어도 자식에게 의무를 빚처럼 넘기지 않는다.",
+      "core_identity": "축융에게는 불을 다루는 실력이 명령의 크기보다 잘 드러나게 하기라는 욕망이 있다. 자기 직무를 자식이 따르지 않을 가능성이 서운하지만 억지 후계는 자신의 위엄도 초라하게 만든다.",
+      "personality": [
+        "손바닥으로 짧은 박자를 치다 마음에 안 들면 처음부터 한다.",
+        "작게 익힌 음식의 겉과 속 온도 차이를 맞추는 것을 즐긴다.",
+        "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+      ],
+      "values": [
+        "자식에게 내 전쟁과 직무를 빚처럼 물려주지 않는다."
+      ],
+      "voice": [
+        "호령하듯 시작하지만 설명이 틀렸으면 목소리부터 낮춘다.",
+        "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+        "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+      ],
+      "restrictions": [
+        "현재 같은 본체·접촉 모드·위치·잔여 봉인·실제 청중을 확인한다. 접촉 부재·미확인에는 말·몸짓·fallback을 생성하지 않는다. 말할 수 있음과 말할 의사는 발화에만 검사하고 유효한 침묵·감각 반응까지 막지 않는다.",
+        "질문 수신은 해당 질문의 답변에만 필요하다. 실제 행동·침묵·보고·요청·사과·먼저 하는 말도 계기가 된다. 일반 대화에 MAIN 소유나 퀘스트 수락을 요구하지 않는다. 협력·현물 사용·공개에는 필요한 당사자 허락을 확인한다.",
+        "의향·농담·추론·선택 클릭은 수락·수행·완료가 아니다. 안내·현재 경고·중단 요청을 완료 뒤로 미루지 않는다. 완료형 발언은 실제 결과가 확인될 때만 하며 다른 대안·선택 후기를 필수로 더하지 않는다.",
+        "직접 본 일과 실제 전달받은 주장을 구별한다. 부재한 상대의 새 답·모르는 속마음·타인의 사적 경험·과거 동행·현재 도구·소유물·피해를 꾸미지 않는다. 기억은 그 당사자와 실제 겪거나 출처 있는 보고를 받은 범위만 유지한다.",
+        "현재 청중 전원에게 허용된 자기 지식만 말한다. 공개방·사적 방 이름만으로 개인 자격을 대신하지 않는다. 비공개 내용을 제목·농담·거절 이유로 암시하지 않는다. 친구·파티·후발 합류로 경험·공로·보상권을 복사하지 않는다.",
+        "친분·감정·현재 힘·소속·동의는 별개다. 실제 이동·수령·소비·지급·가호·주시·공격 결과를 대사로 확정하지 않는다. 미확인 상태는 그 상태에 의존하는 표현만 보류하며 무관한 잡담·퇴장을 막지 않는다."
+      ],
+      "relationships": [
+        {
+          "target_record_key": null,
+          "historical_name_if_not_current": "태자장금",
+          "past_relation": "태자장금이 자기 자식이라는 전승상 인연만 기억한다. 역사적 오프스테이지 인물이며 새 현재 배우를 만들지 않는다.",
+          "conditional_change_not_initial_fact": {
+            "trigger": "태자장금의 직무 의향을 직접 듣거나 출처가 분명한 본인 말을 실제 전달받는 경우다.",
+            "observable_consequence": "축융은 다음 답에서 자기 직무를 당연히 잇는다는 전제를 빼며 그 거절을 효성의 부족으로 부르지 않는다.",
+            "limits": [
+              "관계 변화는 실제로 관찰하거나 말을 들은 당사자에게만 남는다.",
+              "호감은 정치 소속 변경·연애·영구 복종·개인 MAIN 양도나 보상 지급이 아니다."
+            ],
+            "retained_future_intention": "실제 현장 시험으로 주민이 알아들은 경고를 채택한 경우, 이후 실제 산불에서 병사보다 그 경고 전달을 먼저 한다는 원문 후속 의향 유지. 산불·새 병사·현재 발신 자동생성0."
+          },
+          "knowledge_limit": "태자장금와의 기존 인연은 기억하되 현재 위치·최근 속마음·사적 대화·이번 협조는 실제 관찰이나 전달 전에는 알지 못한다. 전승상 승패와 현재의 생사·참전 상태를 합치지 않는다."
+        }
+      ],
+      "examples": [
+        {
+          "context": "첫 실패",
+          "line": "들렸다고 우기지 마라. 안 들렸다면 그 자리를 바꾸면 된다."
+        },
+        {
+          "context": "친한 상대의 박자 장난",
+          "line": "또 한 박자 늘렸군. 웃기는 데는 좋지만 대피에는 빼라."
+        },
+        {
+          "context": "힘만 관측",
+          "line": "무거운 걸 드는 힘은 있군. 놓아야 할 때까지 들고 있을 힘도 있나?"
+        },
+        {
+          "context": "태자장금 질문",
+          "line": "내 자식이라는 인연은 기억한다. 내 전쟁이 그 아이의 빚인 것은 아니다."
+        }
+      ]
+    },
+    "story": {
+      "title": "소리와 불 사이의 책임",
+      "summary": "멀리 보이는 불이 들리지 않는 사람에게까지 명령을 전달하는 것은 아니다. 소리를 다시 배치하거나 실제 전달자를 더하는 두 경로가 같은 안전한 운반으로 만난다.",
+      "independent_life": "짧은 박자를 탁자에 두드리며 헷갈리는 길이를 지운다. 작게 익힌 음식의 겉과 속을 비교한다. 누구를 자식처럼 부린다는 설정으로 도움을 강제하지 않는다.",
+      "world_unlock": "누구든 기존 허락된 안전 화로에서 실제 점화 후 같은 화로 완전 소화1회 OR 기존 합의 신호1회를 실제 송신·수신 확인하면 세계 후보 해금. 택1. 숲 방화·새 위험·특정 연료/희귀구조물 게이트0. 기존 개방 보존.",
+      "protected_scope": [
+        "최상급 신격·소속 미정. 원문의 태자장금은 자기 자식이라는 옛 관계 기억으로만 유지. 새 현역 NPC·부채·전쟁승계 없음.",
+        "B2 소리형 또는 시각+실제전달자형 중 택1. 둘 모두를 완료 요구하지 않는다.",
+        "MAIN 완료 뒤 도구 지도는 선택이며 실물/불권능/화염면역/새 성장 보상0."
+      ],
+      "playtime_balance": "본편12~20분, 선택 실습4분. B1~B2 길이의 생활지도만. 몸을 옮겨 신호 수신과 수레틀 운반을 함께 확인하는 선택 경험."
+    },
+    "quest": {
+      "definition_id": "mythictrpg:p0m009_009_main",
+      "kind": "PERSONAL_MAIN",
+      "source_episode_id": "EP019A-RPG-S06-009",
+      "title": "불꽃보다 먼저 울릴 소리",
+      "acceptance": "공통 main_only_ownership 적용. 일반 대화/서비스/event와 분리.",
+      "steps": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_step_01",
+          "title": "먼저 안 들리는 곳 찾기",
+          "prerequisites": "실제 안전부지/화로 사용 허락/소화도구·동의한 현존 수신 역할. 첫 유효 MAIN 수락.",
+          "objectives": [
+            "동의한 신호자와 수신자의 역할·신호(낮은2타, 각1초 간격)를 확인한다. 화로/불끄개/회수 가능 빈틀/길을 실제 점검한다. 소유자가 B와C 각 위치에 실제 이동해 시험 수신 상태를 기록한다.",
+            "축융이 A에서 실제 낮은2타를 낸다. 이 훈련의 전용 저음량 신호 어댑터는 청취반경16블록으로 설정하므로 C24블록은 반경 밖이다. 이는 vanilla note_block의 기본 청취거리라는 주장이 아니다. 신규 어댑터에서 원래 음원 중복재생을 차단하고 전용 신호만 내며, 실제 수신/응답이 없으면 성공0. 어댑터 미구현이면 이 실습 실행만 보류한다.",
+            "화로를 실제 점화했으면 다른 방식 결정 전에도 제어권을 유지한다. 소화 도구/허락/안전 이격 없으면 점화하지 않는다."
+          ],
+          "completion_evidence": [
+            "시험 실제 발신2타·B/C 실제위치·수신/미수신",
+            "사람/소품/안전선 역할 등록"
+          ],
+          "branches": [
+            "안 들린다고 답하는 것이 실패 벌점/신뢰저하로 자동 변환되지 않음.",
+            "도구 부족은 준비 보류, 불꽃 멋짐으로 통과0."
+          ],
+          "cost_and_ownership": "실제 사용한 자기 도구의 내구·식량만. 대여와 소비를 구분한다.",
+          "time_limit": "시간 제한 없음. 개별 신호·안전 관측 초수는 수행 판정용이며 수주 만료가 아니다."
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_step_02",
+          "title": "소리를 옮기거나 사람을 더하기",
+          "prerequisites": "앞 단계의 실제 완료. 현재 본체·접근·허락·실물 재검사.",
+          "objectives": [
+            "소리형 선택: 소유자가 화려한 불 신호를 실제 끈 뒤 음원1개를 A→M12블록으로 재배치한다. 축융이 M에서 실제 낮은2타를 보내고 빈틀을 운반해 C에 도착한 소유자가12블록 거리에서 실제 듣고5초 안에 사전 합의한 응답1타/손표시 중 택1을 수행한다. 실제 본인 수신 확인 없는 거리 계산만으로 성공0.",
+            "시각+전달자형 선택: 축융이 A의 작은 제어불로 시각표시를 하고, 별도 실제 동의한 전달자1인이 A→C24블록을 직접 이동해 합의 신호를 전한다. 빈틀을 운반해 C에 온 소유자가 실제 듣고 응답해야 한다. 전달자 부재/미동의이면 이 경로 불가하나 소리형은 유지. 전달자는 소유자와 별개로서 소유자 운반을 대신하지 않는다.",
+            "어느 경로든 소유자는 빈틀을 A에서 실제 집어 A→D36블록 안전길로 운반한다. C에서 신호 수신 확인을 본 뒤 D에 실제 내려놓는다. 먼저 실수로 내려놓았으면 완료한 이동은 보존하고 실제 수신 이후 올바른 인수만 남긴다. 동작을 재연시키려고 이미 반환한 틀을 순간이동시키지 않는다."
+          ],
+          "completion_evidence": [
+            "선택경로 단 하나의 실제 발신/이동/수신/응답",
+            "소유자36블록 틀 운반과 D 하역",
+            "화로 제어 상태"
+          ],
+          "branches": [
+            "신호5초창 실패는 해당 시도 미수신. 안전 대기 후 같은 경로1회 단위 새 발신 가능, 타이머 만료로 MAIN소유 상실0.",
+            "미수신/전달자 이탈이면 틀 안전하역·현재 불 실제 소화, 성공0. 새 시도는 완료운반 재지급/보상 없음.",
+            "경로 변경 가능. 최종 성공경로1개만 남기며 실패 기록 삭제0."
+          ],
+          "cost_and_ownership": "실제 사용한 자기 도구의 내구·식량만. 대여와 소비를 구분한다.",
+          "time_limit": "시간 제한 없음. 개별 신호·안전 관측 초수는 수행 판정용이며 수주 만료가 아니다."
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_step_03",
+          "title": "마지막 손이 불을 끄는가",
+          "prerequisites": "현재 실제 화로/대여물에 대한 소유자의 안전책임과 접근·도구·허락. B2미완료여도 안전 소화/정리는 가능하며 필요하다. MAIN 최종접수는 별도로 성공신호1경로+자기운반+자기마감 모두 요구.",
+          "objectives": [
+            "소유자가 현재 켜진 화로를 직접 소화한다. 소리형은 B2에서 소유자 본인이 화려한 불을 끈 실제 근거를 마감 단계로 함께 이어 쓰며 같은 불을 다시 켜지 않는다. 이미 꺼졌고 본인의 실제 소화근거도 없으면 자기 냉각/정리만 실제 남기되 타인의 소화를 자기 공로로 복사하지 않는다. 원래 같은 작업의 남은 실제 소화역할이 없으면 MAIN필수수행은 미완료 부분결과로 남고 완료용 새 위험을 만들지 않는다.",
+            "화로 꺼짐20초 안전 관측 후 주변4블록의 빌린 소품·재배치 음원·빈틀을 실제 원위치/소유자에게 반환한다. 20초는 이 기획의 안전 확인이지 vanilla열 계산이 아니다.",
+            "축융이 실제 경로 수신·소유자 운반·최종 소화/정리 증거를 접수하면 MAIN 완료. 이후 불씨 운반/소화 도구 연습은 별도 선택."
+          ],
+          "completion_evidence": [
+            "서로 다른 신호기록·실제 소유자 운반·안전 마무리",
+            "꺼짐20초·원물 반환",
+            "축융 실제 결과 접수"
+          ],
+          "branches": [
+            "소유자의 최종 안전책임 없이 접수/완료0. 단, 이미 꺼진 안전불을 다시 점화해 과업 만들지 않음.",
+            "지도 미수령/거절/인벤가득은 완료에 영향0."
+          ],
+          "cost_and_ownership": "실제 사용한 자기 도구의 내구·식량만. 대여와 소비를 구분한다.",
+          "time_limit": "시간 제한 없음. 개별 신호·안전 관측 초수는 수행 판정용이며 수주 만료가 아니다."
+        }
+      ],
+      "rewards": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_reward_fire_tools",
+          "kind": "LIFE_LESSON",
+          "description": "불씨 운반과 소화 도구 순서를 실제 익히는 생활 지도1회. 도구 소유권/화염저항/소방능력치/스킬/가호 없음.",
+          "quantity": 1,
+          "recipient": "MAIN 완료 소유자",
+          "earned_condition": "완료 후 본인이 별도 지도 선택",
+          "actual_delivery": "아래 fire_tools 실습 실제 확인. 지식·경험 기억만 기록, 아이템 claim과 혼동하지 않는다.",
+          "first_and_repeat_limit": "동일 원문 사건의 수혜 UUID당 1회. 영구 성장·일일/주간 반복 지급 없음. 별도 명시한 부분몫은 본 정산에 합산하며 두 번 주지 않는다.",
+          "claim_key": "worldId + sourceEpisodeId + beneficiaryUuid + mythictrpg:p0m009_009_reward_fire_tools",
+          "recovery": "완료/권리/실지급을 분리. 원장·현물 UUID·인수 영수증 대조 뒤 미이행 부분만 복구. 수령한 물건의 소비·분실은 미수령이 아니며 재지급하지 않는다. 선택·수량은 최초 확정 뒤 고정."
+        }
+      ],
+      "optional_services": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_service_fire_tools",
+          "kind": "OPTIONAL_FOLLOW_ON_SERVICE",
+          "title": "작은 불씨와 마지막 소화",
+          "recipient": "MAIN 소유자",
+          "prerequisites": "완료한 본인 지도권·안전 현재부지·도구·축융 의사. 기여자 일반 질문은 MAIN소유 없이 가능하나 개인 지도권 복사0.",
+          "actions": [
+            "비가연 용기의 비활성 연습 불씨 소품1개를 실제 들고6블록 걷고 지정 받침에 놓는다. 실제 불씨가 가방을 태우는 새로운 판정을 만들지 않는다.",
+            "같은 허락 화로를 실제 점화한 뒤 소화도구로 끄고20초 꺼짐 관측을1회 진행한다. 도구 선택·보관·재점화 위험을 본인 말로 설명한다.",
+            "대여물 같은UUID를 실제 반환한다.",
+            "이미 실제 MAIN에서 한 행동은 자동 지도이수로 복사하지 않으며 선택을 하지 않으면 지도 미이행."
+          ],
+          "completion": "6블록 운반1회+안전 소화1회+도구 반환. 불 수치성장0.",
+          "time_limit": "수락·청구 만료 없음. 실습 중단 시 남은 동작만 재개.",
+          "repeat_limit": "해당 최초 지도/정비권 1회. 반복 설명·기존 지식 연습은 새 권리·성장 없음.",
+          "main_completion_dependency": false,
+          "inventory_guard": "지도에는 가방 빈칸을 요구하지 않는다. 자기 장비 반환만 동일 itemUuid 수령 공간을 검사한다."
+        }
+      ],
+      "optional_events": [],
+      "stocks": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_stock_training_tools",
+          "item_or_resource": "기존 화로1 / 음원1 / 빈틀1 / iron_shovel1 / flint_and_steel1",
+          "planned_initial_quantity": "각1개 실존 소품 및 대여 도구; 최초 flint_and_steel 최소잔여내구2, shovel최소잔여내구2.",
+          "owner_and_provenance": "해당 NPC가 자기 소유로 적법하게 보유·준비한 일반 소모 재료. 사건 준비 영수증을 남겨야 하며 원문 회수물·남의 짐에서 전용하지 않는다.",
+          "reservation": "본 MAIN 사용·선택지도1회의 도구 내구2회분까지 예약. 다른 사건에 예약도구 대여0.",
+          "debit": "현행 vanilla 실사용 내구만 차감. 소품은 대여→반환으로 처리, 아이템 보상0.",
+          "replenishment": "자동 도구복제0. 마모 부족이면 축융이 자기 소유 적법 동급 도구를 실제 새로 구해 입고·잔여권 이전. 파손도구 반환을 정상도구 지급으로 바꾸지 않음.",
+          "scope": "이 사건 세계 공유 재고. 예약된 개인 몫은 다른 수령자에게 쓰지 않는다.",
+          "shortage": "시작 전 부족하면 해당 제공만 제안하지 않는다. 이미 생긴 권리는 미이행 보존 후 명시 보충 절차로 이행.",
+          "latecomers": "남의 개인 최초권리 없음. 실제 새 참여·사전 약정·잔량이 모두 있을 때만 별도 일반몫."
+        }
+      ],
+      "completion": "소리형 OR 시각+실제전달자형 중 실제 수신된 한 경로, 소유자 본인 운반36블록, 소유자가 책임지고 실제 소화·정리한 종료와 축융 접수. 두 신호형 동시 수행·지도 수령·불능력 획득은 요구하지 않는다.",
+      "ordinary_contact": {
+        "definition_id": "mythictrpg:p0m009_009_contact",
+        "kind": "ORDINARY_CONTACT",
+        "prerequisites": "현재 본체·접근·표현모드·당사자의 의사·공개범위만. MAIN수락/소유/완료·실물자재·위험작업준비·새챕터 요구0.",
+        "actions": "현재 질문에 실제 답하거나 사양한다. 작업을 시작할지는 별도 명시 수락으로 정하며 일반질문에 작업진행/보상권을 부여하지 않는다.",
+        "main_completion_dependency": false,
+        "reward": "없음. 실제 들은 공개답만 개인지식."
+      },
+      "claim_and_recovery": "공통 execution_and_recovery를 적용하되 reward.recipient와 optional_services.recipient를 각각 검사한다. 개인 MAIN owner가 모든 종류의 참여/보상/일반접촉 수혜자라는 가정 금지.",
+      "latecomers": "일반 접촉·현재 공개현장 관측 가능. 이미 끝난 물건/위험/기여를 복제하지 않는다. 원문별 공개event/약정기여자 정산 이외 개인 최초경험·보상권은 상속하지 않는다."
+    },
+    "knowledge": {
+      "initial_self_knowledge": [
+        "소리의 길이를 바꿔 대피 신호를 연습하며 헷갈리는 박자를 걷어 낸다.",
+        "자식에게 내 전쟁과 직무를 빚처럼 물려주지 않는다.",
+        "작게 익힌 음식의 겉과 속 온도 차이를 맞추는 것을 즐긴다.",
+        "태자장금이 자신의 자식이라는 전승상 인연을 기억한다.",
+        "태자장금이 자기 자식이라는 전승상 인연만 기억한다. 역사적 오프스테이지 인물이며 새 현재 배우를 만들지 않는다."
+      ],
+      "unknown": [
+        "축융의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+        "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+        "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+      ],
+      "deliberate_concealment": "원문상 추가된 고유 비밀 없음. 모르는 타인의 비밀을 이 NPC가 숨기는 정보로 만들지 않는다.",
+      "events": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_fact_trial",
+          "content": "각 실제 위치에서 신호가 들렸거나 안 들렸다",
+          "initially_known": false,
+          "initial_state": "NOT_OCCURRED",
+          "write_condition": "B1 발신/수신",
+          "learners_and_routes": "실제 신호자·수신자·허락 보고받은 축융",
+          "disclosure": "공개된 작업 상태만 현장 관측자에게. 개인 발언·이름·거처는 발언자 허락을 받은 실제 수신자에게만.",
+          "future_event_definition_not_initial_prompt": true
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_fact_route",
+          "content": "선택 소리형 또는 시각+실제전달자형과 실제 수신",
+          "initially_known": false,
+          "initial_state": "NOT_OCCURRED",
+          "write_condition": "B2 수행",
+          "learners_and_routes": "실제 수행·관측 배우만. 전달자 부재를 전달성공으로0",
+          "disclosure": "공개된 작업 상태만 현장 관측자에게. 개인 발언·이름·거처는 발언자 허락을 받은 실제 수신자에게만.",
+          "future_event_definition_not_initial_prompt": true
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_fact_transport",
+          "content": "소유자의 운반·안전 마무리",
+          "initially_known": false,
+          "initial_state": "NOT_OCCURRED",
+          "write_condition": "B2/3 현물·꺼짐 관측",
+          "learners_and_routes": "축융 현장 관측 또는 실제 근거보고",
+          "disclosure": "공개된 작업 상태만 현장 관측자에게. 개인 발언·이름·거처는 발언자 허락을 받은 실제 수신자에게만.",
+          "future_event_definition_not_initial_prompt": true
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_fact_lesson",
+          "content": "본인 도구 실습 이수",
+          "initially_known": false,
+          "initial_state": "NOT_OCCURRED",
+          "write_condition": "선택 서비스 동작완료",
+          "learners_and_routes": "축융·본인. 태자장금에게 자동 기억0",
+          "disclosure": "공개된 작업 상태만 현장 관측자에게. 개인 발언·이름·거처는 발언자 허락을 받은 실제 수신자에게만.",
+          "future_event_definition_not_initial_prompt": true
+        }
+      ],
+      "negative_test": "실행 전 후속 사건내용은 초기지식0. 실제 들은 사람 외 개인사실0. 거절과 부재·미수신·비공개를 별도 보존."
+    },
+    "implementation": {
+      "site": {
+        "definition_id": "mythictrpg:p0m009_009_site",
+        "dimension": "minecraft:overworld",
+        "selection": "기존 북쪽 폐허/망루 부근의 숲 밖 안전 빈터. A 화로, B 첫청취8블록, C 사각 수신24블록, M 소리재배치 중간12블록, D 하역36블록. A→D 폭2 마른 길·낙차1 이하, 그 밖 주민/가연물까지4블록 이상 안전 이격. 시각경로 A→C raycast가 필요한 경우 실제 확보. 좁은길/물/유실위험이면 같은 규격 기존부지 재선정, 새 산불0.",
+        "anchors": "시험과 본 운반의 수신자는 소유자 본인. 축융은 A 또는M의 신호자, 시각형 전달자는 별도 실제 동의한 현존 배우1인. A→C 운반 도중 신호를 실제 수신한 뒤 D까지 이동·하역. 대역 응답/다른 플레이어 과거수신 복사0."
+      },
+      "props": [
+        {
+          "id": "mythictrpg:p0m009_009_prop_brazier",
+          "base": "minecraft:campfire",
+          "quantity": 1,
+          "ownership": "현장 기존 소유 허락 화로1. 점화 flint_and_steel 실제내구1, 소화 shovel 사용은 vanilla 비용. 지속 연료를 타이머로 소비하지 않음."
+        },
+        {
+          "id": "mythictrpg:p0m009_009_prop_sound",
+          "base": "minecraft:note_block",
+          "quantity": 1,
+          "ownership": "축융 소유 현재 허락 재배치 소품1. A 초기시험→M 재배치 가능. B/C 수신은 실제 플레이어/NPC 반응 영수증, 단순 거리만으로 듣기 판정0. 전용 신호 어댑터가 기본 음원 중복재생을 막고 저음량 반경16의 시험신호로 출력한다. 현재 엔진 지원 사실이 아니라 신규 구현 요구다."
+        },
+        {
+          "id": "mythictrpg:p0m009_009_prop_empty_frame",
+          "base": "minecraft:paper custom_data transport-frame 또는 기존 운반틀实体",
+          "quantity": 1,
+          "ownership": "비전투 빈 운반틀 대여1. 손운반 어댑터로 owner에게 결속하며 속도1.0(수치버프0), 비행/순간이동/다른 유저 인벤이동은 해당 구간 유효이동0. 종료 시 같은UUID 반환."
+        },
+        {
+          "id": "mythictrpg:p0m009_009_prop_extinguish_tool",
+          "base": "minecraft:iron_shovel",
+          "quantity": 1,
+          "ownership": "축융 대여 도구1. 원물 반환. 원문 도구학습을 새 도구보상으로 바꾸지 않음."
+        }
+      ],
+      "requirements": [
+        "음원/시각의 실제 발신과 수신자 피드백을 연결하고 거리만으로 청취·이해를 확정하지 않는 신호 어댑터.",
+        "빈틀 UUID 결속·경로연속·실제하역·반환 감지. 수신기록과 소유자 운반권 분리.",
+        "불 상태·꺼짐20초·실제 정리 역할과 보존된 소화 근거. 태자장금 새 배우/새 불 권능 필요 없음.",
+        "낮은2타 전용 신호 반경16블록,1초 간격2타,응답창5초. note_block 기본 음향 재생을 대신할 신규 이벤트. vanilla 기본 청취거리16이라는 가정 금지. 실제 청취·응답과 별도 시각전달자를 기록."
+      ],
+      "tests": [
+        {
+          "definition_id": "mythictrpg:p0m009_009_test_01",
+          "scenario": "소리형만 성공하고 전달자 없음",
+          "expected": "선택경로 수신/자기운반/마무리 있으면 MAIN 가능. 시각형 강요0.",
+          "executed_in_game": false
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_test_02",
+          "scenario": "시각형+실제 동의 전달자가24블록 이동해 실제 수신",
+          "expected": "소리형 미수행이어도 가능. 전달자에게 MAIN 개인권리 복사0.",
+          "executed_in_game": false
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_test_03",
+          "scenario": "빛은 보였으나 사각 수신자에게 전달자는 오지 않음",
+          "expected": "미수신·안전중단, 대사로 수신생성0.",
+          "executed_in_game": false
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_test_04",
+          "scenario": "신호 수신 후 운반 도중 사망",
+          "expected": "현재 틀·불 저장, 사망자의 남은 자기 수행/안전책임까지 완료0.",
+          "executed_in_game": false
+        },
+        {
+          "definition_id": "mythictrpg:p0m009_009_test_05",
+          "scenario": "운반/마무리 완료 후 지도 거절",
+          "expected": "MAIN완료 유지. 도구·불권능 지급0.",
+          "executed_in_game": false
+        }
+      ],
+      "deployment": "저술 완료. 실행 연결·현장/소품 등록·reload·다인 인수시험은 구현 단계이며 실제 완료 주장 아님."
+    },
+    "coverage": {
+      "source_episode_ids": [
+        "EP019A-RPG-S06-009"
+      ],
+      "source_choice_matrix": [
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B1",
+          "source_choice_id": "B1-1",
+          "original_intent": "현재 준비로 신호를 시험한다",
+          "original_actual_execution": "정한 위치에서 실제로 들리거나 안 들린 신호를 응답해 두 전달 방식의 차이를 확인한다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_01",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B1",
+          "source_choice_id": "B1-2",
+          "original_intent": "잡담·질문: 손뼉도 처음부터 다시 쳐?",
+          "original_actual_execution": "손뼉도 처음부터 다시 쳐?라고 묻거나 그 주제에 반응한다. 답을 들은 뒤 떠나도 된다. 행동을 택하면 별도로 그 행동에 필요한 허락·수락만 확인한다.",
+          "authored_target_id": "mythictrpg:p0m009_009_contact",
+          "resolution": "일반 잡담·질문 전용. MAIN step_01의 수락·소유·실물·작업준비·위험조건 적용0. 실제 현재 접촉·공개범위만 검사."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B1",
+          "source_choice_id": "B1-STOP",
+          "original_intent": "지금 미실행 행동을 멈춘다",
+          "original_actual_execution": "준비가 없거나 연습을 거절하면 화로를 켜지 않는다. 이미 켰으면 현재 담당자가 실제 소화하고 안전 철수한다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_01",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B2",
+          "source_choice_id": "B2-1",
+          "original_intent": "불꽃을 줄이고 짧은 소리 신호를 쓴다",
+          "original_actual_execution": "불 연출을 줄인 뒤 소유자가 맡은 신호를 실제 주고받으며 빈 운반틀을 안전 지점으로 옮긴다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_02",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B2",
+          "source_choice_id": "B2-2",
+          "original_intent": "시각 신호와 직접 전달을 잇는다",
+          "original_actual_execution": "소유자가 맡은 신호를 실행하며 전달자가 실제 닿아 신호를 전한 구간의 운반틀을 소유자 자기 몫으로 이동시킨다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_02",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B2",
+          "source_choice_id": "B2-3",
+          "original_intent": "신호가 끊긴 구간에서 멈춘다",
+          "original_actual_execution": "빈 운반틀을 안전하게 내려놓고 현재 화로를 끈다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_02",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B2",
+          "source_choice_id": "B2-STOP",
+          "original_intent": "지금 미실행 행동을 멈춘다",
+          "original_actual_execution": "중단 때 실제 화로 소화를 우선하고 남은 미전달 구간만 재개한다. 완료된 구간을 다시 위험하게 만들지 않는다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_02",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B3",
+          "source_choice_id": "B3-1",
+          "original_intent": "냉각까지 마치고 결과를 확인받는다",
+          "original_actual_execution": "남은 불씨를 실제 끄고 냉각 상태와 도구 정리를 확인한 뒤 축융이 근거를 대조한다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_03",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B3",
+          "source_choice_id": "B3-2",
+          "original_intent": "완료 뒤 도구 지도를 받거나 사양한다",
+          "original_actual_execution": "원하면 불씨 운반·소화 도구의 안전 시연 뒤 연습한다. 사양하면 도구를 정리하고 마친다.",
+          "authored_target_id": "mythictrpg:p0m009_009_service_fire_tools",
+          "resolution": "MAIN완료 후 선택 실습. 거절/중단은 본편완료 유지."
+        },
+        {
+          "source_episode_id": "EP019A-RPG-S06-009",
+          "source_beat_id": "B3",
+          "source_choice_id": "B3-STOP",
+          "original_intent": "지금 미실행 행동을 멈춘다",
+          "original_actual_execution": "화로가 아직 뜨거우면 완료가 아니라 안전 중단·미냉각으로 남긴다. 부재자 새 확인 대사 없음. 완료 뒤 수업만 끊겼다면 수업부터 재개한다.",
+          "authored_target_id": "mythictrpg:p0m009_009_step_03",
+          "resolution": "해당 단계의 선택/실행/관측/중단 계약. STOP은 새 성공·보상 없음, 이미 실제 성과/손실 보존."
+        }
+      ],
+      "new_growth_reward_count": 0,
+      "assigned_existing_combat_acquisitions": 0,
+      "source_choice_count": 10,
+      "source_choices_preserved": true,
+      "implemented_and_tested_in_game": false
+    }
+  }
+}

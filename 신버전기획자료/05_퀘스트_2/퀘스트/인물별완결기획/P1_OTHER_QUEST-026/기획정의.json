@@ -1,0 +1,2843 @@
+{
+  "schema": "authored_quest_design.v1",
+  "packet_id": "P1_OTHER_QUEST-026",
+  "status": "AUTHORING_COMPLETE_NOT_RUNTIME",
+  "common_contract": {
+    "contract_id": "EGYPT-SIDE-COMMON-v1",
+    "status": "채택 저술 설계; 실행 스키마·실장·플레이 검증 아님",
+    "runtime_ready": false,
+    "unit": "1블록=게임 블록, 20tick=1초. 별도 제한 없는 수집·이동은 시간 제한 없음. 전투·시험의 명시 시간만 제한.",
+    "identity": "관리키·profile godId·원문 정체·생사·등급·소속을 유지한다. independent/unassigned는 중립 진영이 아니다. 사망·부재·봉인·본체 불가를 이 문서로 해제하지 않는다.",
+    "access": "세계 이력은 누구 한 명의 유효 달성으로 공통 보존. 이미 현장에 있는 유일 본체와 대화할 때 재추첨하지 않는다. 신규 출현의 현재 조건은 허가된 기존 생활권에서 A 반경16에 현존하며 안전한 육지 접근로가 있는 플레이어. 60초마다 적격 후보 중 UUID 정렬 후 라운드로빈 1명을 주체로 선정, 해당 인물 후보가 유효할 때 20% 출현/NONE80%. 동일 본체 전역 claim 검사; 실패 후60초, 본체 자발 이탈 뒤 재등장 최소600초. 원문의 특정 장소·봉인·시간 우선. 정사상 초기 미정은 초반 확정으로 덮지 않으며 기존 유효 출현 상태에서 SIDE를 사용한다.",
+    "acceptance": "명시적 제안과 플레이어의 수락 후 attempt_id를 만든다. 첫 수락은 기존 MAIN 소유 요구 없음. 수락 명부 최대5인 각자 동의, 권리·실행·학습은 UUID별. 동일 물체의 작업 예약은 세계당1개, 대기자는 새 물체/새 실제 사건에서 참여. 일반 대화에는 퀘스트·준비물 문턱 없음.",
+    "physical_evidence": "objective_id별 actor_uuid, attempt_id, 대상UUID/블록좌표, 서버시각, 이전/이후수량, 소유자 동의, 판정자를 저장. 설명·선택 클릭·사후 자기주장은 물리 수행의 대체가 아니다. NPC 직접 목격은16블록 이내 가시선, 대화 청중8블록 이내 실제 수신. 벽 너머는 자동 목격 제외.",
+    "failure_resume": "거절은 수락·보상·관계악화를 자동 만들지 않는다. 실제 위해·거짓보고·독점 요구에 대한 반응만 기록. 사망은 진행정지, 살아남은 물건·소비·지형을 보존하고 정상 사망규칙으로 유실; 퀘스트물건 UUID의 현 위치부터 회수하며 복제하지 않는다. 로그아웃 시60초 작업예약 유예 후 대여품 보관·개인 진행 pause. 위험현장은 남은 참가자가 실제 철수, 결과 확인 전 성공 없음. 귀환 뒤 남은 목표만 재개하며 시간제 시험은 같은 대상 상태에서 새 attempt 하위번호로 재시도. 세계를 되감거나 이미 쓴 재료를 환급하지 않는다.",
+    "late_join": "후발자는 현재 공개된 길·물가를 이용할 수 있지만 옛 행위자·수업·보상으로 추가하지 않는다. 관찰자로 합류 가능; 개인 수행권은 아직 남은 실제 목표의 수락과 직접 기여로만. 이미 처리한 공동 대상을 재생하지 않는다. 반복 지도는 새 실습이고 추가 장비권0.",
+    "reward_transaction": "신규 개인 보상은 정의ID+수혜자UUID+최초권리키로1회, 자기소유 반환·현물 분배는 reward가 아닌 원물거래 ID. 인계 준비→재고예약→인벤토리 실입고→정산 확정 원자 처리. 가방 가득 참·NPC 부재는 권리 보류, 재접속 후 실물 UUID와 원장을 대조해 누락분만 인계. 실수령 후 분실·양도·사망은 재지급 근거 아님. 분배는 최초 합의 재고 내 한 번; 반복 클릭·동행자·보관함 복사로 증가0.",
+    "knowledge": "새 Story Fact는 실제 사건 커밋 때만 생성한다. 세계완료→NPC전원전파 금지. 목격은 관측 fact, 전달은 reported claim과 출처·수신시각·받은 범위만 저장. 상대 NPC의 실제 응답은 별도 fact. 후발자는 허가된 공개 결과를 실제 읽거나 들어 얻는다. 물건 속 이름·사연·사적 선택은 해당 소유자 허가 받은 지정 수신자만, 공개 청중이 섞이면 해당 부분 생략.",
+    "battle": "소규모 일반 적은 미성년자·민간인·신격 신규 보스가 아니며 바닐라 좀비를 사건용으로 사용. 공격은 원래 충돌·방패·벽 규칙, 무적·기믹 우회0. 사건 적의 새 드롭/XP0, 일반 자연 몹은 원래 보상 유지. 유인·차단 경로의 적은 실제 안전지점으로 물러난 뒤 사건 종료; 갑자기 사라져 통과 성공으로 계산하지 않는다. 서버 미지원 적 후퇴행동은 구현요구다.",
+    "supported_vs_required": "바닐라 채굴·낚시·제작·보트·방패·인벤토리는 기본 플레이 수단. 개인 퀘스트 원장, NPC 소유·동의, 출처 추적, 청중별 지식, 모의공격, 물가 관측·줄 회수, 사건용 경로/퇴각은 별도 구현·검증 필요. 문서 필드가 엔진 지원 action이라는 뜻 아님.",
+    "qa": [
+      "재시작 직전·직후 같은 인계 이중 클릭: 실물1개/권리1회",
+      "5인 중 실제 미참가1명: 개인기억·보상0",
+      "벽 뒤 관전자: 직접목격0, 허가 보고 수신만 가능",
+      "필수 전언 미수신: 수신 의존 단계만 보류, 선택 전언은 본체 결말을 막지 않음",
+      "중단 후 반환: 미반환 원물만 복구, 소모 재료/이미 반환품 복제0",
+      "반대 선택과 OR 경로: 선택하지 않은 목표가 완료 문턱에 추가되지 않음",
+      "파티5인의 HUD는 각 목표번호·개인진행·공동물체 상태 한 줄씩, 바닥표시는 반경0.4 얇은선·입자초당8개 이하, 전투시야 가림0"
+    ],
+    "source_boundary": "인물별 현재 정체·접근·원문 결말은 바꾸지 않았다. 생활 수량·목표·시험 시간·새 지급품 정의는 이번 위임으로 채택한 제작값이며 과거 사용자 확정값이나 서버 등록값으로 주장하지 않는다."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S03-024",
+      "name": "소베크",
+      "definition_id": "mythictrpg:side_rpg_s03_024",
+      "production_god_id": "mythictrpg:egyptian_unassigned_sobek",
+      "kind": "SIDE",
+      "title": "굶주린 강의 몫",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-024/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-024/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-024",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "상급",
+        "identity": {
+          "name": "소베크",
+          "canonical_name": "소베크",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "상급",
+          "tier_display": "상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-024",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-024",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Sobek",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-024",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-024",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 굶주린 강의 몫는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "합의한 어획물 분배와 낚시 지도",
+        "profile_constraints": [
+          "게임이 실제 확인하지 않은 인수·이동·완료·공격·가호·지급을 이미 했다고 말하지 않는다.",
+          "다른 사람의 사적 대화와 친구의 공적을 현재 상대의 과거로 만들지 않는다. 실제 목격과 받은 보고를 구별한다.",
+          "모르는 지식과 현재 청중에게 허락되지 않은 정보를 답으로 만들어내지 않는다.",
+          "친분·현재 감정·힘·후원·승낙은 별개다. 이름·성별·진영·등급을 추측으로 덧붙이지 않는다."
+        ],
+        "accepted_ending": "실제 얕은 물 경쟁을 하고 소베크에게 합의한 실제 어획 몫을 인계한 뒤 취수·어획 시간을 당사자와 나누고, 얕은 종료 또는 준비된 깊은 시도 중 선택 경로에서 귀환·남은 몫을 확인하면 SIDE 완료. 독점 요구 거절은 합의 성공이 아니며 깊은 시도 실패도 실제 얕은 합의를 지우지 않는다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "내 몫까지 네 승부에 넣지는 마. 저 얕은 데서 잡고, 물 뜨는 자리는 비워 두자.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "강변 공용 부지의 육지 A. 얕은 어획 구역은 A에서 하류 8~20블록·수심1~2, 취수 구역은 상류8블록·반경3, 깊은 선택 구역은 하류24~36블록·수심3~5. 수영 귀환 사다리와 상륙지 각1을 현장 확인한다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 낚시로 물고기를 획득 AND (보트로 강변에 접근 OR 실제 물가에서 취수)한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_024/o01",
+          "sequence": 1,
+          "action": "낚싯대 보유 후 300초 승부에서 직접 낚은 생선만 계수한다. 최소3마리 미달이면 경쟁 점수만 확정하고 시간 제한 없는 추가 낚시로3마리를 채울 수 있다. 소베크의 실제 어획만 비교하며 NPC 점수를 사전 주지 않는다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_024/o02",
+          "sequence": 2,
+          "action": "소유 생선3마리 중2마리를 실제 소베크에게 인계하고1마리는 자기 몫으로 보관한다. 취수 반경3에 미끼·아이템 투척0회, 상류 취수·하류 어획 각120초를 실제 지켜 합의를 확인한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_024/o03",
+          "sequence": 3,
+          "action": "얕은 종료는 A로 돌아와 분배 확인. 깊은 선택은 보트 또는 수중호흡 잔여90초 이상·상륙로 확보 후 깊은 구역에서 추가 낚시1회와 귀환. 물속 접촉·위험 면제는 없다. 깊은 시도120초 후 실패해도 얕은 합의를 보존하고 실제 귀환하면 마친다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "독점 요구는 거절되어 합의 미성립. 이미 잡은 자기 생선은 빼앗지 않는다. 요구 철회 후 미이행 인계·시간 분리부터 재개한다.",
+        "깊은 도전·얕은 종료는 OR. 깊은 성공을 최초 보상의 추가 필수로 만들지 않는다."
+      ],
+      "outcome": {
+        "complete": "실제 얕은 물 경쟁을 하고 소베크에게 합의한 실제 어획 몫을 인계한 뒤 취수·어획 시간을 당사자와 나누고, 얕은 종료 또는 준비된 깊은 시도 중 선택 경로에서 귀환·남은 몫을 확인하면 SIDE 완료. 독점 요구 거절은 합의 성공이 아니며 깊은 시도 실패도 실제 얕은 합의를 지우지 않는다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "소베크는 더 큰 먹이를 탐내면서도 플레이어가 얕은 몫으로 끝내면 자기 것을 들고 물가에 눕는다. 길들여졌다는 말에는 이빨을 보이며 웃는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "allocation_and_instruction",
+        "items": [
+          {
+            "definition_id": "minecraft:cod|minecraft:salmon",
+            "quantity": "본인 실제 어획 중 인계2마리를 뺀 잔량, 최소1",
+            "source": "새 생성 없이 어획 원본"
+          }
+        ],
+        "new_grant_count": 0,
+        "instruction": "낚시 지도1회; 비능력 수업",
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "자기 생선2마리와 낚싯대 실제 내구; 낚싯대 대여 시 같은 물건 반환. 깊은 선택 포션은 실제 마신 것만 소비.",
+      "optional_learning": "추가120초 동안 취수선 밖에서 찌를 던지고 물고기1마리를 직접 끌어올리는 선택 수업. 능력치·가호·어획배수0.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_024_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-024",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-042",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_024_actual_outcome_report_rpg_s03_042",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 먹을 몫과 물을 쓸 몫을 말뿐 아니라 실제 행동에서 지킨다. 이를 실제로 확인한 경우: 다음에는 접근하자마자 위협하지 않고 자기 먹이 활동과 겹치지 않는 시간을 먼저 말한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 소베크가 플레이어에게 다음 낚시 승부를 청하지만 굶주림과 위험성이 사라진 길들인 수호자가 되지는 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "낚시 출처·물가 투척 로그",
+        "생선 인계와 취수 시간표",
+        "실제 NPC 어획 행동"
+      ],
+      "expected_minutes": [
+        10,
+        18
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-028",
+      "name": "레네누테트",
+      "definition_id": "mythictrpg:side_rpg_s03_028",
+      "production_god_id": "mythictrpg:egyptian_unassigned_renenutet",
+      "kind": "SIDE",
+      "title": "씨앗을 먹는 밤",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-028/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-028/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-028",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "중급",
+        "identity": {
+          "name": "레네누테트",
+          "canonical_name": "레네누테트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "중급",
+          "tier_display": "중급",
+          "tier_confirmation": false,
+          "tier_source_status": "분포 조정 제안",
+          "divinity_classification": "divine",
+          "combat_tier": "중급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-028",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-028",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Renenutet",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-028",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-028",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "분포 조정 제안",
+            "rationale": "경작지와 생계의 보호에 특화된 중급으로 설계해 지역 밖의 대규모 제압력과 구분한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "상급",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_57161c1556c08191b6d4c516aa5ded10"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 씨앗을 먹는 밤는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "실제로 여유가 생긴 식량·종자의 합의 분배안",
+        "profile_constraints": [
+          "현재 본체가 부재하거나 유효 접촉이 없으면 새 발화·몸짓·대리 반응을 만들지 않는다. 비언어 행동·침묵에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+          "제공되지 않은 과거 친분·행방·전쟁 참가·사적 대화·개인 공로를 만들지 않는다. 정체·등급·정치 소속·후원·현재 감정을 서로 대체하지 않는다.",
+          "의향·선택·정답을 실제 수행·인수·수신·완료로 바꾸지 않는다. 확인 전 이동·회복·전투 승리·피해·지급·가호가 실행됐다고 말하지 않는다.",
+          "실제 아는 내용 중 현재 청중 전원에게 허락된 범위만 말한다. 파티·친분·공용 결과가 개인 기억·동의·보상권을 복제하지 않는다.",
+          "해당 행동에 필요한 조건만 확인한다. 일반 대화·SIDE·서비스에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+        ],
+        "accepted_ending": "먹을 몫·파종 몫을 실제 구분하고 선택 경로의 소비를 보존한 채 오염 자루 분리와 마른 보관·현재 부족 확인을 마치면 해당 정리 작업 SIDE 완료. 종자를 내놓은 경로는 준비 완료·종자 보존 공로 없음. 잉여 없는 경우 보상 실물0이며 해결되지 않은 식량 부족은 남는다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "지금 먹을 것부터 보자. 다만 저 씨앗까지 빈 칸으로 만들면 다음 이야기는 달라져.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 농가의 사용 허락된 건조 바닥 A에서 정상 식량통(동3), 종자통(서3), 격리통(북6)을 분리. 물·비가 닿지 않는 덮개 아래 기존 보관함을 사용한다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 작물을 수확 AND 지원되는 방식으로 음식 제작 또는 종자·식량 보관을 수행한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_028/o01",
+          "sequence": 1,
+          "action": "의뢰 소유자의 밀18·밀씨앗12와 오염 자루2개를 실물 식별한다. 밀18은 빵6개로 실제 제작하여 긴급식량 목표8개와 비교한다. 씨앗을 음식으로 먹는 가짜 레시피는 만들지 않는다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_028/o02",
+          "sequence": 2,
+          "action": "자기 빵2개를 먹을 몫에 보태 종자12개를 보존하거나, 원소유자가 전용을 허락한 종자6개를 실제 식량으로 바꾸어 먹을 몫에 보탠다. 후자는 기존 현장 배분 요청자 중 종자6개와 자기 빵2개 교환에 동의한 사람 및 그 실제 빵 재고를 먼저 확인하고, 종자6개 인계와 빵2개 인수를 각각 증명한 뒤 빵을 먹을 몫에 옮긴다. 식량은 빵6→8, 파종 종자는12→6으로 저장하며 종자 보존 공로0. 교환자·재고·동의가 없으면 해당 전용은 보류하고 기부 경로를 별도 선택하거나 현재 부족으로 중단한다. 씨앗을 직접 먹는 가짜 레시피·가상 빵 생성은 없다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_028/o03",
+          "sequence": 3,
+          "action": "오염 자루2개를 격리통으로 옮기고 건조 보관함 안의 정상 잔량을 재계수한다. 추가 제공 물량은 개별 검사·인수 후 저장. 부족이 남아도 분리·보관을 마치면 부족을 보존한 종료가 가능하다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "기부와 종자 전용은 다른 잔량으로 저장한다. 재선택은 실제 되돌려 받은 수량만 복원한다.",
+        "씨앗까지 배분한 결과는 풍작·파종 준비 완료가 아니다. 강요 기부·타인 상자 인출 불가."
+      ],
+      "outcome": {
+        "complete": "먹을 몫·파종 몫을 실제 구분하고 선택 경로의 소비를 보존한 채 오염 자루 분리와 마른 보관·현재 부족 확인을 마치면 해당 정리 작업 SIDE 완료. 종자를 내놓은 경로는 준비 완료·종자 보존 공로 없음. 잉여 없는 경우 보상 실물0이며 해결되지 않은 식량 부족은 남는다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "레네누테트는 빈 칸을 보고도 덮개를 씌워 감추지 않는다. 씨앗을 지킨 사람에게 무엇을 남겼는지 먼저 설명한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "conditional_surplus_allocation",
+        "items": [
+          {
+            "definition_id": "minecraft:bread",
+            "quantity": "긴급식량8개를 확보한 후 남은 빵 중 min(2,잔량)"
+          },
+          {
+            "definition_id": "minecraft:wheat_seeds",
+            "quantity": "파종12개를 보존한 뒤 남은 씨앗 중 min(4,잔량)"
+          }
+        ],
+        "new_grant_count": 0,
+        "no_surplus": "현재 지급0; 정리 수행 증거는 보존하되 없는 재고의 확정 채무를 만들지 않는다. 이후 같은 정산에 실제 여유가 생겨 소유자가 동의하면 아직 지급하지 않은 한도 내 몫만 인계.",
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "기부 선택 빵2개 또는 전용 선택의 원소유자 허가 종자6개↔실제 교환자 빵2개. 교환은 양측 인계·수령이 모두 있어야 확정하고 중단 시 미인계 원물만 보존한다. 의뢰 물자와 격리 자루는 원소유 유지; 개인 보상으로 전환 금지.",
+      "optional_learning": "60초 동안 남은 종자 수와 식량 용도를 실제 상자로 재분류하는 선택 설명. 자동 수확·영구 농업 버프 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_028_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-028",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-042",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_028_actual_outcome_report_rpg_s03_042",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 지금 허기를 말하면서도 남길 씨앗을 직접 구분하는 일을 함께 한다. 이를 실제로 확인한 경우: 다음에는 숨겨 둔 사람처럼 경계하지 않고 어느 몫을 왜 남겼는지 곁에서 설명한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그녀는 플레이어에게 종자 선택의 이유를 먼저 설명하며 직접 지켜 낸 파종 몫을 함께 확인한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "오염 자루2개 비식용 퀘스트 현물",
+        "소유권별 저장량과 조건부 분배"
+      ],
+      "expected_minutes": [
+        8,
+        15
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-029",
+      "name": "와제트",
+      "definition_id": "mythictrpg:side_rpg_s03_029",
+      "production_god_id": "mythictrpg:egyptian_unassigned_wadjyt",
+      "kind": "SIDE",
+      "title": "열린 문을 지키는 자세",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-029/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-029/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-029",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "상급",
+        "identity": {
+          "name": "와제트",
+          "canonical_name": "와제트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "상급",
+          "tier_display": "상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-029",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-029",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Wadjyt",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-029",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-029",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 열린 문을 지키는 싸움는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "방어 자세 지도와 보수 가능한 보호구 보상안",
+        "profile_constraints": [
+          "현재 본체가 부재하거나 유효 접촉이 없으면 새 발화·몸짓·대리 반응을 만들지 않는다. 비언어 행동·침묵에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+          "제공되지 않은 과거 친분·행방·전쟁 참가·사적 대화·개인 공로를 만들지 않는다. 정체·등급·정치 소속·후원·현재 감정을 서로 대체하지 않는다.",
+          "의향·선택·정답을 실제 수행·인수·수신·완료로 바꾸지 않는다. 확인 전 이동·회복·전투 승리·피해·지급·가호가 실행됐다고 말하지 않는다.",
+          "실제 아는 내용 중 현재 청중 전원에게 허락된 범위만 말한다. 파티·친분·공용 결과가 개인 기억·동의·보상권을 복제하지 않는다.",
+          "해당 행동에 필요한 조건만 확인한다. 일반 대화·SIDE·서비스에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+        ],
+        "accepted_ending": "현재 통행 연습을 실제 하고 별도 전투 준비 뒤 짧은 실제 방어로 통행자가 빠져나갈 틈을 유지해 와제트가 확인하면 SIDE 완료. 연습만으로 전투 완료0. 추격 없이 방어한 경로도 유효하며 전면 감금 거절 후 수락한 위험 구역 방어만 실제 진행한다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "조용한 문보다 사람이 지나가는 문이 낫지. 위험한 쪽만 막아 줄 수 있겠어?",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 문 A. 통행로 폭3·길이16, 외측 위협대 A+북12, 안전선 남8. 차단은 북쪽 측면 폭2만 허가되며 생활 통행로 폭3은 유지한다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "새 필수 해금 없음; 원문 기존 유효 접근 상태 유지. 기존 미정 접근은 공통계약 access의 보존 경계 적용.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_029/o01",
+          "sequence": 1,
+          "action": "동의한 실제 참가자1~4명을 명부에 등록하고 각자 문 양방향을1회 통과한다. NPC가 보지 못한 구간은 보고로만 남긴다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_029/o02",
+          "sequence": 2,
+          "action": "체력80% 이상·방패·귀환로 확보 후90초 방어 시작. 의뢰용 좀비2체(기본20HP·방어0·이동0.23·기본 근접, 장비·드롭·XP0)가 외측에서 접근한다. 고정2체이며 인원수에 따른 추가 소환 없음.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_029/o03",
+          "sequence": 3,
+          "action": "적이 통행로에 들어오지 못하도록 방패/유인/처치 중 가능한 행동으로 지키며 실제 명부 전원이 안전선에 도착한다. 적 전멸 대신 안전선 도착 후 적과8블록 이격·귀환으로 완료한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "전면 감금 요구는 와제트가 거절. 실제 가로막은 블록은 설치자 권한으로 철거한 뒤 통행 시험을 재개한다.",
+        "미준비 철수는 통행 연습만 저장. 방어90초 내 미귀환이면 실패하고 NPC는 남은 인원을 안전 쪽으로 유도하되 도착을 확인하기 전 성공으로 쓰지 않는다."
+      ],
+      "outcome": {
+        "complete": "현재 통행 연습을 실제 하고 별도 전투 준비 뒤 짧은 실제 방어로 통행자가 빠져나갈 틈을 유지해 와제트가 확인하면 SIDE 완료. 연습만으로 전투 완료0. 추격 없이 방어한 경로도 유효하며 전면 감금 거절 후 수락한 위험 구역 방어만 실제 진행한다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "와제트는 쫓아가려는 손을 열어 뒤를 보게 한다. 직접 방어하며 자기 지킨 틈으로 실제 사람이 지나간 뒤에야 자세를 푼다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "armor_and_instruction",
+        "items": [
+          {
+            "definition_id": "mythictrpg:wadjet_open_gate_helmet",
+            "quantity": 1,
+            "grade": "고급",
+            "slot": "head",
+            "armor": 2,
+            "toughness": 0,
+            "durability": "infinite",
+            "enchantments": [],
+            "skill": null,
+            "repair": "기본 무한내구이므로 수치 수리 없음. 외관 보수만 가능"
+          }
+        ],
+        "new_grant_count": 1,
+        "limit": "개인 최초 방어 성공1회; 분실 재지급0",
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "stock_contract": "와제트 본인 소유의 별도 보호구 재고만 사용한다. 수락 시 현재 실물 UUID·보유수량·제공 동의·수혜자별 예약을 등록하고 1권리당1개만 예약한다. 재고가 없거나 타인 착용품뿐이면 새로 생성하거나 압수하지 않고 성공한 개인 지급권을 보류한다. 이후 실제 적법 조달·소유 확인된 같은 정의의 보호구만 부족분에 배정한다. 외관 보수 뒤 실물 인수와 원장을 대조하여 지급 확정한다. 동일 정의의 기존 적법 별도권리는 합치거나 회수하지 않으며 이 사건은 UUID별 최초1권리만 새로 만든다. 품질은 고급 고정이며 무작위 재추첨·수령복구로 품질 상승 없음. 방어2 외 능력·인챈트·무기스킬·독립 스킬0."
+      },
+      "cost_and_return": "훈련 입장료0. 본인 장비의 실제 소비만 부담. 보수 가능한 보호구 원문은 영구내구 원칙에 맞춰 외관 끈·도장 보수로 구체화한다.",
+      "optional_learning": "완료 뒤 방패 막기3회와 측면 이탈1회를90초 안에 해 보는 선택 지도. 수업 실패는 장비권을 취소하지 않음. 별도 독립 스킬 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_029_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-029",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-030",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_029_actual_outcome_report_rpg_s03_030",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 네크베트가 자신이 실제 관측한 위험과 보지 못한 구간을 나누어 전하고 중복 검문 때문에 막힌 길을 함께 확인한다. 이를 실제로 확인한 경우: 와제트는 네크베트의 보고 범위에 맞춰 자기가 다시 확인할 구간을 줄이고 두 사람이 맡을 경계를 구체적으로 나눈다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 와제트는 문이 닫혀 조용한 성과보다 실제 사람이 지나간 방어를 자랑한다. 경비권 전체를 플레이어에게 넘기지 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "일반 좀비의 사건 한정 생성·명부 보호",
+        "폭3 통행 실제 판정",
+        "무한내구 투구·권리 원장"
+      ],
+      "expected_minutes": [
+        8,
+        14
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-030",
+      "name": "네크베트",
+      "definition_id": "mythictrpg:side_rpg_s03_030",
+      "production_god_id": "mythictrpg:egyptian_unassigned_nekhbet",
+      "kind": "SIDE",
+      "title": "아래쪽에 남은 짐",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-030/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-030/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-030",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "상급",
+        "identity": {
+          "name": "네크베트",
+          "canonical_name": "네크베트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "상급",
+          "tier_display": "상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-030",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-030",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Nekhbet",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-030",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-030",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 아래에서 찾는 날개는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "낮은 지형 수색과 귀환 지도",
+        "profile_constraints": [
+          "현재 본체가 부재하거나 유효 접촉이 없으면 새 발화·몸짓·대리 반응을 만들지 않는다. 비언어 행동·침묵에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+          "제공되지 않은 과거 친분·행방·전쟁 참가·사적 대화·개인 공로를 만들지 않는다. 정체·등급·정치 소속·후원·현재 감정을 서로 대체하지 않는다.",
+          "의향·선택·정답을 실제 수행·인수·수신·완료로 바꾸지 않는다. 확인 전 이동·회복·전투 승리·피해·지급·가호가 실행됐다고 말하지 않는다.",
+          "실제 아는 내용 중 현재 청중 전원에게 허락된 범위만 말한다. 파티·친분·공용 결과가 개인 기억·동의·보상권을 복제하지 않는다.",
+          "해당 행동에 필요한 조건만 확인한다. 일반 대화·SIDE·서비스에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+        ],
+        "accepted_ending": "실제 낮은 지형 수색·짐 발견·안전 귀환 뒤 소유자 확인 반환 또는 소유자 미확인 분실물 보관 인수를 마치고 네크베트에게 허락된 결과를 접수하면 SIDE 완료. 높은 자리 관측만이면 수색 부분 결과이며 발견·완료0. 와제트 전달은 선택이며 미전달은 별도 남긴다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "내가 위에서 봤다는 말로 아래까지 본 셈 치지는 말자. 내려갔다 돌아올 길부터 보렴.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 능선 A 아래 낙차6~10블록의 골짜기. 걸을 수 있는 경사로 길이32~48·폭2, 낮은 빈 야영지 B에 봉인 짐1개. 실제 기존 빈 야영지 또는 흔적 부지만 쓰며 새 사람 거주를 발명하지 않는다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "새 필수 해금 없음; 원문 기존 유효 접근 상태 유지. 기존 미정 접근은 공통계약 access의 보존 경계 적용.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_030/o01",
+          "sequence": 1,
+          "action": "A에서 시야가 가려지는 바닥3지점을 보고 지도에 미수색으로 표시한다. 높은 곳 관찰만으로 짐 발견 처리 금지.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_030/o02",
+          "sequence": 2,
+          "action": "횃불4·음식2와 도보 귀환 경로를 준비해 골짜기 바닥3지점을 각각2블록 이내에서 관찰5초. B의 짐1개를 실제 회수해 A로 돌아온다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_030/o03",
+          "sequence": 3,
+          "action": "소유자의 사전 등록 특징2개가 짐 내부 비공개 등록값과 맞고 수령 응답이 있으면 본인에게 인계한다. 확인 불가면 네크베트가 수락한 분실물 보관처에 같은 짐을 맡기고 보관 영수증을 받는다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "높은 곳만 선택하면 미수색 결말. 내려갈 준비가 되면 이어서 수행한다.",
+        "반환과 허가된 보관은 OR. 와제트에게 수색 범위·발견 좌표 요약을 전하는 것은 선택이며 소유자 이름·내용물은 제외한다."
+      ],
+      "outcome": {
+        "complete": "실제 낮은 지형 수색·짐 발견·안전 귀환 뒤 소유자 확인 반환 또는 소유자 미확인 분실물 보관 인수를 마치고 네크베트에게 허락된 결과를 접수하면 SIDE 완료. 높은 자리 관측만이면 수색 부분 결과이며 발견·완료0. 와제트 전달은 선택이며 미전달은 별도 남긴다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "네크베트는 짐을 찾았다는 공을 빼앗지 않고 아래를 걸은 사람에게 다음 낮은 길을 묻는다. 사생활 감시 부탁에는 몸을 돌리지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "회수한 짐은 소유자 재산. 반환 수수료0, 횃불·음식은 실제 사용량.",
+      "optional_learning": "네크베트와 A와 B의 시야 차이를 각1회 확인하고 돌아오는5분 선택 수색·귀환 지도. 투시·원격탐지 능력 지급 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_030_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-030",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-029",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_030_actual_outcome_report_rpg_s03_029",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 멀리 보인 작은 움직임을 단정하지 않고 확인할 위치와 시간을 함께 말한다. 이를 실제로 확인한 경우: 다음에는 혼자 판단해 지시하기보다 관찰한 범위를 그 사람과 함께 나누어 살핀다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 네크베트는 다음 수색에 아래를 걸은 플레이어의 판단을 먼저 묻고 사생활 감시 부탁은 거절한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "짐 UUID와 비공개 소유 검증",
+        "미수색 영역·보관 영수증·공개 보고 분리"
+      ],
+      "expected_minutes": [
+        12,
+        20
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-031",
+      "name": "웨프와웨트",
+      "definition_id": "mythictrpg:side_rpg_s03_031",
+      "production_god_id": "mythictrpg:egyptian_unassigned_wepwawet",
+      "kind": "SIDE",
+      "title": "누구도 소유하지 않는 길",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-031/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-031/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-031",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "상급",
+        "identity": {
+          "name": "웨프와웨트",
+          "canonical_name": "웨프와웨트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "상급",
+          "tier_display": "상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-031",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-031",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Wepwawet",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-031",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-031",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 행렬과 장날 사이는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "잔해 제거 공구 수리와 작업 지도",
+        "profile_constraints": [
+          "현재 본체가 부재하거나 유효 접촉이 없으면 새 발화·몸짓·대리 반응을 만들지 않는다. 비언어 행동·침묵에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+          "제공되지 않은 과거 친분·행방·전쟁 참가·사적 대화·개인 공로를 만들지 않는다. 정체·등급·정치 소속·후원·현재 감정을 서로 대체하지 않는다.",
+          "의향·선택·정답을 실제 수행·인수·수신·완료로 바꾸지 않는다. 확인 전 이동·회복·전투 승리·피해·지급·가호가 실행됐다고 말하지 않는다.",
+          "실제 아는 내용 중 현재 청중 전원에게 허락된 범위만 말한다. 파티·친분·공용 결과가 개인 기억·동의·보상권을 복제하지 않는다.",
+          "해당 행동에 필요한 조건만 확인한다. 일반 대화·SIDE·서비스에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+        ],
+        "accepted_ending": "실제 두 방향의 장애를 허락 범위에서 치우고 선택한 교전 또는 미끼 유도로 일반 적 접근을 떼어 낸 뒤 뒤따르는 실제 참가자의 통과와 자기 귀환을 확인하면 SIDE 완료. 길 일부 정리만이면 부분 성과. 독점 요청 거절은 공용 개방 성과를 자기 소유로 바꾸지 못한다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "열었다고 네 길이 되는 건 아니야. 양쪽 사람들이 지나갈 폭을 같이 남기자.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 생활길 A의 양방향12블록. 각 방향 폭3×길이6 작업부지에 허가 잔해3개씩, 총6개. 밖 북16 유인 지점과 남12 안전선.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "새 필수 해금 없음; 원문 기존 유효 접근 상태 유지. 기존 미정 접근은 공통계약 access의 보존 경계 적용.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_031/o01",
+          "sequence": 1,
+          "action": "잔해6개(통나무4·거친흙2)를 좌우 번갈아 실제 채굴·회수해 소유자 지정 보관처로 옮긴다. 폭3·높이2가 확보됐는지 두 방향 모두 실제 걷는다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_031/o02",
+          "sequence": 2,
+          "action": "일반 좀비2체(20HP, 기본근접, 장비·드롭·XP0)가 잔해 밖에서 접근한다. 교전 경로는 통행선 앞 방어로 참가자 통과 틈을 만들고 통과 뒤 안전 귀환하며 전멸·추격 불필요. 유도 경로는 자기 소유 썩은 살점1개를 허가된 북16 빈 지점에 실제 놓고 적이 반응하여 이동했는지 확인해 길과12블록 이격을15초 유지한다. 이 사건의 미끼 반응은 별도 구현 요구이며 바닐라 지원으로 가정하지 않는다. 미끼 UUID는 투입 때 소비 확정하고 적이 반응하지 않으면 유도 성공0·실제 소비만 남긴 채 안전 철수한다. 타인·민간 동선으로 유도 금지. 두 경로 중 실제 선택한 하나만 수행한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_031/o03",
+          "sequence": 3,
+          "action": "실제 동의한 후속 참가자1명 이상이 열린 길 양 끝을 통과하고 작업자도 안전선으로 돌아온다. 혼자면 웨프와웨트가 실제 보행 가능한 본체 상태에서 확인 통행한다. 불가능하면 통행 확인만 남긴다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "전용 통행 요구를 거절하고 공용 길은 실제 열린 상태 그대로 둔다. 공로에 영구 소유권이 붙지 않는다.",
+        "유인 실패 시 후퇴, 재시도는 남은 같은 적만 상대한다. 새 적 파밍 없음. 처치는 유인 경로의 필수 아님."
+      ],
+      "outcome": {
+        "complete": "실제 두 방향의 장애를 허락 범위에서 치우고 선택한 교전 또는 미끼 유도로 일반 적 접근을 떼어 낸 뒤 뒤따르는 실제 참가자의 통과와 자기 귀환을 확인하면 SIDE 완료. 길 일부 정리만이면 부분 성과. 독점 요청 거절은 공용 개방 성과를 자기 소유로 바꾸지 못한다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "웨프와웨트는 자기 몸도 길에서 빼고 뒤 흐름을 살핀다. 지나간 사람에게 자기 이름을 외치게 하지 않고 다시 막힌 곳을 묻는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "repair_and_instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "repair": "이번 제거에 실제 쓴 자기 일반 목재/석재/철 도끼 또는 삽1개를 최대64내구, 최대내구 이하로 복원. 고유장비·무한내구 제외. 세계당 같은 사건1회, 행위자별1개",
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "잔해 소유권 유지. 무료 손질 외 새 장비0. 철 주괴1개는 NPC가 보유한 실제 수리 재고에서 소모, 재고 없음이면 수리권 보존. 유도 선택은 자기 썩은 살점1개 실제 투입·소비, 교전 선택은 미끼0. 이미 소비한 미끼는 재시도·중단으로 복제/환급하지 않는다.",
+      "optional_learning": "폭3 통로의 좌우 접근·방패 유인45초 지도. 수치 강화 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_031_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-031",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-021",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_031_actual_outcome_report_rpg_s03_021",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 먼저 지나갔다고 뒤따르는 사람의 통로를 막지 않는다. 이를 실제로 확인한 경우: 다음에는 앞서 길만 확인하지 않고 그 사람에게 뒤쪽 흐름을 봐 달라고 맡긴다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 플레이어를 길의 소유자가 아니라 함께 길을 열었던 사람으로 부르며 다음 막힌 구간을 의논한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "보호구역 허가 블록 목록6개",
+        "두 방향 통행·유인 거리 검사",
+        "같은 도구 UUID 손질",
+        "사건 좀비의 실제 미끼 반응·이동과 미끼 UUID 소비 원장; 미반응 실패 및 타인 위험 동선 차단"
+      ],
+      "expected_minutes": [
+        10,
+        18
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-033",
+      "name": "네페르템",
+      "definition_id": "mythictrpg:side_rpg_s03_033",
+      "production_god_id": "mythictrpg:egyptian_unassigned_nefertem",
+      "kind": "SIDE",
+      "title": "왕의 향과 쉬는 자리의 향",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-033/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-033/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP012B-RPG-S03-033",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "중급",
+        "identity": {
+          "name": "네페르템",
+          "canonical_name": "네페르템",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "중급",
+          "tier_display": "중급",
+          "tier_confirmation": false,
+          "tier_source_status": "분포 조정 제안",
+          "divinity_classification": "divine",
+          "combat_tier": "중급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-033",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-033",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Nefertem",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-033",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-033",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "분포 조정 제안",
+            "rationale": "향과 회복·정화를 활용하는 보조 전투를 중급에 두고 파괴적 화력을 중심 능력으로 추가하지 않는다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "상급",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_57161c1556c08191b6d4c516aa5ded10"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 향을 고르는 손들는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "실제 만든 비전투 향료의 개인 몫 지급안",
+        "profile_constraints": [
+          "현재 본체가 부재하거나 유효 접촉이 없으면 새 발화·몸짓·대리 반응을 만들지 않는다. 비언어 행동·침묵에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+          "제공되지 않은 과거 친분·행방·전쟁 참가·사적 대화·개인 공로를 만들지 않는다. 정체·등급·정치 소속·후원·현재 감정을 서로 대체하지 않는다.",
+          "의향·선택·정답을 실제 수행·인수·수신·완료로 바꾸지 않는다. 확인 전 이동·회복·전투 승리·피해·지급·가호가 실행됐다고 말하지 않는다.",
+          "실제 아는 내용 중 현재 청중 전원에게 허락된 범위만 말한다. 파티·친분·공용 결과가 개인 기억·동의·보상권을 복제하지 않는다.",
+          "해당 행동에 필요한 조건만 확인한다. 일반 대화·SIDE·서비스에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+        ],
+        "accepted_ending": "현재 밤 채집·허락된 재료 배합을 실제 하고 선택한 강한 향 또는 쉼자리 향의 감각 시험을 마쳐 네페르템이 결과를 확인하면 SIDE 완료. 강한 향만 만든 경우 일반 쉼자리용 견본·보편 공급 성과는 없다. 바스테트 부재는 자체 비교 완료를 막지 않으며 선택 실물 수령은 별도다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "코를 놀라게 하는 것과 오래 곁에 두고 싶은 건 다르지. 두 병을 비교해 볼까?",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 공용 쉼터 A, 밤의 안전한 채집 경로 반경48 안에 꽃밭B. 게임시각13000~22000에 채집하며 날이 밝으면 다음 밤을 기다리거나 보유 출처검증 재료로 준비만 한다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 꽃·식물 재료를 채집해 보관 장소로 운반 OR 지원되는 식물 재배·수확 과정을 완료한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_033/o01",
+          "sequence": 1,
+          "action": "밤에 본인 사용 허락된 민들레2·수레국화2를 실제 채집하고 A로 돌아온다. 이미 파괴된 꽃을 복원 생성하지 않는다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_033/o02",
+          "sequence": 2,
+          "action": "물병2와 두 꽃 재료를 섞어 비전투 향 견본2개를 실제 만든다. 강한 향만은 민들레2+수레국화2를 두 병에 반씩, 쉼 자리 포함은 강한 병(각1)과 약한 병(민들레1·물 추가1병)으로 만들고 남은 수레국화1 반환.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_033/o03",
+          "sequence": 3,
+          "action": "각 병을 닫힌 채1회 전달 후 수락한 참가자가 3블록 간격에서 차례로 시험한다. 바스테트가 실제 참여·응답하면 그녀가 지적한 거슬리는 재료를, 부재·거절이면 실제 참가자가 자기 감각으로 지적한 거슬리는 재료를 고른다. 어느 경로든 원 견본의 일부를 밀봉 보존하고 나머지 소량에서 선택 꽃 추출1단위를 실제 여과하여 줄인 수정 견본을 만든다. 원 견본과 수정 견본을 차례로 실제 비교하고 각자의 응답을 네페르템이 받아야 감각시험 완료. 강한 향만 선택한 경로도 이 비교는 하되 쉼자리 공급·바스테트 검증을 만들지 않는다. 맡기 거절·미수정·비교 미완료는 해당 시험 보류이며 이미 만든 배합은 보존한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "강한 향만 선택한 결과는 일반 쉼터 공급 성공이 아님. 약한 향 강제 추가 없음.",
+        "향 맡기 거절한 사람에게 강제 효과 없음. 모든 시험은 실제 병·수신·응답으로 기록한다."
+      ],
+      "outcome": {
+        "complete": "현재 밤 채집·허락된 재료 배합을 실제 하고 선택한 강한 향 또는 쉼자리 향의 감각 시험을 마쳐 네페르템이 결과를 확인하면 SIDE 완료. 강한 향만 만든 경우 일반 쉼자리용 견본·보편 공급 성과는 없다. 바스테트 부재는 자체 비교 완료를 막지 않으며 선택 실물 수령은 별도다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "네페르템은 자기 배합을 비판하는 말을 끊으려다 병을 다시 든다. 실제 감각을 구체적으로 말한 사람에게는 다음 배합을 먼저 골라 보라고 내민다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "crafted_allocation",
+        "items": [
+          {
+            "definition_id": "mythictrpg:nefertem_rest_scent_sample",
+            "quantity": 1,
+            "source": "완성 견본 중 본인 합의 몫1병",
+            "effect": "장식 향 연출만; 전투·회복·버프0",
+            "uses": 3
+          }
+        ],
+        "new_grant_count": 0,
+        "limit": "해당 제작량 내1병; 반복 제작은 자기 재료를 다시 소모",
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫"
+      },
+      "cost_and_return": "꽃4·물병2(약한 향 선택 추가 물병1). 빈 병은 사용 후 반환. 견본 소유자 동의 필요.",
+      "optional_learning": "향 병 사용시 지면 위0.3블록 반경0.6의 투명한 꽃잎선6개가20tick 후 사라짐. 아군 시야를 가리지 않고 냄새 인지 묘사는 해당 수락자만.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_033_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-033",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-025",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_033_actual_outcome_report_rpg_s03_025",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 자기 배합을 무조건 칭찬하지 않고 어떤 향이 거슬렸는지 구체적으로 말한다. 이를 실제로 확인한 경우: 다음에는 완성 향만 보여 주지 않고 둘 중 어느 배합이 나은지 먼저 골라 보게 한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 다음에는 권력자의 주문을 실력의 유일한 증거로 삼지 않고 새 배합을 플레이어와 겨룬다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "비전투 향 혼합·재료 차감",
+        "미세 향 연출·병3회 사용 원장",
+        "원 견본 분할·봉인과 꽃 추출1단위 여과를 별도 구현한다. 분할 전후 총량 보존, 새 보상 병 생성0; 수정·원본 UUID와 실제 비교 수신을 기록한다."
+      ],
+      "expected_minutes": [
+        10,
+        18
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-036",
+      "name": "네이트",
+      "definition_id": "mythictrpg:side_rpg_s03_036",
+      "production_god_id": "mythictrpg:egyptian_unassigned_neit",
+      "kind": "SIDE",
+      "title": "퇴로가 열리면 손을 내린다",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-036/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-036/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP013A-RPG-S03-036",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "최상급",
+        "identity": {
+          "name": "네이트",
+          "canonical_name": "네이트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "최상급",
+          "tier_display": "최상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "최상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-036",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-036",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Neit",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-036",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-036",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "최상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 마지막 한 번을 막고는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "방어·이탈 기술 지도",
+        "profile_constraints": [
+          "현재 같은 하나의 본체·접촉 모드·위치·봉인·실제 청중을 확인한다. 접촉이 없거나 미확인이면 말·몸짓·원격 fallback을 생성하지 않는다. 말할 수 있음과 발화 의사는 말에만 필요하며 유효한 비언어 감각 반응에 강제하지 않는다.",
+          "특정 질문 수신은 그 질문에 답할 때만 필요하다. 실제 행동·침묵·보고도 자극이다. MAIN 소유는 해당 개인 MAIN 전용 진행·완료·보상에 필요한 경우만 검사하고 첫 수락 전에 기존 소유를 요구하지 않는다.",
+          "선택·약속·추론은 실제 실행이 아니다. 안내·행동 중 경고·부분 결과·완료 확인의 시점을 구별하고 선택하지 않은 대안이나 선택 후기를 추가 필수 조건으로 만들지 않는다.",
+          "자기 직접 관찰과 출처 있는 실제 보고를 구별한다. 듣지 못한 응답·부재자 발언·플레이어 속마음·현재 없는 물건·미래 결과를 만들지 않는다.",
+          "현재 청중 전원에게 허용된 자기 지식만 말한다. 제목·거절 이유·예시로 비공개 내용의 존재를 암시하지 않는다. 친구·파티·후발 합류·공용 완료는 개인 경험·신뢰·수신·보상권을 복제하지 않는다.",
+          "친밀함·등급·후원·동의·소유·실제 힘은 서로 다르다. 인사나 칭찬만으로 가호·주시·정치 가입·승리·아이템 지급을 만들지 않는다. 실제 인계·등록 효과·이동·수령은 확인한 결과만 반영한다.",
+          "SIDE의 실제 수락·연습·실전 보호·후퇴를 각각 보존한다. 개인 MAIN 소유는 없다. 구경꾼의 공개 청취는 실습 완료가 아니다.",
+          "프타의 방어 물건은 실제 제공과 조정 허락이 있을 때만 사용한다. 이름이나 과거 제안이 현재 재고가 아니다.",
+          "퇴로가 열릴 때 경고하고 안전 도착 뒤 내려놓으라고 확인한다. 상대 전멸은 완료 조건이 아니다.",
+          "추격을 사양해도 보호 성과는 유지한다. 안전 귀환이 미확인이면 그 확인만 남긴다. 추가 지도와 몬투 전언은 선택이며 서로의 조건이 아니다."
+        ],
+        "accepted_ending": "실제 수락자가 연습에서 자세를 고치고 준비된 소규모 실전에서 보호 대상의 이탈을 지킨 뒤 열린 퇴로로 실제 빠져나와 네이트에게 확인받으면 SIDE 완료. 준비 부족은 연습 성과만 남는다. 상대 전멸이나 선택 후기는 조건이 아니다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "저 사람이 빠져나오면 네 일도 달라져. 이기는 자세 말고 끝낼 자세부터 보자.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 연습 공터 A는12×12블록. 실전 지점은 기존 귀환로 B(A에서32블록), 퇴로 폭3·길이12, 안전선 A. 파괴없는 기존 지형을 쓴다.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "새 필수 해금 없음; 원문 기존 유효 접근 상태 유지. 기존 미정 접근은 공통계약 access의 보존 경계 적용.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_036/o01",
+          "sequence": 1,
+          "action": "연습장에 동의받은 보호 역할 물건1개와 이동 담당을 먼저 정한다. 표적의 예고된 모의 접촉3회를 방패로 받아내고 보호 물건이 담당자 손으로 안전선 너머4블록 실제 이동하는 것을 확인한 순간 정지 신호를 말하고 무기·방패를 내려 모의방어를 끝낸다. 뒤로4블록 실제 이탈하고 네이트가 이동·정지·종료를 확인한다. 모의타격은 피해0·넉백0·적중 로그만. 프타 물건 사용은 실제 제공·손잡이 조정 허락이 있을 때만이며 없으면 자기/허가 장비로 수행한다. 불필요한 추가공격 요구에는 네이트가 종료를 알리고 실제 손을 내린 뒤 훈련만 마친다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_036/o02",
+          "sequence": 2,
+          "action": "체력80%·방패·음식2·왕복 가능한 퇴로를 갖추면 실제 동의한 보호대상1명과 B로 간다. 기본 좀비2체(20HP·무장0·드롭XP0)가 접근하면 대상이 퇴로를 이동하는 동안 최대60초 지킨다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_036/o03",
+          "sequence": 3,
+          "action": "보호대상이 안전선에 도착한 실제 순간 네이트가 후퇴를 경고한다. 전원이 안전선으로 실제 돌아온 뒤 손에 든 무기를 해제하고3초 서면 실전 종료. 적 전멸·추격 불필요.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "미준비는 연습 완료로 마치고 실전 성취 없음. 추후 준비 뒤 실전부터 재개.",
+        "임무 뒤 추격을 택해도 이미 보호한 사실은 유지하되 자기 귀환 미완료. 네이트는 추격을 지원하지 않는다. 몬투 전언·추가 지도는 둘 다 선택."
+      ],
+      "outcome": {
+        "complete": "실제 수락자가 연습에서 자세를 고치고 준비된 소규모 실전에서 보호 대상의 이탈을 지킨 뒤 열린 퇴로로 실제 빠져나와 네이트에게 확인받으면 SIDE 완료. 준비 부족은 연습 성과만 남는다. 상대 전멸이나 선택 후기는 조건이 아니다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "네이트는 자세부터 고치던 습관을 멈추고 해당 수행자에게 먼저 “너는 언제 내려놓겠나?”라고 묻는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "모의훈련 무료. 실전 음식·장비 실제 소비만. 대여품은 동일 UUID 반환; 프타 장비를 퀘스트 보상으로 전환하지 않음.",
+      "optional_learning": "안전 도착 뒤60초 동안 방패 들기→측면2블록→후퇴4블록→무기 해제 순서를2회 실제 수행하는 지도. 독립스킬·레이드지원 지급0.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_036_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-036",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-035",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_036_actual_outcome_report_rpg_s03_035",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 상대가 물러났을 때 쫓는 대신 자기 편의 상태를 먼저 살핀다. 이를 실제로 확인한 경우: 다음에는 방어 자세만 가르치지 않고 언제 내려놓을지 상대의 판단을 먼저 듣는다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그녀는 플레이어에게 승리 뒤 무기를 내려놓는 시간까지 훈련의 끝으로 가르친다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "무피해 모의 접촉",
+        "보호대상 도착 이벤트 시점 경고",
+        "무기 해제3초 확인"
+      ],
+      "expected_minutes": [
+        8,
+        16
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-037",
+      "name": "아누케트",
+      "definition_id": "mythictrpg:side_rpg_s03_037",
+      "production_god_id": "mythictrpg:egyptian_unassigned_anuqet",
+      "kind": "SIDE",
+      "title": "노를 쉬어야 돌아온다",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-037/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-037/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP013A-RPG-S03-037",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "중급",
+        "identity": {
+          "name": "아누케트",
+          "canonical_name": "아누케트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "중급",
+          "tier_display": "중급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "중급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-037",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-037",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Anuqet",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-037",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-037",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 중급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "중급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 물살과 겨루지 않는 배는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "노질과 승하선 지도",
+        "profile_constraints": [
+          "현재 같은 하나의 본체·접촉 모드·위치·봉인·실제 청중을 확인한다. 접촉이 없거나 미확인이면 말·몸짓·원격 fallback을 생성하지 않는다. 말할 수 있음과 발화 의사는 말에만 필요하며 유효한 비언어 감각 반응에 강제하지 않는다.",
+          "특정 질문 수신은 그 질문에 답할 때만 필요하다. 실제 행동·침묵·보고도 자극이다. MAIN 소유는 해당 개인 MAIN 전용 진행·완료·보상에 필요한 경우만 검사하고 첫 수락 전에 기존 소유를 요구하지 않는다.",
+          "선택·약속·추론은 실제 실행이 아니다. 안내·행동 중 경고·부분 결과·완료 확인의 시점을 구별하고 선택하지 않은 대안이나 선택 후기를 추가 필수 조건으로 만들지 않는다.",
+          "자기 직접 관찰과 출처 있는 실제 보고를 구별한다. 듣지 못한 응답·부재자 발언·플레이어 속마음·현재 없는 물건·미래 결과를 만들지 않는다.",
+          "현재 청중 전원에게 허용된 자기 지식만 말한다. 제목·거절 이유·예시로 비공개 내용의 존재를 암시하지 않는다. 친구·파티·후발 합류·공용 완료는 개인 경험·신뢰·수신·보상권을 복제하지 않는다.",
+          "친밀함·등급·후원·동의·소유·실제 힘은 서로 다르다. 인사나 칭찬만으로 가호·주시·정치 가입·승리·아이템 지급을 만들지 않는다. 실제 인계·등록 효과·이동·수령은 확인한 결과만 반영한다.",
+          "SIDE 유효 수락과 승선 허락·안전 적재·귀환 준비는 실제 연습에 필요하다. 육지 잡담과 박자 놀이에 MAIN 소유를 요구하지 않는다.",
+          "안정된 실제 얕은 왕복 후 별도 건넘 준비를 확인한다. 불안정 시험의 복귀는 안정 왕복 성취가 아니다.",
+          "사테트 관측을 실제 받으면 출처·시점·지점을 현재 물살과 비교한다. 변화 의심 때 미수신이면 출발 보류. 안정된 현장에 불필요한 사테트 접촉을 추가 필수로 만들지 않는다.",
+          "미출발·중도 복귀·맞은편 실제 도달·왕복 안전 하선을 구별한다. 지도와 다음 출발은 선택이며 과거 안전이 현재 강 전체를 보장하지 않는다."
+        ],
+        "accepted_ending": "얕은 구간에서 안정된 실제 왕복을 익히고, 별도 준비 뒤 선택한 건넘 시험을 실제 수행하여 안전하게 돌아온 참가자에게만 아누케트가 자기 노질 결과를 확인한다. 중도 귀환은 안전 판단·실제 이탈의 부분 성과이며 건너편 도달 경험이 아니다. 지도 수강 여부와 강 전체의 안전은 별개다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "계속 젓는다고 빨라지지는 않아. 먼저 여기서 나갔다 돌아와 보자.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "강가 A. 얕은 연습 구간 폭4·길이12·수심1~2. 건넘 구간은 현재 강폭16~24에서 장애물 없는 두 상륙지. 배1대의 소유자와 귀환 담당1명 명시.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 보트를 제작 또는 획득 AND 실제 강변의 출발·도착 가능한 구간을 보트로 통과한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_037/o01",
+          "sequence": 1,
+          "action": "승선 허락·화물4개 이하·육지 귀환 지점을 확인하고 얕은 구간을12블록 나아갔다 돌아온다. 표시된4구간마다 전진2초/멈춤1초를 지키고 블록 충돌0으로 하선한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_037/o02",
+          "sequence": 2,
+          "action": "안정 왕복 이후에만 실제 건넘 준비를 별도 확인한다. 현재 물길에서 장애·높이 변화가 의심되면 사테트의 출처·시점·지점 있는 실제 관측을 수신해 현장과 대조하기 전 출발 보류.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_037/o03",
+          "sequence": 3,
+          "action": "변화 없음이면 추가 사테트 접촉 없이 맞은편 상륙지에 닿고 A로 돌아와 하선. 위험을 확인하면 건넘 도중이라도 A로 돌아와 중도귀환 결말로 마친다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "무리한 노질·충돌은 불안정으로 기록하고 A에 실제 돌아온 뒤 연습 재개; 귀환 자체를 안정 왕복으로 대체하지 않음.",
+        "안정된 얕은 연습·건넘 완료·안전 중도복귀를 별도 결과로 저장. 전 강 안전·다음 출발 자동 허가 없음."
+      ],
+      "outcome": {
+        "complete": "얕은 구간에서 안정된 실제 왕복을 익히고, 별도 준비 뒤 선택한 건넘 시험을 실제 수행하여 안전하게 돌아온 참가자에게만 아누케트가 자기 노질 결과를 확인한다. 중도 귀환은 안전 판단·실제 이탈의 부분 성과이며 건너편 도달 경험이 아니다. 지도 수강 여부와 강 전체의 안전은 별개다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "아누케트는 사테트의 말이 실제 오면 배를 밀기 전에 그가 잰 지점을 가리켜 묻는다. 배를 움직일 때의 물살이 다르면 노를 쥔 손을 늦춘다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "자기 또는 동의 받은 배1대. 빌린 배는 같은 배 아이템/엔티티 권리 반환. 파손은 실제 파손만, 자동 벌금 없음.",
+      "optional_learning": "안정 연습자는 다음 출발 전 박자4회 직접 세고 승하선2회 해 보는60초 선택 지도. 보트 속도 증가0.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_037_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-037",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-038",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_037_actual_outcome_report_rpg_s03_038",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 사테트가 자기가 잰 수위와 눈앞의 다른 물살을 구분해 알려 주고 출발을 재촉하지 않는다. 이를 실제로 확인한 경우: 아누케트는 사테트의 수치만 따라 움직이기보다 그가 관측한 지점을 함께 보고 실제 건널 때의 리듬을 설명한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 무사히 돌아온 플레이어에게 그녀는 다음 출발 박자를 먼저 세어 보게 한다. 전 강의 안전을 보증하지 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "보트 구간속도·충돌·승하선 로그",
+        "화물 확인·대여 반환",
+        "바닐라 물은 수위·해류 자동 변화 없음; 실제 변화만 읽는 관측 어댑터"
+      ],
+      "expected_minutes": [
+        6,
+        12
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-038",
+      "name": "사테트",
+      "definition_id": "mythictrpg:side_rpg_s03_038",
+      "production_god_id": "mythictrpg:egyptian_unassigned_satet",
+      "kind": "SIDE",
+      "title": "어제의 눈금과 오늘의 물",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-038/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-038/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP013A-RPG-S03-038",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "중급",
+        "identity": {
+          "name": "사테트",
+          "canonical_name": "사테트",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "중급",
+          "tier_display": "중급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "중급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-038",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-038",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Satet",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-038",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-038",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 중급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "중급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 어제의 눈금을 넘은 물는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "수위 관측과 변화 읽기 지도",
+        "profile_constraints": [
+          "현재 같은 하나의 본체·접촉 모드·위치·봉인·실제 청중을 확인한다. 접촉이 없거나 미확인이면 말·몸짓·원격 fallback을 생성하지 않는다. 말할 수 있음과 발화 의사는 말에만 필요하며 유효한 비언어 감각 반응에 강제하지 않는다.",
+          "특정 질문 수신은 그 질문에 답할 때만 필요하다. 실제 행동·침묵·보고도 자극이다. MAIN 소유는 해당 개인 MAIN 전용 진행·완료·보상에 필요한 경우만 검사하고 첫 수락 전에 기존 소유를 요구하지 않는다.",
+          "선택·약속·추론은 실제 실행이 아니다. 안내·행동 중 경고·부분 결과·완료 확인의 시점을 구별하고 선택하지 않은 대안이나 선택 후기를 추가 필수 조건으로 만들지 않는다.",
+          "자기 직접 관찰과 출처 있는 실제 보고를 구별한다. 듣지 못한 응답·부재자 발언·플레이어 속마음·현재 없는 물건·미래 결과를 만들지 않는다.",
+          "현재 청중 전원에게 허용된 자기 지식만 말한다. 제목·거절 이유·예시로 비공개 내용의 존재를 암시하지 않는다. 친구·파티·후발 합류·공용 완료는 개인 경험·신뢰·수신·보상권을 복제하지 않는다.",
+          "친밀함·등급·후원·동의·소유·실제 힘은 서로 다르다. 인사나 칭찬만으로 가호·주시·정치 가입·승리·아이템 지급을 만들지 않는다. 실제 인계·등록 효과·이동·수령은 확인한 결과만 반영한다.",
+          "SIDE 실제 수락 뒤 동일 기준점의 서로 다른 두 실제 시점·안전 갈대 가장자리 흔적을 비교한다. 원인 미상은 미상이며 날짜·수위 숫자를 발명하지 않는다.",
+          "아누케트 실제 관측 수신·응답과 배 소유자 사용 동의, 안전 회수 가능성을 분리한다. 미응답·거절·회수 불가의 대사는 해당 원인만 말한다.",
+          "빈 배 시험은 육지에서 제한 범위로 한다. 사람을 태운 운항 시험으로 늘리지 않는다. 안정과 계속 상승 후 회수·운항 중단 모두 실제 관측 결말이다.",
+          "중단 중 배가 실제 떠 있으면 위치·줄·회수 담당을 보존한다. 아직 안 띄운 배를 회수했다고 말하지 않는다."
+        ],
+        "accepted_ending": "실제 시간차 재관측과 얕은 구간 탐색을 마치고 그 결과를 아누케트가 실제 받아 동의한 범위의 빈 배 시험을 확인한다. 상승이 계속되면 시험을 안전하게 끝내고 운항을 중단한 결과도 유효한 관측 결말이다. 배 동의·수신이 없으면 측정만 보존하고 시험 완료는 보류한다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "어제의 선은 지우지 말자. 오늘 같은 자리에서 다시 재면 무엇이 다른지 알 수 있겠지.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "갈대 가장자리 안전 육지 A. 기준점3개를 수평으로4블록씩 떨어뜨려 기록하고 각 점의 수면 블록Y·접근로 물 침범 여부를 함께 읽는다. 빈 배 시험은 반경4 안에 회수 가능한 수심1.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 같은 실제 물가 기준점을 서로 다른 시점에 관측한다. (변화 있음 OR 변화 없음)을 확인 가능한 현장 상태와 함께 남긴다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_038/o01",
+          "sequence": 1,
+          "action": "같은 기준점3개에서 첫 관측을 기록하고 실제180초 뒤 같은 점3개를 다시 읽는다. 갈대 가장자리3블록을 조사하되 젖은 흔적은 실제 물 인접 여부만 저장한다. 변화0도 정답이다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_038/o02",
+          "sequence": 2,
+          "action": "현재 측정 시각·지점·차이만 아누케트에게 전달한다. 실제 수신·응답과 배 소유자 허락이 각각 있어야 빈 배 시험으로 간다. 미응답이면 관측 완료/시험 보류로 마친다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_038/o03",
+          "sequence": 3,
+          "action": "허락된 빈 배1대를 육지에서 놓고 회수줄 길이4·시험45초로 관찰한다. 실제 수위가1블록 이상 상승하거나 회수 가능 반경을 벗어나려 하면 즉시 육지로 회수하고 운항 중단. 안정이어도 사람을 태우지 않고 회수한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "옛 눈금 고수는 현재 관측 미완료; 첫 실제 측정부터 재개한다.",
+        "상승·안정·미상 원인은 별도. 안전 판정은 관측 구간과 그 시점에 한정. 시험 중 중단하면 배 위치·줄·회수 담당을 저장하고 먼저 회수한다."
+      ],
+      "outcome": {
+        "complete": "실제 시간차 재관측과 얕은 구간 탐색을 마치고 그 결과를 아누케트가 실제 받아 동의한 범위의 빈 배 시험을 확인한다. 상승이 계속되면 시험을 안전하게 끝내고 운항을 중단한 결과도 유효한 관측 결말이다. 배 동의·수신이 없으면 측정만 보존하고 시험 완료는 보류한다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "사테트는 아누케트에게 숫자만 던지지 않고 자기가 다시 잰 곳을 손으로 짚는다. 아누케트는 실제 참여할 때만 배가 받는 물살을 설명한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "빌린 배1대·회수줄1개는 반환. 관측료0. 건조 재료로 가짜 물자국 생성 금지.",
+      "optional_learning": "사테트와 다른 기준점1개를 정해 두 번 읽는 선택60초 지도. 예언·수위 조작 능력 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_038_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-038",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-037",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_038_actual_outcome_report_rpg_s03_037",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 지난 예측과 다르다는 이유로 비웃지 않고 언제 무엇을 봤는지 함께 밝힌다. 이를 실제로 확인한 경우: 다음에는 숫자만 던지지 않고 본인이 다시 잰 지점을 곁에서 함께 보게 한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그녀는 이번에 바뀐 판단을 지우지 않고 다음 측정에 플레이어가 고른 기준점을 포함한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "좌표·실제시각 이중 스냅샷",
+        "육지 회수줄·빈 배 시험 제한",
+        "수위 관측만, 조수 시뮬레이션은 필수 아님"
+      ],
+      "expected_minutes": [
+        6,
+        10
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-039",
+      "name": "헤리셰프",
+      "definition_id": "mythictrpg:side_rpg_s03_039",
+      "production_god_id": "mythictrpg:egyptian_unassigned_heryshef",
+      "kind": "SIDE",
+      "title": "옛 도시의 오늘 장터",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-039/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-039/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP013A-RPG-S03-039",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "중급",
+        "identity": {
+          "name": "헤리셰프",
+          "canonical_name": "헤리셰프",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "중급",
+          "tier_display": "중급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "중급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-039",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-039",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Heryshef",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-039",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-039",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 중급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "중급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 옛 도시의 오늘 장터는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "수리된 자기 물건 반환; 새 지급 없음",
+        "profile_constraints": [
+          "현재 같은 하나의 본체·접촉 모드·위치·봉인·실제 청중을 확인한다. 접촉이 없거나 미확인이면 말·몸짓·원격 fallback을 생성하지 않는다. 말할 수 있음과 발화 의사는 말에만 필요하며 유효한 비언어 감각 반응에 강제하지 않는다.",
+          "특정 질문 수신은 그 질문에 답할 때만 필요하다. 실제 행동·침묵·보고도 자극이다. MAIN 소유는 해당 개인 MAIN 전용 진행·완료·보상에 필요한 경우만 검사하고 첫 수락 전에 기존 소유를 요구하지 않는다.",
+          "선택·약속·추론은 실제 실행이 아니다. 안내·행동 중 경고·부분 결과·완료 확인의 시점을 구별하고 선택하지 않은 대안이나 선택 후기를 추가 필수 조건으로 만들지 않는다.",
+          "자기 직접 관찰과 출처 있는 실제 보고를 구별한다. 듣지 못한 응답·부재자 발언·플레이어 속마음·현재 없는 물건·미래 결과를 만들지 않는다.",
+          "현재 청중 전원에게 허용된 자기 지식만 말한다. 제목·거절 이유·예시로 비공개 내용의 존재를 암시하지 않는다. 친구·파티·후발 합류·공용 완료는 개인 경험·신뢰·수신·보상권을 복제하지 않는다.",
+          "친밀함·등급·후원·동의·소유·실제 힘은 서로 다르다. 인사나 칭찬만으로 가호·주시·정치 가입·승리·아이템 지급을 만들지 않는다. 실제 인계·등록 효과·이동·수령은 확인한 결과만 반영한다.",
+          "SIDE 수락·자리 사용 허락·자기 물건으로 수리 또는 교환 한 범위를 고른다. 장식만 고른 결과를 운영 성공으로 바꾸지 않는다.",
+          "수리만 프타 실제 협력·소유자 수리 동의가 필요하다. 교환은 양측 실제 합의·인도·수령을 확인하며 프타 협력을 추가 문턱으로 붙이지 않는다.",
+          "손님 없음/프타 미협력 때 둘의 접수·반환 시험 운영은 독립 결말이다. 수리·손님·도시·공방 완공을 만들지 않는다. 장식만 했다면 장식 정리로 닫는다.",
+          "현재 실제 맡긴 미처리품만 안전 보관/반환 대상으로 삼는다. 반환은 완료 보상이 아니며 반복 접수·중복 정산을 하지 않는다."
+        ],
+        "accepted_ending": "수락자가 허락된 자리와 자기 물건으로 오늘의 수리 자리 또는 농산물 교환 자리를 실제 운영하고 접수·거래·미처리품을 정산하면 그 선택 범위의 SIDE 결과가 남는다. 프타 협력 없는 수리 완료는 없다. 손님이 없으면 헤리셰프와 둘의 시험 운영으로 마칠 수 있으며 도시·공방 완공은 아니다. 장식만 택하면 전시·소비만 남고 수리/교환 성취는 없다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "이름은 오래됐지만, 오늘 누가 쓰는지는 봐야겠구나. 수리든 교환이든 한 자리만 열어 보자.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 공용 공터6×6. 부지 이용 허락 후 기존 상자/작업대만 사용한다. 새 공방·농지·기념비 건설0.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 수확·제작으로 얻은 물품을 확인된 기존 생활권에 운반·인계한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_039/o01",
+          "sequence": 1,
+          "action": "수리/교환/장식 중 하나를 고르고 실제 본인 물건만 접수한다. 수리는 자기 일반 철 도구1개, 교환은 자기 밀3과 상대 빵1을 서로 동의한 조건으로, 장식은 자기 꽃2개 배치.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_039/o02",
+          "sequence": 2,
+          "action": "수리는 프타가 실제 협력 응답·현장 작업·소유자 허락을 모두 충족할 때만 철 주괴1개로 같은 도구 내구 최대64 복원. 교환은 서로 실제 물건 인도·수령으로 완료하며 프타 불필요.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_039/o03",
+          "sequence": 3,
+          "action": "손님 또는 프타 협력이 없으면 헤리셰프와 접수→보관→동일 물건 반환1회를 시험하고 종료한다. 장식 경로는 꽃2개를 정리·회수하여 닫는다. 전체 운영 최대180초 후 현재 맡은 것만 반환·안전보관한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "수리·교환·둘의 시험·장식 정리는 OR 독립 결말. 시험에서 수리나 손님을 창작하지 않는다.",
+        "부지 허락 철회는 진행 정지 후 맡긴 물건 반환. 미처리품 보관은 소유자 동의 때만; 반환은 퀘스트 완료 여부와 무관하게 받을 권리."
+      ],
+      "outcome": {
+        "complete": "수락자가 허락된 자리와 자기 물건으로 오늘의 수리 자리 또는 농산물 교환 자리를 실제 운영하고 접수·거래·미처리품을 정산하면 그 선택 범위의 SIDE 결과가 남는다. 프타 협력 없는 수리 완료는 없다. 손님이 없으면 헤리셰프와 둘의 시험 운영으로 마칠 수 있으며 도시·공방 완공은 아니다. 장식만 택하면 전시·소비만 남고 수리/교환 성취는 없다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "헤리셰프는 고장 난 자기 도구를 내놓을 때 옛 이름 대신 불편한 부분부터 말한다. 프타가 실제 듣고 현재 쓸모를 묻는 경우에만 함께 이야기한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "none_new_reward",
+        "items": [],
+        "new_grant_count": 0,
+        "return_not_reward": true,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "수리 선택 철 주괴1개 본인 동의 소비. 교환 가격은 본인 밀3↔상대 빵1, 양측 실제 동의 없는 인출0. 장식 꽃2 반환.",
+      "optional_learning": "헤리셰프는 실제 쓰인 한 자리만 다음에 다시 열고 싶다고 말한다. 무료 장비·영구 교역 할인 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_039_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-039",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-020",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_039_actual_outcome_report_rpg_s03_020",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 기념비 자랑만 하지 않고 지금 머무는 사람들이 무엇을 쓰는지 보여 준다. 이를 실제로 확인한 경우: 다음에는 옛 이야기로만 맞지 않고 그 사람이 발견한 현재의 쓸모부터 다른 방문자에게 설명한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 헤리셰프는 다시 열고 싶은 오늘의 자리를 고르고 과거 도시 전체 복원을 플레이어 의무로 만들지 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "대안별 물건 에스크로",
+        "프타 현장 작업 조건",
+        "동일 UUID 반환·교환 원자성"
+      ],
+      "expected_minutes": [
+        5,
+        10
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    },
+    {
+      "record_key": "RPG-S03-041",
+      "name": "마헤스",
+      "definition_id": "mythictrpg:side_rpg_s03_041",
+      "production_god_id": "mythictrpg:egyptian_unassigned_maihesa",
+      "kind": "SIDE",
+      "title": "큰 소리 작은 발",
+      "source_binding": {
+        "profile": "페르소나/RPG-S03-041/profile.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S03-041/contract",
+        "episode": "authoring_contract.json#exact_accepted_dossier/episodes/EP013A-RPG-S03-041",
+        "reward_field": "authoring_contract.json#exact_scope_contract/rewards_and_costs"
+      },
+      "preservation": {
+        "combat_tier": "상급",
+        "identity": {
+          "name": "마헤스",
+          "canonical_name": "마헤스",
+          "mythology": "이집트",
+          "tradition_source": "이집트·신앙/창조 전승",
+          "tier": "상급",
+          "tier_display": "상급",
+          "tier_confirmation": false,
+          "tier_source_status": "기존 제안 유지",
+          "divinity_classification": "divine",
+          "combat_tier": "상급",
+          "gender_status": "자료에 개별 성별 명시 없음",
+          "war_allegiance": {
+            "value": "미정",
+            "status": "current_source_identity_evidence",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "war_allegiance",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "myth_subgroup": {
+            "value": "미지정",
+            "status": "자료상 미지정",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "myth_subgroup",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "identity_safeguards": {
+            "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+            "status": "current_source_identity_safeguards",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "record_key": "RPG-S03-041",
+          "record_key_type": "roster_management_key_not_registered_engine_id",
+          "registered_god_id": null,
+          "registered_story_id": null,
+          "runtime_registration_status": "not_verified",
+          "source_record_key": "RPG-S03-041",
+          "source_membership_status": "retained_original_identity",
+          "canonical_goetia_number": null,
+          "original_name": "Maihesa",
+          "aliases": "없음",
+          "identity_status": "distinct",
+          "identity_notes": {
+            "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "identity_notes",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "gender": {
+            "value": "미지정",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "gender",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "entity_type": {
+            "value": "신",
+            "status": "retained_identity_design",
+            "source": {
+              "archive_file": "rpg_authoring_source_archive.json",
+              "namespace": "reconciled_rows",
+              "record_key": "RPG-S03-041",
+              "field": "entity_type",
+              "status": "history_only_do_not_consume_as_current"
+            },
+            "use_scope": "authoring_design_only",
+            "runtime_binding": false
+          },
+          "regional_aliases": null,
+          "tier_interpretation": {
+            "value": null,
+            "status": "not_separately_authored",
+            "source": {
+              "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+              "record_key": "RPG-S03-041",
+              "field": "tier_interpretation"
+            },
+            "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+            "runtime_binding": false
+          },
+          "current_identity_evidence": [],
+          "combat_tier_assignment": {
+            "assignment_status": "기존 제안 유지",
+            "rationale": "기존 명부의 상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+            "special_note": "",
+            "previous_tier": "상급",
+            "previous_combat_tier": "미지정",
+            "user_confirmed": false,
+            "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+          }
+        },
+        "main_status": "NOT_APPLICABLE",
+        "main_scope": "개인 MAIN을 새로 두지 않는다. 큰 소리 작은 발는 독점 소유가 필요 없는 선택적 지역 사건·개인 대화이다. 실제 참가자 각자의 행동·응답만 남기고 공용 물체 변화는 한 번만 반영한다. 공용 C 본편·기존 MAIN 수주 자격을 대체하지 않는다. 이 인물에는 새 초반 전투력 최소컷 면제를 지정하지 않는다. 현행 접근·일반 대화와 위험 작업·전투·권능 수용의 조건을 각각 확인한다.",
+        "reward_original": "근접 방어·침입 대응 지도",
+        "profile_constraints": [
+          "현재 같은 본체·접촉 모드·위치·잔여 봉인·실제 청중을 확인한다. 접촉 부재·미확인에는 말·몸짓·fallback을 생성하지 않는다. 말할 수 있음과 말할 의사는 발화에만 검사하고 유효한 침묵·감각 반응까지 막지 않는다.",
+          "질문 수신은 해당 질문의 답변에만 필요하다. 실제 행동·침묵·보고도 반응의 계기가 된다. 일반 대화에 MAIN 소유나 퀘스트 수락을 요구하지 않는다. 공동 작업·현물 사용·공개에는 그 행동에 필요한 허락을 별도로 확인한다.",
+          "의향·농담·추론·선택 클릭은 수락·수행·완료가 아니다. 안내·현재 경고·중단 요청을 완료 뒤로 미루지 않는다. 완료형 발언은 실제 결과가 확인될 때만 하고 다른 대안·선택 후기를 필수로 더하지 않는다.",
+          "직접 본 일과 실제 전달받은 주장을 구별한다. 부재한 상대의 새 답·모르는 속마음·타인의 사적 경험·과거 동행·현재 도구·소유물을 꾸미지 않는다. 기억은 그 당사자와 실제 겪거나 출처 있는 보고를 받은 범위만 유지한다.",
+          "현재 청중 전원에게 허용된 자기 지식만 말한다. 공개방·사적 방의 이름만으로 개인 자격을 대신하지 않는다. 비공개 내용을 제목·농담·거절 이유로 암시하지 않는다. 친구·파티·후발 합류로 경험·공로·보상권을 복사하지 않는다.",
+          "친분·감정·현재 힘·소속·동의는 서로 별개다. 실제 이동·수령·소비·지급·가호·주시·공격 결과를 대사로 확정하지 않는다. 미확인 상태는 그 상태에 의존하는 표현만 보류하며 무관한 잡담·퇴장을 막지 않는다."
+        ],
+        "accepted_ending": "실제 침입 근거를 확인한 수락자가 생활 구역 밖 유도·전투 또는 출입구 차단·퇴각 유도 중 하나를 실제 수행해 당면 침입을 막고 마헤스가 현재 결과를 확인하면 그 경로 완료. 다른 대안을 추가로 강제하지 않는다. 바스테트에게 피해를 보여 주는 실제 인계는 별도 수신이 필요하며 부재하면 미전달로 남는다."
+      },
+      "common_contract_ref": "EGYPT-SIDE-COMMON-v1",
+      "prerequisites": [],
+      "successors": [],
+      "entry": {
+        "offer": "큰 소리가 났다는 말 말고, 어디로 들어왔는지 보여 줘. 사람 다니는 길은 그대로 두고.",
+        "accept": "플레이어가 수행 범위·물건 사용·수신 공개범위를 확인하고 수락. 준비 부족이면 인사만 가능.",
+        "site": "기존 야시장 A, 뒤편 창고문 B(A에서12블록), 바깥 유인점 C(B에서16블록), 민간 동선 폭3. 게임시각13000~23000.",
+        "time": "명시된 시험 구간 외 시간 제한 없음",
+        "world_unlock": "누구 한 명이 실제 밤에 공개 생활권 사이 경로를 이동해 안전 지점에 도달 OR 기존 원정·레이드의 귀환 물자를 실제 경계 지점까지 운반한다.",
+        "unlock_adoption": "본문의 기존 후보를 새 조우용 제작조건으로 채택하되 기존 유효 접근·초기 후보를 소급 잠그지 않는다. 원문의 명시적 봉인·특수 부재는 유지한다.",
+        "encounter": "공통계약 access와 원문 현재 접근을 함께 적용. 이 퀘스트 수락은 출현과 별개."
+      },
+      "objectives": [
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_041/o01",
+          "sequence": 1,
+          "action": "실제 생활 움직임2건과 창고 뒤 침입 흔적2건을 각각 현장2블록 이내에서 확인한다. 생활 움직임은 참가자 걷기/짐 운반, 침입 흔적은 실제 좀비2체가 B 경계에 진입한 위치·시각이다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_041/o02",
+          "sequence": 2,
+          "action": "좀비2체(기본20HP·무장0·드롭XP0)를 C까지 유인해 싸우거나 창고 측문 폭2를 허가된 차단블록2개로 막아 적이 문에서12블록 물러난 상태를20초 유지한다. 민간 동선 봉쇄0.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        },
+        {
+          "objective_id": "mythictrpg:side_rpg_s03_041/o03",
+          "sequence": 3,
+          "action": "안전선 A에 실제 귀환하고 파손된 의뢰 소품·미파손 목록을 각각 검수한다. 바스테트에게 실제 피해·통행 조정만 허락받아 전달할 수 있지만 미수신이어도 현장 방어 완료는 유지한다.",
+          "evidence": "공통계약 physical_evidence와 본문 수량·목표 위치·이전후 상태, 원문 당사자 실제 확인"
+        }
+      ],
+      "branches": [
+        "시끄러운 행인을 적으로 지목하거나 생활길 봉쇄를 요청하면 거절, 침입 증거부터 다시 확인한다.",
+        "유인/교전과 차단/후퇴는 OR. 차단물을 철거하고 자기 물자로 회수한 뒤 결산. 바스테트의 공동 경계는 실제 동의 후만."
+      ],
+      "outcome": {
+        "complete": "실제 침입 근거를 확인한 수락자가 생활 구역 밖 유도·전투 또는 출입구 차단·퇴각 유도 중 하나를 실제 수행해 당면 침입을 막고 마헤스가 현재 결과를 확인하면 그 경로 완료. 다른 대안을 추가로 강제하지 않는다. 바스테트에게 피해를 보여 주는 실제 인계는 별도 수신이 필요하며 부재하면 미전달로 남는다.",
+        "partial": "목표별 실제 완료만 보존. 미수신/미귀환/실습 미완료는 해당 상태 유지.",
+        "npc_memory": "마헤스는 다음 순찰의 경쟁 상대로 해당 플레이어를 보며 먼저 어느 방향을 들었는지 묻는다. 바스테트가 실제 응답하면 둘이 경계를 나눌 범위를 조정한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "no_main_completion": true
+      },
+      "rewards": {
+        "kind": "instruction",
+        "items": [],
+        "new_grant_count": 0,
+        "recipient": "해당 목표를 실제 수행하고 NPC가 확인한 개인 UUID; 분배는 동의된 개인 몫",
+        "limit": "최초 조건 충족1회; 반복 수업·재시도는 추가 물품권0"
+      },
+      "cost_and_return": "차단용 자기 판자2개는 철거 반환, 장비 소비는 실제값. 민간 재산을 미끼로 쓰지 않음.",
+      "optional_learning": "마헤스와 방패로 모의접촉2회(피해0) 받고 좌우 발소리의 실제 발생 위치2개로 걸어가는90초 선택 지도. 자동 적감지·공격버프 없음.",
+      "knowledge": {
+        "fact_definition_id": "mythictrpg:fact_rpg_s03_041_actual_outcome",
+        "trigger": "해당 목표의 실제 결과 확정; 성공/반대선택/부족/중단을 결과 필드로 구분",
+        "payload_fields": [
+          "record_key",
+          "quest_definition_id",
+          "attempt_id",
+          "actor_uuids",
+          "object_ids",
+          "location",
+          "server_time",
+          "selected_branch",
+          "actual_quantities",
+          "outcome",
+          "witnesses",
+          "reported_to"
+        ],
+        "npc_recipient": "RPG-S03-041",
+        "acquisition": "NPC가 실제 목격한 범위 또는 실제 받은 허가 보고. 보고와 직접관찰은 별도 provenance.",
+        "player_audience": "목격자·실제 수업 수강자·허가 수신자별 개별 저장",
+        "disclosure": "현재 공용 결과만 공개. 짐 내용·소유자·사적 대화·선택 이유는 허락받은 수신자만.",
+        "handoffs": [
+          {
+            "recipient_record_key": "RPG-S03-025",
+            "fact_definition_id": "mythictrpg:fact_rpg_s03_041_actual_outcome_report_rpg_s03_025",
+            "condition": "해당 대상의 실제 접촉·허가된 보고 수신 뒤만. 원문에서 필수 응답인 가지는 목표에 명시하며 그 외는 선택 인계.",
+            "allowed_payload": "이번 목표에서 실제 확인한 공개 위치·수량·시점·결과 요약, 개인사·원본내용 제외",
+            "effect": "관계 변화의 별도 원인 행동: 몸집이나 신분 대신 실제로 선을 넘은 행동을 설명한다. 이를 실제로 확인한 경우: 다음에는 혼자 판단해 몰아붙이기보다 그 사람이 본 방향을 함께 살펴보고 경계를 나눈다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 플레이어의 감각을 다음 순찰에서 시험할 경쟁 상대로 삼으며 민간인의 소음을 적의 증거로 남기지 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+            "absence": "수신 안 됨으로 저장, 새 대리 응답 없음"
+          }
+        ]
+      },
+      "implementation": [
+        "실제 소리 이벤트 출처 분리",
+        "문 경계 진입·유인/차단 결과",
+        "피해 목록과 바스테트 수신"
+      ],
+      "expected_minutes": [
+        8,
+        14
+      ],
+      "balance_rationale": "비전투 생활·관측·귀환의 실제 숙련과 관계가 주 가치. 원문 보상 종류만 구체화하고 원재산을 보상으로 부풀리지 않는다. 단기 사건에 고등급 전투 권능·영구 경제배수 없음. 예상 시간은 정적 동선 계산이며 실전 검증 아님.",
+      "acceptance_tests": [
+        "목표별 제시된 수량 미달/귀환 전/상대 미수신을 성공 처리하지 않는다.",
+        "각 OR 대안을 독립 실행해 비선택 경로의 증거가 없어도 해당 결말에 도달한다.",
+        "보상0·반환 경로는 신규 아이템 권리를 만들지 않는다."
+      ]
+    }
+  ]
+}

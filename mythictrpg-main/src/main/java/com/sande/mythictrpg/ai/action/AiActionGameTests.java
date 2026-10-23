@@ -11,6 +11,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @GameTestHolder(MythicTrpg.MOD_ID)
@@ -50,6 +52,18 @@ public final class AiActionGameTests {
 
     @GameTest(templateNamespace = "minecraft", template = TEMPLATE)
     public static void registryAllowsOnlyDefinitionsOwnedByTheGame(GameTestHelper helper) {
+        // An explicit allow-list detects missing/replaced/extra actions, not just a coincidental count.
+        Set<ResourceLocation> expected = Set.of(
+                AiActionTypes.QUEST_OFFER, AiActionTypes.QUEST_ROSTER_REQUEST, AiActionTypes.NPC_DIRECTIVE,
+                AiActionTypes.ITEM_REQUEST, AiActionTypes.REWARD_PROPOSAL,
+                AiActionTypes.RELATIONSHIP_CHANGE, AiActionTypes.BLESSING_OFFER,
+                AiActionTypes.WORLD_INTERACTION, AiActionTypes.PLAYER_DAMAGE,
+                AiActionTypes.GENERATED_QUEST_OFFER, AiActionTypes.RAID_OFFER,
+                AiActionTypes.NPC_VISIT_REQUEST, AiActionTypes.NPC_ACTIVITY_REQUEST,
+                AiActionTypes.STRUCTURE_EVALUATION_REQUEST, AiActionTypes.GOD_RELATION_TRANSITION,
+                AiActionTypes.STORY_EVENT_HOOK);
+        helper.assertValueEqual(AiActionGateway.registeredActionTypes(), expected,
+                "game-owned production action allow-list");
         helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.QUEST_OFFER).isPresent(),
                 "quest offer action was not registered");
         helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.ITEM_REQUEST).isPresent(),
@@ -81,12 +95,49 @@ public final class AiActionGameTests {
         helper.assertValueEqual(AiActionRegistry.INSTANCE.find(AiActionTypes.PLAYER_DAMAGE).orElseThrow()
                         .confirmationPolicy(), AiActionDefinition.ConfirmationPolicy.IMMEDIATE,
                 "player damage should be an immediate scene action");
-        helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.NPC_VISIT_REQUEST).isEmpty(),
-                "NPC visit action became executable before the external NPC mod integration");
+        for (ResourceLocation type : Set.of(AiActionTypes.NPC_VISIT_REQUEST,
+                AiActionTypes.NPC_ACTIVITY_REQUEST, AiActionTypes.QUEST_ROSTER_REQUEST)) {
+            helper.assertValueEqual(AiActionRegistry.INSTANCE.find(type).orElseThrow().confirmationPolicy(),
+                    AiActionDefinition.ConfirmationPolicy.IMMEDIATE,
+                    "bounded request/menu action confirmation policy: " + type);
+        }
         helper.assertTrue(AiActionRegistry.INSTANCE.find(AiActionTypes.RAID_OFFER).isPresent(), "raid offer missing");
-        helper.assertValueEqual(AiActionGateway.registeredActionTypes().size(), 12,
-                "unexpected production AI action count");
         helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = TEMPLATE)
+    public static void registeredVisitStillRequiresExactRoomAndGameEligibility(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        try {
+            UUID session = UUID.randomUUID();
+            ResourceLocation unconfiguredGod = ResourceLocation.fromNamespaceAndPath(MythicTrpg.MOD_ID,
+                    "registry_unconfigured_test_god");
+            var definition = AiActionRegistry.INSTANCE.find(AiActionTypes.NPC_VISIT_REQUEST).orElseThrow();
+            var proposal = new AiActionProposal(UUID.randomUUID(), session, AiActionTypes.NPC_VISIT_REQUEST,
+                    unconfiguredGod, player.getUUID(), "Visit request", "Not an arrival", Map.of());
+            var exactContext = new AiActionContext(player.server, player,
+                    Optional.of(new AiActionScope(session, unconfiguredGod)));
+            for (AiActionContext context : java.util.List.of(
+                    new AiActionContext(player.server, player),
+                    new AiActionContext(player.server, player, Optional.of(new AiActionScope(UUID.randomUUID(), unconfiguredGod))),
+                    new AiActionContext(player.server, player, Optional.of(new AiActionScope(session, DEMETER))),
+                    exactContext)) {
+                helper.assertTrue(!definition.validator().validate(context, proposal).accepted(),
+                        "registration bypassed room or game eligibility validation");
+                helper.assertTrue(!definition.executor().execute(context, proposal).executed(),
+                        "executor did not revalidate an ineligible visit request");
+            }
+            var injectedTarget = new AiActionProposal(UUID.randomUUID(), session, AiActionTypes.NPC_VISIT_REQUEST,
+                    unconfiguredGod, player.getUUID(), "Visit request", "Untrusted target", Map.of("structure_id", UUID.randomUUID().toString()));
+            helper.assertTrue(!definition.validator().validate(exactContext, injectedTarget).accepted(),
+                    "model-selected visit target was accepted instead of game-owned candidates");
+            helper.assertTrue(!definition.executor().execute(exactContext, injectedTarget).executed(),
+                    "executor accepted injected visit parameters");
+            helper.succeed();
+        } finally {
+            // makeMockServerPlayerInLevel registers a connected player; do not leak it to other tests.
+            player.server.getPlayerList().remove(player);
+        }
     }
 
     @GameTest(templateNamespace = "minecraft", template = TEMPLATE)

@@ -14,7 +14,7 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
         BLOCK_INTERACTION, BLOCK_BREAK_ATTEMPT, BLOCK_BREAK_RESULT, BLOCK_REMOVED,
         ATTACK_ATTEMPT, ATTACK_RESULT, DAMAGE_APPLIED, ITEM_PICKED_UP, PLAYER_DIED, QUEST_COMPLETED, QUEST_EVALUATED,
         BATTLE_RESULT, QUEST_TRANSITION, ADVANCEMENT_EARNED, OBSERVED_ACTIVITY_SUMMARY,
-        PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK, RAID_CHOICE }
+        PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK, RAID_CHOICE, PLAYER_PURPOSE_EVIDENCE, PLAYER_ACTIVITY_FACT, PLAYER_SUPPORT_SIGNAL, PLAYER_CHARACTER_SIGNAL }
     public record Position(int x, int y, int z) {}
     public record Subject(String kind, String typeId, UUID entityId) {
         public Subject {
@@ -56,6 +56,18 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
         public Draft {
             Objects.requireNonNull(occurrenceId); Objects.requireNonNull(captureSession);
             Objects.requireNonNull(actorId); Objects.requireNonNull(subject);
+            if(type==Type.PLAYER_CHARACTER_SIGNAL) {
+                com.sande.mythictrpg.understanding.CharacterGoalSignal.parse(payload);
+                if(!subject.typeId().equals(com.sande.mythictrpg.understanding.CharacterGoalSignal.SUBJECT)
+                        ||details==null||!details.participants().equals(java.util.Set.of(actorId)))throw new IllegalArgumentException("character source actor");
+            }
+            if (type == Type.PLAYER_SUPPORT_SIGNAL) {
+                var signal = com.sande.mythictrpg.understanding.SupportSignal.parse(payload);
+                if (!subject.typeId().equals(com.sande.mythictrpg.understanding.SupportSignal.SUBJECT)
+                        || details == null || !details.participants().equals(java.util.Set.of(actorId))
+                        || signal.kind().name().startsWith("RAID_") && details.runId() == null)
+                    throw new IllegalArgumentException("support signal actor/run");
+            }
             if (position == null && (details == null || !"OFFLINE_UNKNOWN".equals(details.locationStatus())))
                 throw new IllegalArgumentException("Missing position without explicit offline status");
             Objects.requireNonNull(type); id(dimensionId); id(sourceRef);
@@ -65,7 +77,7 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
             }
             payload = Map.copyOf(payload);
             if (payload.size() > 8 || payload.entrySet().stream().anyMatch(e -> e.getKey().length() > 64
-                    || e.getValue().length() > 256)) throw new IllegalArgumentException("Payload budget");
+                    || e.getValue().length() > (type == Type.PLAYER_PURPOSE_EVIDENCE ? 4096 : 256))) throw new IllegalArgumentException("Payload budget");
             if (type == Type.MATURE_CROP_REMOVED && (!subject.kind().equals("BLOCK")
                     || !sourceRef.equals("mythictrpg:crop_remove_commit"))) throw new IllegalArgumentException("Crop source");
             if (type == Type.ENTITY_KILLED && (!subject.kind().equals("ENTITY")
@@ -81,9 +93,20 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
                 case QUEST_COMPLETED,QUEST_EVALUATED,QUEST_TRANSITION -> "QUEST";
                 case BATTLE_RESULT, RAID_CHOICE -> "BATTLE";
                 case ADVANCEMENT_EARNED -> "ADVANCEMENT";
-                case OBSERVED_ACTIVITY_SUMMARY, PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK -> "ACTIVITY";
+                case OBSERVED_ACTIVITY_SUMMARY, PLAYER_UNDERSTANDING_CONTROL, PLAYER_UNDERSTANDING_FEEDBACK, PLAYER_PURPOSE_EVIDENCE, PLAYER_ACTIVITY_FACT, PLAYER_SUPPORT_SIGNAL, PLAYER_CHARACTER_SIGNAL -> "ACTIVITY";
             };
             if(!subject.kind().equals(expectedKind))throw new IllegalArgumentException("Type/subject mismatch");
+            if(type==Type.PLAYER_ACTIVITY_FACT) {
+                var activity=com.sande.mythictrpg.understanding.ActivityEvidence.parse(payload);
+                if(!subject.typeId().equals(com.sande.mythictrpg.understanding.ActivityEvidence.SUBJECT)
+                        || activity.lastTick()!=gameTick || details==null || !details.participants().equals(java.util.Set.of(actorId)))
+                    throw new IllegalArgumentException("Activity fact scope");
+            }
+            if (type == Type.PLAYER_PURPOSE_EVIDENCE) {
+                var evidence = com.sande.mythictrpg.understanding.PurposeLedger.decode(payload);
+                if (!subject.typeId().equals(com.sande.mythictrpg.understanding.PurposeLedger.SUBJECT)
+                        || !actorId.equals(evidence.playerId())) throw new IllegalArgumentException("Purpose annotation actor");
+            }
             if (type == Type.RAID_CHOICE) {
                 com.sande.mythictrpg.understanding.RaidChoiceEvidence.parse(payload);
                 if(details==null||details.runId()==null||!details.participants().equals(java.util.Set.of(actorId)))
@@ -98,7 +121,10 @@ public record ActionRecord(int schemaVersion, UUID worldId, long sequence, Draft
                 } else {
                     String key = payload.get("key");
                     if (!com.sande.mythictrpg.understanding.PlayerUnderstanding.validFeedbackKey(key)) throw new IllegalArgumentException("Understanding key");
-                    if ("purpose".equals(key)) {
+                    if(com.sande.mythictrpg.understanding.SupportSharing.KEY.equals(key)) {
+                        if(!java.util.Set.of("ALLOW","DENY").contains(operation)||!payload.keySet().equals(java.util.Set.of("operation","key")))
+                            throw new IllegalArgumentException("support sharing consent");
+                    } else if ("purpose".equals(key)) {
                         if (!java.util.Set.of("DECLARE", "RETRACT").contains(operation)
                                 || !payload.keySet().equals(java.util.Set.of("operation", "key", "text"))
                                 || payload.get("text").length() > 160 || operation.equals("DECLARE") && payload.get("text").isBlank())

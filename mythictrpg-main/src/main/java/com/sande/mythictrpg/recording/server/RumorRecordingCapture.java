@@ -141,7 +141,8 @@ final class RumorRecordingCapture {
         evidence.disclosureAudience().forEach(p -> audience.add(new ActorRef(ActorKind.PLAYER, p.toString())));
         audience.add(new ActorRef(ActorKind.GOD, received.godId()));
         var projection = new TreeMap<String, Object>();
-        projection.put("memoryMode", "RUMOR_TEST"); projection.put("rootId", claim.rootId());
+        // Birth mode belongs to the immutable game evidence, never the worker's current global policy.
+        projection.put("memoryMode", evidence.memoryMode()); projection.put("rootId", claim.rootId());
         projection.put("subjectPlayerId", evidence.subject()); projection.put("godId", received.godId());
         projection.put("claimRevision", claim.revision()); projection.put("claim", claim.text()); projection.put("epithet", claim.epithet());
         projection.put("acquisition", "RUMOR_RECEIVED");

@@ -24,7 +24,11 @@ public final class RumorPersistenceGameTests {
         var loaded=RumorSavedData.load(stored,server.registryAccess());
         helper.assertTrue(loaded.ready(),"valid snapshot quarantined");
         helper.assertValueEqual(loaded.worldId(),data.worldId(),"world id changed");
-        helper.assertValueEqual(loaded.heard(server,player,god,Set.of(player)).size(),1,"receipt lost");
+        helper.assertValueEqual(loaded.access(server,ledger->ledger.heard(player,god,Set.of(player))).size(),1,"stored receipt lost");
+        int visible=com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
+                ==com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST?1:0;
+        helper.assertValueEqual(loaded.heard(server,player,god,Set.of(player)).size(),visible,
+                "legacy TEST receipt crossed the current gameplay mode");
         var damaged=stored.copy(); damaged.putInt("dataVersion",99);
         var rejected=RumorSavedData.load(damaged,server.registryAccess());
         helper.assertTrue(!rejected.ready(),"unknown schema accepted");

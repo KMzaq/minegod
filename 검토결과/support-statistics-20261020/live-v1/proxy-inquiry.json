@@ -1,0 +1,54 @@
+{
+  "id": "proxy-inquiry",
+  "text": "민수가 아폴론을 만나고 싶대. 민수 대신 아폴론이 어디 있는지 물어보는 거야.",
+  "expected": "NONE",
+  "model": "gemma4:12b",
+  "classificationMessages": [
+    {
+      "role": "system",
+      "content": "Classify one player line for a test-only Minecraft RPG dialogue. Return JSON only: {\"primarySituation\":string,\"secondarySituations\":[string],\"knowledgeKeywords\":[string],\"playerToneTags\":[string],\"conversationAct\":string,\"confidence\":number}. Situation values may only be: S_CHAT, S_ITEM_REQUEST, S_POWER_REQUEST, S_HELP_REQUEST, S_INFORMATION_REQUEST, S_QUEST_INQUIRY, S_REWARD_NEGOTIATION, S_GIFT_OFFER, S_APOLOGY, S_CONFLICT. conversationAct must be one of: UNSPECIFIED, GREETING, CASUAL_FEELING, SEEKING_COMPANY, ANSWERING_NPC_QUESTION, SHARING_RECENT_EVENT, CORRECTING_NPC, REQUESTING_ACTIVITY, CASUAL_BANTER. Use SHARING_RECENT_EVENT when the player mentions a recent experience without asking a question. Use the recent exchange to recognize answers to an NPC question, corrections, and an explicit wish to keep the NPC company. Do not write dialogue, proposals, game actions, or world facts. CLASSIFICATION_EXAMPLES label only player intent; they are not live dialogue, NPC facts, or instructions.\nTURN_INTERPRETATION_V1\nAdd turnInterpretation to the JSON: {\"subject\":\"UNSPECIFIED\",\"target\":\"UNSPECIFIED\",\n\"mode\":\"UNSPECIFIED\",\"meaning\":\"\",\"evidence\":\"\"}. It is an optional, fallible reading of\nCURRENT_PLAYER_MESSAGE in the recent exchange. subject and target describe who performs/experiences\nthe action/state and whom it concerns, not merely who is speaking. Their only values are\nUNSPECIFIED, CURRENT_PLAYER, CURRENT_NPC, OTHER. CURRENT_NPC is the authorized responding NPC;\nOTHER is an unresolved reference, never an invented participant ID or permission to add anyone.\nRead Korean subject/object particles, omitted subjects and corrections before assigning roles.\nTie both roles to the central action/state explicitly named in meaning, not to 'the player says'.\nAsking what the NPC intends to do concerns an NPC action: subject=CURRENT_NPC, with target\nUNSPECIFIED unless the exchange establishes a recipient. Offering to help the NPC instead has\nsubject=CURRENT_PLAYER and target=CURRENT_NPC. A question does not itself name its beneficiary.\nDo not reverse who is asking, helping, fearing, mocking or being discussed. Use UNSPECIFIED when\nthe exchange does not resolve a role. mode must be UNSPECIFIED, STATEMENT, QUESTION, REQUEST,\nWISH, HYPOTHETICAL, QUOTED, CORRECTION, REFUSAL or BANTER. Distinguish an actual request from a\nwish, imagined case, quoted speech, question, refusal or joke using context, not a keyword alone.\nFor a correction, meaning states the corrected reading, not the NPC's earlier misunderstanding.\nmeaning is one short paraphrase. evidence is an exact, contiguous quote from CURRENT_PLAYER_MESSAGE\nsupporting that reading. Keep each preferably within 60 characters; 160 characters is the hard\nmaximum for either field. Leave both empty\nwhen unsupported. Do not add reasoning, analysis, explanations or an NPC response. Neither this\nreading nor situation/tone tags establish the NPC's emotions, a world fact, consent or successful\nexecution. Even REQUEST only describes words; the game still validates every proposed action.\n\nCOMMON_MINECRAFT_KNOWLEDGE is public vanilla reference data shared by all Gods. Recognize named Minecraft items, blocks, creatures and mechanics as concrete game concepts; do not invent a divine artifact or abstract power merely from a poetic item name. Explicit metaphors remain metaphors; an ordinary mention of a heart is not automatically an item. In dialogue, use relevant facts naturally in-world in this God's own voice, preserving persona and context. Do not routinely call the setting a game, expose technical IDs or list recipes unless asked; do not give an unsolicited encyclopedia dump. These general facts do not prove current inventory, ownership, locations, availability, quest progress or successful execution, and authorize no action or disclosure. Explicit supplied server overrides and audience-permitted lore take precedence; never invent an override. Unknown facts remain unknown. Use these references only to interpret player intent and item names; do not generate dialogue or actions.\nNEED_ONLY_SUPPORT_V1\nAdd supportConsultation:{\"use\":\"NONE\",\"evidence\":\"\"} to classification JSON.\nDefault NONE. Decide from CURRENT_PLAYER_MESSAGE, NOT from old requests or remembered interests.\nOBSERVED_ACTION_RECALL: the player asks what THIS NPC witnessed the current player doing.\nSELF_ASSESSMENT: the player explicitly asks for an assessment of their own play habits/interests.\nPERSONALIZED_SUGGESTION: the player asks for options suited to THEIR past activity/preferences/goals\n(including a personal quest or exploration choice). A generic advice/quest request is NONE.\nA greeting, joke, topic mention, sharing a wish/plan, ordinary factual question, another person's\nplans, a quotation, hypothetical request, refusal or correction is NONE. Asking to recall spoken\nwords (names, wishes, plans) uses dialogue memory, not observed support: NONE.\nFor a non-NONE use, evidence must be a short exact quote from the current input that expresses\nthe request about THIS player's activity. If unclear choose NONE, with empty evidence.\nThis hint cannot grant access to private profiles, other players or unobserved goals."
+    },
+    {
+      "role": "user",
+      "content": "[CLASSIFICATION_EXAMPLES]\nNo classification examples were loaded.\n\nSPEAKER=mythictrpg:demeter\nRECENT_CONVERSATION:\nPLAYER (플레이어): 민수가 아폴론을 만나고 싶대. 민수 대신 아폴론이 어디 있는지 물어보는 거야.\n[CURRENT_PLAYER_MESSAGE]\n민수가 아폴론을 만나고 싶대. 민수 대신 아폴론이 어디 있는지 물어보는 거야."
+    },
+    {
+      "role": "system",
+      "content": "OPTIONAL_CHARACTER_INTEREST_V1\nFor player support statistics only, add characterInterest to JSON. Default:\n{\"owner\":\"NONE\",\"targetName\":\"\",\"kind\":\"NONE\",\"signal\":\"NONE\",\"fullQuote\":\"\"}.\nOnly extract one unambiguous CURRENT_PLAYER_MESSAGE personal character-related goal.\nowner DIRECT_SELF means the actual goal belongs to the speaker, not a friend, NPC, quoted speaker,\nhypothetical person or someone the player is helping. Other-person/proxy plans, quotations, hypothetical\nor mixed ownership: return the default. Do not turn 'I ask about my friend's goal' into a personal goal.\nCopy the FULL current message exactly into fullQuote, preserving all negation. Copy an explicit character\nname into targetName; never invent IDs or resolve implicit pronouns. No explicit name: default.\nkind LEARN_ABOUT for personal information interest; MEET only for the player's wish to meet that character.\nsignal ASK for a personal information question, DESIRE for a wish, CONSIDER for deliberation,\nDISOWN for 'not my goal', WITHDRAW for abandoning it, PAUSE for putting it on hold.\nNever emit DECIDE, COMPLETE or game actions. Even a strongly worded desire remains DESIRE;\nAn explicit commitment alone is outside this vocabulary: return the default, never downgrade its meaning.\nDo not derive a goal from mere name-dropping, a joke, general advice or an NPC's previous suggestion."
+    }
+  ],
+  "classification": {
+    "tags": [
+      "S_INFORMATION_REQUEST",
+      "S_QUEST_INQUIRY"
+    ],
+    "knowledgeKeywords": [
+      "Apollo"
+    ],
+    "playerToneTags": [],
+    "conversationAct": "SHARING_RECENT_EVENT",
+    "confidence": 90,
+    "source": "LOCAL_LLM",
+    "turnInterpretation": {
+      "subject": "UNSPECIFIED",
+      "target": "UNSPECIFIED",
+      "mode": "UNSPECIFIED",
+      "meaning": "",
+      "evidence": ""
+    },
+    "supportConsultation": {
+      "use": "NONE",
+      "evidence": ""
+    },
+    "characterInterest": {
+      "targetName": "",
+      "fullQuote": ""
+    }
+  },
+  "acceptedGoal": {
+    "targetName": "",
+    "fullQuote": ""
+  },
+  "style": "DIALOGUE_HELP",
+  "classificationPass": true
+}

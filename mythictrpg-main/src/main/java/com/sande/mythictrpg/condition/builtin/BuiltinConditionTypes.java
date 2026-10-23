@@ -41,6 +41,7 @@ public final class BuiltinConditionTypes {
     public static final ResourceLocation GOD_UNLOCKED = id("god_unlocked");
     public static final ResourceLocation STRUCTURE_EVALUATED = id("structure_evaluated");
     public static final ResourceLocation GOD_RELATION = id("god_relation");
+    public static final ResourceLocation HAS_NON_RAID_BLESSING = id("has_non_raid_blessing");
     public static final ConditionDependency PLAYER_AFFINITY_DEPENDENCY = dependency("player_affinity");
     public static final ConditionDependency GOD_DEFINITIONS_DEPENDENCY = dependency("god_definitions");
     public static final ConditionDependency PLAYER_ITEM_HISTORY_DEPENDENCY = dependency("player_item_history");
@@ -52,6 +53,7 @@ public final class BuiltinConditionTypes {
     public static final ConditionDependency WORLD_GOD_STATE_DEPENDENCY = dependency("world_god_state");
     public static final ConditionDependency STRUCTURE_EVALUATION_DEPENDENCY = dependency("structure_evaluations");
     public static final ConditionDependency GOD_RELATION_DEPENDENCY = dependency("god_relations");
+    public static final ConditionDependency PLAYER_BLESSING_HISTORY_DEPENDENCY = dependency("player_blessing_history");
 
     private static final Set<ConditionScope> PLAYER_SCOPES = Set.of(
             ConditionScope.PLAYER,
@@ -93,6 +95,17 @@ public final class BuiltinConditionTypes {
                 BuiltinConditionTypes::decodeItemEverObtained,
                 BuiltinConditionTypes::evaluateItemEverObtained,
                 condition -> Set.of(PLAYER_ITEM_HISTORY_DEPENDENCY)));
+        registry.register(new ConditionType<>(HAS_NON_RAID_BLESSING, HasNonRaidBlessingCondition.class, PLAYER_ONLY,
+                (json, children) -> {
+                    requireOnlyFields(json, Set.of("type", "scope"));
+                    return new HasNonRaidBlessingCondition(HAS_NON_RAID_BLESSING, requiredScope(json));
+                }, (condition, context, children) -> {
+                    if (condition.conditionScope() != ConditionScope.PLAYER || !context.blessingHistory().isReady())
+                        return ConditionResult.UNKNOWN;
+                    return context.targetPlayerId().map(context.blessingHistory()::hasNonRaidBlessing)
+                            .map(value -> value ? ConditionResult.MATCH : ConditionResult.NO_MATCH)
+                            .orElse(ConditionResult.UNKNOWN);
+                }, condition -> Set.of(PLAYER_BLESSING_HISTORY_DEPENDENCY)));
         registry.register(new ConditionType<>(BIOME, BiomeCondition.class, PLAYER_ONLY,
                 BuiltinConditionTypes::decodeBiome,
                 BuiltinConditionTypes::evaluateBiome,

@@ -40,11 +40,11 @@ public final class RecordedRoomAuthorityGameTests {
         Request first;
         MemoryReadSession access;
         CompletableFuture<MemoryReadSession.Page> pending;
+        CompletableFuture<Optional<MemoryReadSession>> supersededOpening;
         MemoryReadSession.Page page;
         CompletableFuture<InterpretationReadRecords.Page> pendingInterpretations;
         InterpretationReadRecords.Page interpretations;
         int phase;
-        long watermark;
         Fixture(GameTestHelper helper) { this.helper = helper; }
         void tick() throws Exception {
             var server = helper.getLevel().getServer();
@@ -68,17 +68,16 @@ public final class RecordedRoomAuthorityGameTests {
                 room = ConversationRooms.INSTANCE.create(player, RoomType.PRIVATE,
                         List.of(ResourceLocation.parse("mythictrpg:demeter")), RecordingScope.TEST_RECORDING);
                 ConversationRooms.INSTANCE.selectPrivate(player, room.roomId());
-                watermark = store.health().highWatermark();
                 ConversationRooms.INSTANCE.privateText(player, "archive_authority_marker");
                 require(engine.requests.size() == 1, "Game did not issue a turn"); first = engine.requests.getFirst();
                 require(ConversationRooms.INSTANCE.memoryReadCurrent(server, first), "Actual issued turn rejected");
                 phase = 1;
             } else if (phase == 1) {
-                var store = RecordingRuntime.current(server).orElseThrow();
-                if (store.health().highWatermark() <= watermark) return;
-                access = RecordedMemoryAccess.open(server, first).orElseThrow();
-                pending = access.query(new MemoryReadSession.Query("archive_authority_marker", Optional.empty(), Optional.empty()),
-                        Optional.empty(), new MemoryReadSession.Budget(4, 4096)); phase = 2;
+                pending = RecordedMemoryAccess.openAfterCapture(server, first).thenCompose(opened -> {
+                    access = opened.orElseThrow();
+                    return access.query(new MemoryReadSession.Query("archive_authority_marker", Optional.empty(), Optional.empty()),
+                            Optional.empty(), new MemoryReadSession.Budget(4, 4096));
+                }); phase = 2;
             } else if (phase == 2) {
                 if (!pending.isDone()) return; page = pending.join();
                 require(page.entries().size() == 1 && page.entries().getFirst().text().equals("archive_authority_marker"), "Actual published input missing: " + page.status());
@@ -94,8 +93,10 @@ public final class RecordedRoomAuthorityGameTests {
                 require(disabledSemantic.isDone() && disabledSemantic.join().status() == MemoryReadSession.Status.UNAVAILABLE,
                         "Native semantic OFF must not inherit archive SHADOW or legacy model policy");
                 require(!access.current(disabledSemantic.join()) && access.current(page), "Disabled semantic page must not invalidate RAW");
-                for (int mutation = 0; mutation < 6; mutation++)
+                for (int mutation = 0; mutation < 6; mutation++) {
                     require(RecordedMemoryAccess.open(server, forged(first, mutation)).isEmpty(), "Forged room authority accepted: " + mutation);
+                    require(RecordedMemoryAccess.openAfterCapture(server, forged(first, mutation)).join().isEmpty(), "Forged deferred room authority accepted: " + mutation);
+                }
                 pendingInterpretations = access.interpretations(page, Optional.empty(), new MemoryReadSession.Budget(4, 4096));
                 phase = 3;
             } else if (phase == 3) {
@@ -106,7 +107,12 @@ public final class RecordedRoomAuthorityGameTests {
                 require(access.current(interpretations), "Issued native interpretation page rejected");
                 require(!access.current(new InterpretationReadRecords.Page(interpretations.status(), interpretations.entries(), interpretations.next())),
                         "Fabricated native interpretation page accepted");
+                // Hold only completion ordering, never grant data/authority. Supersede an actual game request mid-wait.
+                var heldCapture = holdCapture(server);
+                supersededOpening = RecordedMemoryAccess.openAfterCapture(server, first);
+                require(!supersededOpening.isDone(), "Capture fence did not wait asynchronously");
                 ConversationRooms.INSTANCE.privateText(player, "archive_new_turn");
+                heldCapture.complete(true);
                 require(engine.requests.size() == 2, "Second turn not issued");
                 require(!access.current(page) && RecordedMemoryAccess.open(server, first).isEmpty(), "Superseded turn retained read authority");
                 require(!access.current(interpretations), "Superseded turn retained native interpretation authority");
@@ -114,7 +120,8 @@ public final class RecordedRoomAuthorityGameTests {
                 pending = access.query(new MemoryReadSession.Query("marker", Optional.empty(), Optional.empty()),
                         page.next(), new MemoryReadSession.Budget(4, 4096)); phase = 4;
             } else {
-                if (!pending.isDone()) return;
+                if (!pending.isDone() || !supersededOpening.isDone()) return;
+                require(supersededOpening.join().isEmpty(), "Turn changed during capture wait but fresh authority was issued");
                 require(pending.join().status() == MemoryReadSession.Status.STALE, "Old cursor queried after supersession");
                 var last = engine.requests.getLast(); var latest = RecordedMemoryAccess.open(server, last).orElseThrow();
                 ConversationRooms.INSTANCE.leave(player, room, "FIXTURE_END");
@@ -130,6 +137,14 @@ public final class RecordedRoomAuthorityGameTests {
             if (player != null && player.server.getPlayerList().getPlayer(player.getUUID()) == player) player.server.getPlayerList().remove(player);
             if (channel != null) channel.finishAndReleaseAll();
         }
+    }
+    private static CompletableFuture<Boolean> holdCapture(net.minecraft.server.MinecraftServer server) throws Exception {
+        var entries = RecordingRuntime.class.getDeclaredField("ENTRIES"); entries.setAccessible(true);
+        var entry = ((Map<?, ?>) entries.get(null)).get(server);
+        var field = entry.getClass().getDeclaredField("roomCaptures"); field.setAccessible(true);
+        var held = new CompletableFuture<Boolean>();
+        ((CaptureReadFence) field.get(entry)).track(held);
+        return held;
     }
     private static Request forged(Request r, int mutation) {
         var gods = mutation == 5 ? List.of(r.speakerGodId(), ResourceLocation.parse("mythictrpg:fortuna")) : r.godIds();

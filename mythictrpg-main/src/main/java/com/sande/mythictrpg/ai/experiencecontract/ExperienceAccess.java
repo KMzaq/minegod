@@ -13,6 +13,13 @@ import java.util.concurrent.CompletableFuture;
 public final class ExperienceAccess {
     private ExperienceAccess() {}
     public static CompletableFuture<ExperienceLease> request(ServerPlayer player, ConversationMemoryContext expected) {
+        return request(player, expected, 500);
+    }
+    /** NEW foreground shares a bounded preparation window with archive lookup, without changing legacy latency. */
+    public static CompletableFuture<ExperienceLease> requestForNativeDialogue(ServerPlayer player, ConversationMemoryContext expected) {
+        return request(player, expected, 1500);
+    }
+    private static CompletableFuture<ExperienceLease> request(ServerPlayer player, ConversationMemoryContext expected, long timeoutMillis) {
         if (!player.server.isSameThread()) throw new IllegalStateException("game context required");
         var runtime = GodWatchRuntime.current(player.server);
         if (runtime == null || expected == null || expected.readOnly() || !sessionCurrent(player, expected))
@@ -38,7 +45,7 @@ public final class ExperienceAccess {
             }));
         } catch (RuntimeException unavailable) { result.complete(ExperienceLease.unavailable("WATCH_UNAVAILABLE")); }
         // Optional experience lookup cannot indefinitely delay the existing dialogue path; late results are never installed.
-        return result.completeOnTimeout(ExperienceLease.unavailable("QUERY_TIMEOUT"), 500, java.util.concurrent.TimeUnit.MILLISECONDS);
+        return result.completeOnTimeout(ExperienceLease.unavailable("QUERY_TIMEOUT"), timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
     }
     private static boolean sessionCurrent(ServerPlayer player, ConversationMemoryContext c) {
         return player.server.getPlayerList().getPlayer(player.getUUID()) == player

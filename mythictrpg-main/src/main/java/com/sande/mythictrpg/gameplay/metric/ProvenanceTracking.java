@@ -56,7 +56,10 @@ public final class ProvenanceTracking {
         var q=USES.get(); if(q.isEmpty())return;Use use=q.pop();if(q.isEmpty())USES.remove();
         if(!result.consumesAction() || use.player()==null)return;
         var level=use.player().serverLevel();
-        for(var pending:use.blocks().values())if(level.getBlockState(pending.pos()).equals(pending.expected()))restore(level,pending.pos(),pending.source());
+        for(var pending:use.blocks().values())if(level.getBlockState(pending.pos()).equals(pending.expected())) {
+            restore(level,pending.pos(),pending.source());
+            com.sande.mythictrpg.understanding.MinecraftActivityCapture.blockPlaced(use.player(),pending.expected());
+        }
     }
     public static void fluidResult(LevelAccessor level,BlockPos pos,BlockState next) {
         if(!(level instanceof ServerLevel server) || next.equals(server.getBlockState(pos)))return;

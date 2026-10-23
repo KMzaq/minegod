@@ -10,7 +10,10 @@ import java.util.*;
 /** Authoritative acquisition evidence, NOT an affinity/quest/reward execution database. Never prunes best gear. */
 public final class RewardPowerState extends SavedData {
     public static final String FILE_NAME = "mythictrpg_reward_power_v1";
-    private static final int MAX_PLAYERS = 4096, MAX_VARIANTS = 512, MAX_TOTAL_VARIANTS = 8192;
+    private static final int MAX_PLAYERS = 4096;
+    // Retain a complete personal history across every variant supported by the equipment/power catalog.
+    static final int MAX_VARIANTS = 4096;
+    static final int MAX_TOTAL_VARIANTS = 65536;
     private static final Factory<RewardPowerState> FACTORY = new Factory<>(RewardPowerState::new, RewardPowerState::load);
     public record History(boolean complete, String reason, List<CompoundTag> items) {
         public History { items = items.stream().map(CompoundTag::copy).toList(); }

@@ -1,0 +1,84 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S01-033",
+  "name": "스틱스",
+  "definition_id": "ACTIVATION-RPG-S01-033",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "물가에서 기존 보트 또는 이동 도구1개를 소유자의 실제 허락으로 빌림 AND 반환 대상·장소를 합의 AND 같은 물건을 합의 장소의 정한 상대에게 실제 반환1회. 실제 대여·반환 기록과 수령 확인을 남긴다. 세계해금 수행 물가는 최초조우 Nether 현장과 다를 수 있다.",
+      "completion_count": 1,
+      "initial_value": false,
+      "scope": "누구 실제1명 달성시 세계영구; 동일 world_uuid",
+      "event_contract": "01_A1_실행보강계약.json#/world_commit",
+      "evidence_contract": "01_A1_실행보강계약.json#/receipt_requirements",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "Nether의 기존 통행로 강 경계 표식 앞 안전 접근점에 현재 직접 도달. 물가 대여·반환은 세계해금의 과거 수행지이지 Overworld 최초조우 허가가 아니다. 현재 기존 네더 진입·귀환로·통행권 검사, 맹세·대여품 휴대 불필요.",
+      "dimension": "minecraft:the_nether",
+      "exact_site": "기존 네더 통행로의 강 경계 표식 앞; 기존 장소 유형의 제안, 바이옴·구조물 등록 연결 대기. 큰 신전·새 차원·신규 필수 건축은 필요 없다.",
+      "site_source_ref": "02_A1_최초접촉_원문근거.json#/records/RPG-S01-033",
+      "terrain_options": {
+        "dimension_guard": "exact 최초접촉 Nether를 적용. outline의 Overworld 강변 배치 사본은 현재 최초장소에 사용하지 않음.",
+        "fallback": "같은 Nether 기존 통행 경계의 안전 부지만. 새 강/차원/건축 생성0."
+      },
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "current_item_decision": "exact 최초접촉의 현재 도달·접근 조건을 채택한다. 장면의 작업 소품과 선택 작업을 일반 인사의 필수로 올리지 않는다.",
+      "mode": "기존 조우 경로 보존. 전용계약이 있으면 전용만, 나머지 일반 무작위 경로는 공통 전역계약. 배치형·기록·꿈을 일반풀로 전환하지 않음.",
+      "scheduling_refs": [
+        "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter"
+      ],
+      "subject": "현재 조건을 실제 충족한 온라인 player_uuid 1명. 해금자와 다를 수 있고 현재 적격0명은 발생0. 선택은 원래 정책의 가중·확률·CAS·동시출현·쿨/재시작을 따른다.",
+      "time": "원문 현재접촉에 명시된 별도 시각 없음. 세계해금의 야간 이력을 현재 인사의 밤 전용 문턱으로 복제하지 않는다. 네더에 Overworld 낮밤을 추가하지 않는다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "personal_and_knowledge_ref": "01_A1_실행보강계약.json#/knowledge",
+    "preserve": "정체·등급·종족·소속·기존 초기접근·실제 생사/봉인·기록/발화모드·개인 MAIN/보상/기여/수신권은 변경0. 해금은 봉인해제·부활·분신·본체복제·새 차원 허가가 아니다. 친구 일반 인사와 개인후속 권리를 분리한다.",
+    "new_implementation": "실제 행동/제작/소유/위치/수신 receipt 검출·저장·CAS 및 부지/본체 바인딩은 구현 요구. 코드지원·등록ID·서버시험을 확인했다고 주장하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S01-033.json",
+      "record_key": "RPG-S01-033",
+      "pointers": [
+        "/connection_manuscript/historical_unlock/logical_expression",
+        "/connection_manuscript/historical_unlock/meaning"
+      ],
+      "sha256": "deb410c6e1c270e0b86c9d16b1f9a7b5ec5046c846e2671631f89d253733c843"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S01-033.json",
+      "record_key": "RPG-S01-033",
+      "pointers": [
+        "/original_profile",
+        "/current_access",
+        "/current_identity"
+      ],
+      "sha256": "11971c10cebd1900c66ea6f01c503ad868cd9cb0569b78d549280c03564a0d88"
+    },
+    {
+      "logical_file": "02_A1_최초접촉_원문근거.json",
+      "record_key": "RPG-S01-033",
+      "pointers": [
+        "/records/RPG-S01-033"
+      ],
+      "source_kind": "동일 최초접촉 원문의 좁은 보존 발췌; 채택값 아님",
+      "sha256": "9b6f9466f7ebbb42a5edaa9381adc8bb6eb000b8e15c1357412e7e68ec1b83af"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-020/RPG-S01-033_스틱스.json",
+      "record_key": "RPG-S01-033",
+      "pointers": [
+        ""
+      ],
+      "sha256": "dfedb499209da3c6b5de3362231a2f34f114f79831cfd383cd85d393bc904ceb"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "supplement_ref": "01_A1_실행보강계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

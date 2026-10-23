@@ -50,8 +50,14 @@ public final class ActionLedgerStore implements AutoCloseable {
     private final NavigableMap<Long, Pointer> order = new TreeMap<>();
     private final Map<UUID, Long> ids = new HashMap<>();
     private final Map<UUID, NavigableMap<Long, Pointer>> actors = new HashMap<>();
+    private final Map<UUID, NavigableMap<Long, Pointer>> supportEvents = new HashMap<>();
+    private final Map<UUID, Map<String, Long>> supportChoices = new HashMap<>();
     private final Map<UUID, Pointer> understandingControls = new HashMap<>();
     private final Map<UUID, Map<String, Pointer>> understandingFeedback = new HashMap<>();
+    private final Map<UUID, NavigableMap<Long, Pointer>> purposeAnnotations = new HashMap<>();
+    private final Map<UUID, NavigableMap<Long, Pointer>> characterSignals = new HashMap<>();
+    private final Map<UUID, Pointer> purposeRetractions = new HashMap<>();
+    private final Map<UUID, com.sande.mythictrpg.understanding.SupportStatistics> supportStatistics = new HashMap<>();
     private FileChannel lockChannel, segment;
     private FileLock lock;
     private Path segmentPath;
@@ -115,6 +121,7 @@ public final class ActionLedgerStore implements AutoCloseable {
 
     public ActionRecord append(ActionRecord.Draft draft) throws IOException {
         requireOpen();
+        validatePurpose(draft);
         Long existing = ids.get(draft.occurrenceId());
         if (existing != null) {
             ActionRecord prior = read(order.get(existing));
@@ -169,6 +176,7 @@ public final class ActionLedgerStore implements AutoCloseable {
                 if (record.sequence() != sequence + 1 || ids.containsKey(record.event().occurrenceId()))
                     throw new IOException("CORRUPT_ORDER_OR_DUPLICATE");
                 if (order.size() >= limits.maxIndexedEvents) throw new IOException("RECOVERY_INDEX_LIMIT");
+                validatePurpose(record.event());
                 add(record, new Pointer(path, offset, length, record.event().actorId(), record.event().occurrenceId()));
                 offset += length;
             }
@@ -179,21 +187,110 @@ public final class ActionLedgerStore implements AutoCloseable {
         sequence = record.sequence(); lastEventId = record.event().occurrenceId();
         order.put(sequence, pointer); ids.put(lastEventId, sequence);
         actors.computeIfAbsent(pointer.actor, ignored -> new TreeMap<>()).put(sequence, pointer);
+        if(record.event().type()==ActionRecord.Type.PLAYER_UNDERSTANDING_CONTROL)
+            supportStatistics.computeIfAbsent(pointer.actor,actor->new com.sande.mythictrpg.understanding.SupportStatistics(worldId,actor));
+        var statistics=supportStatistics.get(pointer.actor);
+        if(statistics!=null)statistics.accept(record);
+        if (record.event().type() == ActionRecord.Type.PLAYER_PURPOSE_EVIDENCE)
+            purposeAnnotations.computeIfAbsent(pointer.actor, ignored -> new TreeMap<>()).put(sequence, pointer);
+        if(record.event().type()==ActionRecord.Type.PLAYER_CHARACTER_SIGNAL)
+            characterSignals.computeIfAbsent(pointer.actor,ignored->new TreeMap<>()).put(sequence,pointer);
         if (record.event().type() == ActionRecord.Type.PLAYER_UNDERSTANDING_CONTROL)
             understandingControls.put(pointer.actor, pointer);
         if (record.event().type() == ActionRecord.Type.PLAYER_UNDERSTANDING_FEEDBACK) {
             String key = record.event().payload().get("key");
+            if ("purpose".equals(key) && "RETRACT".equals(record.event().payload().get("operation")))
+                purposeRetractions.put(pointer.actor, pointer);
             if (com.sande.mythictrpg.understanding.PlayerUnderstanding.validFeedbackKey(key))
                 understandingFeedback.computeIfAbsent(pointer.actor, ignored -> new HashMap<>()).put(key, pointer);
         }
         if(record.event().details()!=null)for(UUID participant:record.event().details().participants())
             actors.computeIfAbsent(participant,ignored->new TreeMap<>()).put(sequence,pointer);
+        boolean supportive=com.sande.mythictrpg.understanding.PlayerUnderstanding.supportRecord(record);
+        if(record.event().type()==ActionRecord.Type.RAID_CHOICE &&record.event().details()!=null) {
+            var choice=com.sande.mythictrpg.understanding.RaidChoiceEvidence.parse(record.event().payload());
+            if(!choice.test()&&!record.event().dimensionId().equals("mythictrpg:raid_trial")
+                    &&!record.event().subject().typeId().equals("mythictrpg:trial/sealed_guardian")) {
+            String key=record.event().details().runId()+"/"+choice.decisionId()+"/"+choice.kind();
+            var index=supportChoices.computeIfAbsent(pointer.actor,k->new HashMap<>());
+            Long previous=index.remove(key);
+            // Keep only the current positive choice in the bounded self-view. Cancellations invalidate an
+            // earlier fact, but unrelated missed/unavailable opportunities never consume profile slots.
+            if(previous!=null)supportEvents.getOrDefault(pointer.actor,Collections.emptyNavigableMap()).remove(previous);
+            if(supportive)index.put(key,sequence);
+            }
+        }
+        if(supportive) {
+            supportEvents.computeIfAbsent(pointer.actor,k->new TreeMap<>()).put(sequence,pointer);
+            if(record.event().type()==ActionRecord.Type.BATTLE_RESULT &&record.event().details()!=null)
+                for(UUID participant:record.event().details().participants())
+                    supportEvents.computeIfAbsent(participant,k->new TreeMap<>()).put(sequence,pointer);
+        }
     }
     public Optional<ActionRecord> find(UUID eventId) throws IOException {
         requireOpen(); Long number = ids.get(eventId);
         return number == null ? Optional.empty() : Optional.of(read(order.get(number)));
     }
+    private void validatePurpose(ActionRecord.Draft draft) throws IOException {
+        if (draft.type() != ActionRecord.Type.PLAYER_PURPOSE_EVIDENCE) return;
+        var evidence = com.sande.mythictrpg.understanding.PurposeLedger.decode(draft.payload());
+        var source = find(evidence.sourceId()).orElseThrow(() -> new IOException("PURPOSE_SOURCE_MISSING"));
+        com.sande.mythictrpg.understanding.PurposeLedger.validateSource(source, evidence);
+        if (!draft.equals(com.sande.mythictrpg.understanding.PurposeLedger.annotate(source, evidence)))
+            throw new IOException("PURPOSE_ENVELOPE_MISMATCH");
+    }
+    /** Internal-only source-bound annotations, never an NPC read grant. Overflow returns unknown, not an old goal. */
+    public com.sande.mythictrpg.understanding.PurposeLedger.Slice purposes(UUID actor) throws IOException {
+        requireOpen();
+        var pointer = understandingControls.get(actor);
+        var control = pointer == null ? null : read(pointer);
+        long start = control == null ? 0 : control.sequence();
+        if (control == null || !"START".equals(control.event().payload().get("operation")))
+            return new com.sande.mythictrpg.understanding.PurposeLedger.Slice(false, start, sequence, true, List.of());
+        var rows = purposeAnnotations.getOrDefault(actor, Collections.emptyNavigableMap()).tailMap(start, false);
+        var characterRows=characterSignals.getOrDefault(actor,Collections.emptyNavigableMap()).tailMap(start,false);
+        if (rows.size()+characterRows.size() > com.sande.mythictrpg.understanding.PurposeState.MAX_EVIDENCE)
+            return new com.sande.mythictrpg.understanding.PurposeLedger.Slice(true, start, sequence, false, List.of());
+        var values = new ArrayList<com.sande.mythictrpg.understanding.PurposeEvidence>();
+        for(var row:characterRows.values()) {
+            var source=read(row);
+            values.add(com.sande.mythictrpg.understanding.CharacterGoalSignal.parse(source.event().payload()).evidence(source));
+        }
+        for (var row : rows.values()) {
+            var value = com.sande.mythictrpg.understanding.PurposeLedger.decode(read(row).event().payload());
+            if (value.sourceOrder() > start) values.add(value);
+        }
+        if(values.stream().map(com.sande.mythictrpg.understanding.PurposeEvidence::goal).distinct().count()
+                >com.sande.mythictrpg.understanding.PurposeState.MAX_GOALS)
+            return new com.sande.mythictrpg.understanding.PurposeLedger.Slice(true,start,sequence,false,List.of());
+        var retractionPointer=purposeRetractions.get(actor);
+        if (retractionPointer!=null) {
+            var retraction=read(retractionPointer);
+            if(retraction.sequence()>start) {
+                var goals=values.stream().filter(e->e.sourceOrder()<retraction.sequence()).map(com.sande.mythictrpg.understanding.PurposeEvidence::goal).distinct().toList();
+                if(values.size()+goals.size()>com.sande.mythictrpg.understanding.PurposeState.MAX_EVIDENCE)
+                    return new com.sande.mythictrpg.understanding.PurposeLedger.Slice(true,start,sequence,false,List.of());
+                for(var goal:goals) values.add(new com.sande.mythictrpg.understanding.PurposeEvidence(worldId,actor,
+                        retraction.event().occurrenceId(),retraction.sequence(),com.sande.mythictrpg.understanding.PurposeLedger.episodeOf(retraction),goal,
+                        com.sande.mythictrpg.understanding.PurposeEvidence.Origin.SELF_SPEECH,
+                        com.sande.mythictrpg.understanding.PurposeEvidence.Attribution.DIRECT_SELF,
+                        com.sande.mythictrpg.understanding.PurposeEvidence.Signal.WITHDRAW,
+                        com.sande.mythictrpg.understanding.PurposeEvidence.Context.DIRECTED,false,false,"본인 화면에서 목적 철회. NPC에게 전달한 발언이 아님."));
+            }
+        }
+        return new com.sande.mythictrpg.understanding.PurposeLedger.Slice(true, start, sequence, gaps.rejected() == 0, values);
+    }
     /** Internal self-view only. Callers must bind actor to the authenticated player; never send raw rows to clients/NPCs. */
+    public ActionRecord understandingControl(UUID actor) throws IOException {
+        requireOpen();Objects.requireNonNull(actor);
+        var pointer=understandingControls.get(actor);
+        return pointer==null?null:read(pointer);
+    }
+    public com.sande.mythictrpg.understanding.SupportStatistics.Snapshot supportStatistics(UUID actor) throws IOException {
+        requireOpen();
+        var stats=supportStatistics.get(actor);
+        return stats==null?com.sande.mythictrpg.understanding.SupportStatistics.Snapshot.empty(sequence):stats.snapshot(sequence);
+    }
     public com.sande.mythictrpg.understanding.PlayerUnderstanding.Slice understanding(UUID actor) throws IOException {
         requireOpen(); Objects.requireNonNull(actor);
         var pointer = understandingControls.get(actor);
@@ -202,7 +299,7 @@ public final class ActionLedgerStore implements AutoCloseable {
         var feedback = new ArrayList<ActionRecord>();
         boolean truncated = false;
         if (control != null && "START".equals(control.event().payload().get("operation"))) {
-            var index = actors.getOrDefault(actor, Collections.emptyNavigableMap());
+            var index = supportEvents.getOrDefault(actor, Collections.emptyNavigableMap());
             for (var entry : index.tailMap(control.sequence(), false).descendingMap().entrySet()) {
                 if (events.size() == com.sande.mythictrpg.understanding.PlayerUnderstanding.MAX_EVENTS) { truncated = true; break; }
                 events.add(read(entry.getValue()));

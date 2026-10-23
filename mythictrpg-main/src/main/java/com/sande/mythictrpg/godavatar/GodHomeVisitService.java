@@ -124,18 +124,24 @@ public final class GodHomeVisitService {
     }
 
     private static boolean eligible(ServerPlayer player, GodAvatarEntity avatar, GodVisitPolicy policy) {
+        if (!ownerAvailable(player)) return false;
         if (avatar == null || avatar.getServer() != player.server || !avatar.isAlive() || !avatar.hasAuthoritativeBinding()
-                || avatar.isRemoved() || avatar.busyForVisit() || !player.isAlive()
-                || player.server.getPlayerList().getPlayer(player.getUUID()) != player
+                || avatar.isRemoved() || avatar.busyForVisit()
                 || !PlayerMythDataService.get(player.server).isReady()
                 || !PlayerConstructionState.get(player.server).isWritable()
                 || !progressAllows(player.server, policy)
                 || GodAvatarRegistryState.get(player.server).raidOwner(policy.godId()).isPresent()) return false;
-        if (com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
-                == com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST
-                || com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.isTestConversation(player)
-                || ConversationRooms.INSTANCE.memberships(player).stream().anyMatch(r -> r.recordingScope().isTest())) return false;
         return avatar.currentDefinition().map(d -> d.movement().enabled() && d.movement().visit()).orElse(false);
+    }
+    /** Recheck the same native-play boundary before selection and during travel, including restored orders. */
+    private static boolean ownerAvailable(ServerPlayer player) {
+        return player.isAlive() && !player.isSpectator()
+                && player.server.getPlayerList().getPlayer(player.getUUID()) == player
+                && com.sande.mythictrpg.content.HomeVisitPreferences.get(player.server).allowed(player.getUUID())
+                && com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
+                        != com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST
+                && !com.sande.mythictrpg.ai.server.AiConversationRuntimeService.INSTANCE.isTestConversation(player)
+                && ConversationRooms.INSTANCE.memberships(player).stream().noneMatch(r -> r.recordingScope().isTest());
     }
     private static boolean progressAllows(MinecraftServer server, GodVisitPolicy policy) {
         var state = MythicWorldState.get(server);
@@ -212,7 +218,8 @@ public final class GodHomeVisitService {
         var player = avatar.getServer().getPlayerList().getPlayer(avatar.homeOwner());
         var data = PlayerConstructionState.get(avatar.getServer());
         var structure = data.find(avatar.homeStructure()).orElse(null);
-        return player != null && player.isAlive() && data.isWritable() && structure != null
+        return player != null && ownerAvailable(player)
+                && data.isWritable() && structure != null
                 && structure.ownerId().equals(avatar.homeOwner()) && structure.region().dimension().equals(avatar.level().dimension())
                 && structure.region().contains(avatar.homeDestination()) && safeDestination(avatar, avatar.homeDestination(),
                         avatar.currentDefinition().orElseThrow().movement().maxVisitDistance());

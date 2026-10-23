@@ -22,13 +22,16 @@ import net.neoforged.neoforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class RecordingSavedDataGameTests {
     private RecordingSavedDataGameTests() {}
-    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 600)
+    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 40000)
     public static void namedSavedDataReservationsSurviveActualAsyncIo(GameTestHelper helper) {
         try {
             Fixture fixture = new Fixture(helper);
             helper.onEachTick(() -> {
                 if (fixture.finished) return;
-                try { fixture.tick(); }
+                try {
+                    yieldForIo(fixture.deadlineNanos, fixture.phase);
+                    fixture.tick();
+                }
                 catch (Exception | AssertionError failure) {
                     fixture.release.countDown(); fixture.finished = true;
                     helper.fail("SavedData quota fixture: " + failure);
@@ -36,13 +39,16 @@ public final class RecordingSavedDataGameTests {
             });
         } catch (Exception failure) { helper.fail("SavedData quota setup: " + failure); }
     }
-    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 600)
+    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 40000)
     public static void snapshotCallbacksFollowActualCommitAndIsolateConsumers(GameTestHelper helper) {
         try {
             CallbackFixture fixture = new CallbackFixture(helper);
             helper.onEachTick(() -> {
                 if (fixture.finished) return;
-                try { fixture.tick(); }
+                try {
+                    yieldForIo(fixture.deadlineNanos, fixture.phase);
+                    fixture.tick();
+                }
                 catch (Exception | AssertionError failure) {
                     fixture.release.countDown(); fixture.finished = true;
                     helper.fail("SavedData commit callback fixture: " + failure);
@@ -50,7 +56,14 @@ public final class RecordingSavedDataGameTests {
             });
         } catch (Exception failure) { helper.fail("SavedData callback setup: " + failure); }
     }
+    private static void yieldForIo(long deadline, int phase) {
+        // GameTest ticks are unpaced; 600 ticks can elapse before one physical save completes.
+        // Yield only in this isolated fixture and retain a bounded wall-clock failure, not a success sleep.
+        java.util.concurrent.locks.LockSupport.parkNanos(1_000_000);
+        if (System.nanoTime() - deadline >= 0) throw new AssertionError("Actual I/O exceeded 30 seconds at phase " + phase);
+    }
     private static final class CallbackFixture {
+        final long deadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         final GameTestHelper helper;
         final Path world, file, missingParentFile;
         final WorldRecordingBudget budget;
@@ -146,6 +159,7 @@ public final class RecordingSavedDataGameTests {
         private static int marker(ManagedSavedDataIo.WriteResult result) { return result.snapshot().orElseThrow().getCompound("data").getInt("marker"); }
     }
     private static final class Fixture {
+        final long deadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         final GameTestHelper helper;
         final Path world, rumorFile, reputationFile;
         final ManagedStoreRegistry registry;

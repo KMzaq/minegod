@@ -16,6 +16,7 @@ public final class StorySignalTypes {
     public static final ResourceLocation ADMIN_TRIGGERED = id("admin_triggered");
     public static final ResourceLocation RAID_VICTORY = id("raid_victory");
     public static final ResourceLocation RAID_FAILED = id("raid_failed");
+    public static final ResourceLocation HOME_VISIT_ARRIVED = id("home_visit_arrived");
 
     private StorySignalTypes() {}
 

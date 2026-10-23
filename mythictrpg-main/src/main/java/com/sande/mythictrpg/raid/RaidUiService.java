@@ -126,7 +126,9 @@ public final class RaidUiService {
             if (member) info += "\n남은 목숨: " + Math.max(0, a.definition.livesPerPlayer() - a.members.get(p.getUUID()).deaths)
                     + (a.members.get(p.getUUID()).eliminated ? " (참가 종료)" : "");
             long now = p.server.overworld().getGameTime();
-            if (a.status == RaidState.Status.QUEUED) info += "\n대기 제한까지 " + Math.max(0, (a.definition.queueTimeoutTicks() - (now - a.queuedAt) + 19) / 20) + "초";
+            if (a.status == RaidState.Status.STARTING) info += "\n전장 입장을 준비하고 있습니다.";
+            if (a.status == RaidState.Status.QUEUED || a.status == RaidState.Status.STARTING)
+                info += "\n대기 제한까지 " + Math.max(0, (a.definition.queueTimeoutTicks() - (now - a.queuedAt) + 19) / 20) + "초";
             if (a.status == RaidState.Status.ACTIVE) {
                 info += "\n전투 제한까지 " + Math.max(0, (a.definition.combatTimeoutTicks() - (now - a.startedAt) + 19) / 20) + "초";
                 var level = a.arena == null ? null : p.server.getLevel(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, a.arena.dimension()));
@@ -134,7 +136,8 @@ public final class RaidUiService {
                 if (boss != null) info += "\n보스 체력: " + (int)Math.ceil(boss.getHealth()) + "/" + (int)Math.ceil(boss.getMaxHealth());
             }
             if (!a.reason.isBlank()) info += "\n결과: " + a.reason;
-            if (a.status == RaidState.Status.QUEUED || a.status == RaidState.Status.ACTIVE) info += "\n참가 명단 고정: 모집 탈퇴 불가";
+            if (a.status == RaidState.Status.QUEUED || a.status == RaidState.Status.STARTING
+                    || a.status == RaidState.Status.ACTIVE) info += "\n참가 명단 고정: 모집 탈퇴 불가";
             result.add(new Visible(new RaidPagePayload.Row("a:" + a.id, a.definition.displayName(), a.status.name(), clip(info, 1024), actions),
                     new Stamp(a.definition, a.status, Set.copyOf(a.members.keySet()))));
         }

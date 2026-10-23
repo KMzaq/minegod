@@ -1,0 +1,194 @@
+{
+  "record_key": "RPG-S04-024",
+  "name": "니사바",
+  "mythology": "메소포타미아",
+  "god_id": "mythictrpg:mesopotamian_unassigned_nisaba",
+  "identity_reference": "RPG-S04-024/current_record/current_identity",
+  "combat_tier": "하급",
+  "main_status": "NOT_APPLICABLE",
+  "source_reward_status": "APPLICABLE",
+  "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024",
+  "canonical_episode_id": "EP015B-RPG-S04-024",
+  "aliases": [
+    "Q-P1_OTHER_QUEST-028-RPG-S04-024",
+    "EP015B-RPG-S04-024"
+  ],
+  "title": "틀린 저울의 수업",
+  "quest_kind": "SIDE",
+  "runtime_ready": false,
+  "source_reference": {
+    "profile": "기존페르소나_인물별/RPG-S04-024/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S04-024/authoring_contract.json",
+    "episode_field": "exact_accepted_dossier/episodes",
+    "outline": "RPG-S04-024/current_record/outline"
+  },
+  "scope_guard": "부족분0이면 만들지 않는다. 있되 미수신/허락 없음이면 인계 대기이며 최종 완료0. 표시 모양을 지키자는 고집은 실제 개선 실패. 연습 표시값과 세계 실제 단위 혼동 금지.",
+  "site": "장터 허락 비교면 O의 저울A/B를3블록 간격으로 놓고 구매자 선택면은 O에서4블록. 판매재고와 연습재고는 별도 통.",
+  "objectives": [
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-O1",
+      "title": "실물 계량",
+      "action": "같은 빈 그릇1개를 먼저 저울 A/B에 각각 올려 빈값을 기록한 다음, 같은 그릇에 같은 밀8개 묶음을 넣어 A/B에 각각 실제 올린다(빈 그릇2회+채운 그릇2회=4측정). 연습 기준은 밀1개=표시1, 빈 그릇=2(세계 화폐·실제 질량 정의 아님). A 빈값2·합계10이면 순량8, B에 검증된 일정 영점 오프셋+2가 있으면 빈값4·합계12이고 각각 자기 빈값을 빼 순량8이다. 차감 후에도 차이가 남으면 실제 관측값 그대로 미검증 표시하며 조작을 단정하지 않는다. 하야가 실제 검증해 전달한 자료가 있으면 해당 저울 기준과 대조하고 없으면 현재 관측과 미검증 원인을 구분한다.",
+      "evidence": "같은 그릇uuid·같은 밀 묶음uuid, A/B 빈값2회와 합계2회, 각 저울 순량=합계-해당 빈값, 자료 실제 수신 여부",
+      "previous_objective_id": null,
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS1"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-O2",
+      "title": "이용자 선택",
+      "action": "확인된 기준으로 밀4개짜리 작은 묶음2개를 만들고 이용자가 고른 단순 표시1개를 붙인다. 구매자1명이 자기4개 몫을 실제 골라 저울에 올리고 뜻을 설명하도록 한다. 틀리면 그 표시만 고쳐 같은 미완료 시도를 재개한다. 공식 답만으로 통과0.",
+      "evidence": "실제 선택된4개/현재 기준, 이용자 설명 수신, 이해 실패면 통과0",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-O1",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS2"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-O3",
+      "title": "부족분 인계",
+      "action": "확인된 실제 거래 손실이 없으면 니사바에게 없음으로 확인해 닫는다. 손실이 있으면 거래당사자 허락 범위의 실제 부족량·출처를 난셰에게 직접 전달하여 수신 확인한다. 연습 저울 차이를 실제 피해로 발명하지 않는다.",
+      "evidence": "shortfall 실제값, permission, 난셰 수신 또는 no_shortfall 확인",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-O2",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS3"
+    }
+  ],
+  "source_branch_contract": [
+    {
+      "source_beat_id": "B1",
+      "action": "사용 허락을 받은 같은 곡물 묶음을 양쪽 저울에 번갈아 올리고 빈 그릇의 무게를 먼저 뺀다. 하야가 실제 검증해 전달한 자료가 있으면 해당 저울의 기준과 대조하고 없으면 현재 관측과 미검증 원인을 나눈다.",
+      "branches": [
+        {
+          "choice_id": "B1-1",
+          "player_intent": "손으로 같은 비교를 재현한다",
+          "actual_execution": "한 묶음을 번갈아 달고 빈 그릇을 따로 달아 차이를 보여 준다. 실제 검증자료와 맞는 원인만 말한다.",
+          "observed_result": "비교 가능한 차이와 원인 확인/미확인 구분이 남는다. 수치 정답만 말한 것과 다르다."
+        },
+        {
+          "choice_id": "B1-2",
+          "player_intent": "공식만 외워 설명한다",
+          "actual_execution": "외운 식을 말하고 구매자에게 자기 물건으로 다시 해 볼 수 있는지 묻는다. 재현 못 하면 계산 성공을 적지 않는다.",
+          "observed_result": "설명은 들었으나 실제 계량 개선은 미확인. 실물 비교로 돌아갈 수 있다."
+        }
+      ],
+      "source_consumption": "곡물은 거래 당사자 소유이며 비교 뒤 같은 몫을 돌려놓는다. 흘린 양이 있으면 실제 손실로 남긴다."
+    },
+    {
+      "source_beat_id": "B2",
+      "action": "확인된 기준에 맞춘 작은 실물 묶음을 만들고 이용자가 고른 단순 표기와 대조한다. 실제 다음 거래 당사자의 허락을 받아 그 사람이 자기 몫을 골라 저울에 올리게 한다. 잘못 고르면 어느 표시가 헷갈렸는지 물어 그 부분만 바꾸어 다시 확인한다.",
+      "branches": [
+        {
+          "choice_id": "B2-1",
+          "player_intent": "이용자 표기로 실제 거래를 확인한다",
+          "actual_execution": "실물 묶음과 간단한 표시를 놓고 구매자가 실제 몫을 고르게 한다. 계량 결과와 이해한 뜻을 듣는다. 이용자가 실제 자기 몫을 골라 그 뜻을 설명하고 계량 기준에 맞는 것을 확인한 경우에만 다음 장면으로 간다. 그렇지 않으면 이 장면에서 수정·중단한다.",
+          "observed_result": "실제로 이해·사용한 거래만 남는다. 확인된 부족분이 있으면 인계 후보가 된다."
+        },
+        {
+          "choice_id": "B2-2",
+          "player_intent": "멋진 글씨를 그대로 두자고 주장한다",
+          "actual_execution": "그대로 두자는 말을 하고 니사바의 반대를 듣는다. 소유자 허락 없이 표기를 덮어쓰지 않는다.",
+          "observed_result": "이해 실패가 남고 실제 개선 완료는 없다. 수정 후 재시도 가능."
+        }
+      ],
+      "source_consumption": "표시 재료는 허락된 사용분만. 실물 연습 묶음과 판매 재고를 구분하여 이중 소비하지 않는다."
+    },
+    {
+      "source_beat_id": "B3",
+      "action": "부족분이 있으면 출처·확인 범위·아직 돌려받지 못한 양을 해당 당사자 허락 아래 난셰에게 실제 전한다. 난셰가 듣거나 읽은 범위만 기록한다. 부족분이 없으면 확인된 이 거래에는 없다고 니사바에게 말하고 마친다.",
+      "branches": [
+        {
+          "choice_id": "B3-1",
+          "player_intent": "있는 부족분만 실제 전달한다",
+          "actual_execution": "비교 근거와 미반환 몫을 보여 주고 난셰의 실제 수신을 확인한다.",
+          "observed_result": "수업과 인계 완료. 반환·청원 판정은 별도이며 아직 없음."
+        },
+        {
+          "choice_id": "B3-2",
+          "player_intent": "부족분 없음으로 수업을 닫거나 인계만 기다린다",
+          "actual_execution": "없으면 그 사실을 확인해 수업을 닫는다. 있음에도 미수신이면 수업 성과를 보존하고 해당 인계만 대기한다.",
+          "observed_result": "없는 부족분을 생성하지 않는다. 미수신 인계는 최종 인계 완료가 아니다."
+        }
+      ],
+      "source_consumption": "니사바가 실제 계량·이용자 선택 실습을 확인한 수행자의 합의 보통 연습 재료만 승인 재고에서 실제 인계한다. 난셰 인계 대기와 분리한다. 추가 분할 지도는 선택 실제 실습만. 노동자 부족분에서 공제0."
+    }
+  ],
+  "ending_boundary": {
+    "observable_personal_change": "같은 물건의 실제 비교로 오류 근거를 확인하고 이용자가 고른 표기와 실물 묶음으로 현재 다음 거래를 실제 해 보아 이해 여부를 확인한다. 확인된 부족분이 있으면 당사자가 허락한 내용만 난셰에게 실제 전달·수신 확인. 부족분 없음은 없다고 마치며 환급은 이 SIDE가 자동 실행하지 않는다.",
+    "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+    "next_encounter_memory": "니사바는 성공한 수업을 자랑하다 부족한 몫 표시 앞에서 말을 멈춘다. 반환은 자신이 말한 것으로 끝나지 않음을 인정한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+    "playfeel_and_difference": "틀린 저울의 수업: 같은 현물, 빈 그릇, 눈금 차이와 하야 자료의 실제 출처. 원인 미확인일 때 조작이라고 단정하지 않는다. → 배운 사람이 쓸 수 있는 셈과 아직 처리하지 않은 반환 문제가 분리되어 남는다."
+  },
+  "reward": {
+    "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-SETTLEMENT",
+    "description": "B1+B2 실습을 니사바가 확인한 실제 수행자에게 별도 승인 연습재고 종이2개 개인1회. 원문 독립 실습정산이며 난셰 인계·SIDE 최종완료와 분리. 곡물8과 그릇은 같은 원소유자에게 돌려주는 원물. 선택 분할 지도1회, 반환 부족분·판매재고 공제0.",
+    "earned_condition": "독립 practice_verified=실물비교 AND 이용자 실제 선택·이해 AND 니사바의 실제 확인; 난셰 최종 인계 대기는 별도",
+    "new_entitlement": false,
+    "ledger_canonical_episode_id": "EP015B-RPG-S04-024",
+    "repeat": "개인 동일 에피소드 최초1회; 원물반환은 미반환 원물량만",
+    "optional_training": "동의하면 연습용 밀8을4/4로 분할1회,60초; 소비0·제자리 반환"
+  },
+  "knowledge": [
+    {
+      "fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-FACT-RESULT",
+      "text": "실제 비교 차이, 원인 확인 수준, 이용자 이해와 실제 부족량. 난셰는 허락된 자료를 실제 받아야 앎, 수신으로 환급 발생0.",
+      "source_events": [
+        "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS1",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS2",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-024-OBS3"
+      ],
+      "learners": "실제 목격자 및 허락된 보고의 실제 수신자",
+      "receipt_key": "fact_definition_id + receiver_actor_id + source_event_id",
+      "disclosure": "공개 현물 결과와 당사자 허락 사적 발언 분리"
+    }
+  ],
+  "persona_in_scene": {
+    "description": "잘 쓴 글과 빠른 셈을 좋아하며 설명을 시작하면 기세가 붙는다. 그러나 상대가 못 알아들으면 자신이 아끼는 표현도 짧게 고친다. 가르친 글이 속임수의 장식으로 쓰이면 가르친 즐거움마저 더러워진다고 느낀다. 같은 무게인데 모양이 다른 씨앗을 나란히 놓는 일을 즐기며 틀린 글씨 옆에 더 쉬운 글씨를 남겨 비교한다.",
+    "voice": [
+      "빠른 반말로 설명하다 반응을 보고 문장을 줄인다.",
+      "추상적인 설명이 막히면 허락된 현물로 비유를 바꾸자고 제안한다.",
+      "씨앗·글씨·저울 동작은 현물과 사용권이 실제 있을 때만 연기한다.",
+      "잘 알아들었는지 듣되 침묵을 이해한 답으로 세지 않는다."
+    ],
+    "neutral": [
+      "설명할 뜻이 있으면 짧은 예부터 든다."
+    ],
+    "wary": [
+      "어느 기준으로 잰 것인지 묻는다."
+    ],
+    "trusted": [
+      "수습생 공로를 가로채지 않은 실제 행동을 알면 다음 검증을 함께 맡기려 한다."
+    ],
+    "hostile": [
+      "불필요한 자랑을 접고 필요한 사실만 말한다."
+    ],
+    "boundary": [
+      "어려운 글로 배고픈 사람의 모자란 몫을 감추지 않는다.",
+      "계량자·설명 보조자·직접 고른 이용자의 공로를 구별한다.",
+      "부족분 확인·전달·실제 반환을 하나의 성공으로 뭉치지 않는다."
+    ]
+  },
+  "expected_minutes": "10~15",
+  "balance": "짧은 실제 생활 노동에 소량 일반 재료/식량 또는 선택 지도만 대응. 전투 스탯·장비·가호·MAIN 추가0. 실물과 책임·인수의 차이를 이해하는 역할 가치가 주 보상이다. 예상시간과 수량은 정적 기획이며 실전 검증 아님.",
+  "required_new_implementation": [
+    "위 실제 목표의 서버 권위 관측·원물수불·개별 수신 연결",
+    "공통계약 alias/재고/복구 요구 적용"
+  ],
+  "acceptance_cases": [
+    {
+      "case": "정상 대안 각각",
+      "expected": "부족분0이면 만들지 않는다. 있되 미수신/허락 없음이면 인계 대기이며 최종 완료0. 표시 모양을 지키자는 고집은 실제 개선 실패. 연습 표시값과 세계 실제 단위 혼동 금지."
+    },
+    {
+      "case": "필수 마지막 실제 수행 누락",
+      "expected": "부분 결과만 저장, final_complete=false. 독립 실습정산이 명시된 경우에만 그 별도 조건으로 정산."
+    },
+    {
+      "case": "비공개 보고·상대 부재",
+      "expected": "실제 비교 차이, 원인 확인 수준, 이용자 이해와 실제 부족량. 난셰는 허락된 자료를 실제 받아야 앎, 수신으로 환급 발생0. 실제 수신 없는 상대 지식0."
+    },
+    {
+      "case": "선택 지도 거절",
+      "expected": "실제 끝낸 수행/정산권 유지, 수강경험0"
+    }
+  ]
+}

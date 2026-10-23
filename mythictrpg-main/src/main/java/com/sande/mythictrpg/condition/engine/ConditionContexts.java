@@ -1,6 +1,7 @@
 package com.sande.mythictrpg.condition.engine;
 
 import com.sande.mythictrpg.condition.api.ConditionContext;
+import com.sande.mythictrpg.condition.api.BlessingHistoryView;
 import com.sande.mythictrpg.condition.api.GodDefinitionView;
 import com.sande.mythictrpg.condition.api.ServerStateView;
 import com.sande.mythictrpg.condition.api.WorldStateView;
@@ -8,6 +9,7 @@ import com.sande.mythictrpg.data.god.GodDefinitionManager;
 import com.sande.mythictrpg.data.player.PlayerMythDataService;
 import com.sande.mythictrpg.data.world.MythicWorldState;
 import com.sande.mythictrpg.quest.structure.PlayerConstructionState;
+import com.sande.mythictrpg.quest.reward.RewardClaimState;
 import com.sande.mythictrpg.story.api.StoryStateView.StoryScopeKey;
 import com.sande.mythictrpg.story.state.StoryRuntimeState;
 import net.minecraft.server.MinecraftServer;
@@ -33,7 +35,7 @@ public final class ConditionContexts {
         ConditionContext base = forServer(server, targetPlayerId);
         return new ConditionContext(base.world(), base.players(), base.server(), base.gods(),
                 base.targetPlayerId(), base.environment(), base.event(), base.structures(), base.relations(),
-                StoryRuntimeState.get(server), Optional.of(storyScope));
+                StoryRuntimeState.get(server), Optional.of(storyScope), base.blessingHistory());
     }
 
     public static ConditionContext forServer(MinecraftServer server, Optional<UUID> targetPlayerId,
@@ -92,9 +94,16 @@ public final class ConditionContexts {
                     return new com.sande.mythictrpg.condition.api.ConditionEnvironment(
                             player.serverLevel().dimension(), position, biomeId, dayTime);
                 });
+        RewardClaimState rewards = RewardClaimState.get(server);
+        BlessingHistoryView blessingHistory = new BlessingHistoryView() {
+            @Override public boolean isReady() { return rewards.isWritable(); }
+            @Override public boolean hasNonRaidBlessing(UUID playerId) {
+                return rewards.hasNonRaidBlessing(playerId);
+            }
+        };
         return new ConditionContext(world, PlayerMythDataService.get(server), serverView, gods,
                 targetPlayerId, environment, Optional.empty(), PlayerConstructionState.get(server),
                 com.sande.mythictrpg.relation.DynamicGodRelationState.get(server),
-                StoryRuntimeState.get(server), Optional.empty());
+                StoryRuntimeState.get(server), Optional.empty(), blessingHistory);
     }
 }

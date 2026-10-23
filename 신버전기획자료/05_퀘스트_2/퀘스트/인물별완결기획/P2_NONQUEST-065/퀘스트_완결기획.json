@@ -1,0 +1,1920 @@
+{
+  "packet_id": "P2_NONQUEST-065",
+  "category": "퀘스트",
+  "status": "현재 저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. 실행 스키마, 구현완료, 실제 API/게임/LLM 시험 결과가 아니다.",
+    "원문과보강": "source_contract와 retained_profile은 선택한 원문값 그대로다. 과거 미채택 표기·미정은 역사 원문에만 보존하며 현재 정책은 adopted_detail만 적용한다. 기존 정체·등급·관계·본편 권리·봉인을 바꾸지 않는다.",
+    "조우운영": {
+      "정책참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#general_encounter 및 #atomic_contract",
+      "적용": "현재 채택한 일반 무작위 경로만 공통 정책에 등록한다. 기존 실제 배치 본체는 재추첨 없이 직접 접촉. 제한 봉인석 접촉은 일반풀 제외.",
+      "확률과주기": "일반풀의 300 활동초 창·서버25%·실제 등장 뒤 인물1800 가동초 쿨 및 현재 전투등급 가중치는 참조 정책을 재사용한다. 인물마다 별도25% 추첨하지 않는다.",
+      "공통상태": "world_uuid+canonical_actor 세계 해금. 누구 한 명의 유효 사건으로 전역 개방. 조우조건 맞춘 실제 한 사람만 주체, 해금자와 다를 수 있다.",
+      "단일본체": "전역 canonical_actor CAS와 journal/실제 entity 대조, 재시작 후 동일 결과 복구. 이미 활동중이면 새 본체0.",
+      "권리분리": "동행자는 세계 해금 반복 없이 같은 본체를 관측할 수 있다. 일반 인사는 현재 허용된 발화·접촉 모드에만 적용하며, 비언어 인물에게 말로 답하게 하지 않는다. 티르·펜리르는 실제 허락 자료의 열람만 가능하다. 개인 관계·사적 허가·수신·MAIN·보상은 별도이며 현재 방문 의사와 안전을 유지한다.",
+      "소급": "기존 유효한 조우·초기접근을 새 해금으로 잠그지 않는다. 기존 해금 확인 receipt가 있으면 유지. 과거 이력 증거가 없으면 허위 과거를 생성하지 않고 현재 새 유효 사건을 기다린다."
+    },
+    "현재대화": {
+      "판정순서": [
+        "실제 동일본체·현재 접촉모드",
+        "현재 안전·의사·실제 청중",
+        "본인이 관측/허용전언으로 아는 플레이어 행위",
+        "그 상대와의 실제 관계 기억",
+        "이번 발언의 내용과 말투"
+      ],
+      "독립축": "친밀·존중·불쾌함·두려움·관측한 전투력은 서로 다르다. 강함을 보아도 자동 경외·존댓말·가호 지급 없음. 관계별 기존 profile의 9단계 지침을 유지하되 숨은 호감점수로 모든 반응을 대신하지 않는다.",
+      "강함예문사용": "각 인물의 강함 예문은 그 구체 행위를 직접 보았거나 출처 있는 실제 전언을 받은 경우에만. 미관측이면 초면/현재 질문 반응. 단순 장비 외형으로 승리·전투력 전체를 알지 않는다.",
+      "대화거리": "일반 사담은 동일 공간의 시야/실제 음성 수신 안에서 진행하며 본 기획 기본 8블록 안. 물건 집기·인수·배치는 2블록 안. 트리톤 신호·원거리 관측은 개별 규칙. 거리 안 존재만으로 사적 수신권 없음.",
+      "중단": "대화 거절·반박·침묵·퇴장은 정상 선택. 실제 위험중이면 안전철수 필요. 사망/로그아웃은 수행중단, 실제완료·소비·대여·수신 기록만 보존. 재회는 현재 접근을 다시 확인하고 끝난 사건을 재연하지 않는다."
+    },
+    "기록과지식": {
+      "저자진실": "정체·관계 정사와 인물의 실제 앎을 분리한다. 개인 미공개 사건·미래 분기·원전 전체를 loreKnowledge에 자동 주입하지 않는다.",
+      "지식영수증": "event_id·speaker/source·receiver_uuid·실제청중·공개허락 범위·received_at를 별도 저장. NPC도 실제 목격/수신 이전에는 모른다.",
+      "정정": "거짓 주장을 수신한 사실과 그 주장 내용의 진위를 분리. 정정은 원청중의 실제 재수신이 있어야 하고 원래 수신을 삭제하지 않는다.",
+      "사적정보": "새 청중이 끼면 비공개 내용 발화 중단 또는 현재 허락된 일반 정보로 전환. 제목으로도 비공개 비밀을 암시하지 않는다."
+    },
+    "서비스와물건": {
+      "수주": "이 패킷의 신규 퀘스트/개인MAIN 0. 기존 event/service/dialogue_only 방식 유지. 현재 행동 동의는 퀘스트 수락이 아니다.",
+      "성장": "신규 장비·가호·주시·습득 스킬·레벨·성장량 0. 기존 원문 생활지도·현물·현재 이용 서비스는 각 인물 계약에 보존한다.",
+      "정산": "실제 물품과 원장 unique receipt를 대조. 인도불확실이면 새 생성0. 미인도 실제 물건만 현재 소유·보관 합의에 따라 복구. 미차용 반환의무0.",
+      "반복": "새 요청/실재 현물/현재 허락 때 새 회차 가능. 최초 지도 수신은 같은 정의당 개인1건, 연습 반복을 신규 성장으로 집계0. 배낭 여유는 실제 물품 인수에만 필요하며 일반 인사·지도 청취에는 필요 없음."
+    },
+    "기록배역": "티르·펜리르는 기록 열람만 실행한다. 역사 profile/dossier의 현재 직접 접촉 표현은 보존용이며 현행에 실행하지 않는다. 두 인물의 현재 대사·본체·분신·관계 증가·지원·성장 생성 0.",
+    "상태분리": {
+      "최초미배치": "출현 전 본체가 현장에 없다는 이유만으로 무작위 경로를 봉쇄하지 않는다. 세계 조건·실제 적격자·배치 가능성을 판정한다.",
+      "미로드": "저장된 같은 본체의 청크만 로드하고 새 본체를 생성하지 않는다. 불확실하면 대조 대기.",
+      "사망": "원문 현재 사망은 유지하며 이 저술로 부활시키지 않는다.",
+      "봉인": "봉인·흡수는 일반 조우 제외. 명시 예외 모드만 원문대로 유지.",
+      "기록": "기록 배역에는 본체 추첨·방문 쿨·인물 관계 원장을 만들지 않는다."
+    },
+    "행동및정산": "대화/수신 기본 8블록, 실제 공연 12블록과 차음·청취 확인. 집기·인수·배치는 손 2블록. 원거리 물결·이동·관측은 해당 현장 시야와 경로로 판정한다. 모든 활동은 시간제한 없음이며 예상분은 정적 제작 추정이다. 진행 중 사망·로그아웃은 미완료 부분 중단, 이미 발생한 소비·이동·수신은 보존한다.",
+    "재개와후발": "world_uuid+episode_id+실제현장원인UUID로 회차를 구분한다. 참여 동의·행동 증거·실물 소유·반환·청중·수신·미정산을 별도 저장한다. 재개는 현재 접근과 같은 대상의 남은 행동만, 후발자는 현재 남은 상태만 관찰한다. 과거 수행·친분·보상은 공유하지 않는다. 불명확 전달은 원장/인벤/현물 대조 후 누락분만 복구한다."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S02-006",
+      "name": "시귄",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-006/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-006/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-006/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-006/outline",
+        "episode": [
+          "EP009A-RPG-S02-006"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/102"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/102"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "돌봄을 끝없는 묵인과 같게 취급하지 않으려 한다 이를 교대하며 자기 쉼 선택/돌봄을 유지하되 로키의 별도 요구 거절/교대 제안 거절.의 플레이 차이로 드러내므로 event로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/102"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 그릇 소유는 시귄. 인수는 짧은 돌봄 보유만이며 반환 때 실제 손 확인.\nB2: 실제 반환 뒤 보유권 종료. 내용물은 허락 없이 버리지 않는다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009A-RPG-S02-006",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "그릇을 내려놓을 자리",
+        "mode": [
+          "event"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "마른 동굴 입구 기존 받침 A, 시귄의 쉼자리 B는 A에서 3블록 이내, 두 자리와 퇴로 시야 확보. 로키의 위치는 별도로 확인하며 없으면 소환하지 않는다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": "(관측된 사건 A OR 관측된 사건 B)를 세계의 플레이어 중 누구 한 명이라도 달성 → 해당 NPC의 세계 공통 해금 후보. 두 사건을 AND로 누적 요구하지 않는다.",
+          "trigger_details": "실제 안전한 지하 동굴 외곽 접근로 발견 OR 돌봄/정리 물품 1개 이상의 소유 허락 운반 후 실제 귀환점 인계. 개인 반복 불필요.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "시귄이 공개한 현재 그릇 1개의 내용·무게와 맡길 범위를 확인한다. 플레이어는 빈 받침을 손 2블록 안에서 눌러 흔들림을 시험한다. 시험만으로 인수하지 않는다. 위험을 감당하지 못하거나 시귄이 거절하면 교대 없이 주변 방해만 줄이고 끝낸다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "인수하겠다는 현재 동의 후 두 사람이 같은 그릇의 무게를 실제 나눈다. 시귄의 손이 떨어지고 플레이어가 안정적으로 받친 시점에만 위탁 보유를 기록한다. 소유자는 시귄이며 내용물 폐기·복제·새 독 생성은 금지한다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "자동 만료 없는 짧은 교대다. 시귄이 옆자리에서 손을 펴고 쉬는 실제 구간을 기록한다. 그만해야 하면 알리고 그녀가 다시 받을 때까지 받침과 현보유 상태를 유지한다. 그녀가 실제 받았거나 허용된 안전 받침에 놓였을 때만 떠난다."
+          }
+        ],
+        "branches_and_completion_guard": "실제 휴식·중도 반환·교대 거절을 별도 결과로 닫는다. 감사는 로키 면책이나 봉인 접근권이 아니다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 3~6분. 휴식 시간은 플레이어에게 강제 타이머가 아니며 실제 쉰 부분만 남긴다. 로그아웃 시 손의 물건을 자동 복제하지 않고 현재 받침/인벤/현보유 원장으로 인수 여부를 대조한다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-007",
+      "name": "티르 (현재 기록 배역)",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-007/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-007/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-007/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-007/outline",
+        "episode": [
+          "EP009A-RPG-S02-007"
+        ],
+        "existing_cards": [
+          "기존페르소나_인물별/RPG-S02-007/authoring_contract.json#/exact_existing_cards/C10"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/103"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/C10.json",
+              "sha256": "82b82949741cbad952919e0464d728177b583e45d7e2a8e58b407871437e774c",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/103"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/C10.json",
+              "sha256": "82b82949741cbad952919e0464d728177b583e45d7e2a8e58b407871437e774c",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "dialogue_only"
+          ],
+          "role_specific_reason": "공동체의 안전을 이유로 개인의 담보를 가볍게 쓰는 일을 막고 싶어 한다 이를 타인의 자유를 대신 담보로 제안/자기 책임 범위로 줄이기/약속하지 않기.의 플레이 차이로 드러내므로 dialogue_only로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/103"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/3"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 기록 비소비·허락 범위 열람. 신체·타인 재산·사슬 소유 이전 없음.\nB2: 대화 외 소비·보상 없음. 과거 잃은 손의 상태 변경 없음.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009A-RPG-S02-007",
+        "definition_kind": "기록 열람·해석",
+        "title": "누구의 손으로 약속하는가",
+        "mode": [
+          "dialogue_only"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "C10의 실제 마른 귀환점에 확보된 사슬 기록 1건. 기록 소유·공개 범위를 확인한 기존 열람 자리만 사용한다.",
+        "activation": {
+          "status": "기록 전용 현행 채택; 일반 본체 조우풀 제외",
+          "world_rule": "C10의 기존 조사/자료 확보·열람권만. 기록 확보라는 공유 사실과 개인 실제 열람 receipt를 분리. 본체 세계 해금 이벤트 0.",
+          "current_subject": "실제 독자와 실제 자료 버전·범위. NPC 등장 주체 없음.",
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "C10 원래 조사 선행 C09와 자료 확보 상태를 참조한다. C10 후발자는 이미 확보된 허락 자료를 열람할 수 있으며 같은 잠수·적 처치를 다시 요구하지 않는다. 기록이 아직 없으면 확보했다고 쓰지 않고 현재 공개 자료의 위치 안내만 한다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "독자는 기록의 티르·담보·사슬 관련 실제 대목을 읽고 문서 버전과 열람 부분을 남긴다. 기록 속 사슬은 C10 해저 구속 장치와 다르다고 표시한다. 읽지 않은 내용·원전의 다른 장면·현재 티르의 의견을 보충하지 않는다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "선장이 실제 옆에 있고 대화를 받아들일 때만 독자가 “친구의 자유도 담보로 넣자” 또는 “내가 감당할 몫만 적겠다” 또는 “약속하지 않겠다”를 말할 수 있다. 선장은 자신의 항로 업무에 한해 실제 들은 말을 구분한다. 기록을 읽는 행위와 현재 보호항로 계약 선택은 별도다."
+          }
+        ],
+        "branches_and_completion_guard": "기록 열람과 선장이 실제 들은 제한 발언만 남긴다. 티르의 본체·대사·만남·호감·지원·성장·담보 수락은 모두 발생하지 않는다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "원문 dossier의 제한접촉·균형연습·티르의 현재 응답은 역사 보존값일 뿐 현행 실행에서 제외한다. 반응 예문 네 가지의 주체는 실제 선장이다. 그와의 친분/신뢰침해/목격 조건이 없으면 해당 예문을 사용하지 않는다. 예상 열람 2~4분; 보상 0.",
+        "stop_failure_partial_resume": "독자의 거절·미응답·사망·로그아웃은 미열람 부분만 종료하거나 보류한다. 이미 읽은 문서 버전·대목·허용 청중의 실제 수신은 유지한다. 재개 때 같은 자료의 존재·열람권·접근을 확인한다. 선장 부재는 선장과의 선택 대화만 보류하며 허락된 기록 열람을 막지 않는다. 티르·펜리르의 본체 현존·응답을 요구하지 않는다.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0.",
+        "source_override_guard": "원문 source_contract/episode는 정확 보존한다. 그 안의 티르/펜리르 현재 직접접촉·발화는 현재 기록역할에 맞지 않아 채택하지 않는다. 오직 위 기록 열람 장면이 현행이며 기록 인물을 연기하는 대사로 변환하지 않는다.",
+        "campaign_links": [
+          "스토리/본편/세부장면/01_C07_C14_중반_장면.md#C10",
+          "퀘스트/본편전투/C10/C10_해저방어체_기획.json",
+          "공용73장면_실행연결계약.json#/scenes:scene_id=C10"
+        ],
+        "campaign_guard": "C10 보급·제2원본·보증/독립 항로·완료·개인 수행은 C10 단일 정의만 처리한다. 기록 읽기로 추가 보급·레이드권·MAIN을 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S02-009",
+      "name": "발드르",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-009/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-009/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-009/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-009/outline",
+        "episode": [
+          "EP009A-RPG-S02-009"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/105"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/105"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "dialogue_only"
+          ],
+          "role_specific_reason": "자신을 모두의 이상적인 희생자로 쓰는 이야기에 직접 이의를 제기한다 이를 영웅적인 말로 다듬기/거절을 그대로 전달/아무에게도 보내지 않기.의 플레이 차이로 드러내므로 dialogue_only로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/105"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 허락한 설명만 열람하며 기록 소유·원본을 훼손하지 않는다.\nB2: 서신·기념품·보상 생성 없음. 허락된 말만 전달한다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009A-RPG-S02-009",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "찬사에서 빠져나온 한 문장",
+        "mode": [
+          "dialogue_only"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "폐예배당의 열린 가장자리 A. 발드르 현재 접근·생사·봉인 표현을 그대로 유지하며 귀환 가능한 새로운 육신을 만들지 않는다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "OR",
+            "alternatives": [
+              "실제 지하 폐허에서 출처가 확인되는 기존 기억·생활 물건을 발견하고 발견 위치를 남긴 이력",
+              "실제 매장·기억 장소의 남은 표식과 접근 경로를 직접 관측한 이력"
+            ]
+          },
+          "trigger_details": "기존 기억 물건 1개의 발견 위치 기록 OR 매장 표식 1곳과 실제 접근 경로 관측. 파괴·물품 지급을 요구하지 않는다.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "실제로 들은 찬사 한 대목의 출처를 밝히거나 가정이라고 명시한다. 발드르가 답할 의향이 있으면 끊지 않고 한 문장을 듣고 그대로 되읽는다. “숭고한 양보”로 고치면 그는 전달을 철회할 수 있다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "전달 가능한 거절 문구 1건과 여기서만 한 농담을 분리한다. 전달하지 않기를 고르면 이 대화는 정상 종료하며 헤르모드의 수신은 0이다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "전달을 고른 경우 플레이어가 헤르모드의 현재 본체까지 실제 이동하여 허락된 답만 말한다. 헤르모드의 실제 되읽기 중 허락된 응답만 발드르에게 실제 돌아와 전한다. 한쪽 부재면 해당 구간만 미전달로 저장하고 초기 대화를 반복하지 않는다."
+          }
+        ],
+        "branches_and_completion_guard": "원문 확인/미화 철회/비전달/전달 및 반환 수신을 분리한다. 부활·귀환 승인·불사·감각 상실은 생기지 않는다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 대화 3~5분, 실제 왕복 이동시간 별도·마감 없음. 사적 채널이 없으면 비공개 농담은 발화하지 않는다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-013",
+      "name": "브라기",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-013/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-013/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-013/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-013/outline",
+        "episode": [
+          "EP009A-RPG-S02-013"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/109"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/109"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "영웅담에 지워진 조력자의 이름을 되돌려 놓고 싶어 한다 이를 매끈한 노래/기여가 드러나는 거친 대목/당사자 비공개 요청으로 노래에서 제외.의 플레이 차이로 드러내므로 event로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/109"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/9"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 노랫말 메모는 허락된 내용만. 사연·이름은 보상 재료가 아니다.\nB2: 공연 대가·가호·악기 소유 이전 없음.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009A-RPG-S02-013",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "운율 밖에 남은 이름",
+        "mode": [
+          "event"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "실제 주점 열린 자리 A와 공개 공연 자리 B. 사연 확인은 허락된 청중만 있는 8블록 대화권, 공연은 12블록 안 실제 청취자로 제한한다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "EXISTING_WORLD_CONDITION_ONLY",
+            "condition": "원본 C01 공통 시작 뒤 초기 공개 생활권 후보를 그대로 유지한다. 새 개인 해금 과제를 추가하지 않는다."
+          },
+          "trigger_details": "원본 C01 공통 시작 뒤 초기 생활권 접근 유지. 신규 개인 해금 없음.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "before",
+              "encounter_subgroup": "legacy_initial_candidate",
+              "evidence_status": "legacy_initial_proposal",
+              "evidence_reason": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+              "actual_access_rule": {
+                "value": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "오늘 확인 가능한 성취 한 건에서 빠진 행동을 목격/전언으로 나눈다. 조력자의 이름과 행위 사용을 실제 당사자에게 허락받는다. 이둔 사연은 이둔의 실제 허락 부분만 쓰며 부재면 그 구절은 보류한다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "짧고 정확한 안 1개와 운율을 깨도 행동을 온전히 넣은 안 1개를 준비한다. 이름·공로를 바꾸는 축약은 탈락이다. 사연 비공개 요청이면 둘 다 빼고 현장 소리만 가락으로 삼는다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "브라기가 두 안을 실제로 부르고 선택한 정확한 한 안을 다시 부른다. 실제 듣고 있는 사람만 각 버전을 수신한다. 이전 공연 청중의 기억을 수정하려면 나중에 그 사람에게 정정을 실제 전달해야 한다."
+          }
+        ],
+        "branches_and_completion_guard": "정확한 짧은 노래/거친 온전한 노래/사연 제외가 동등한 종료다. 별도 연주 스킬·악기·명성 수치 보상 없음.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 4~7분, 공연 한 대목 비교만. 노래의 사적 이름을 제목·대기 UI로 누설하지 않는다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-018",
+      "name": "프레이야",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-018/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-018/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-018/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-018/outline",
+        "episode": [
+          "EP009B-RPG-S02-018"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/114"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/114"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "소유하려는 구혼과 자발적 동행을 분명히 구별한다 이를 자발적 짧은 동행/목적이 달라 각자 가기/동행 조건 재협의.의 플레이 차이로 드러내므로 event로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/114"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/14"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 장식·소중한 물건은 프레이야 소유. 보여 주지 않은 내부를 조사하거나 동행 보상으로 받지 않는다.\nB2: 물건 교환·보상 없음. 실제 맡긴 물건이 없으면 반환 과업도 없다. 동행 중 자기 실제 소비만 남긴다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009B-RPG-S02-018",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "같이 걷되 묶지 않는 길",
+        "mode": [
+          "event"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "기존 주점 마당 A와 실제 공용 갈림 B를 연결하는 16~32블록의 안전한 기존 길. 거리가 맞지 않으면 같은 생활권의 더 짧은 길로 동의하며 새 길을 건설하지 않는다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": "일반 첫 인사에는 제작·전투·선물 이력을 요구하지 않는다. 실제 길을 탐험해 본인이 본 지형을 설명한 이력은 수색 협력 논의의 후보가 될 수 있으나 동행 수락이나 그녀의 관심을 보장하지 않는다.",
+          "trigger_details": "기존 일반 첫 인사 접근 유지. 신규 개인 선물·수색 해금 없음.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "프레이야와 각자 공개하고 싶은 오늘의 목적만 말한다. 마당과 갈림을 함께 확인하고 중도에 갈라져도 된다는 의사를 맞춘다. 소중한 장식은 그녀 소유로 손대지 않는다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "짧은 동행에 양쪽이 동의하면 실제 함께 걷는다. 한쪽이 멈추면 현재 위치를 남기고 계속할지 새로 묻는다. “이제 내 편이니 따라와”라고 하면 프레이야가 멈추며 철회/각자 가기를 선택한다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "갈림에 실제 도착하면 각자의 길을 확인하고 떠난다. 더 가는 것은 새 동의가 있어야 한다. 중도 종료면 이미 같이 걸은 구간만 경험으로 남긴다."
+          }
+        ],
+        "branches_and_completion_guard": "자발적 동행/조건 변경/각자 이동으로 닫는다. 오드 소재, 혼인, 소유, 오딘의 전사 인도권, 수색 지원권을 보상으로 주지 않는다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 2~5분. 일반 첫 인사에 선물·장신구·수색 이력을 붙이지 않는 기존 초기 접근 보존.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-019",
+      "name": "게르드",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-019/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-019/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-019/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-019/outline",
+        "episode": [
+          "EP009B-RPG-S02-019"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/115"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/115"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "dialogue_only"
+          ],
+          "role_specific_reason": "다른 이의 거래에서 자신의 응답이 생략되지 않도록 한다 이를 일부 조건만 응답/명확한 거절/응답하지 않기.의 플레이 차이로 드러내므로 dialogue_only로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/115"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/15"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 기록은 실제 가진 사람 소유. 그녀의 침묵을 서명·물품·거래값으로 변환하지 않는다.\nB2: 실제 기록 보관과 공개 권한을 구별한다. 허락된 답을 거래 증표로 팔거나 프레이의 검과 교환하지 않는다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009B-RPG-S02-019",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "대답하지 않은 칸",
+        "mode": [
+          "dialogue_only"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "숲 쉼자리의 빛이 드는 가장자리. 방문자는 3~6블록 밖에서 말을 건네며 돌아갈 길을 비워 둔다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "OR",
+            "alternatives": [
+              "실제 숲 경계의 같은 관측 자리를 서로 다른 일조 시점에 방문한 이력",
+              "실제 숲의 서로 다른 공용 생활 공간 사이를 걸어 연결 경로를 확인한 이력"
+            ]
+          },
+          "trigger_details": "같은 숲 관측점의 낮/해질녘 두 실제 관측 OR 기존 숲 생활공간 두 곳 사이 실제 도보 도달.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "실제 제안 1묶음이 있다면 제안자와 원문을 밝히고 답할 의향을 한 번 묻는다. 없으면 가정 질문이라고 한다. 침묵을 채우기 위해 질문을 바꿔 반복하지 않는다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "실제 응답이 있으면 원문/수정/거절을 정확히 되읽고 누구에게 어느 문장을 전해도 되는지 묻는다. 미응답이면 물러나 정상 종료한다. 동의·서명·거래는 생성하지 않는다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "허락한 수신자에게 실제 이동하여 답을 전하고 수신을 확인한다. 프레이 또는 스키르니르 부재면 보관만 하며 비전달로 마칠 수도 있다. 전달 허락이 철회되면 미전달 부분만 중단한다."
+          }
+        ],
+        "branches_and_completion_guard": "부분 응답/거절/침묵의 차이를 유지한다. 검·선물·구혼 결과로 응답을 매입하지 않는다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 2~4분 및 선택 전달 이동시간. 사적 답은 실제 허용된 수신자만 알며 휴식 자리 공개와 사적 답 공개를 분리한다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-021",
+      "name": "포르세티",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-021/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-021/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-021/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-021/outline",
+        "episode": [
+          "EP009B-RPG-S02-021"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/117"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/117"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "service"
+          ],
+          "role_specific_reason": "승자 선언보다 양측이 실제로 지킬 판결을 만들려 한다 이를 번갈아 쓰기/한쪽이 이번 사용을 양보/합의 실패로 각자 권한 보존.의 플레이 차이로 드러내므로 service로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/117"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/17"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 원물은 실제 원소유자 소유. 임시 사용·놓기 허락과 소유 이전은 별개다. 중재 수수료·보상을 새로 붙이지 않는다.\nB2: 실제 사용·마모·소모·대여 잔량을 원소유자와 확인한다. 남의 물건을 중재 보상으로 나누지 않는다. 반환 상대 부재면 현보유·미인수만 보존한다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009B-RPG-S02-021",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "판결보다 짧은 한 차례",
+        "mode": [
+          "service"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "주점 마당의 실제 공용 통로 또는 소유가 확인된 사용물 1개. 당사자 두 명과 포르세티가 서로 들을 수 있는 8블록 자리.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "EXISTING_WORLD_CONDITION_ONLY",
+            "condition": "원본 C01 공통 시작 뒤 초기 공개 생활권 후보를 그대로 유지한다. 새 개인 해금 과제를 추가하지 않는다."
+          },
+          "trigger_details": "원본 C01 공통 시작 뒤 초기 생활권 접근 유지. 신규 개인 해금 없음.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "before",
+              "encounter_subgroup": "legacy_initial_candidate",
+              "evidence_status": "legacy_initial_proposal",
+              "evidence_reason": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+              "actual_access_rule": {
+                "value": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "실제 분쟁 당사자 두 사람의 현재 필요·원소유·허가를 따로 듣는다. 당사자가 없으면 분쟁이나 가상 증인을 만들지 않고 일반 중재 설명만 한다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "번갈아 쓰기 또는 이번 양보 또는 합의 없이 종료 중 양측 의사를 확인한다. 이번 한 회차의 사용 종료 조건을 행동으로 정한다. 통로는 각자 짐 한 번 통과, 물건은 원소유자가 동의한 기존 사용 한 번과 반환으로 한정한다. 새로운 통행료나 영구 소유 이전은 없다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "번갈아 안은 첫 사람의 통과·비움 뒤 두 번째 통과·비움, 양보 안은 허용받은 사람의 한 차례 사용 종료를 실제 확인한다. 물건이면 원래 소유자에게 동일 실물 반환·실제 마모/소비를 대조한다. 지키지 않으면 남은 범위를 재협의하거나 해결 없이 종료한다."
+          }
+        ],
+        "branches_and_completion_guard": "이행/부분 이행/양보/합의 실패를 기록한다. 승자 선언과 해결을 혼동하지 않으며 수수료·보상 0.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 5~8분, 양측 동의 없는 재산 이전 0. 원소유자 부재면 현보유와 반환대기만 남기며 물품을 복제하지 않는다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-028",
+      "name": "펜리르 (현재 기록 배역)",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-028/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-028/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-028/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-028/outline",
+        "episode": [
+          "EP009B-RPG-S02-028"
+        ],
+        "existing_cards": [
+          "기존페르소나_인물별/RPG-S02-028/authoring_contract.json#/exact_existing_cards/C10"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 장면은 독점 소유보다 각 실제 참여자의 현재 경험을 다루는 역할이다.",
+          "details": "이 역할의 현재 사건·대화·서비스는 개인 MAIN 독점 결말을 새로 만들지 않는다. 실제 참여자의 선택·관계만 각자 남기며 공용 C나 기존 타인의 MAIN을 수락·완료로 처리하지 않는다. 일반 조우를 등급·장 번호로 추가 봉쇄하지 않는다. 위험 수행은 실제 현장·장비·퇴로 준비를 별도로 확인한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/124"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/C10.json",
+              "sha256": "82b82949741cbad952919e0464d728177b583e45d7e2a8e58b407871437e774c",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+          "details": "시간·우회·이미 합의한 실제 물건 소비와 위 선택 결과만 남는다. 원래 자기 물건과 다른 사람 재산은 퀘스트 보상으로 바꾸지 않는다. 실물은 지급권과 실제 인계를 분리하고 최초 수혜·선택·재고·수령을 대조하여 이중 지급하지 않는다. 재고/공간 부족은 미수령만 보존하며 재접속 후 남은 권리만 정산한다. 지도는 실제 수강 경험만 남긴다. 등록 ID·효과 수치·전투등급은 새로 확정하지 않는다. 가호·주시·축복·MAIN·호감은 서로 대신하지 않으며 기존 인간 성장·수용 제한을 우회하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/124"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/C10.json",
+              "sha256": "82b82949741cbad952919e0464d728177b583e45d7e2a8e58b407871437e774c",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "dialogue_only"
+          ],
+          "role_specific_reason": "말의 온정이 아니라 상대가 함께 감수하는 위험으로 신뢰를 판단한다 이를 자기 쪽에도 위험·퇴로 남기기/더 접근하지 않고 대화 종료/감당 못할 해방 약속을 철회.의 플레이 차이로 드러내므로 dialogue_only로 집필한다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/124"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-009.json",
+              "sha256": "6ec028d4cf7a6ae242eb4b743dd780d35080acf2db90525fe6405827a6cfcaa3",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-009.json",
+              "sha256": "14c4702180526dbe17474be7d00a49707c49ae5d852c8fd33212e35292a564cd",
+              "pointer": "/records/23"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "이번 역할의 보상은 위 관찰 가능한 개인 결과 자체다. 반복적인 가호·물품을 붙일 고유 이유가 없어 별도 지급권을 만들지 않는다.",
+            "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 사슬·결박은 조작하거나 지급받는 물건이 아니다. 담보로 신체·물품을 요구해 새 희생 시험을 만들지 않는다. 자기 물자 실제 소모만 남는다.\nB2: 결박 조작·신체 담보·물품 보상 없음. 실제 움직인 경험만 남고 봉인 상태·전력·자유 이동은 그대로다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP009B-RPG-S02-028",
+        "definition_kind": "기록 열람·해석",
+        "title": "먼저 말한 거리",
+        "mode": [
+          "dialogue_only"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "티르 기록과 같은 C10 확보 문서의 허락된 열람 자리. 자연 섬·결박 본체·새 울음은 생성하지 않는다.",
+        "activation": {
+          "status": "기록 전용 현행 채택; 일반 본체 조우풀 제외",
+          "world_rule": "C10의 기존 조사/자료 확보·열람권만. 기록 확보라는 공유 사실과 개인 실제 열람 receipt를 분리. 본체 세계 해금 이벤트 0.",
+          "current_subject": "실제 독자와 실제 자료 버전·범위. NPC 등장 주체 없음.",
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "현재 확보된 C10 사슬 기록의 출처·버전·열람 허락을 확인한다. 같은 자료를 읽어도 티르와 펜리르 두 NPC를 만난 것으로 집계하지 않는다. 해저 장치 외곽 지지 해제는 펜리르 사슬 해제가 아니다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "기록에 실제 적힌 보호·구속·담보 대목을 읽는다. 독자가 “온정 어린 약속”이라고 해석하면 그 말은 독자의 평가로 표시하고, 펜리르가 지금 받아들였다는 문장을 넣지 않는다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "실제 선장에게 기록의 위험 부담을 논의할 경우 독자는 자기 책임만 제안하거나 제안을 거둔다. 선장이 실제 수신한 범위만 항로 대화에 반영한다. 선장이 없으면 기록 읽기만으로 정상 종료하며 펜리르의 새 응답을 기다리지 않는다."
+          }
+        ],
+        "branches_and_completion_guard": "개인 기록 열람·출처 있는 해석만 남는다. 접근 거리·사슬 상태·생존·신뢰·지원·레벨업은 바뀌지 않는다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "원문 dossier의 제한접견·정지선 왕복·현재 펜리르 발화는 현행 미실행으로 분리한다. 예문은 실제 선장의 관측과 관계가 있는 경우만. 티르와 펜리르의 화해도 발생하지 않는다. 예상 2~4분.",
+        "stop_failure_partial_resume": "독자의 거절·미응답·사망·로그아웃은 미열람 부분만 종료하거나 보류한다. 이미 읽은 문서 버전·대목·허용 청중의 실제 수신은 유지한다. 재개 때 같은 자료의 존재·열람권·접근을 확인한다. 선장 부재는 선장과의 선택 대화만 보류하며 허락된 기록 열람을 막지 않는다. 티르·펜리르의 본체 현존·응답을 요구하지 않는다.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0.",
+        "source_override_guard": "원문 source_contract/episode는 정확 보존한다. 그 안의 티르/펜리르 현재 직접접촉·발화는 현재 기록역할에 맞지 않아 채택하지 않는다. 오직 위 기록 열람 장면이 현행이며 기록 인물을 연기하는 대사로 변환하지 않는다.",
+        "campaign_links": [
+          "스토리/본편/세부장면/01_C07_C14_중반_장면.md#C10",
+          "퀘스트/본편전투/C10/C10_해저방어체_기획.json",
+          "공용73장면_실행연결계약.json#/scenes:scene_id=C10"
+        ],
+        "campaign_guard": "C10 보급·제2원본·보증/독립 항로·완료·개인 수행은 C10 단일 정의만 처리한다. 기록 읽기로 추가 보급·레이드권·MAIN을 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S02-029",
+      "name": "요르문간드",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-029/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-029/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-029/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-029/outline",
+        "episode": [
+          "EP010A-RPG-S02-029"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "「끌어당기는 줄」는 요르문간드의 현재 역할 안에서 실제 참가자별 행동을 구분하는 비독점 event이다. 한 번 바뀌는 공유 물체나 짧은 서비스에 개인 MAIN 독점을 더할 필요가 없다.",
+          "details": "제시·수락은 이번 실제 활동에만 한정한다. 현재 배우와 물체가 한 작업 중이면 다른 사람은 기다리거나 질문한다. 각 참가자의 실제 기여·대가만 정산하며 한 사람의 완료를 친구의 완료로 복사하지 않는다. 기존 다른 MAIN의 소유·자격·제시는 별도로 유지한다. 별도 진행 전투력 예외를 새로 정하지 않으며 일반 조우 허용이 위험 수행 허용을 뜻하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/125"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "물질 지급 없음. 요르문간드가 직접 본 배에 먼저 경고하지 않는 태도 변화만 가능하며 해역 전체 통행권이나 탑승권은 없다.",
+          "details": "제안은 실제 수행·정산 전 지급 사실이 아니다. 대가가 있는 경우 시작 전에 자기 소유 재료·시간·분배와 소비 범위를 고지하고 동의를 받는다. 성공 후 실제 확인된 수행자에게만 그 제시된 범위의 지급권을 남기며 재료는 실제 사용량만 소비한다. 실물 지급 주체는 자기 보유 재고와 권한 안에서만 준다. 가득 찬 인벤토리·응답 불가이면 미수령 권리를 보존해 실제 대면 재정산하고 중복 지급하지 않는다. 지급·미지급을 구분하고 실패 잔여물은 소유자에게 반환한다. 호의·기술 설명·가호·주시·축복·MAIN·장비는 서로 자동 전환되지 않는다. 아이템/효과 등록 ID와 수치 성능은 확정하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/125"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "요르문간드의 목표를 「끌어당기는 줄」에서 회수할 수 있는 자기 밧줄을 버려 고정점을 끊을지, 그 재료를 보존하고 오늘 항해를 접을지 고른다.로 드러내므로 이 모드를 택한다. 첫 만남만 반복하는 대화 완료 처리나 전원 필수 MAIN 배정이 아니다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/125"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/0"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "NONE",
+            "reason_and_source": "물질 지급 없음. 요르문간드가 직접 본 배에 먼저 경고하지 않는 태도 변화만 가능하며 해역 전체 통행권이나 탑승권은 없다.",
+            "earned_condition": "별도 지급권 없음. 자신이 본 비위협 접근에 대한 태도만 달라진다.",
+            "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+            "actual_grant_and_consumption": "실물 지급0. 실제 잘린 자기 줄은 복원하지 않고 남은 소유물만 회수한다.",
+            "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP010A-RPG-S02-029",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "끌어당기는 줄",
+        "mode": [
+          "event"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "해안 마른 고체 지면 A, 관찰 가능한 줄 고정점 B는 손 2블록 안에 안전하게 접근 가능한 경우만. 본체는 연결된 적합 수역, 배의 철수 항로는 실제 기존 수역으로 별도 설정한다.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "OR",
+            "alternatives": [
+              "실제 해안의 서로 다른 두 지점 사이를 배로 이동하고 귀환한 이력",
+              "현재 지원되는 해상 회수에서 자기 소유 어구의 회수 또는 실제 철수를 수행한 이력"
+            ]
+          },
+          "trigger_details": "실제 해안 두 지점 사이 배 왕복 OR 자기 어구의 실제 회수/철수.",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 플레이어 관측 자리: 실제 선박의 안전 갑판 또는 자연 해안의 마른 고체 지면. 본체 자리: 이 관측 자리와 연결된 실제 적합 수역의 기존 본체 위치를 별도 확인. 거대·수중 본체를 갑판 위에 생성하지 않음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "안전 발판에서 버려진 작살줄과 자기 배 회수줄 두 가닥을 눈으로 따라가 소유와 얽힘을 확인한다. 구별 불가·소유 불명이면 절단 선택을 제공하지 않고 관찰 또는 철수만 한다. 본체 관측은 손 거리 제한이 아니라 실제 시야와 물결 가시성이다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "자기 회수줄 1가닥 손실을 받아들이고 접근 가능한 고정점에서 얽힌 줄을 실제 끊는 선택과, 어떤 줄도 자르지 않고 배를 바깥 수역으로 이동하는 선택을 구분한다. 절단은 같은 줄 UUID에 한 번만, 실제 절단 및 당김 해소를 모두 확인한다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "밀물이 발판을 잠그면 절단을 중단하고 실제 안전 지면으로 이동한다. 철수는 시작 전에 보이는 귀환점과 경고 밖 수역을 현장 지정해 실제 도착을 확인한다. 절단 성공은 부표와 줄의 당김이 멎은 뒤에만, 요르문간드의 인지는 실제 본 배에 한정한다."
+          }
+        ],
+        "branches_and_completion_guard": "절단 및 당김 해소/자기 줄 보존 철수/미수·중단이 다르다. 해역 통행권·레이드권·토르 대결 승리·탑승·보상은 없다.",
+        "current_reward": {
+          "kind": "지급 없음",
+          "quantity": 0,
+          "claim": "보상 권리·미수령 보상 생성 0.",
+          "recovery": "실제 위탁물·미수신 응답만 현재 상태로 복구. 없는 위탁물 반환 의무 0."
+        },
+        "time_implementation_and_balance": "예상 4~8분, 자동 밀물 타이머를 새로 만들지 않고 현재 수면 변화를 판정한다. 줄 절단·장력·부표 및 선박 이동은 신규 구현 요구이며 기존 API 지원 주장이 아니다. 보트로 가능한 이동과 실제 선박 구현을 구분한다. 기존 공용 본편/레이드의 전투 예약이 본체를 점유하면 이 사건은 중단하고 그 원정 상태·보상은 그대로 둔다.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    },
+    {
+      "record_key": "RPG-S02-031",
+      "name": "슬레이프니르",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S02-031/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S02-031/authoring_contract.json",
+        "scope": "원문제작범위_보존색인.json#/records/RPG-S02-031/contract",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S02-031/outline",
+        "episode": [
+          "EP010A-RPG-S02-031"
+        ],
+        "existing_cards": []
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "「여덟 발의 박자」는 슬레이프니르의 현재 역할 안에서 실제 참가자별 행동을 구분하는 비독점 event·service이다. 한 번 바뀌는 공유 물체나 짧은 서비스에 개인 MAIN 독점을 더할 필요가 없다.",
+          "details": "제시·수락은 이번 실제 활동에만 한정한다. 현재 배우와 물체가 한 작업 중이면 다른 사람은 기다리거나 질문한다. 각 참가자의 실제 기여·대가만 정산하며 한 사람의 완료를 친구의 완료로 복사하지 않는다. 기존 다른 MAIN의 소유·자격·제시는 별도로 유지한다. 별도 진행 전투력 예외를 새로 정하지 않으며 일반 조우 허용이 위험 수행 허용을 뜻하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/127"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "APPLICABLE",
+          "reason": "신규 저술안: 위험한 당김 없이 몸을 싣는 주행 연습 한 번. 영구 탑승권·속도 효과·오딘의 소유권 이전 없음.",
+          "details": "제안은 실제 수행·정산 전 지급 사실이 아니다. 대가가 있는 경우 시작 전에 자기 소유 재료·시간·분배와 소비 범위를 고지하고 동의를 받는다. 성공 후 실제 확인된 수행자에게만 그 제시된 범위의 지급권을 남기며 재료는 실제 사용량만 소비한다. 실물 지급 주체는 자기 보유 재고와 권한 안에서만 준다. 가득 찬 인벤토리·응답 불가이면 미수령 권리를 보존해 실제 대면 재정산하고 중복 지급하지 않는다. 지급·미지급을 구분하고 실패 잔여물은 소유자에게 반환한다. 호의·기술 설명·가호·주시·축복·MAIN·장비는 서로 자동 전환되지 않는다. 아이템/효과 등록 ID와 수치 성능은 확정하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/127"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event",
+            "service"
+          ],
+          "role_specific_reason": "슬레이프니르의 목표를 「여덟 발의 박자」에서 기록을 줄이려 미끄러운 안쪽을 택할지, 속도를 잃어도 넓은 바깥쪽으로 돌지 선택한다.로 드러내므로 이 모드를 택한다. 첫 만남만 반복하는 대화 완료 처리나 전원 필수 MAIN 배정이 아니다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/127"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-010.json",
+              "sha256": "bd2f37c10f394946713b38851a092002f059680f4cf560d5c28477e87062c114",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-010.json",
+              "sha256": "b9f29cd81df3ca008c38725b29cfc0d019beff5fb512b4bff653f105db02ee7e",
+              "pointer": "/records/2"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "accepted_episode_rewards": [
+          {
+            "status": "PROPOSED",
+            "reason_and_source": "신규 저술안: 위험한 당김 없이 몸을 싣는 주행 연습 한 번. 영구 탑승권·속도 효과·오딘의 소유권 이전 없음.",
+            "earned_condition": "허락된 실제 주행 연습 자체가 제공 내용이며 미래 지급권이나 영구 탑승권 없음. 무승낙 도보와 중도 하차에는 완주 연습을 소급하지 않는다.",
+            "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+            "actual_grant_and_consumption": "이번 실제 주행만 제공한다. 가방 부족 보상은 해당 없음. 끊긴 이용은 현재 위치와 승낙을 확인하고 안전 하차 또는 남은 구간만 재개한다.",
+            "unclaimed_retry_no_duplicate": "제공권·재고·수용능력·실물/효과 확인을 분리한다. 가득 참·부재·미지급은 권리 보존, 실물과 거래/정산 근거 대조 후 누락만 복구. 선택 지도/수령 거절은 이미 끝난 행동을 취소하지 않는다. 반복 클릭·팀 완료·재시작으로 중복 없음.",
+            "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "definition_id": "EP010A-RPG-S02-031",
+        "definition_kind": "기존 비퀘스트 상호작용",
+        "title": "여덟 발의 박자",
+        "mode": [
+          "event",
+          "service"
+        ],
+        "new_quest_count": 0,
+        "new_MAIN_count": 0,
+        "site_and_current_entry": "마른 지하 폐허 입구 A와 바깥의 기존 안전한 24~40블록 왕복 길. 본체 실제 폭보다 양쪽 1블록 여유, 회전지점 본체 회전반경 확인, 최대 턱 1블록·추락 지점 제외.",
+        "activation": {
+          "status": "이번 일반 위임으로 현재 채택한 조우 기획; 원문 과거 미채택 상태는 변경하지 않음",
+          "world_rule": {
+            "operator": "AND",
+            "all": [
+              "실제 동굴 입구와 연결된 바깥 경로를 도보로 통과한 이력",
+              {
+                "operator": "OR",
+                "alternatives": [
+                  "통과 가능한 우회 길을 실제로 확인한 이력",
+                  "좁은 구간 앞에서 돌아서 다른 길로 귀환한 이력"
+                ]
+              }
+            ]
+          },
+          "trigger_details": "동굴 입구 연결 바깥길 도보 통과 AND (안전 우회길 확인 OR 좁은 곳에서 돌아서 귀환).",
+          "current_subject": "일반 최초 조우 후보 장소 범위: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음. 차원은 Overworld 원문을 유지한다. 이 범위에 현재 실제 도달한 적격 플레이어를 공통 정책으로 선정한다. site_and_current_entry의 작업 자리·재료·동행 목적·실습 경로는 등장 뒤 해당 활동을 선택할 때만 확인하며 첫 인사의 추가 필수 조건이 아니다. 기존 본체가 있으면 그 위치·가용성을 대조하고, 최초 미배치에서는 적합 배치 공간만 확인하여 아직 없는 본체의 현존을 요구하지 않는다. 최초 미배치는 등장 금지 사유가 아니며, 기존 배치 본체에는 새 추첨을 하지 않는다. 현재 사망·봉인·접촉 모드·단일 본체 제약은 유지한다.",
+          "world_persistence": "누구 한 명의 유효 사건 receipt로 전역 영구 저장. 해금자=조우자=MAIN/보상권자라는 등식 없음.",
+          "random_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+          "source_availability": {
+            "immutable_baseline": {
+              "encounter_group": "pending",
+              "encounter_subgroup": "individual_timing_unresolved",
+              "evidence_status": "individual_timing_unresolved",
+              "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "actual_access_rule": {
+                "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                "status": "current_roster_classification_preserved",
+                "use_scope": "authoring_access_guard_not_runtime_predicate",
+                "runtime_binding": false
+              },
+              "individual_action_constraints": []
+            },
+            "effective_rule": "현재 한 본체가 실제 이 현장에 있고 접근 경로가 열린 경우에만 첫 접촉을 시작한다. 인사의 자격과 위험한 작업·전투의 준비를 구분한다. 현장까지 실제 왕복할 수 있는 길과 관찰 거리가 있어야 한다. 장 번호·등급은 이 조건의 대체가 아니다.",
+            "override": null,
+            "new_detail_delta": "현재 코어의 목적·행동·취향에 연결한 소규모 첫 접촉 장면이다. 장면의 소품·동작은 새 저술 의도이며 이미 발생한 사건·새 퀘스트·등록 장소가 아니다. 기존 배치 후보의 실제 현장 안에서 구현 연결 후 사용한다.",
+            "source_refs": [
+              "frozen_writer",
+              "access",
+              "reviewed_core"
+            ]
+          },
+          "runtime_activated": false
+        },
+        "steps": [
+          {
+            "step": 1,
+            "actual_action_and_evidence": "플레이어가 길 한 바퀴를 먼저 도보 답사하여 낮은 턱 1곳, 젖은 안쪽, 마른 바깥 회전을 실제 관찰한다. 출발점으로 돌아와 턱 앞 멈춤과 몸 기울기를 시연한다. 답을 말하는 것만으로 답사 완료가 되지 않는다."
+          },
+          {
+            "step": 2,
+            "actual_action_and_evidence": "슬레이프니르가 현재 등을 낮추고 옆으로 서는 실제 반응이 있어야 이번 한 번 탑승한다. 반응 없음·플레이어 사양이면 4~8블록 평지에서 도보 박자만 맞추고 종료한다."
+          },
+          {
+            "step": 3,
+            "actual_action_and_evidence": "탑승했다면 낮은 턱 전에 감속하고 마른 바깥쪽으로 돌며 마지막 직선에서 고삐를 더 당기지 않는다. 출발점 실제 도착과 하차가 모두 있어야 완주다. 안쪽을 강요하면 위험 진입 전 멈춤과 안전 하차, 추락 위험이면 현장 철수부터 처리한다."
+          }
+        ],
+        "branches_and_completion_guard": "도보 박자/허락된 완주/중도 안전 하차를 분리한다. 승차 연습 한 번은 기존 생활서비스이며 영구 탈것·속도 증가·오딘 소유권 이전이 아니다.",
+        "current_reward": {
+          "kind": "현재 주행 연습 서비스",
+          "quantity": "현재 허락된 주행 1회",
+          "cost": "시간·자기 장비 실제 마모만. 신규 화폐·재료 대가 0.",
+          "claim": "실제 이용한 구간만 제공 완료. 미래 지급권·재고 아이템·보상 인벤 조건 없음.",
+          "recovery": "중단 뒤 현재 위치·승낙을 재확인해 안전 하차 또는 남은 구간만 재개. 새 이용은 새 의사 확인. 이미 달린 구간을 보상으로 복제하지 않는다."
+        },
+        "time_implementation_and_balance": "예상 4~7분. 여덟 다리 본체 탑승·균형·고삐·감속·안전 하차는 신규 구현 요구다. 바닐라 말 승차 API가 이 본체에 이미 있다고 주장하지 않는다. 순간이동·차원 이동·인간 크기 분신 없음.",
+        "stop_failure_partial_resume": "거절/미응답은 정상 종료 또는 해당 선택 보류. 이미 수행한 물리 행동·실제 수신은 남긴다. 사망/로그아웃/본체 부재는 완료가 아니며 현재 위험·위탁·반환 상태를 대조하고 같은 회차의 미완료 부분부터 재개한다. 실물이 이미 소비·전달되었으면 두 번째 실물 생성 0.",
+        "repeat_and_late_join": "새 현재 요청과 남은 실제 현장 필요가 있을 때만 새 회차. 후발자는 기존 세계 해금 이력을 재수행하지 않으며 과거 참여·친분·지식·보상은 받지 않는다.",
+        "actual_audience": "일반 대화는 현재 허락된 청중의 실제 수신, 물리 행동은 시야/청각으로 직접 관측한 사람별. 사적 답은 지정 수신자만. 기록 배역은 독자 행동을 알거나 반응하지 않는다.",
+        "implementation": "현재 기획 정의ID는 실행 API가 아니다. 현장 앵커·대상UUID·행동/수신 관측·NPC 이동·동일 본체 잠금·원장 대조는 연결 구현 요구. 기존 profile godId를 생산 ID 근거로 유지하며 폐기된 139개 테스트 CSV는 사용하지 않는다. 게임/API/LLM 시험 0."
+      }
+    }
+  ]
+}

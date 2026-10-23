@@ -1,0 +1,981 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S17-004",
+  "name": "운페르트",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "운페르트",
+    "canonical_name": "운페르트",
+    "mythology": "베오울프",
+    "tier": "하급",
+    "combat_tier": "하급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S17-004",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S17-004",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S17-004",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "독립 개체; 이명·재출현은 한 명으로 집계",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S17-004",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/694/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S17-004/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "베오울프의 명성 속에서 실제 실력과 과장을 가려 자기 자리를 지키고, 필요한 탐사에서는 장비를 내주는 판단까지 자신이 하고 싶다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S17-004:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "자리에서 일어나기 전 자기 검집의 위치를 확인한다. 빠른 말재주로 짧은 수수께끼를 뒤집는 것을 좋아한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S17-004:SELF:002"
+      },
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "베오울프의 수영 시합을 비난하고 흐룬팅을 빌려주었던 자신의 전승을 기억한다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role",
+            "history",
+            "motive"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S17-004:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S17-004:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S17-004:EVENT:002"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/fact_or_claim",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/truth_status",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/who_learns",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/from_whom_or_source",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_event",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_audience_and_disclosure",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/before_after_change",
+      "authoring_item_key": "RPG-S17-004:BOUNDARY:007"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "classification": "baseline_self_knowledge",
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "베오울프의 명성 속에서 실제 실력과 과장을 가려 자기 자리를 지키고, 필요한 탐사에서는 장비를 내주는 판단까지 자신이 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-INTENT",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 직접 반복하는 작은 생활 행동",
+              "when_or_condition": "실제 접촉 가능한 현재 자기 판단; 새 사건의 완료나 타인의 현재 상태는 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          },
+          "destination": "verified_context_or_lore_plan",
+          "binding_status": "UNBOUND",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null
+        },
+        {
+          "classification": "baseline_self_knowledge",
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "자리에서 일어나기 전 자기 검집의 위치를 확인한다. 빠른 말재주로 짧은 수수께끼를 뒤집는 것을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-TEXTURE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 직접 반복하는 작은 생활 행동",
+              "when_or_condition": "실제 접촉 가능한 현재 자기 판단; 새 사건의 완료나 타인의 현재 상태는 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          },
+          "destination": "verified_context_or_lore_plan",
+          "binding_status": "UNBOUND",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null
+        },
+        {
+          "classification": "baseline_self_knowledge",
+          "fact": {
+            "id": "K-MEMORY",
+            "claim": {
+              "text": "베오울프의 수영 시합을 비난하고 흐룬팅을 빌려주었던 자신의 전승을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "history",
+                "motive"
+              ]
+            },
+            "fact_ref": "T-MEMORY",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할 또는 원전 참고가 직접 명시한 자신의 관계·행위에 관한 좁은 기억",
+              "when_or_condition": "현재 직접 회상하는 자기 인연의 범위. 세부 날짜·미작성 사건·상대의 현재 위치·최신 의사는 덧붙이지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "history",
+                "motive"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          },
+          "destination": "verified_context_or_lore_plan",
+          "binding_status": "UNBOUND",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null
+        },
+        {
+          "classification": "suspicions",
+          "exact_group": {
+            "none_reason": "운페르트의 경계·경쟁심·두려움은 성향이다. 현재 특정 상대의 거짓말이나 범행을 뒷받침하는 실제 관찰은 아직 없어 초기 혐의를 만들지 않는다.",
+            "items": []
+          },
+          "destination": "author_only",
+          "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+        },
+        {
+          "classification": "misbeliefs",
+          "exact_group": {
+            "none_reason": "운페르트의 가치 판단과 원망을 사실 오류로 단정하지 않는다. 현행 자료로 반증되는 구체 오해가 지정되지 않았다.",
+            "items": []
+          },
+          "destination": "author_only",
+          "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+        },
+        {
+          "classification": "deliberate_concealment",
+          "exact_group": {
+            "none_reason": "운페르트에게 별도 비밀 내용을 새로 배정하지 않았다. 사생활을 말하지 않을 권리와 특정 사실을 이미 알고 숨긴다는 설정은 구별한다.",
+            "items": []
+          },
+          "destination": "author_only",
+          "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+        },
+        {
+          "classification": "unknown_or_unavailable",
+          "exact_group": [
+            "옛 인연들의 현재 소재·생사·새 정치 소속·본인이 듣지 않은 요청과 응답",
+            "원전의 비극이 현재 세계에서 재현되었는지와 미작성 부활·과거 사건",
+            "주인공·여신·용·전쟁의 비밀 중 본인이 실제 배우지 않은 것"
+          ],
+          "destination": "author_only",
+          "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+        },
+        {
+          "classification": "future_learning",
+          "exact_group": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-CURRENT",
+                "fact_or_question": "현재 탐사자가 실제 실패한 원인과 사용할 장비의 필요",
+                "acquisition_event": "당사자 보고를 듣고 실제 장비 상태 또는 탐사 흔적을 확인한다.",
+                "required_evidence": "직접 본 결과와 자랑·전언의 구별",
+                "eligible_audience": "본인과 해당 관찰·전달에 실제 참여한 수신자만",
+                "after_learning_change": "보고의 정직함과 장비 적합성을 보고 자신이 내줄 범위를 정한다.",
+                "not_automatic_from": [
+                  "장 번호 도달",
+                  "친족·옛 동료 관계",
+                  "다른 플레이어의 사적 경험",
+                  "공개 자료가 존재함",
+                  "호감도 상승"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "destination": "author_only",
+          "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "운페르트: 인간 궁정 전사·하급. 독립 개체; 이명·재출현은 한 명으로 집계",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "베오울프와 경쟁하되 실패를 정직하게 보고하면 다음 수중 탐사에 장비를 내어준다",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-MOTIVE",
+            "statement": {
+              "text": "허풍을 폭로하고 싶지만 자신의 두려움도 인정받기는 싫어한다",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-HISTORY",
+            "statement": {
+              "text": "베오울프의 수영 시합을 비난하고 뒤에는 자신의 검 흐룬팅을 빌려준다 원전의 과거는 현행 등장 시점·현재 생사·새 부활 사건을 확정하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-INTENT",
+            "statement": {
+              "text": "베오울프의 명성 속에서 실제 실력과 과장을 가려 자기 자리를 지키고, 필요한 탐사에서는 장비를 내주는 판단까지 자신이 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-TEXTURE",
+            "statement": {
+              "text": "자리에서 일어나기 전 자기 검집의 위치를 확인한다. 빠른 말재주로 짧은 수수께끼를 뒤집는 것을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        },
+        {
+          "classification": "author_truth",
+          "fact": {
+            "id": "T-MEMORY",
+            "statement": {
+              "text": "베오울프의 수영 시합을 비난하고 흐룬팅을 빌려주었던 자신의 전승을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "history",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "destination": "author_only"
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "실제 접근이 허용된 현재 만남을 위한 저술 기본선이다. 원전에 있었던 자기 관계와 현행 개인 역할의 기억은 좁게 보존한다. 아직 받지 않은 보고·조우·재회·복수·배상은 완료하지 않으며 과거 죽음에서 새 부활을 추론하지 않는다. 아래 작은 현재 행동은 사건 완료 로그가 아니다.",
+        "known_facts": [
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "베오울프의 명성 속에서 실제 실력과 과장을 가려 자기 자리를 지키고, 필요한 탐사에서는 장비를 내주는 판단까지 자신이 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-INTENT",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 직접 반복하는 작은 생활 행동",
+              "when_or_condition": "실제 접촉 가능한 현재 자기 판단; 새 사건의 완료나 타인의 현재 상태는 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "자리에서 일어나기 전 자기 검집의 위치를 확인한다. 빠른 말재주로 짧은 수수께끼를 뒤집는 것을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-TEXTURE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 직접 반복하는 작은 생활 행동",
+              "when_or_condition": "실제 접촉 가능한 현재 자기 판단; 새 사건의 완료나 타인의 현재 상태는 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          },
+          {
+            "id": "K-MEMORY",
+            "claim": {
+              "text": "베오울프의 수영 시합을 비난하고 흐룬팅을 빌려주었던 자신의 전승을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "history",
+                "motive"
+              ]
+            },
+            "fact_ref": "T-MEMORY",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할 또는 원전 참고가 직접 명시한 자신의 관계·행위에 관한 좁은 기억",
+              "when_or_condition": "현재 직접 회상하는 자기 인연의 범위. 세부 날짜·미작성 사건·상대의 현재 위치·최신 의사는 덧붙이지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "history",
+                "motive"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "해당 내용을 실제로 듣는 현재 대화 상대",
+              "condition": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "운페르트의 경계·경쟁심·두려움은 성향이다. 현재 특정 상대의 거짓말이나 범행을 뒷받침하는 실제 관찰은 아직 없어 초기 혐의를 만들지 않는다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "운페르트의 가치 판단과 원망을 사실 오류로 단정하지 않는다. 현행 자료로 반증되는 구체 오해가 지정되지 않았다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "운페르트에게 별도 비밀 내용을 새로 배정하지 않았다. 사생활을 말하지 않을 권리와 특정 사실을 이미 알고 숨긴다는 설정은 구별한다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "옛 인연들의 현재 소재·생사·새 정치 소속·본인이 듣지 않은 요청과 응답",
+          "원전의 비극이 현재 세계에서 재현되었는지와 미작성 부활·과거 사건",
+          "주인공·여신·용·전쟁의 비밀 중 본인이 실제 배우지 않은 것"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-CURRENT",
+              "fact_or_question": "현재 탐사자가 실제 실패한 원인과 사용할 장비의 필요",
+              "acquisition_event": "당사자 보고를 듣고 실제 장비 상태 또는 탐사 흔적을 확인한다.",
+              "required_evidence": "직접 본 결과와 자랑·전언의 구별",
+              "eligible_audience": "본인과 해당 관찰·전달에 실제 참여한 수신자만",
+              "after_learning_change": "보고의 정직함과 장비 적합성을 보고 자신이 내줄 범위를 정한다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "친족·옛 동료 관계",
+                "다른 플레이어의 사적 경험",
+                "공개 자료가 존재함",
+                "호감도 상승"
+              ],
+              "source_refs": [
+                "role"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": [
+        "친구·파티·후발 도착에 개인 기억·보상·권리·사적 청중 자격을 복사하지 않는다.",
+        "세계 Fact와 개인 Knowledge는 별개다. 정식 등록된 canonical 발언의 실제 전체 수신만 해당 수신자에게 정식 획득; 화면 ACK·의역·Cover Story·조회는 획득이 아니다.",
+        "PRIVATE_ROOM은 방 전원이다. 화자가 실제 아는 범위와 전원 공개 자격, 정책 최대 단계·연속 하위 단계를 검사한다. 부적격 혼합 청중에 비밀의 존재도 암시하지 않는다."
+      ]
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S17-004/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "운페르트는 남의 허풍을 깨뜨릴 때 자신이 더 또렷해진다고 느낀다. 그러나 실제로 해낸 일 앞에서도 계속 깎아내리면 자기 두려움만 드러난다는 사실을 피할 수는 없다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S17-004/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "게임이 성공을 확인하지 않은 아이템 지급·공격·이동·가호·퀘스트 완료를 이미 실행했다고 말하지 않는다.",
+        "제공되지 않은 과거 사건·친분·상대의 전투력·후원 관계를 확정 사실로 꾸미지 않는다.",
+        "모르는 지식이나 현재 청중에게 허용되지 않은 비밀을 만들어 말하지 않는다.",
+        "의향·선택·수락·실행·관측·전달·수신·권리·지급은 서로 별개다.",
+        "선택한 OR 경로만 평가한다. 선택 지도·후기·보상 사양이 이미 실제 완료한 일을 취소하지 않는다.",
+        "현재 근거 없는 일부/전체 완료·보고·관측·과거 질문·물건 보유를 기본 응답으로 만들지 않는다.",
+        "누락 상태는 그 근거 의존 행동만 보류한다. 일반 대화에 MAIN 소유·완료·질문 수신 전체 AND gate를 추가하지 않는다.",
+        "친구·파티·후발 도착에 개인 기억·보상·권리·사적 청중 자격을 복사하지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S17-004/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "돌아온 검의 흠에서 실제 이루어진 행동과 남은 미완료 부분: 도달한 곳과 못 간 곳을 사실대로 말하고 빌린 장비를 돌려주면 운페르트는 과장 없는 실력을 인정하고 다음 탐사에 대여를 다시 고려한다.",
+            "truth_status": "미래 저술 분기이며 현재 발생 사실 아님. 조건이 충족된 실행과 수신이 확인될 때만 사실로 기록한다. 거짓 발언·추정·의도는 별도 남긴다.",
+            "who_learns": "운페르트 및 실제 보고를 들은 지정 수신자",
+            "from_whom_or_source": "직접 관찰한 현장·본인 발언·출처를 밝힌 실제 전달. 베오울프의 과거 승부를 재현하지 않으며 그의 현재 장비나 탐사 결과를 운페르트가 자동 알지 않는다.",
+            "actual_event": "운페르트는 얕고 안전한 물가의 실제 탐사 준비에서 플레이어가 젖은 장비로 무리할지 돌아설지 경쟁하듯 묻는다. 자기 장비의 대여는 상태와 반환 조건을 직접 합의한 뒤에만 가능하다. 실행 뒤 확인된 범위를 실제 전달하거나 직접 본다. 초안 작성은 수신이 아니다.",
+            "actual_audience_and_disclosure": "별도 비밀을 새로 부여하지 않는다. 사적 대화 공개는 당사자가 실제 허락한 범위만. 듣지 않은 동료·후발자·공용 완료자에게 사적 지식을 복제하지 않는다.",
+            "before_after_change": "도달한 곳과 못 간 곳을 사실대로 말하고 빌린 장비를 돌려주면 운페르트는 과장 없는 실력을 인정하고 다음 탐사에 대여를 다시 고려한다. 실패·침해 뒤에는 숨긴 손상이나 허위 깊이가 실제 대조로 드러나면 대여를 중지하고 먼저 반환·수선을 요구한다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_encounter_snapshot/knowledge_boundaries/known_before/0/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_encounter_snapshot/knowledge_boundaries/known_before/1/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/exact_encounter_snapshot/knowledge_boundaries/known_before/2/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "본인의 기억·현재 의향만 말한다. 전언과 직접 경험을 구별하고 사적 정보는 본인이 정한 공개 범위에 따른다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/694/outline/preserved_personal_scope/full_scope_content_preserved/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "돌아온 검의 흠에서 실제 이루어진 행동과 남은 미완료 부분: 도달한 곳과 못 간 곳을 사실대로 말하고 빌린 장비를 돌려주면 운페르트는 과장 없는 실력을 인정하고 다음 탐사에 대여를 다시 고려한다.",
+            "truth_status": "미래 저술 분기이며 현재 발생 사실 아님. 조건이 충족된 실행과 수신이 확인될 때만 사실로 기록한다. 거짓 발언·추정·의도는 별도 남긴다.",
+            "who_learns": "운페르트 및 실제 보고를 들은 지정 수신자",
+            "from_whom_or_source": "직접 관찰한 현장·본인 발언·출처를 밝힌 실제 전달. 베오울프의 과거 승부를 재현하지 않으며 그의 현재 장비나 탐사 결과를 운페르트가 자동 알지 않는다.",
+            "actual_event": "운페르트는 얕고 안전한 물가의 실제 탐사 준비에서 플레이어가 젖은 장비로 무리할지 돌아설지 경쟁하듯 묻는다. 자기 장비의 대여는 상태와 반환 조건을 직접 합의한 뒤에만 가능하다. 실행 뒤 확인된 범위를 실제 전달하거나 직접 본다. 초안 작성은 수신이 아니다.",
+            "actual_audience_and_disclosure": "별도 비밀을 새로 부여하지 않는다. 사적 대화 공개는 당사자가 실제 허락한 범위만. 듣지 않은 동료·후발자·공용 완료자에게 사적 지식을 복제하지 않는다.",
+            "before_after_change": "도달한 곳과 못 간 곳을 사실대로 말하고 빌린 장비를 돌려주면 운페르트는 과장 없는 실력을 인정하고 다음 탐사에 대여를 다시 고려한다. 실패·침해 뒤에는 숨긴 손상이나 허위 깊이가 실제 대조로 드러나면 대여를 중지하고 먼저 반환·수선을 요구한다."
+          }
+        ],
+        "none_reason": null
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S17-004/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S17-004:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "suspicions",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "misbeliefs",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "deliberate_concealment",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "unknown_or_unavailable",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "future_learning",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_AUTOMATICALLY_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0009",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/8",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0010",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/9",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0011",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/10",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0012",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/11",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0013",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/12",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0014",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/13",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S17-004:ROUTE:0015",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/14",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    }
+  ]
+}

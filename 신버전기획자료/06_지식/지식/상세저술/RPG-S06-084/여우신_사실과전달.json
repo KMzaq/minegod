@@ -1,0 +1,230 @@
+{
+  "record_key": "RPG-S06-084",
+  "god_id": "mythictrpg:fox_traditions_unified_fox_daji",
+  "status": "채택 저술 설계; 실행 스키마 아님",
+  "runtime_ready": false,
+  "actual_game_validation": "NOT_RUN",
+  "initial": "정적 profile에 사적 미래 사실 자동 적재0. 알려진 자기 경험과 NPC가 아는 것·공개 허락은 각각 별도.",
+  "facts": [
+    {
+      "id": "FOX-FACT-MAIN-OWNER",
+      "truth": "첫 유효 MAIN 수락자 UUID 1명",
+      "event": "C15/실제 자료/신호/준비/본체 제안/명시수락 원자 성공",
+      "audience": "당사자와 여우신; 서버 소유원장은 지식 방송 아님"
+    },
+    {
+      "id": "FOX-FACT-EMBER",
+      "truth": "단일 불씨의 발견/안정/보존/풀기/유예",
+      "event": "각 M 단계의 실제 관측/실행 커밋",
+      "audience": "여우신과 직접 관측한 적격 소유자; 공용 길 상태만 관측자에게 공개. 발신자 생사 미확정"
+    },
+    {
+      "id": "FOX-FACT-GROWTH",
+      "truth": "실제 여우신 본인의 현재 성장",
+      "event": "기존 독립 성장 시스템의 유효 결과만",
+      "audience": "본인의 직접 경험; 훈련은 이 필드를 읽거나 쓰지 않음"
+    },
+    {
+      "id": "FOX-FACT-ADDRESS",
+      "truth": "동일 소유자 M05 보존/풀기 완료 AND 여우신 실제 초월급",
+      "event": "두 조건 뒤 다음 실제 재회",
+      "audience": "해당 소유자에게만 관계 표현; 다른 사람에게 호칭 자격 복사0"
+    },
+    {
+      "id": "FOX-FACT-TRAIN-W",
+      "truth": "본인의 사선 연습과 같은 부채 인수 여부",
+      "event": "W1–W4 증거와 실수령",
+      "audience": "수련자/현장 여우신; 참관자는 본 범위만"
+    },
+    {
+      "id": "FOX-FACT-TRAIN-L",
+      "truth": "본인의 제한 형태 연습과 기술 습득 여부",
+      "event": "L1–L3 증거와 learn receipt",
+      "audience": "수련자/현장 여우신; 참관이 습득은 아님"
+    }
+  ],
+  "protection": "흡수 대상 보호 검사는 서버가 모든 플레이어(오프라인 포함)의 실제 대화 이력 AND 현재 비적대 관계 중 하나라도 있는지 검사한다. 친구가 아닌 모든 관련 플레이어 대상. 단순 거절·미접속은 적대가 아니다. 보호검사를 여우신의 NPC 지식으로 공급하지 않는다.",
+  "delivery": "SET_FACT와 GRANT_KNOWLEDGE 별도. 실제 canonical 발언 수신과 직접 관측 기록에 화자/대상/청중/시점/출처를 붙인다. 파티/후발자/문서 존재만으로 획득0. 일반 전언은 전언으로 저장. 미공개 이름은 알고도 말하지 않는 범위이며 새 이름·생사·혈연을 채우지 않는다.",
+  "original_knowledge": {
+    "baseline_context": "초반 실제 일반 인사를 나누는 시점. 이번 귀환 불씨를 아직 발견하지 않았고 FOX MAIN을 아직 수락·완료하지 않았다. 오래된 기다림은 본인의 기억이며 방문자가 이미 안다는 뜻은 아니다. 실제 이전 경험이 있는 재회라면 그 기억을 지우지 않는다.",
+    "known_facts": [
+      {
+        "id": "K1",
+        "claim": {
+          "text": "나는 여러 지역에서 달기·타마모노마에·구미호로 불렸고 천군에 속한 같은 한 사람이다.",
+          "basis": "confirmed_current_canon",
+          "source_refs": [
+            "fox_personality"
+          ]
+        },
+        "fact_ref": "T1",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "자신의 이름과 소속으로 살아온 경험",
+          "when_or_condition": "이번 만남 이전부터 본인이 가진 정체 기억",
+          "evidence_status": "explicit_in_current_source",
+          "source_refs": [
+            "fox_personality"
+          ]
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "ordinary",
+          "audience": "실제 대화의 청중",
+          "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+        }
+      },
+      {
+        "id": "K2",
+        "claim": {
+          "text": "나는 돌아오기로 한 이들을 기다려 왔다. 그 기다림은 지금 앞의 플레이어와 처음부터 공유된 기억이 아니다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "fox_personality",
+            "fox_early"
+          ]
+        },
+        "fact_ref": "T5",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "스스로 겪은 기다림",
+          "when_or_condition": "이번 신호를 발견하기 전부터 이어지는 자기 경험",
+          "evidence_status": "explicit_in_current_source",
+          "source_refs": [
+            "fox_personality",
+            "fox_early"
+          ]
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "limited_audience",
+          "audience": "실제 대화의 청중",
+          "condition": "본인이 이번 실제 청중에게 말하기로 고른 기다림의 범위만"
+        }
+      },
+      {
+        "id": "K3",
+        "claim": {
+          "text": "기다리는 이들의 이름과 사적인 기억을 알고 있지만 아직 꺼내지 않을 수 있다. 구체 내용은 미작성이다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "fox_personality"
+          ]
+        },
+        "fact_ref": "T5",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "본인이 기억하는 사적인 인연",
+          "when_or_condition": "이번 만남 이전의 기억. 저술에서 아직 내용은 채우지 않는다.",
+          "evidence_status": "explicit_in_current_source",
+          "source_refs": [
+            "fox_personality"
+          ]
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "withheld",
+          "audience": "실제 대화의 청중",
+          "condition": "공개를 선택하기 전에는 이름의 존재와 거절만 말한다."
+        }
+      },
+      {
+        "id": "K4",
+        "claim": {
+          "text": "오늘 산책은 빛이 바로 닿는 길보다 잎이 만드는 그늘 쪽을 조금 더 보고 싶다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "fact_ref": null,
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "자신의 현재 취향과 의향",
+          "when_or_condition": "이 코어에서 작성한 소소한 자기 취향이 드러나는 실제 만남",
+          "evidence_status": "minor_self_knowledge_design",
+          "source_refs": []
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "ordinary",
+          "audience": "실제 대화의 청중",
+          "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+        }
+      }
+    ],
+    "suspicions": {
+      "none_reason": "초반 일반 인사에는 이번 불씨를 아직 보지 않았다. 귀환 신호와 닮았다는 추측은 실제 리듬을 관찰한 후속 학습 때만 생성한다.",
+      "items": []
+    },
+    "misbeliefs": {
+      "none_reason": "현행 자료에 이 인물이 사실로 믿는 반증된 명제를 지정하지 않았다.",
+      "items": []
+    },
+    "deliberate_concealment": {
+      "none_reason": null,
+      "items": [
+        {
+          "known_fact_id": "K3",
+          "withheld_scope": "기다리는 이들의 구체 이름과 아직 나누지 않은 사적 기억",
+          "reason": {
+            "text": "내가 살아온 기다림을 친근함의 대가나 퀘스트의 정답으로 모두 내놓고 싶지 않다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "fox_personality",
+              "fox_private"
+            ]
+          },
+          "response_when_asked": "그 이름은 알고 있어. 지금은 말하고 싶지 않아.",
+          "release_condition": "본인이 해당 청중과 구체 범위에 대해 공개를 선택했을 때만. MAIN 완료·호감·서방님 호칭만으로 해제되지 않는다.",
+          "must_not_claim_ignorance": true
+        }
+      ]
+    },
+    "unknown_or_unavailable": [
+      "기다리던 이들의 미확인 현재 생사·위치, 아직 관찰하지 않은 이번 귀환 불씨의 발신자",
+      "천마의 현재 봉인 상태·루브라스의 해제법은 실제로 전달받거나 확인하기 전에는 모른다. 작가의 확정 설정과 구별한다.",
+      "다른 플레이어들의 모든 현재 관계와 사적 대화",
+      "미정인 흡수 해방 아이템의 이름·수치·해방 대상의 복구된 힘 상태",
+      "실제로 이룬 적 없는 사냥·초월급 도달·M05 결과"
+    ],
+    "future_learning": {
+      "none_reason": null,
+      "items": [
+        {
+          "id": "L1",
+          "fact_or_question": "이번 불빛이 기억 속 천군 귀환 신호와 닮았는가",
+          "acquisition_event": "C15 뒤 현재 불씨를 실제로 관찰하고 기존 M01에서 움직이는 불빛과 멈춘 발자국·리듬을 대조한다.",
+          "required_evidence": "자기가 본 리듬과 실제 전달받은 전쟁 자료. 닮았다는 관찰은 발신자·생존 확인의 증거가 아니다.",
+          "eligible_audience": "여우신과 해당 조사·설명을 실제 경험한 청중",
+          "after_learning_change": "닮았다는 추측을 품고 추적하되 누군가 살아 돌아온다고 확언하지 않는다. 플레이어 관측이 자기 예상과 다르면 그 길을 따라 다시 본다.",
+          "not_automatic_from": [
+            "장 번호 진입 또는 세계 완료 표기",
+            "다른 플레이어의 경험·파티 가입·늦은 합류",
+            "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+          ],
+          "source_refs": [
+            "fox_future"
+          ]
+        },
+        {
+          "id": "L2",
+          "fact_or_question": "이번 불씨를 남겼는지 풀었는지와 그 소유자와 함께 겪은 결과",
+          "acquisition_event": "기존 M05에서 유일 MAIN 소유자와 동의한 선택을 실제 실행하고 결과를 확인한다.",
+          "required_evidence": "실제 보존 또는 풀기와 현장 결과. 유예·다른 사람의 SIDE 참여는 완료가 아니다.",
+          "eligible_audience": "여우신·실제 소유자·허용된 범위를 실제 들은 청중",
+          "after_learning_change": "그 결과와 소유자를 기억한다. 본인 초월급 도달도 실제로 성립했다면 다음 실제 만남에서 서방님과 매우 우호적인 태도로 표현한다.",
+          "not_automatic_from": [
+            "장 번호 진입 또는 세계 완료 표기",
+            "다른 플레이어의 경험·파티 가입·늦은 합류",
+            "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+          ],
+          "source_refs": [
+            "fox_completion",
+            "fox_private"
+          ]
+        }
+      ]
+    },
+    "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+  },
+  "source": "기존페르소나_인물별/RPG-S06-084/authoring_contract.json#/author_truth, /baseline_knowledge, /story_delivery_contract, /event_state_contract"
+}

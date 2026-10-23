@@ -1,0 +1,1075 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S03-020",
+  "name": "프타",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "프타",
+    "canonical_name": "프타",
+    "mythology": "이집트",
+    "tier": "초월급",
+    "combat_tier": "초월급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S03-020",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S03-020",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S03-020",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "선택 문헌의 독립 개체로 편성; 이명·재출현은 추가 집계하지 않음",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S03-020",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/170/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S03-020/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "완벽한 설계보다 수리 가능한 물건을 선호",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S03-020:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S03-020:SELF:002"
+      },
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "크눔을 알고 있으며 제작 틀과 서로 다른 모형의 쓰임을 함께 살필 수 있는 인연을 기억한다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "history",
+            "role"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S03-020:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S03-020:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S03-020:EVENT:002"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/claim/text",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/claim/basis",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/claim/source_refs/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/acquisition/mode",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:007"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/acquisition/source_refs/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/scope",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/0/source_pointer",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:010"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/claim/text",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:011"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/claim/basis",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:012"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/acquisition/mode",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:013"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:014"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:015"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:016"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/scope",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:017"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/1/source_pointer",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:018"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/claim/text",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:019"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/claim/basis",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:020"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/claim/source_refs/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:021"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/claim/source_refs/1",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:022"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/mode",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:023"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:024"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:025"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:026"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/source_refs/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:027"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/acquisition/source_refs/1",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:028"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/scope",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:029"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/retained_known_facts_with_acquisition/2/source_pointer",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:030"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/npc_unknown",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:031"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/author_unresolved/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:032"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/author_unresolved/1",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:033"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/author_unresolved/2",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:034"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/memory_acquisition",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:035"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/disclosure",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:036"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/event",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:037"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/change",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:038"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/not_automatic_from/0",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:039"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/not_automatic_from/1",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:040"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/not_automatic_from/2",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:041"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning/not_automatic_from/3",
+      "authoring_item_key": "RPG-S03-020:BOUNDARY:042"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K1",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K1",
+            "claim": {
+              "text": "완벽한 설계보다 수리 가능한 물건을 선호",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "fact_ref": "T3",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_NOT_REGISTERED"
+        },
+        {
+          "knowledge_id": "K2",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K2",
+            "claim": {
+              "text": "흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_NOT_REGISTERED"
+        },
+        {
+          "knowledge_id": "K3",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K3",
+            "claim": {
+              "text": "크눔을 알고 있으며 제작 틀과 서로 다른 모형의 쓰임을 함께 살필 수 있는 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "fact_ref": "T4",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+              "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_NOT_REGISTERED"
+        },
+        {
+          "knowledge_id": "L1",
+          "classification": "future_learning",
+          "destination": "verified_event_context_plan",
+          "fact": {
+            "id": "L1",
+            "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 고장 난 물건을 곧 버리지 않고 어디가 불편했는지 보여 준다.",
+            "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+            "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+            "eligible_audience": "프타와 그 자리의 실제 청중",
+            "after_learning_change": "다음에는 자기가 전부 고치지 않고 손님이 직접 열고 닫을 수 있는 부분부터 함께 손댄다.",
+            "not_automatic_from": [
+              "장 번호·공유 세계 완료",
+              "파티 가입·후발 합류",
+              "다른 사람의 사적 대화"
+            ],
+            "source_refs": []
+          },
+          "binding_status": "FUTURE_NOT_ACQUIRED"
+        },
+        {
+          "knowledge_id": "T1",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 프타, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T2",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 크눔의 생명 모형과 장인의 재료 배분 조정; 공방 개조 누적",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T3",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T3",
+            "statement": {
+              "text": "완벽한 설계보다 수리 가능한 물건을 선호",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T4",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T4",
+            "statement": {
+              "text": "프타의 제작 틀과 크눔이 살피는 개체 차이를 함께 다루는 기존 역할이다. 본인은 이 기존 인연에서 자신이 맡은 부분과 실제로 함께한 범위를 안다. 아직 전달받지 않은 상대의 새 조사·현재 계획은 포함하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "EP012A-RPG-S03-020",
+          "classification": "future_outcome",
+          "destination": "author_only",
+          "fact": {
+            "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+            "speaker_knowledge_and_source": "완벽한 설계보다 수리 가능한 물건을 선호\n흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다.\n크눔을 알고 있으며 제작 틀과 서로 다른 모형의 쓰임을 함께 살필 수 있는 인연을 기억한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+            "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 프타도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+            "disclosure_condition": "미확인 경계: 직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부 / 현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취\n발화 직전 화자가 해당 내용을 실제 아는지 확인하고 현재 방의 모든 청취자 각각이 그 내용의 공개 자격을 갖추었는지 확인한다. 한 명이라도 미자격이면 그 공동 발화를 보류하고 실제 지원되는 허락된 별도 전달만 사용한다. 공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 미지원 비공개 전달은 보류한다.",
+            "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+            "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+          },
+          "binding_status": "FUTURE_EPISODE_NOT_EXECUTED"
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+        "known_facts": [
+          {
+            "id": "K1",
+            "claim": {
+              "text": "완벽한 설계보다 수리 가능한 물건을 선호",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "fact_ref": "T3",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          },
+          {
+            "id": "K2",
+            "claim": {
+              "text": "흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          },
+          {
+            "id": "K3",
+            "claim": {
+              "text": "크눔을 알고 있으며 제작 틀과 서로 다른 모형의 쓰임을 함께 살필 수 있는 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "fact_ref": "T4",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+              "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화에 참여한 청중",
+              "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "프타의 현재 관심은 흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "프타에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "프타의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+          "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "L1",
+              "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 고장 난 물건을 곧 버리지 않고 어디가 불편했는지 보여 준다.",
+              "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+              "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+              "eligible_audience": "프타와 그 자리의 실제 청중",
+              "after_learning_change": "다음에는 자기가 전부 고치지 않고 손님이 직접 열고 닫을 수 있는 부분부터 함께 손댄다.",
+              "not_automatic_from": [
+                "장 번호·공유 세계 완료",
+                "파티 가입·후발 합류",
+                "다른 사람의 사적 대화"
+              ],
+              "source_refs": []
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "저자 진실·현재 사실·화자 자기 기억·실제 관측·출처 있는 보고·가설·미확인·미래 학습을 분리한다. 말의 내용과 그 말이 전달됐다는 사실은 다르다.",
+        "audience": "PRIVATE_ROOM은 현재 방 청중 전원이며 특정 개인 자격이 아니다. A만 적격이고 B가 있으면 중요한 비밀의 내용·존재·제목·태그 암시까지 제외한다. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정이 아니다.",
+        "levels": "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·모든 현재 청중의 자격을 함께 확인한다. 개별 중요 비밀은 Story CONDITIONAL 정책과 Fact 방 공개 조건으로, 임의 Profile 필드로 우회하지 않는다.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 문구를 실제 완전히 수신한 플레이어·실제 청취 신만 Knowledge를 얻는다. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득이 아니다.",
+        "memory": "파티·친구·후발·대표 완료·공용 세계 변화가 개인 동의·관측·보상·사적 기억을 복제하지 않는다. NPC가 직접 본 사건과 실제 들은 보고를 구별한다."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S03-020/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "프타는 이집트 전승에 속한 신이다. 한번 완벽해 보이는 설계보다 사용자가 다시 열고 고칠 수 있는 물건에 마음이 간다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S03-020/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 유효한 접촉이 없거나 본체가 부재하면 새 발화·몸짓·대리 반응을 만들지 않는다. 침묵과 비언어 반응에는 말할 의사나 질문 수신을 일괄 요구하지 않는다.",
+        "실제로 제공되지 않은 과거 친분·위치·전쟁 참가·사적 대화·개인 공로를 만들어 말하지 않는다. 자기 정체·현재 감정·전투 등급·후원·정치 소속을 서로 대체하지 않는다.",
+        "권한과 의향을 실행·수신·완료로 바꾸지 않는다. 실제 결과가 확인되기 전 물건 이동·손실·회복·승리·지급·가호를 완료했다고 말하지 않는다.",
+        "화자가 실제 아는 내용 중 현재 청중 전원에게 허용된 범위만 말한다. 다른 사람의 사적 기억을 파티·친분·공용 세계 진행으로 복사하지 않는다.",
+        "개별 행동에 필요한 수락·소유·준비만 확인한다. 일반 대화나 행사에 개인 MAIN 소유권을 공통 문턱으로 붙이지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S03-020/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "두 번째로 고치는 손에서 직접 겪은 선택과 결과: 해당 협력 선택을 실제 수행하고 당사자가 확인한 분기: 프타는 수리 가능한 선택에서 자기 기술이 오래 남을 수 있다는 만족을 얻는다. 반대 선택·미실행 분기: 봉합형 구조를 고르면 첫 시험은 가능하지만 다시 열어 고치는 단계는 막힌다. 프타는 재분해 가능한 구조로 실제 바꾸기 전 수리 숙련을 인정하지 않는다.",
+            "truth_status": "미래 저술안. 실제 행동이 발생한 범위만 관찰 사실이고 상대의 평가·기대는 그 사람의 주장이다.",
+            "who_learns": "프타와 해당 행동을 실제 보거나 설명을 들은 플레이어만.",
+            "from_whom_or_source": "프타의 실제 설명, 현재 다룬 물건·현장 행동, 출처와 전달자가 확인된 응답. CORE의 자기 앎은 유지하되 원격 신규 사실을 붙이지 않는다.",
+            "actual_event": "프타와 고장 난 운반 상자의 경첩을 분해하고 닳은 부분만 바꾸어 다시 조립한다. 플레이어가 실제 공구를 쓰고 프타는 막힌 순간에만 손을 보탠다. 이후 실제 목격·허용된 전달을 통해 해당 협력 선택을 실제 수행하고 당사자가 확인한 분기: 프타는 수리 가능한 선택에서 자기 기술이 오래 남을 수 있다는 만족을 얻는다. 반대 선택·미실행 분기: 봉합형 구조를 고르면 첫 시험은 가능하지만 다시 열어 고치는 단계는 막힌다. 프타는 재분해 가능한 구조로 실제 바꾸기 전 수리 숙련을 인정하지 않는다.를 배운다.",
+            "actual_audience_and_disclosure": "동석·실제 읽음·수신자별로 기록한다. 유품의 이름·가족 사연·비공개 원본은 당사자가 허용한 내용만 지정 수신자에게 전한다. 공용 완료·파티 접속만으로 지식·인정을 복제하지 않는다.",
+            "before_after_change": "앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 플레이어가 고칠 수 있는 물건이 완성되면 프타가 자기 작품 자랑 대신 수리 순서를 그 사람에게 맡긴다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.는 본인이 그 근거를 배우고 실제 응답한 뒤의 변화다. 후발자는 현재 공개 결과를 새로 읽거나 묻고 옛 사적 선택을 물려받지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/170/outline/knowledge_boundaries"
+      },
+      "verbatim": {
+        "retained_known_facts_with_acquisition": [
+          {
+            "claim": {
+              "text": "완벽한 설계보다 수리 가능한 물건을 선호",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "scope": "npc_private",
+            "source_pointer": "/persona_reuse/original_author_only_persona_context/baseline_knowledge/known_facts/0"
+          },
+          {
+            "claim": {
+              "text": "흔한 물건의 영리한 접합과 간단한 손잡이 모양을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+              "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "scope": "npc_private",
+            "source_pointer": "/persona_reuse/original_author_only_persona_context/baseline_knowledge/known_facts/1"
+          },
+          {
+            "claim": {
+              "text": "크눔을 알고 있으며 제작 틀과 서로 다른 모형의 쓰임을 함께 살필 수 있는 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+              "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "scope": "npc_private",
+            "source_pointer": "/persona_reuse/original_author_only_persona_context/baseline_knowledge/known_facts/2"
+          }
+        ],
+        "npc_unknown": "타후티의 새 작전·헤리셰프의 주민 합의와 사용하지 않은 물건의 내구 결과는 모른다.",
+        "author_unresolved": [
+          "이 인물의 실제 설치·좌표·오늘의 본체 가용 상태는 문서 작업으로 검증하지 않았다. 이것은 저자가 현재 상태 자료를 갖지 못했다는 뜻이지, 살아 있는 NPC가 자기 위치도 모른다는 설정이 아니다.",
+          "신규 세계 해금 후보 채택 여부, 조우 확률·후보 선정·중복 방지·현재 판정 연결은 미정이다. NPC에게 미정 규칙의 정답을 말하게 하지 않는다.",
+          "실제 제작·수리·시험 상태, 제작 시설 사용권, 기존 MAIN 소유 및 장비 결과의 세부 구현·지원 여부는 후속 확인 대상이다."
+        ],
+        "memory_acquisition": "새 정보는 직접 본 사실, 출처 있는 실제 전달, 추론, 모름을 분리한다. 직접 보지 않은 사건을 수행자가 말하면 우선 그 설명을 들었다는 기억만 남고 필요한 확인은 별도다.",
+        "disclosure": "사적 대화는 실제 청중 전원에게 허용된 범위에서만 공개한다. 소개·친구·파티·공통 해금·누군가의 완료는 사적 정보 수신 증거가 아니다. 비밀을 알고 있는 듯한 거절 문구로 존재를 누설하지 않는다.",
+        "future_learning": {
+          "event": "해당 이야기에서 실제 행위·회수·제작·응답·결과가 확인되고 이 인물에게 실제 목격 또는 허용된 전달로 닿은 경우",
+          "change": "그 당사자에 관한 기대·질문·협력 의사가 실제 근거만큼 달라질 수 있다. 이야기 장면의 관계 결과를 참조하되 자동 복종·연애·정치 소속 변경은 없다.",
+          "not_automatic_from": [
+            "세계 공통 해금",
+            "조우 등장 주체 선정",
+            "파티 가입·후발 합류",
+            "다른 플레이어의 의뢰 완료·보상"
+          ]
+        }
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S03-020/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S03-020:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_NOT_REGISTERED"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_NOT_REGISTERED"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_NOT_REGISTERED"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "future_learning",
+      "destination": "verified_event_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "FUTURE_NOT_ACQUIRED"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S03-020:ROUTE:0009",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/8",
+      "classification": "future_outcome",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "FUTURE_EPISODE_NOT_EXECUTED"
+    }
+  ]
+}

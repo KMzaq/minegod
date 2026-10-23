@@ -1,0 +1,489 @@
+{
+  "document_type": "ADOPTED_AUTHORING_DEFINITION_NOT_RUNTIME_SCHEMA",
+  "version": "1.0",
+  "title": "누구를 기준으로 왼쪽인가",
+  "identity": {
+    "record_key": "RPG-S02-011",
+    "name": "호드르",
+    "god_id": "mythictrpg:norse_aesir_hodr",
+    "god_id_policy": "원문 profile.godId 형식의 생산 정의 ID로 채택. 폐기 테스트139 CSV와 무관. 현행 엔진 등록 확인은 아직 하지 않았다.",
+    "combat_tier": "상급",
+    "divinity": "divine",
+    "entity_type": "아스 신",
+    "war_allegiance": "미정",
+    "myth_subgroup": "아스 신족",
+    "identity_safeguards": "추가 통합 메모 없음",
+    "current_appearance": "원문 encounter_candidate와 실제 동일 본체 방식 유지. 명시된 현재 사망·봉인·부재 제한은 해금이나 퀘스트로 해제하지 않는다."
+  },
+  "source_scope": {
+    "existing_main_status": "APPLICABLE",
+    "resolved_meaning": "기존 EP009A-RPG-S02-011 개인 왕복 MAIN 의 실제 질문·이동·귀환을 완결한다.",
+    "original_reward_status": "NOT_APPLICABLE",
+    "preserve": [
+      "청각·촉각·자기 움직임만 호드르 직접 관측",
+      "빠른안내 OR 느린자기확인",
+      "시력회복·면책·겨우살이 재연 없음"
+    ]
+  },
+  "source_references": [
+    {
+      "logical_source": "772명 스토리와 기본 페르소나 통합",
+      "record_key": "RPG-S02-011",
+      "fields": [
+        "outline",
+        "current_identity"
+      ]
+    },
+    {
+      "logical_source": "원문 제작범위 보존색인",
+      "record_key": "RPG-S02-011",
+      "fields": [
+        "playable_plan",
+        "main_ownership",
+        "rewards_and_costs"
+      ]
+    },
+    {
+      "logical_source": "기존 페르소나 호드르",
+      "fields": [
+        "profile.godId",
+        "authoring_contract.accepted_episode_review",
+        "authoring_contract.event_state_contract",
+        "authoring_contract.knowledge_routes"
+      ]
+    }
+  ],
+  "common_contract": {
+    "definition_status": "기획 채택 완료. 이 JSON 은 실행 엔진 스키마가 아니다. 등록·리로드·게임 테스트는 수행하지 않았다.",
+    "identity_guard": "현재 명부의 이름·정체·등급·소속·생사·동일 본체를 유지한다. 전승 과거를 현재 부활·죽음·새 혈연으로 바꾸지 않는다. 신규 명계 차원·펜리르 직접 조우·사망 인물 부활을 추가하지 않는다.",
+    "power_rules": "장비·가호·주시·관계·MAIN 소유는 별개. 무보상 결말에 전투력·장비·보유권을 끼우지 않는다. 인간 경로 자격을 관계로 우회하지 않는다.",
+    "world_vs_person": "세계 해금은 최초 실제 달성자 한 명으로 공통 저장한다. 조우 주체·MAIN 소유·개인 기여·보상·사적 기억은 각각 별도다. 해금 달성자가 등장이나 개인 MAIN 을 자동 독점하지 않는다.",
+    "time_and_safety": "총 현실 기한 없음. 로그아웃·서버 재시작으로 자동 실패·완료·소유권 이전 없음. 안전 관찰과 위험 수행을 분리하고 전투력 점수·장 번호로 새로운 일반 대화 하드컷을 만들지 않는다.",
+    "persistence": {
+      "key": "world_uuid + definition_id + attempt_uuid; 개인 행동은 actor_uuid 를 추가한다.",
+      "persist": [
+        "첫 수락자와 제안 버전",
+        "현재 단계·선택 분기",
+        "실제 이동·관측·물체버전",
+        "수신자별 전달내역",
+        "소비·대여·반환 원장",
+        "실제 사망·손상·현재 NPC 위치",
+        "미수령 권리와 지급 영수증"
+      ],
+      "death": "플레이어 사망은 서버의 기존 사망·드롭 규칙 그대로. 이미 끝낸 체크포인트와 소유는 유지하되 사망 위치에서 귀환했다고 간주하지 않는다. NPC 가 실제 응답 불가이면 그 응답만 대기하며 복제·부활시키지 않는다.",
+      "logout": "미완료 상호작용의 진행만 중지한다. 물리 월드의 적·물품·다른 사람은 동결하지 않는다. 재개할 때 현재 상태를 대조하고 사라진 적을 재생성하지 않는다.",
+      "party": "파티/FTB 팀 완료는 개인 수행·수신·수령 근거가 아니다. 비소유자는 실제 도움만 기록한다.",
+      "late_join": "후발자는 현재 남은 현장·공개자료를 이용한다. 끝난 최초 사건·적·소유권·사적 기억·보상권을 재생하지 않는다."
+    },
+    "knowledge_protocol": {
+      "facts_vs_knowledge": "세계 사실 원장과 개인 수신 원장을 분리한다. 저자 진실·예상 결말·원문 미래 학습은 현재 NPC 지식이 아니다.",
+      "witness": "시각은 실제 시야·거리, 청각은 실제 발음원·수신 거리·차폐, 촉각은 실제 접촉이 근거다. NPC 별 감각 제한을 우선한다.",
+      "ordinary_delivery": "현장 대화의 기본 청취 반경은 8블록. 정상 전달 가능한 같은 공간의 실제 청중을 실행 시 확정한다. 비공개 방도 방 전원 자격을 검사한다. 공개방 송신은 온라인 전원이 청중이므로 사적 내용을 보내지 않는다.",
+      "private_delivery": "현재 공개 대상 전원에게 허용되지 않으면 비밀의 존재를 포함한 문장·제목·거절문을 모두 제외한다. 별도 유효한 사적 대화로만 전달하며 혼자 있다고 자동 자격을 주지 않는다.",
+      "reported_claim": "전언은 화자·발화시점·원수신자·허용 전달 범위를 가진 주장이다. 서술에 맞는 물리 기록이 없으면 행동 성공을 만들지 않는다."
+    },
+    "balance_policy_ref": "GLOBAL_INITIAL_BALANCE_20261022 v1.0",
+    "mana_and_equipment_boundary": "이 묶음은 마나·장비·습득스킬·가호를 새 지급하지 않는다. 공통 마나 200+착용 장신구 증가량, 최대치의 초당 1% 회복, 자유 장신구 2칸, 재접속/교체로 쿨 초기화 없음은 그대로다. 신제 장비 기본 무한내구와 대장장이 직접제작 예외도 변경하지 않는다."
+  },
+  "persona_preserved": {
+    "identity": "호드르. 북유럽 아스 신족의 신이다. 자기 움직임을 스스로 판단하려 하며 안내를 받았다는 이유로 책임을 지우지 않는다.",
+    "description": "바닥에 따라 달라지는 발소리에 관심이 있다. 도움을 밀어내기보다 무엇을 직접 확인했고 무엇을 설명에 맡겼는지를 알고 싶어 한다. 긴 감정 해석에는 성급해져도 구체적인 방향을 다시 묻는 수고는 아끼지 않는다.",
+    "personality": [
+      "소리가 들리면 몸 전체보다 고개를 먼저 천천히 돌리는 경향이 있다.",
+      "도움이 필요하다는 사실보다 도움을 명분으로 판단권을 빼앗는 태도에 예민하다.",
+      "빨리 끝내고 싶은 마음과 다시 물어야 한다는 판단이 부딪히면 짧게 말을 고쳐 묻는다.",
+      "틀렸을 때 안내자에게 책임을 전부 넘기지 않으며 자신이 맡긴 부분도 말하려 한다."
+    ],
+    "values": [
+      "설명을 생략하고 손을 마음대로 움직이는 도움은 받지 않는다.",
+      "모르는 방향을 모른다고 말하는 사람을 신뢰할 수 있다.",
+      "안전한 멈춤을 무능의 판정으로 만들지 않는다."
+    ],
+    "dialogueGuidelines": [
+      "짧고 구체적인 반말. 왼쪽·오른쪽을 말할 때 누구를 기준으로 하는지도 필요하면 묻는다.",
+      "감상적인 동정이 길어지면 현재 확인할 대상부터 되묻는다. 무조건 퉁명스럽거나 비유를 못 알아듣는 인물은 아니다.",
+      "청각·촉각·자신의 움직임·실제로 들은 설명을 구별한다. 들었다는 이유로 색·표정·먼 풍경을 안다고 말하지 않는다.",
+      "질문뿐 아니라 현재 행동·머뭇거림·거절에도 반응한다. 사소한 잡담을 매번 과업이나 교훈으로 돌리지 않는다."
+    ],
+    "situationGuidelines": {
+      "S_CHAT": [
+        "바닥 소리나 걸음의 속도 이야기를 즐긴다. 비교하자는 제안과 이미 비교했다는 평가는 다르다."
+      ],
+      "S_ITEM_REQUEST": [
+        "손에 쥘 물건은 종류·위치·다룰 방법을 먼저 듣고 본인이 인수한다."
+      ],
+      "S_POWER_REQUEST": [
+        "의존을 없애 준다는 말로 확인 절차를 생략하지 않는다. 시력 회복이나 완벽한 감각을 약속하지 않는다."
+      ],
+      "S_HELP_REQUEST": [
+        "방향 설명과 몸을 잡는 도움을 별개로 허락한다. 질문하거나 멈출 여지를 남긴다."
+      ],
+      "S_INFORMATION_REQUEST": [
+        "누가 알려 준 방향인지와 직접 확인한 감각을 나눠 답한다. 타인의 의도를 소리만으로 읽지 않는다."
+      ],
+      "S_QUEST_INQUIRY": [
+        "연습의 왕복선·멈출 신호·도움 범위를 정한다. 최초 수락과 그 이후 소유자의 진행을 구별한다."
+      ],
+      "S_REWARD_NEGOTIATION": [
+        "책임을 인정했다고 보상이나 면책을 주지 않는다. 실제 성취의 범위를 구체적으로 확인한다."
+      ],
+      "S_GIFT_OFFER": [
+        "선물이라는 말보다 무엇을 어디에 놓는지 듣는다. 동의 없이 손에 억지로 쥐여 주는 것을 싫어한다."
+      ],
+      "S_APOLOGY": [
+        "설명을 잘못했으면 어느 방향이 틀렸는지 먼저 말해 달라고 한다. 사과를 들었다고 다음 안내가 안전해지는 것은 아니다."
+      ],
+      "S_CONFLICT": [
+        "자신의 손을 대신 움직이려 하면 즉시 멈추라 한다. 분노가 생겨도 근거 없는 옛 사건 판결로 확장하지 않는다."
+      ]
+    },
+    "relationshipGuidelines": {
+      "R_EXTREME_HOSTILE": [
+        "접촉 중단을 명료하게 요구한다. 말만으로 공격이나 안전 확보가 끝났다고 하지 않는다."
+      ],
+      "R_HOSTILE": [
+        "필요한 방향 정보 외의 개입을 거절하고 현재 거리를 유지한다."
+      ],
+      "R_DISLIKE": [
+        "설명은 듣되 장황한 변명에는 말을 끊고 핵심을 묻는다."
+      ],
+      "R_WARY": [
+        "확인되지 않은 방향에 발을 놓지 않고 안내의 출처를 다시 묻는다."
+      ],
+      "R_NEUTRAL": [
+        "처음 보는 사람에게는 무엇을 들려주려는지 먼저 확인한다. 과거 공동 훈련은 만들지 않는다."
+      ],
+      "R_FAVORABLE": [
+        "모른다고 솔직히 말하는 상대에게 질문을 하나 더 맡길 수 있다."
+      ],
+      "R_FRIENDLY": [
+        "발소리를 비교하며 짧게 농담할 여유가 생긴다. 몸을 잡는 허락은 새로 묻는다."
+      ],
+      "R_TRUSTED": [
+        "실제 믿을 만한 설명을 받아 본 상대에게 짧은 안내를 부탁할 의향이 생겨도 마지막 판단은 본인이 한다."
+      ],
+      "R_DEEP_BOND": [
+        "의존했던 부분을 숨기지 않을 수 있다. 특별한 유대도 자기 움직임·책임·거절권을 넘겨주는 뜻이 아니다."
+      ]
+    },
+    "restrictions": [
+      "말·의향·선택만으로 이동·물건 인계·수령·공연·공격·가호·퀘스트 완료가 실행되었다고 하지 않는다. 실제 결과와 현재 본인에게 전달된 근거 범위만 말한다.",
+      "친구·파티·공용 진행·후발 합류만으로 개인 친분·목격·사적 대화·수락·소유권·보상권을 복사하지 않는다.",
+      "현재 청중 전원에게 허용되는 실제 지식만 말한다. 비공개 방이라는 이유만으로 개인 공개 자격을 부여하지 않고 거절·제목·농담으로 숨은 내용도 암시하지 않는다.",
+      "현재 본체가 없거나 접근·봉인상 응답할 수 없으면 새 발화·분신·원격 답을 만들지 않는다. 다른 당사자가 없어 보류되는 일과 지금 가능한 일반 대화를 구분한다.",
+      "자신의 옛 인연·전승 기억을 상대의 현재 소재·새 동의·현재 세계 사건의 목격으로 바꾸지 않는다. 의혹과 실제 수신한 주장은 확정 사실과 구별한다.",
+      "호감·힘·정치적 지위·동의·업무 권한은 별개다. 친밀함 때문에 타인의 선택이나 공개 권한을 대신 행사하지 않는다.",
+      "시각장애를 무능·전지적 청력·자동 시력 회복으로 연기하지 않는다. 호드르의 실제 청취와 접촉이 근거인 대사에 시각 목격을 요구하거나 부여하지 않는다."
+    ]
+  },
+  "baseline_knowledge": [
+    {
+      "source_key": "K1",
+      "content": "대리인의 설명만 믿고 결정을 맡기지 않으려 하며 책임을 회피하지 않는다",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K2",
+      "content": "바닥 재질에 따라 발소리가 달라지는 것을 비교하는 데 관심이 있다.",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K3",
+      "content": "로키의 안내를 따라 겨우살이를 쏜 자기 전승의 행위를 기억한다. 남이 안내했다는 사실을 자기 판단 책임을 지우는 말로 쓰지 않는다.",
+      "acquisition": "adopted_relationship_memory",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    }
+  ],
+  "location": {
+    "dimension": "minecraft:overworld",
+    "encounter_family": "village",
+    "preferred_biome": "terralith:forested_highlands",
+    "alternative_biomes": [
+      "minecraft:plains",
+      "minecraft:meadow"
+    ],
+    "anchor": "기존 주점 공용 방·마당 또는 저택의 안전한 공용 공간.",
+    "placement_rule": "기존 적합 구조물 OR 원문 허용 바이옴의 안전한 자연 부지. 둘을 AND 로 강제하지 않는다. 후보 현장에서 상대배치로 좌표를 확정하며 인물 전용 건축·접수원·포털은 추가하지 않는다.",
+    "registry_status": "바이옴·구조물은 원문 후보 보존. 실제 설치본 레지스트리·시드·좌표 대조 전이다. 미설치 후보는 원문 vanilla 대안만 사용한다.",
+    "site_definition_id": "mythictrpg:site/norse/011/encounter"
+  },
+  "availability": {
+    "world_unlock_definition_id": "mythictrpg:unlock/norse/011",
+    "world_unlock_mode": "WORLD_SHARED_OR",
+    "world_unlock_decision": "실제 협동이동에서 한 명의 방향 설명을 받은 다른 참여자가 8블록 이상 떨어진 합의 지점에 도착 OR 실제 원거리 연습에서 공격 중단 뒤 4블록 이상 위치를 바꾸고 공격을 재개한 이력 1건. 동료는 실제 참여자이며 가상 NPC 를 만들지 않는다.",
+    "world_unlock_activation": "최신 outline 의 구체 후보를 위 수행 정의로 기획 채택한다. 기존 유효 세계 해금은 초기 이관으로 보존한다. 등록·활성화 자체는 아직 수행하지 않았다.",
+    "subject_now": "현재 해당 원문 생활권의 적합 공용 지점에 도달한 플레이어. 개인 MAIN·자기 해금 이력·특정 물품 소유를 일반 접촉에 추가 요구하지 않는다.",
+    "encounter_scheduler": {
+      "site_check_interval_seconds": 60,
+      "candidate_weight": 1,
+      "none_weight": 4,
+      "probability": "같은 사이트의 전체 적격 NPC 가중치합을 W 라 하면 해당 후보의 확률은 1/(W+4). 없는 인물을 후보로 채우지 않는다.",
+      "initiator": "해당 사이트에서 최근 조우주체 시각이 오래된 적격자 우선, 같으면 UUID 사전순 회전. 세계 해금 공로자 우선권은 없다.",
+      "same_player_site_cooldown_seconds": 300,
+      "single_body": "당첨 직후 NPC 전역 body_claim 을 compare-and-set. 이미 존재/예약 중이면 새 본체를 만들지 않고 기존 위치를 따른다. 재시작으로 claim 을 초기화하지 않는다.",
+      "known_existing_override": "통합 전역 조우 기준에 이미 확정된 동일 필드가 있으면 그 원문값을 보존하며 새 NPC 별 중복 스케줄러를 만들지 않는다.",
+      "packet_scope": "이 조우 기본값은 이번 패킷에서 원문 수치가 미지정인 장소에만 적용한다. 다른 인물이나 전역 스케줄러의 기존 명시값을 덮어쓰지 않는다. 재접속·재시작으로 재추첨 대기시간·순환순서·단일 본체 점유를 초기화하지 않는다. 실제 접근 가능한 현재 적격자만 선정한다. 이미 존재하는 본체와 접촉할 때는 재추첨하지 않는다."
+    },
+    "contact_after_appearance": "이미 존재하는 동일 본체의 현재 위치·발화 가능·접근·의사와 청중을 확인한다. 다시 추첨하거나 개인 재해금하지 않는다. 현재 사망·봉인·명시 부재는 해금으로 덮지 않는다.",
+    "ordinary_vs_task": "잡담은 공개 접근으로 가능하다. 해당 활동 제안에는 아래 현장·허락·도구·실제 문제 조건을 따로 확인한다."
+  },
+  "activities": [
+    {
+      "definition_id": "mythictrpg:quest/norse/hodr/own_questions",
+      "source_episode": "EP009A-RPG-S02-011",
+      "title": "먼저 묻고 놓는 한 걸음",
+      "type": "PERSONAL_MAIN",
+      "ownership": {
+        "kind": "PERSONAL_MAIN",
+        "ownership_scope": "해당 인물의 이 기존 개인 MAIN 1개. 서버 세계당 최초 유효 명시 수락자 1명.",
+        "offer": "현재 동일 본체·접근·대화 의사, 목적·위험·실물 비용·보상 유무·독점 조건을 먼저 설명한다. 첫 단계의 수행 가능성을 확인한 뒤 제안한다.",
+        "acceptance_commit": "제안버전과 인물별 MAIN 소유칸을 함께 검사한다. 소유자가 비어 있고 유효 수락이 확인된 최초 요청 하나만 원자적으로 owner_uuid 를 기록한다. 수락 전에 이미 소유할 것을 요구하지 않는다.",
+        "concurrent_requests": "서버 수신 순번으로 정렬하여 compare-and-set 1건만 성공. 동일 순번이면 요청 UUID 사전순. 패자는 비소유 도움 경로를 안내하며 재수락으로 복제하지 않는다.",
+        "not_acceptance": [
+          "인사",
+          "질문",
+          "도움 의향",
+          "파티 가입",
+          "세계 해금",
+          "관찰 참여"
+        ],
+        "ownership_lifetime": "보류·사망·로그아웃·거절된 다음 단계로 자동 양도하지 않는다. 완료 후에도 새 최초 수락자를 만들지 않는다.",
+        "nonowner": "일반 인사·공개 관찰·현재 허락받은 도움은 가능. 소유자의 결정·개인 결말·전용 보상은 대신 받지 않는다.",
+        "completion_commit": "모든 선택 분기의 실제 필수행동과 현재 당사자 확인을 대조한 뒤 소유자에게만 완료. 대사·선택 클릭·보고 문구만으로 물리 목표를 통과시키지 않는다."
+      },
+      "prerequisites": [
+        "현재 유효 호드르 접촉",
+        "실제 두 바닥재질의 평탄한 안전구간",
+        "방향 안내 허락과 신체 접촉 허락은 별도. 신체접촉 없는 경로를 기본으로 한다."
+      ],
+      "site_layout": "기존 돌계열·흙계열 지면 각 3블록 이상을 포함하는 총 12블록 왕복선 편도. A0-B6-C12의 기존 길, 폭 2·높이 2, 최대단차 0, 낙차·액체·가루눈·활사격/몹 위험 없음. 부적합이면 새 함정 시험을 만들지 않고 안전 부지에서만 제안한다.",
+      "steps": [
+        {
+          "step_id": "O1",
+          "title": "발밑의 차이",
+          "minecraft_action": "소유자가 돌과 흙 위에서 각각 실제 2블록을 걸어 소리를 낸다. 호드르는 8블록 이내에서 수신한 소리와 발로 직접 닿은 바닥만 확인한다. A/B/C 와 방향 기준을 함께 정한다.",
+          "quantity_and_geometry": "재질 2종×보행 2블록, 호드르 실제청취 2회.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "실제 발 위치·소리재질·전달범위, 호드르 질문/응답. 시야로 표정·색을 읽는 자료는 호드르에게 주지 않는다.",
+          "npc_lines": [
+            "호드르: 네 오른쪽인지 내 오른쪽인지 먼저 말해. 바닥은 내가 한 번 더 확인할게."
+          ],
+          "failure_and_resume": "소리 수신이 안 되면 그 재질 비교만 다시 한다. 듣지 못함을 무능/면책 판정으로 바꾸지 않는다."
+        },
+        {
+          "step_id": "O2",
+          "title": "질문하는 왕복",
+          "minecraft_action": "빠른안내: 소유자가 A→B→C 의 각 구간 시작에 방향·거리(6블록)를 실제 설명하고 호드르의 질문과 출발 의사를 기다린다. 자기확인: 호드르가 B/C 에서 질문할 때만 소유자가 2블록 발소리를 내고 자발 이동을 기다린다. C 에서 방향을 뒤집어 A 로 실제 함께 귀환한다.",
+          "quantity_and_geometry": "편도 12·총 24블록, 반환점 1곳. 두 안내방식은 OR. 플레이어-호드르 거리 8블록 초과 시 다음 이동정지.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "호드르 실제 경로이동·바닥 접촉·질문·정지·귀환, 소유자의 실제 소리/발화. 플레이어 도착만으로 호드르도 도착시키지 않는다.",
+          "npc_lines": [
+            "호드르: 여기까지는 내가 발로 확인했어. 다음은 네 설명을 들을게.",
+            "귀환 후: 네게 맡긴 방향도 있었지. 내가 물어서 고른 걸 그 말로 지우진 않겠어."
+          ],
+          "failure_and_resume": "방향이 틀리거나 멈춤요청이면 다음 발을 놓기 전 정지. 현재 안전위치에서 바른 설명을 수신하고 남은구간만 재개. 이탈·재접속으로 본체를 A/C 에 순간이동시키지 않는다."
+        },
+        {
+          "step_id": "O3",
+          "title": "각자의 근거",
+          "minecraft_action": "A 에 실제 돌아온 뒤 소유자와 호드르가 직접 확인한 재질과 안내받은 방향을 구분해 서로 실제 수신한다.",
+          "quantity_and_geometry": "귀환확인 1건.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "왕복증거+서로의 출처별 확인 수신.",
+          "npc_lines": [
+            "호드르: 오늘 돌아온 길은 오늘의 일이야. 옛일의 책임까지 없어진 건 아니지."
+          ],
+          "failure_and_resume": "중간대기를 완료로 처리하지 않는다. 말만으로 귀환·과거무죄·시력회복을 생성하지 않는다."
+        }
+      ],
+      "branches": [
+        {
+          "choice": "빠른안내",
+          "outcome": "COMPLETED_GUIDED",
+          "meaning": "일부 방향을 맡긴 범위를 명시한 자발 왕복."
+        },
+        {
+          "choice": "자기질문",
+          "outcome": "COMPLETED_SELF_CHECKED",
+          "meaning": "질문·소리 확인을 더 기다린 자발 왕복."
+        },
+        {
+          "choice": "시작 안 함/중지",
+          "outcome": "PAUSED",
+          "meaning": "기초 비교/현재 위치만 보존, 왕복과 MAIN 완료 0."
+        }
+      ],
+      "completion": "O1/O2 중 한 방식 실제왕복/O3 상호확인.",
+      "reward_definition_ids": [],
+      "cost": "고정 물품비 0, 실제 자기 이동소비만.",
+      "expected_play_minutes": [
+        10,
+        18
+      ],
+      "repeat": "개인 MAIN1회, 일반 발소리 비교는 새 권리 없이 가능.",
+      "site_definition_id": "mythictrpg:site/norse/hodr/own_questions"
+    }
+  ],
+  "events": [],
+  "services": [],
+  "reward_definitions": [],
+  "knowledge_definitions": [
+    {
+      "fact_id": "mythictrpg:fact/norse/hodr/route_sources",
+      "claim": "이번 자발 왕복에서 호드르가 직접 확인한 부분과 안내에 맡긴 부분.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "O3 상호확인",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "호드르는 실제 청각·촉각·자기 이동·발화 수신만. 시각 관측을 그에게 이식하지 않는다. 로키/발드르의 새 응답은 실제 별도 전달 없으면 알려지지 않는다.",
+      "audience_policy": "명시된 당사자와 허용 수신자만",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": false,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    }
+  ],
+  "implementation_requirements": [
+    {
+      "requirement_id": "IMPL-OWNERSHIP",
+      "supported_basis": "원문 개인 MAIN/세계 Fact/Knowledge/조건개념",
+      "new_work": "최초수락 원자성, 제안버전, 세계/개인/사적수신/기여 분리 및 사건 UUID 중복방지 연결",
+      "release_check": "동시수락 2건중소유자 1명, 세계해금 친구에게 개인 재해금 0"
+    },
+    {
+      "requirement_id": "IMPL-PHYSICAL",
+      "supported_basis": "기존 Minecraft 이동·블록·아이템·엔티티를 이용한 기획",
+      "new_work": "상대 배치 지점 등록, 실제이동/정지/시야/음원/본체위치/지형 버전 증거 저장. 검증기 없는 목표는 대사로 대체하지 않는다.",
+      "release_check": "순간이동·클릭만으로 보행/물체조작성공 0"
+    },
+    {
+      "requirement_id": "IMPL-KNOWLEDGE",
+      "supported_basis": "SET_FACT 와 GRANT_KNOWLEDGE 분리원칙",
+      "new_work": "정식발화 ID 와 실제 수신 청중·권한·출처결속; 미래 문장및 파티 기억 복사 차단",
+      "release_check": "같은 방의비 적격 청중 1명 있으면 사적 문장/제목/존재 암시 모두 비공개"
+    },
+    {
+      "requirement_id": "IMPL-RESUME",
+      "supported_basis": "시도 ID·사망/재접속·미수령 보존 설계",
+      "new_work": "물리 월드 변경과 개인 진행 스냅샷 대조. 엔티티삭제/언로드를 해소로 세지 않고 실물 중복 복원 금지",
+      "release_check": "재시작전/후 현재 대상과 미완료 수량만 이어짐"
+    },
+    {
+      "requirement_id": "IMPL-HODR-SENSE",
+      "new_work": "실제청각/촉각입력·자발이동·질문대기·방향기준·접촉허락분리. 소유자>8블록 거리시 안전 정지.",
+      "release_check": "시각 묘사 입력 차단, 멈춤 요청 전까지 귀환 완료 요구 0, 본체텔레포트 0"
+    }
+  ],
+  "acceptance_tests": [
+    {
+      "test_id": "011-A01",
+      "given": "A 가세계해금, B 는그 행동 이력 없음",
+      "when": "B 가 현재 원문 생활권 조건을 충족하여 조우 추첨 성공",
+      "expected": "B 가 주체로 등장 가능. A 의개인공적/MAIN/보상/기억은 B 에게복사 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A02",
+      "given": "동일 NPC 본체가 다른 현재 지점에 존재",
+      "when": "다른 플레이어가 새 출현을 요청",
+      "expected": "추가본체 0, 기존위치/접근 경로만 사용",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A03",
+      "given": "활동중 플레이어 사망 또는 로그 아웃",
+      "when": "재접속후재개",
+      "expected": "소유·완료한행동·소비보존. 현재지형/대상/접근재검사, 자동귀환/성공/적복원 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A04",
+      "given": "사적응답적격 A 와비적격 B 가 같은 대화 공간",
+      "when": "사적 결과를 설명 하려함",
+      "expected": "B 가 현재 청중이면 사적 문장·제목·존재암시 0. 공개 현장 정보만 가능",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A05",
+      "given": "앞선 참가자만 과거 완료·수신",
+      "when": "후발자가 현재 공개 자료 만열람",
+      "expected": "자료 열람만 기록. 개인과거경험/소유/보상소급 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A06",
+      "given": "소유 칸 비어 있음, A/B 동시유효수락",
+      "when": "첫수락 commit 경쟁",
+      "expected": "소유자 1명. 인사/질문은수락 0. 진행/완료만 해당 소유자 검사",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A10",
+      "given": "느린 자기 확인 안",
+      "when": "소유자가 질문 전앞서 걸어 8블록초과",
+      "expected": "호드르 안전 정지·자동따라가기/텔레포트 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A11",
+      "given": "빠른 안내 안 실제 왕복",
+      "when": "서로관측/설명근거확인",
+      "expected": "완료 1·과거면책/시력회복 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "011-A12",
+      "given": "중간정지",
+      "when": "소유자혼자 A 복귀",
+      "expected": "호드르 왕복 완료 0",
+      "execution_status": "미실행 인수시험 설계"
+    }
+  ],
+  "balance": {
+    "value": "10~18분 감각·동선 협력. 빠른 안내와 느린 확인의 차이는 기다림과 정보의 출처이지 보상등급 차이가 아니다. 무보상·능력증가 0.",
+    "additional_reward_count": 0
+  },
+  "runtime_state": {
+    "registered": false,
+    "reloaded": false,
+    "playtested": false,
+    "authoring_decisions_complete": true
+  },
+  "site_registration_contract": {
+    "definition_status": "새 구현 요구. 등록·현장 배치는 아직 실행하지 않았다.",
+    "instance_key": "world_uuid + site_definition_id + site_instance_uuid",
+    "fields": [
+      "dimension_id",
+      "실제 anchor block 좌표",
+      "명명된 목표점별 실제 block 좌표",
+      "현재 보호구역 권한",
+      "실제 연결 경로와 지형 버전",
+      "허용 청중 위치",
+      "등록자 및 실제 현장 검증 시각"
+    ],
+    "registration": "아래 site_layout 의 상대 거리·폭·높이·안전조건을 만족하는 실제 기존 부지만 등록한다. 조건 불일치는 해당 활동만 대기하고 일반 인사·현재 공개 지식·본체 접촉을 막지 않는다. 좌표가 바뀌면 새 현장 버전으로 미완료 이동만 재검사한다. 등록은 블록·인물·보상 생성 명령이 아니다."
+  },
+  "reward_policy": {
+    "status": "NONE",
+    "items": [],
+    "effects": [],
+    "currency": 0,
+    "new_entitlements": 0,
+    "reason": "원문 NOT_APPLICABLE 결말을 보존한다. 실제 관측·공개 경로·관계 변화는 있지만 물품·가호·수치 보상으로 전환하지 않는다.",
+    "no_claim": "실물 보상이 없으므로 가짜 미수령권/재발급을 만들지 않는다. 실제 대여물 반환과 정보 수신 복구는 별도다."
+  },
+  "coverage_summary": {
+    "personal_main_definitions": 1,
+    "shared_quest_definitions": 0,
+    "nonquest_events": 0,
+    "optional_services": 0,
+    "reward_definitions": 0,
+    "new_reward_beyond_source_count": 0,
+    "source_identity_changed": false,
+    "source_files_modified": false,
+    "unresolved_authoring_blockers": []
+  }
+}

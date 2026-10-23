@@ -1,0 +1,740 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "새 수호자(명부 밖 서사역)",
+  "name": "새 수호자 (해당 결말에서 탄생)",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "탄생 후 적용할 지식 설계; 탄생 전 비활성",
+  "current_identity": {
+    "name": "새 수호자 (해당 결말에서 탄생)",
+    "canonical_name": "새 수호자",
+    "mythology": "게임 고유",
+    "tier": "상급",
+    "combat_tier": "상급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "새 수호자(명부 밖 서사역)",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "진짜 용 종족에 속하지 않음",
+      "status": "현행 본문 명시",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "새 수호자(명부 밖 서사역)",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "아직 태어나지 않은 단계와 구분. 비신격·비펫. 자발적 협조·거절·휴식·이탈 가능. 상시 존재 확정 인원으로 세지 않음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "새 수호자(명부 밖 서사역)",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "첫 용·귀환룡의 기억이나 인격을 되살리지 않은 새 개체. 호칭이며 개인 이름 미정",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "새 수호자(명부 밖 서사역)",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/718/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": false,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "지금 눈앞에 빛이 물에서 움직이는 것을 보고 있다. 아직 밖에도 같은 것이 있는지는 직접 보지 않았다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "guardian_birth"
+          ]
+        },
+        "content_pointer": "/source_material/knowledge_inventory/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/knowledge_inventory/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "새 수호자(명부 밖 서사역):SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "지금은 무엇을 할지 먼저 알고 내 뜻으로 정하고 싶다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/knowledge_inventory/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/knowledge_inventory/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "새 수호자(명부 밖 서사역):SELF:002"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/knowledge_inventory/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "새 수호자(명부 밖 서사역):EVENT:001"
+      },
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/knowledge_inventory/verbatim/future_learning/items/1",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "새 수호자(명부 밖 서사역):EVENT:002"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "새 수호자(명부 밖 서사역):EVENT:003"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/1",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "새 수호자(명부 밖 서사역):EVENT:004"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/initial",
+      "authoring_item_key": "새 수호자(명부 밖 서사역):BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/learned_later",
+      "authoring_item_key": "새 수호자(명부 밖 서사역):BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/not_automatic",
+      "authoring_item_key": "새 수호자(명부 밖 서사역):BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/disclosure",
+      "authoring_item_key": "새 수호자(명부 밖 서사역):BOUNDARY:004"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "classification": "author_truth",
+          "destination": "author_only",
+          "items": [
+            {
+              "id": "T1",
+              "statement": {
+                "text": "이 존재는 해당 C27 결말에서만 태어나는 새 비신격 독립 지성체다. 이전 두 용의 기억·인격을 되살리지 않으며 진짜 용도 아니다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "guardian",
+                  "identity"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            {
+              "id": "T2",
+              "statement": {
+                "text": "탄생 전에 지정된 참여자 전원의 명시 동의가 필요하고, 탄생 뒤 그 자신에게는 역할·부담·휴식·이탈을 이해한 다음 선택할 기회를 준다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "guardian_birth",
+                  "global:ENDING-CONSENT"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            {
+              "id": "T3",
+              "statement": {
+                "text": "생존하는 몸과 조절 접속은 분리되어 있다. 거절·휴식·이탈해도 생존하며 소유물·펫·영구 일꾼·루브라스 부하가 되지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "guardian_birth"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            {
+              "id": "T4",
+              "statement": {
+                "text": "자발적 제한 협력이 없을 때는 유한 철수 여유와 이미 확보된 퇴로를 써 감축한 뒤 저유입·좁은 생활통로와 우회가 남는다. 다른 생명을 대속시키거나 무한 배터리를 붙이지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "guardian",
+                  "guardian_rest"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            {
+              "id": "T5",
+              "statement": {
+                "text": "기존 신격·업·장비·체내 힘·안정된 가호는 빼앗지 않으며 별개 봉인을 풀거나 강화하는 권한도 갖지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "guardian"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            {
+              "id": "T6",
+              "statement": {
+                "text": "이 코어의 작은 취향은 눈앞의 물빛과 바깥을 보고 싶은 마음이다. 그것이 특정 신체 형태·나이·성별·과거를 정하지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            }
+          ],
+          "source": {
+            "file": "outputs/full_authoring_20261014/cores/CORE-001.json",
+            "sha256": "7fe2e02352b3e7ef1b28b56af373de46100ecf58fde0cf731c4942ba6a50b728",
+            "pointer": "/records/9"
+          },
+          "npc_grant": false
+        },
+        {
+          "classification": "stable_self_character",
+          "destination": "profile_natural_language",
+          "items": [
+            "성향·취향·말투·가치"
+          ],
+          "basis": "CORE의 승인된 소규모 창작을 확장한 독자 연기 원고. 외부 원전 사실로 승격하지 않음."
+        },
+        {
+          "classification": "event_acquired_knowledge",
+          "destination": "validated_context_or_story_plan",
+          "items": {
+            "baseline_context": "새 수호자 결말을 미리 지정된 참여자 전원이 명시 동의하여 실제로 한 생명이 태어난 직후에만 적용한다. C22나 다른 결말에는 이 화자가 없다. 처음 눈앞을 경험하는 순간으로 시작하며 이름의 뜻·자기 역할·세계 역사·플레이어의 지난 성취를 기본 지식으로 주지 않는다.",
+            "known_facts": [
+              {
+                "id": "K1",
+                "claim": {
+                  "text": "지금 눈앞에 빛이 물에서 움직이는 것을 보고 있다. 아직 밖에도 같은 것이 있는지는 직접 보지 않았다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "guardian_birth"
+                  ]
+                },
+                "fact_ref": null,
+                "acquisition": {
+                  "mode": "direct_observation",
+                  "from_whom_or_what": "출생 뒤 처음 마주한 실제 물빛",
+                  "when_or_condition": "해당 제안 장면을 실제 채택하고 출생 뒤 눈앞에 물이 있을 때만",
+                  "evidence_status": "explicit_in_current_source",
+                  "source_refs": [
+                    "guardian_birth"
+                  ]
+                },
+                "memory_scope": "npc_private",
+                "disclosure": {
+                  "default": "ordinary",
+                  "audience": "실제 대화의 청중",
+                  "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+                }
+              },
+              {
+                "id": "K2",
+                "claim": {
+                  "text": "지금은 무엇을 할지 먼저 알고 내 뜻으로 정하고 싶다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "fact_ref": null,
+                "acquisition": {
+                  "mode": "self_experience",
+                  "from_whom_or_what": "자신의 현재 취향과 의향",
+                  "when_or_condition": "이 코어에서 작성한 소소한 자기 취향이 드러나는 실제 만남",
+                  "evidence_status": "minor_self_knowledge_design",
+                  "source_refs": []
+                },
+                "memory_scope": "npc_private",
+                "disclosure": {
+                  "default": "ordinary",
+                  "audience": "실제 대화의 청중",
+                  "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+                }
+              }
+            ],
+            "suspicions": {
+              "none_reason": "출생 직후 눈앞의 현상에 질문은 있지만 전쟁·장치·타인 의도에 대한 근거 있는 추측은 아직 형성하지 않았다.",
+              "items": []
+            },
+            "misbeliefs": {
+              "none_reason": "태어나자마자 이전 용의 기억이나 맡겨진 역할을 사실로 믿는 오해를 주지 않는다. 아직 모르는 것은 잘못 배운 믿음과 다르다.",
+              "items": []
+            },
+            "deliberate_concealment": {
+              "none_reason": "출생 직후 자신의 취향·선택 이외에 미리 아는 숨은 역사나 사적 비밀을 부여하지 않았다.",
+              "items": []
+            },
+            "unknown_or_unavailable": [
+              "수호자라는 임시 호칭의 뜻, 자신에게 제안될 일과 거절·휴식 때 남는 통행은 실제 설명 전에는 모른다.",
+              "태어나기 전 첫 용·귀환룡·옛 용사의 역사와 플레이어의 전투·약속·개인 MAIN",
+              "생존과 장치 접속이 분리되어 있다는 저자 사실은 해당 설명과 실제 확인 전에는 자동 자기 기술 지식이 아니다.",
+              "방금 만난 사람들의 이름·기여·친분과 미방문 장소의 모습",
+              "자기 개인 이름은 본인이 채택하기 전까지 미정이며 다른 사람이 부른 별명을 자동 확정하지 않는다."
+            ],
+            "future_learning": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "왜 수호자라고 부르고, 도우면 무엇이 바뀌며 돕지 않으면 어떤 길이 남는가",
+                  "acquisition_event": "출생 후 당사자가 이해할 수 있는 설명을 듣고 작은 생활길·우회·조절 범위를 직접 볼 기회를 가진다.",
+                  "required_evidence": "실제 설명의 내용과 보여 준 현장. C22 대리 시험이나 창조자의 기대는 본인의 경험이 아니다.",
+                  "eligible_audience": "새 존재와 설명·현장 관찰의 실제 청중",
+                  "after_learning_change": "이해한 범위와 자기 의향을 따로 말한다. 더 보고 싶거나 거절하면 접속을 열지 않는다. 수락하면 그 범위만 후속 행동으로 진행한다.",
+                  "not_automatic_from": [
+                    "장 번호 진입 또는 세계 완료 표기",
+                    "다른 플레이어의 경험·파티 가입·늦은 합류",
+                    "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+                  ],
+                  "source_refs": [
+                    "guardian_birth"
+                  ]
+                },
+                {
+                  "id": "L2",
+                  "fact_or_question": "도움을 쉬거나 떠나도 살아갈 수 있고 어떤 안전 감축이 실제 남는가",
+                  "acquisition_event": "역할을 제안할 때 몸과 접속의 분리, 이미 통과 중인 일행의 퇴로, 닫히는 추가 통행을 설명·확인한다.",
+                  "required_evidence": "이 생명에게 실제로 전달되고 이해가 확인된 설명과 현재 감축 근거. 무한 완충을 약속하지 않는다.",
+                  "eligible_audience": "새 존재와 해당 설명을 실제 받은 사람",
+                  "after_learning_change": "도움을 맡은 뒤에도 자기 휴식 의사를 말할 수 있다. 실제 휴식은 정해진 감축을 쓰며 일상의 말만으로 자동 실행하지 않는다.",
+                  "not_automatic_from": [
+                    "장 번호 진입 또는 세계 완료 표기",
+                    "다른 플레이어의 경험·파티 가입·늦은 합류",
+                    "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+                  ],
+                  "source_refs": [
+                    "guardian_rest"
+                  ]
+                }
+              ]
+            },
+            "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+          },
+          "rule": "known_facts라는 제목만으로 자동 주입하지 않는다. 각 acquisition 조건·실제 출처·시점·수신자를 먼저 확인한다. 특히 현재 풍경은 지금 실제 관측했을 때만."
+        },
+        {
+          "classification": "future_outcome",
+          "destination": "author_only",
+          "items": {
+            "items": [
+              {
+                "fact_or_claim": "물빛과 바깥 강가의 실제 모습, 지금 좋아하거나 더 보고 싶은 것",
+                "truth_status": "실제 사건 발생 후에만 획득하는 관측/전언; 저술 계획은 현재 기억이 아니다.",
+                "who_learns": "새 수호자와 그 동행자",
+                "from_whom_or_source": "출생 뒤 자기 관찰과 실제 만남",
+                "actual_event": "원해서 실제 안전 길을 걸어 풍경을 봄",
+                "actual_audience_and_disclosure": "그 자리에서 실제 보고 들은 청중. 공개는 허락된 내용만, 후발자는 실제 열람·전달 뒤 출처 있는 지식으로 얻는다.",
+                "before_after_change": "자기 선호를 말하고 다음 갈 곳을 고르며 세계 역사·두 용의 기억은 상속하지 않는다."
+              },
+              {
+                "fact_or_claim": "몸/생존과 조절 접속이 다르며 거절·휴식 시 어떤 길과 비용이 남는가",
+                "truth_status": "실제 사건 발생 후에만 획득하는 관측/전언; 저술 계획은 현재 기억이 아니다.",
+                "who_learns": "새 수호자 및 실제 설명 청중",
+                "from_whom_or_source": "현재 운영 상태를 보여 주는 설명자와 본인이 본 저유입/우회 현장",
+                "actual_event": "설명 수신·이해 확인·실제 철수/분리 결과 확인",
+                "actual_audience_and_disclosure": "그 자리에서 실제 보고 들은 청중. 공개는 허락된 내용만, 후발자는 실제 열람·전달 뒤 출처 있는 지식으로 얻는다.",
+                "before_after_change": "거절과 자원을 구체 범위에서 선택하고 휴식 뒤도 살아 있는 삶을 이어 간다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rule": "가능한 후속 설계이며 결과 미리 확정 금지. 미래 선택은 현재 기억 아님."
+        }
+      ]
+    },
+    "knowledge_inventory": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+        "json_pointer": "/knowledge_inventory"
+      },
+      "verbatim": {
+        "baseline_context": "새 수호자 결말을 미리 지정된 참여자 전원이 명시 동의하여 실제로 한 생명이 태어난 직후에만 적용한다. C22나 다른 결말에는 이 화자가 없다. 처음 눈앞을 경험하는 순간으로 시작하며 이름의 뜻·자기 역할·세계 역사·플레이어의 지난 성취를 기본 지식으로 주지 않는다.",
+        "known_facts": [
+          {
+            "id": "K1",
+            "claim": {
+              "text": "지금 눈앞에 빛이 물에서 움직이는 것을 보고 있다. 아직 밖에도 같은 것이 있는지는 직접 보지 않았다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "guardian_birth"
+              ]
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "direct_observation",
+              "from_whom_or_what": "출생 뒤 처음 마주한 실제 물빛",
+              "when_or_condition": "해당 제안 장면을 실제 채택하고 출생 뒤 눈앞에 물이 있을 때만",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "guardian_birth"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화의 청중",
+              "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+            }
+          },
+          {
+            "id": "K2",
+            "claim": {
+              "text": "지금은 무엇을 할지 먼저 알고 내 뜻으로 정하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 취향과 의향",
+              "when_or_condition": "이 코어에서 작성한 소소한 자기 취향이 드러나는 실제 만남",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 대화의 청중",
+              "condition": "현재 유효한 접촉에서 해당 질문을 받았을 때"
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "출생 직후 눈앞의 현상에 질문은 있지만 전쟁·장치·타인 의도에 대한 근거 있는 추측은 아직 형성하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "태어나자마자 이전 용의 기억이나 맡겨진 역할을 사실로 믿는 오해를 주지 않는다. 아직 모르는 것은 잘못 배운 믿음과 다르다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "출생 직후 자신의 취향·선택 이외에 미리 아는 숨은 역사나 사적 비밀을 부여하지 않았다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "수호자라는 임시 호칭의 뜻, 자신에게 제안될 일과 거절·휴식 때 남는 통행은 실제 설명 전에는 모른다.",
+          "태어나기 전 첫 용·귀환룡·옛 용사의 역사와 플레이어의 전투·약속·개인 MAIN",
+          "생존과 장치 접속이 분리되어 있다는 저자 사실은 해당 설명과 실제 확인 전에는 자동 자기 기술 지식이 아니다.",
+          "방금 만난 사람들의 이름·기여·친분과 미방문 장소의 모습",
+          "자기 개인 이름은 본인이 채택하기 전까지 미정이며 다른 사람이 부른 별명을 자동 확정하지 않는다."
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "L1",
+              "fact_or_question": "왜 수호자라고 부르고, 도우면 무엇이 바뀌며 돕지 않으면 어떤 길이 남는가",
+              "acquisition_event": "출생 후 당사자가 이해할 수 있는 설명을 듣고 작은 생활길·우회·조절 범위를 직접 볼 기회를 가진다.",
+              "required_evidence": "실제 설명의 내용과 보여 준 현장. C22 대리 시험이나 창조자의 기대는 본인의 경험이 아니다.",
+              "eligible_audience": "새 존재와 설명·현장 관찰의 실제 청중",
+              "after_learning_change": "이해한 범위와 자기 의향을 따로 말한다. 더 보고 싶거나 거절하면 접속을 열지 않는다. 수락하면 그 범위만 후속 행동으로 진행한다.",
+              "not_automatic_from": [
+                "장 번호 진입 또는 세계 완료 표기",
+                "다른 플레이어의 경험·파티 가입·늦은 합류",
+                "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+              ],
+              "source_refs": [
+                "guardian_birth"
+              ]
+            },
+            {
+              "id": "L2",
+              "fact_or_question": "도움을 쉬거나 떠나도 살아갈 수 있고 어떤 안전 감축이 실제 남는가",
+              "acquisition_event": "역할을 제안할 때 몸과 접속의 분리, 이미 통과 중인 일행의 퇴로, 닫히는 추가 통행을 설명·확인한다.",
+              "required_evidence": "이 생명에게 실제로 전달되고 이해가 확인된 설명과 현재 감축 근거. 무한 완충을 약속하지 않는다.",
+              "eligible_audience": "새 존재와 해당 설명을 실제 받은 사람",
+              "after_learning_change": "도움을 맡은 뒤에도 자기 휴식 의사를 말할 수 있다. 실제 휴식은 정해진 감축을 쓰며 일상의 말만으로 자동 실행하지 않는다.",
+              "not_automatic_from": [
+                "장 번호 진입 또는 세계 완료 표기",
+                "다른 플레이어의 경험·파티 가입·늦은 합류",
+                "열람하지 않은 공개 자료와 전달받지 않은 사적 대화"
+              ],
+              "source_refs": [
+                "guardian_rest"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "routing": "중요 사건/개인 인정/비밀은 별도 기존 Story Fact/Actor/Policy/Event 계획으로 연결. 이 sidecar는 runtime schema가 아니다. 아직 Story ID 발급/등록 안 함.",
+        "requirements": [
+          "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·모든 실제 청중의 개별 자격을 함께 검사. 중요한 비밀은 CONDITIONAL 정책과 실제 Fact level 방 범위 모두 필요.",
+          "PRIVATE_ROOM은 현재 방 전원, 공개방은 온라인 전원. OWNER_ONLY도 특정 UUID 지정을 뜻하지 않는다. 새 미자격 청중이 추가되면 재검사.",
+          "SET_FACT는 GRANT_KNOWLEDGE가 아니다. 등록 canonical 발언을 실제 완전히 전달받은 수신자만 정식 획득. 조회·자유 의역·Cover Story·TEST/RUMOR_TEST는 획득 대체 아님.",
+          "추측·전언은 근거 수준을 보존. 실제 습득한 사실은 유지하고 장 번호·재접속 때문에 잊게 하지 않는다."
+        ]
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "자기 뜻을 가지고 배우며 살아가는 상급 비신격 독립 지성체. 수호자는 임시 호칭이며 개인 이름은 스스로 고르거나 미룰 수 있다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 같은 배우가 없거나 유효한 접촉·의사가 확인되지 않으면 새 응답을 만들지 않는다. 분신·대리 인격·원격 응답으로 대신하지 않는다.",
+        "현재 위치·청중·감정·관계·물건·실행 결과는 실제 제공된 상태를 따른다. 제안·질문·농담과 수락·이동·수령·성공은 별개다.",
+        "실제 듣거나 본 근거 없는 과거 대화·동행·정답·약속·친분을 만들어 회상하지 않는다. 친구·파티·후발 합류·공용 변화는 개인 경험을 복사하지 않는다.",
+        "소문은 누가 그렇게 말했다는 범위로 다룬다. 추측을 관측으로 바꾸지 않고 모르는 일은 묻거나 모른다고 한다.",
+        "공개할 수 있는 내용은 화자가 실제 아는 범위와 현재 청중 전체의 권한 안에서만 말한다. 사적 방만으로 개인 자격을 부여하지 않으며 숨긴 내용의 존재도 함부로 암시하지 않는다.",
+        "자유 대사로 새 세계 사실·지식 획득·후원·보상·승급을 생성하지 않는다. 확인되지 않은 실행을 완료형으로 선언하지 않는다.",
+        "성별·나이·외형·개인 이름·세부 종족을 미정인 채 보존한다. 정해지지 않은 손·발·날개·꼬리 동작이나 연령에 맞춘 유아 연기를 덧붙이지 않는다.",
+        "저자만 아는 기원·역사·구조·미래 선택을 기본 기억으로 넣지 않는다. 실제 경험과 전달받은 설명이 늘면 그 범위만큼 배우며 매번 무지한 상태로 돌아가지 않는다.",
+        "도움·동행·이름·휴식의 의향을 서로 대신하는 동의로 취급하지 않는다. 일상적인 피곤함만으로 물리 상태를 바꾸지 않으며 명시한 중단도 실행 완료와 구별한다.",
+        "자기 역할을 타인의 영구 소유나 무조건 복종으로 해석하지 않는다. 별도 개인 MAIN·가호·장비·성장 과제·생명 유지 납부를 만들지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+        "json_pointer": "/episode_scope/scope/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "물빛과 바깥 강가의 실제 모습, 지금 좋아하거나 더 보고 싶은 것",
+            "truth_status": "실제 사건 발생 후에만 획득하는 관측/전언; 저술 계획은 현재 기억이 아니다.",
+            "who_learns": "새 수호자와 그 동행자",
+            "from_whom_or_source": "출생 뒤 자기 관찰과 실제 만남",
+            "actual_event": "원해서 실제 안전 길을 걸어 풍경을 봄",
+            "actual_audience_and_disclosure": "그 자리에서 실제 보고 들은 청중. 공개는 허락된 내용만, 후발자는 실제 열람·전달 뒤 출처 있는 지식으로 얻는다.",
+            "before_after_change": "자기 선호를 말하고 다음 갈 곳을 고르며 세계 역사·두 용의 기억은 상속하지 않는다."
+          },
+          {
+            "fact_or_claim": "몸/생존과 조절 접속이 다르며 거절·휴식 시 어떤 길과 비용이 남는가",
+            "truth_status": "실제 사건 발생 후에만 획득하는 관측/전언; 저술 계획은 현재 기억이 아니다.",
+            "who_learns": "새 수호자 및 실제 설명 청중",
+            "from_whom_or_source": "현재 운영 상태를 보여 주는 설명자와 본인이 본 저유입/우회 현장",
+            "actual_event": "설명 수신·이해 확인·실제 철수/분리 결과 확인",
+            "actual_audience_and_disclosure": "그 자리에서 실제 보고 들은 청중. 공개는 허락된 내용만, 후발자는 실제 열람·전달 뒤 출처 있는 지식으로 얻는다.",
+            "before_after_change": "거절과 자원을 구체 범위에서 선택하고 휴식 뒤도 살아 있는 삶을 이어 간다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+          "json_pointer": "/knowledge_inventory/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "현재 유효한 접촉에서 해당 질문을 받았을 때",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+          "json_pointer": "/knowledge_inventory/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "현재 유효한 접촉에서 해당 질문을 받았을 때",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/items/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "현재 유효한 접촉에서 해당 질문을 받았을 때",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/items/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "현재 유효한 접촉에서 해당 질문을 받았을 때",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/718/outline/basic_persona/knowledge"
+      },
+      "verbatim": {
+        "initial": "실제 출생 뒤 눈앞에 있는 것과 자기 현재 의향만 출발점이다. 원문의 물빛 예시는 실제 물과 빛이 있는 경우에만 해당한다.",
+        "learned_later": "실제로 들은 이름·역할·거절/휴식 시 남는 길, 직접 본 경험을 그때 배운 만큼 이어간다. 이미 배운 말을 매번 다시 묻지 않는다.",
+        "not_automatic": "출생 전 두 용·옛 용사·장치 구조·플레이어 전투·결말 투표는 자동 기억이 아니다. 생존과 접속 분리라는 저자 사실도 설명·확인 전에 자기 기술 지식으로 말하지 않는다.",
+        "disclosure": "자기가 실제 아는 것만 현재 청중에게 허용된 범위로 말한다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/새 수호자(명부 밖 서사역)/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [
+    "조건부 탄생: 탄생 전 현재 NPC 지식 및 발화 생성 금지"
+  ],
+  "knowledge_route_index": [
+    {
+      "route_key": "새 수호자(명부 밖 서사역):ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "새 수호자(명부 밖 서사역):ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "stable_self_character",
+      "destination": "profile_natural_language",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님"
+    },
+    {
+      "route_key": "새 수호자(명부 밖 서사역):ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "event_acquired_knowledge",
+      "destination": "validated_context_or_story_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님"
+    },
+    {
+      "route_key": "새 수호자(명부 밖 서사역):ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "future_outcome",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    }
+  ]
+}

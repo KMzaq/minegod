@@ -30,10 +30,31 @@ public final class ReputationLedger {
         }
         public boolean terminal(){return decision.outcome()==Outcome.RECOVERED||decision.outcome()==Outcome.RETRACTED;}
     }
-    public record Snapshot(int version, UUID worldId, long revision, List<Entry> entries) {}
+    /** The game result is single-use even when there was nothing to recover at the time. */
+    public record Recovery(UUID id, UUID subject, String godId, String policyId, String reasonId) {
+        public Recovery {
+            Objects.requireNonNull(id); Objects.requireNonNull(subject);
+            CourierSettings.identifier(godId); CourierSettings.identifier(policyId); CourierSettings.identifier(reasonId);
+        }
+    }
+    public record RecoveryReceipt(Recovery request, List<UUID> sources) {
+        public RecoveryReceipt {
+            Objects.requireNonNull(request); sources=List.copyOf(sources);
+            if(sources.size()>LIMIT||new HashSet<>(sources).size()!=sources.size())throw new IllegalArgumentException("Recovery sources");
+        }
+    }
+    public record Snapshot(int version, UUID worldId, long revision, List<Entry> entries, List<RecoveryReceipt> recoveries) {
+        public Snapshot {
+            entries=List.copyOf(entries);
+            // Old v1 saves predate game-result batch receipts.
+            recoveries=recoveries==null?List.of():List.copyOf(recoveries);
+        }
+        public Snapshot(int version,UUID worldId,long revision,List<Entry> entries){this(version,worldId,revision,entries,List.of());}
+    }
     private record Key(UUID subject,String god,UUID source) {}
     private final UUID worldId;
     private final Map<Key,Entry> entries=new LinkedHashMap<>();
+    private final Map<UUID,RecoveryReceipt> recoveries=new LinkedHashMap<>();
     private long revision;
     private java.util.function.BooleanSupplier quotaEnabled;
     private java.util.function.BiPredicate<Snapshot, Boolean> mutationGate;
@@ -46,6 +67,39 @@ public final class ReputationLedger {
     public int size(){return entries.size();}
     public Entry find(UUID subject,String god,UUID source){return entries.get(new Key(subject,god,source));}
     public List<Entry> entries(){return List.copyOf(entries.values());}
+    public boolean recovered(Recovery request) {
+        var receipt=recoveries.get(request.id());
+        return receipt!=null&&receipt.request().equals(request);
+    }
+    /** One draft, quota admission and commit for the entire captured set and its replay receipt. */
+    Result recover(Recovery request) {
+        return recover(request,entry->true);
+    }
+    Result recover(Recovery request,java.util.function.Predicate<Entry> included) {
+        var receipt=recoveries.get(request.id());
+        if(receipt!=null)return receipt.request().equals(request)?Result.DUPLICATE:Result.REJECTED;
+        if(recoveries.size()>=LIMIT)return Result.CAPACITY;
+        var draft=restore(snapshot());
+        var sources=new ArrayList<UUID>();
+        for(var entry:entries()) {
+            var old=entry.decision();
+            if(entry.terminal()||!old.subject().equals(request.subject())||!old.godId().equals(request.godId())
+                    ||!old.policyId().equals(request.policyId())||!included.test(entry))continue;
+            var id=UUID.nameUUIDFromBytes((request.id()+"/"+old.sourceId()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            var result=draft.apply(new Decision(id,worldId,old.subject(),old.godId(),old.sourceId(),old.rootId(),
+                    old.rumorRevision(),old.policyId(),old.policyFingerprint(),entry.version(),Outcome.RECOVERED,
+                    old.directImpact(),new Approval(request.id(),ApprovalKind.GAME_RESULT,request.reasonId())));
+            if(result!=Result.APPLIED)return result;
+            sources.add(old.sourceId());
+        }
+        if(draft.revision==Long.MAX_VALUE)return Result.REJECTED;
+        draft.recoveries.put(request.id(),new RecoveryReceipt(request,sources));
+        draft.revision++;
+        if(mutationGate!=null&&quotaEnabled.getAsBoolean()&&!mutationGate.test(draft.snapshot(),true))return Result.CAPACITY;
+        entries.clear();entries.putAll(draft.entries);
+        recoveries.clear();recoveries.putAll(draft.recoveries);revision=draft.revision;
+        return Result.APPLIED;
+    }
     Result apply(Decision decision) {
         if (mutationGate != null && quotaEnabled.getAsBoolean()) {
             ReputationLedger draft = restore(snapshot());
@@ -68,16 +122,28 @@ public final class ReputationLedger {
         entries.put(key,new Entry(decision,decision.expectedVersion()+1,old==null?decision.approval():old.initialApproval()));revision++;
         return Result.APPLIED;
     }
-    public Snapshot snapshot(){return new Snapshot(VERSION,worldId,revision,entries());}
+    public Snapshot snapshot(){return new Snapshot(VERSION,worldId,revision,entries(),List.copyOf(recoveries.values()));}
     public static ReputationLedger restore(Snapshot snapshot) {
-        if(snapshot.version()!=VERSION||snapshot.revision()<0||snapshot.entries().size()>LIMIT||snapshot.revision()<snapshot.entries().size())throw new IllegalArgumentException("Reputation schema/budget");
+        if(snapshot.version()!=VERSION||snapshot.revision()<0||snapshot.entries().size()>LIMIT||snapshot.recoveries().size()>LIMIT
+                ||snapshot.revision()<snapshot.entries().size())throw new IllegalArgumentException("Reputation schema/budget");
         var result=new ReputationLedger(snapshot.worldId());var ids=new HashSet<UUID>();long versions=0;
         for(var entry:snapshot.entries()) {
             var d=entry.decision();var key=new Key(d.subject(),d.godId(),d.sourceId());
             if(!d.worldId().equals(snapshot.worldId())||!ids.add(d.id())||result.entries.putIfAbsent(key,entry)!=null)throw new IllegalArgumentException("Reputation scope/duplicate");
             versions=Math.addExact(versions,entry.version());
         }
-        if(versions!=snapshot.revision())throw new IllegalArgumentException("Reputation revision mismatch");
+        for(var receipt:snapshot.recoveries()) {
+            var request=receipt.request();
+            if(result.recoveries.putIfAbsent(request.id(),receipt)!=null)throw new IllegalArgumentException("Duplicate recovery receipt");
+            for(var source:receipt.sources()) {
+                var entry=result.find(request.subject(),request.godId(),source);
+                if(entry==null||entry.decision().outcome()!=Outcome.RECOVERED
+                        ||!entry.decision().policyId().equals(request.policyId())
+                        ||!entry.decision().approval().equals(new Approval(request.id(),ApprovalKind.GAME_RESULT,request.reasonId())))
+                    throw new IllegalArgumentException("Recovery receipt does not match assessment");
+            }
+        }
+        if(Math.addExact(versions,snapshot.recoveries().size())!=snapshot.revision())throw new IllegalArgumentException("Reputation revision mismatch");
         result.revision=snapshot.revision();return result;
     }
 }

@@ -1,0 +1,1258 @@
+{
+  "title": "정확 배포 JAR 정적 자산 검증",
+  "status": "RELEASE_STATIC_ASSETS_VERIFIED_NOT_RUNTIME",
+  "method": "JAR를 ZIP으로 읽고 JSON/TOML/PNG 헤더 및 class 구조만 해석. Java 실행·설치·게임·코드 호출 없음.",
+  "release": [
+    {
+      "mod": "simplyswords",
+      "file": "simplyswords-neoforge-1.70.2-1.21.1.jar",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/simply-swords/files/8746001",
+      "sha256": "5e75bd66ea489079d60c9c1ed98762550fbc0bee88cd7af399f17bbeb56608c3",
+      "zip_entry_count": 4731,
+      "metadata_path": "META-INF/neoforge.mods.toml",
+      "modLoader": "javafml",
+      "loaderVersion": "[4,)",
+      "version": "1.70.2-1.21.1",
+      "dependencies_verbatim_fields": {
+        "simplyswords": [
+          {
+            "modId": "neoforge",
+            "mandatory": true,
+            "versionRange": "[4,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "mandatory": true,
+            "versionRange": "[1.21, 1.22)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "architectury",
+            "mandatory": true,
+            "versionRange": "[13.0.11,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "fzzy_config",
+            "mandatory": true,
+            "versionRange": "[0.6.6,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "simplytooltips",
+            "mandatory": true,
+            "versionRange": "[0.1,)",
+            "ordering": "NONE",
+            "side": "CLIENT"
+          }
+        ]
+      },
+      "boundary": "선언값 전사. 실제 로더의 수용·의존 모드 설치·정확 NeoForge 21.1.248 호환을 검증하지 않음."
+    },
+    {
+      "mod": "bettercombat",
+      "file": "bettercombat-neoforge-2.4.0+1.21.1.jar",
+      "source_url": "https://modrinth.com/mod/better-combat/version/2.4.0%2B1.21.1-neoforge",
+      "sha256": "0446e9faa98b764ba010ac31e337d14ac96bbb2fbfeff9b599e1efd510dfde5a",
+      "zip_entry_count": 412,
+      "metadata_path": "META-INF/neoforge.mods.toml",
+      "modLoader": "javafml",
+      "loaderVersion": "[2,)",
+      "version": "2.4.0+1.21.1",
+      "dependencies_verbatim_fields": {
+        "bettercombat": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.0,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "playeranimator",
+            "type": "required",
+            "versionRange": "[1,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "cloth_config",
+            "type": "required",
+            "versionRange": "[15.0.0,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          }
+        ]
+      },
+      "boundary": "선언값 전사. 실제 로더의 수용·의존 모드 설치·정확 NeoForge 21.1.248 호환을 검증하지 않음."
+    }
+  ],
+  "weapons": [
+    {
+      "key": "OLY-ATH-W01",
+      "name": "퇴로검 · 한 수 남기기",
+      "ss_candidate": "simplyswords:diamond_longsword",
+      "verified_profile": "longsword",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "OLY-ART-W01",
+      "name": "경계의 사냥칼 · 멈춤선",
+      "ss_candidate": "simplyswords:diamond_cutlass",
+      "verified_profile": "cutlass",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "OLY-HEP-W01",
+      "name": "손맞춤 망치 · 짧은 울림",
+      "ss_candidate": "simplyswords:diamond_greathammer",
+      "verified_profile": "greathammer",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "CTL-THO-W01",
+      "name": "멈춤추 · 끊는 전뢰",
+      "ss_candidate": "simplyswords:diamond_greathammer",
+      "verified_profile": "greathammer",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "CTL-FOX-W01",
+      "name": "잎그늘 부채 · 잔향불씨",
+      "ss_candidate": null,
+      "verified_profile": null,
+      "result": "기존 부채/활 예외 유지; 이 검사로 SS 후보 추가하지 않음"
+    },
+    {
+      "key": "H01",
+      "name": "귀환의 장도",
+      "ss_candidate": "simplyswords:diamond_glaive",
+      "verified_profile": "glaive",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "H03",
+      "name": "빈터의 검",
+      "ss_candidate": "simplyswords:diamond_katana",
+      "verified_profile": "katana",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_sword",
+      "name": "작업장 지킴검 · 개량작",
+      "ss_candidate": "simplyswords:diamond_longsword",
+      "verified_profile": "longsword",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_hammer",
+      "name": "다짐 망치 · 개량작",
+      "ss_candidate": "simplyswords:diamond_greathammer",
+      "verified_profile": "greathammer",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "C03_GUIDE_BOW",
+      "name": "길잡이의 활",
+      "ss_candidate": null,
+      "verified_profile": null,
+      "result": "기존 부채/활 예외 유지; 이 검사로 SS 후보 추가하지 않음"
+    },
+    {
+      "key": "C05_LANDING_SWORD",
+      "name": "착지의 틈을 노리는 검",
+      "ss_candidate": "simplyswords:diamond_longsword",
+      "verified_profile": "longsword",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    },
+    {
+      "key": "C05_OPEN_PATH_BOW",
+      "name": "열린 길의 활",
+      "ss_candidate": null,
+      "verified_profile": null,
+      "result": "기존 부채/활 예외 유지; 이 검사로 SS 후보 추가하지 않음"
+    },
+    {
+      "key": "UNIFIED-SWORD",
+      "name": "합일검",
+      "ss_candidate": "simplyswords:diamond_longsword",
+      "verified_profile": "longsword",
+      "result": "배포 리소스 존재·정적 프로필 확인; 신규 아이템 미구현"
+    }
+  ],
+  "profiles": {
+    "longsword": {
+      "item_candidate": "simplyswords:diamond_longsword",
+      "chain": [
+        "data/simplyswords/weapon_attributes/diamond_longsword.json"
+      ],
+      "observed": {
+        "parent": null,
+        "range_bonus": 0.1,
+        "two_handed_explicit": null,
+        "category": "sword",
+        "pose": null,
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "angles": [
+          120,
+          120,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left",
+          "bettercombat:one_handed_stab"
+        ],
+        "upswing": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "attacks": [
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 1,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:one_handed_slash_horizontal_right"
+        },
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 1,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:one_handed_slash_horizontal_left"
+        },
+        {
+          "hitbox": "FORWARD_BOX",
+          "damage_multiplier": 1.4,
+          "angle": 0,
+          "upswing": 0.5,
+          "animation": "bettercombat:one_handed_stab"
+        }
+      ],
+      "solo_selection_boundary": "조건 없는 단계의 정적 추출. 실제 조건 평가·콤보 실행은 미시험."
+    },
+    "cutlass": {
+      "item_candidate": "simplyswords:diamond_cutlass",
+      "chain": [
+        "data/simplyswords/weapon_attributes/diamond_cutlass.json",
+        "data/bettercombat/weapon_attributes/sickle.json"
+      ],
+      "observed": {
+        "parent": "bettercombat:sickle",
+        "range_bonus": 0,
+        "two_handed_explicit": null,
+        "category": "sickle",
+        "pose": null,
+        "multipliers": [
+          0.9,
+          0.9
+        ],
+        "angles": [
+          120,
+          120
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left"
+        ],
+        "upswing": [
+          0.5,
+          0.5
+        ]
+      },
+      "attacks": [
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 0.9,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:one_handed_slash_horizontal_right"
+        },
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 0.9,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:one_handed_slash_horizontal_left"
+        },
+        {
+          "hitbox": "FORWARD_BOX",
+          "conditions": [
+            "DUAL_WIELDING_SAME_CATEGORY",
+            "MAIN_HAND_ONLY"
+          ],
+          "damage_multiplier": 1.2,
+          "angle": 0,
+          "upswing": 0.5,
+          "animation": "bettercombat:dual_handed_slash_cross"
+        },
+        {
+          "hitbox": "FORWARD_BOX",
+          "conditions": [
+            "DUAL_WIELDING_SAME_CATEGORY",
+            "OFF_HAND_ONLY"
+          ],
+          "damage_multiplier": 1.3,
+          "angle": 0,
+          "upswing": 0.5,
+          "animation": "bettercombat:dual_handed_slash_uncross"
+        }
+      ],
+      "solo_selection_boundary": "조건 없는 단계의 정적 추출. 실제 조건 평가·콤보 실행은 미시험."
+    },
+    "greathammer": {
+      "item_candidate": "simplyswords:diamond_greathammer",
+      "chain": [
+        "data/simplyswords/weapon_attributes/diamond_greathammer.json",
+        "data/bettercombat/weapon_attributes/heavy_axe.json",
+        "data/bettercombat/weapon_attributes/double_axe.json"
+      ],
+      "observed": {
+        "parent": "bettercombat:heavy_axe",
+        "range_bonus": 1,
+        "two_handed_explicit": true,
+        "category": "greathammer",
+        "pose": "bettercombat:pose_two_handed_heavy",
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "angles": [
+          180,
+          180,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_left",
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slam"
+        ],
+        "upswing": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "attacks": [
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 1,
+          "angle": 180,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_horizontal_left"
+        },
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 1,
+          "angle": 180,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_horizontal_right"
+        },
+        {
+          "hitbox": "FORWARD_BOX",
+          "damage_multiplier": 1.5,
+          "angle": 0,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slam"
+        }
+      ],
+      "solo_selection_boundary": "조건 없는 단계의 정적 추출. 실제 조건 평가·콤보 실행은 미시험."
+    },
+    "glaive": {
+      "item_candidate": "simplyswords:diamond_glaive",
+      "chain": [
+        "data/simplyswords/weapon_attributes/diamond_glaive.json",
+        "data/bettercombat/weapon_attributes/glaive.json"
+      ],
+      "observed": {
+        "parent": "bettercombat:glaive",
+        "range_bonus": 0.5,
+        "two_handed_explicit": true,
+        "category": "glaive",
+        "pose": "bettercombat:pose_two_handed_polearm",
+        "multipliers": [
+          0.8,
+          0.8,
+          1.4
+        ],
+        "angles": [
+          150,
+          150,
+          180
+        ],
+        "hitboxes": [
+          "VERTICAL_PLANE",
+          "VERTICAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_vertical_right",
+          "bettercombat:two_handed_slash_vertical_left",
+          "bettercombat:two_handed_slash_horizontal_right"
+        ],
+        "upswing": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "attacks": [
+        {
+          "hitbox": "VERTICAL_PLANE",
+          "damage_multiplier": 0.8,
+          "angle": 150,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_vertical_right"
+        },
+        {
+          "hitbox": "VERTICAL_PLANE",
+          "damage_multiplier": 0.8,
+          "angle": 150,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_vertical_left"
+        },
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 1.4,
+          "angle": 180,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_horizontal_right"
+        }
+      ],
+      "solo_selection_boundary": "조건 없는 단계의 정적 추출. 실제 조건 평가·콤보 실행은 미시험."
+    },
+    "katana": {
+      "item_candidate": "simplyswords:diamond_katana",
+      "chain": [
+        "data/simplyswords/weapon_attributes/diamond_katana.json",
+        "data/bettercombat/weapon_attributes/katana.json"
+      ],
+      "observed": {
+        "parent": "bettercombat:katana",
+        "range_bonus": 0.1,
+        "two_handed_explicit": true,
+        "category": "katana",
+        "pose": "bettercombat:pose_two_handed_katana",
+        "multipliers": [
+          0.8,
+          1.2,
+          1.2,
+          0.8
+        ],
+        "angles": [
+          120,
+          120,
+          120,
+          120
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "VERTICAL_PLANE",
+          "VERTICAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slash_vertical_left",
+          "bettercombat:two_handed_slash_vertical_right",
+          "bettercombat:two_handed_slash_horizontal_left"
+        ],
+        "upswing": [
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "attacks": [
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 0.8,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_horizontal_right"
+        },
+        {
+          "hitbox": "VERTICAL_PLANE",
+          "damage_multiplier": 1.2,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_vertical_left"
+        },
+        {
+          "hitbox": "VERTICAL_PLANE",
+          "damage_multiplier": 1.2,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_vertical_right"
+        },
+        {
+          "hitbox": "HORIZONTAL_PLANE",
+          "damage_multiplier": 0.8,
+          "angle": 120,
+          "upswing": 0.5,
+          "animation": "bettercombat:two_handed_slash_horizontal_left"
+        }
+      ],
+      "solo_selection_boundary": "조건 없는 단계의 정적 추출. 실제 조건 평가·콤보 실행은 미시험."
+    }
+  },
+  "models": {
+    "longsword": {
+      "model_chain": [
+        "assets/simplyswords/models/item/diamond_longsword.json",
+        "assets/simplyswords/models/item/template_longsword.json"
+      ],
+      "external_parent_not_in_these_jars": [
+        "minecraft:item/generated"
+      ],
+      "textures": [
+        {
+          "slot": "layer0",
+          "path": "assets/simplyswords/textures/item/diamond_longsword.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        }
+      ],
+      "boundary": "JSON parent/texture 참조 및 PNG 헤더만 확인. 화면 렌더링·손잡이 위치·재색상·자산 사용 허가는 검증하지 않음."
+    },
+    "cutlass": {
+      "model_chain": [
+        "assets/simplyswords/models/item/diamond_cutlass.json"
+      ],
+      "external_parent_not_in_these_jars": [
+        "minecraft:item/handheld"
+      ],
+      "textures": [
+        {
+          "slot": "layer0",
+          "path": "assets/simplyswords/textures/item/diamond_cutlass.png",
+          "exists": true,
+          "png_width": 16,
+          "png_height": 16,
+          "mcmeta_present": false
+        }
+      ],
+      "boundary": "JSON parent/texture 참조 및 PNG 헤더만 확인. 화면 렌더링·손잡이 위치·재색상·자산 사용 허가는 검증하지 않음."
+    },
+    "greathammer": {
+      "model_chain": [
+        "assets/simplyswords/models/item/diamond_greathammer.json",
+        "assets/simplyswords/models/item/template_reworked_greathammer.json"
+      ],
+      "external_parent_not_in_these_jars": [],
+      "textures": [
+        {
+          "slot": "texture",
+          "path": "assets/simplyswords/textures/item/diamond_greathammer.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        },
+        {
+          "slot": "layer",
+          "path": "assets/simplyswords/textures/item/greathammer_layer.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        },
+        {
+          "slot": "particle",
+          "path": "assets/simplyswords/textures/item/diamond_greathammer.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        }
+      ],
+      "boundary": "JSON parent/texture 참조 및 PNG 헤더만 확인. 화면 렌더링·손잡이 위치·재색상·자산 사용 허가는 검증하지 않음."
+    },
+    "glaive": {
+      "model_chain": [
+        "assets/simplyswords/models/item/diamond_glaive.json",
+        "assets/simplyswords/models/item/big_handheld.json"
+      ],
+      "external_parent_not_in_these_jars": [
+        "minecraft:item/generated"
+      ],
+      "textures": [
+        {
+          "slot": "layer0",
+          "path": "assets/simplyswords/textures/item/diamond_glaive.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        }
+      ],
+      "boundary": "JSON parent/texture 참조 및 PNG 헤더만 확인. 화면 렌더링·손잡이 위치·재색상·자산 사용 허가는 검증하지 않음."
+    },
+    "katana": {
+      "model_chain": [
+        "assets/simplyswords/models/item/diamond_katana.json",
+        "assets/simplyswords/models/item/template_katana.json"
+      ],
+      "external_parent_not_in_these_jars": [
+        "minecraft:item/generated"
+      ],
+      "textures": [
+        {
+          "slot": "layer0",
+          "path": "assets/simplyswords/textures/item/diamond_katana.png",
+          "exists": true,
+          "png_width": 32,
+          "png_height": 32,
+          "mcmeta_present": false
+        }
+      ],
+      "boundary": "JSON parent/texture 참조 및 PNG 헤더만 확인. 화면 렌더링·손잡이 위치·재색상·자산 사용 허가는 검증하지 않음."
+    }
+  },
+  "animations": {
+    "bettercombat:one_handed_slash_horizontal_right": {
+      "path": "assets/bettercombat/player_animations/one_handed_slash_horizontal_right.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "one_handed_slash_horizontal_right",
+      "time_fields": {
+        "beginTick": 8,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 8,
+      "move_tick_max": 15,
+      "end_minus_begin": 12,
+      "stop_minus_begin": 22,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:one_handed_slash_horizontal_left": {
+      "path": "assets/bettercombat/player_animations/one_handed_slash_horizontal_left.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "one_handed_slash_horizontal_left",
+      "time_fields": {
+        "beginTick": 8,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 8,
+      "move_tick_max": 20,
+      "end_minus_begin": 12,
+      "stop_minus_begin": 22,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:one_handed_stab": {
+      "path": "assets/bettercombat/player_animations/one_handed_stab.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "one_handed_stab",
+      "time_fields": {
+        "beginTick": 8,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 8,
+      "move_tick_max": 20,
+      "end_minus_begin": 12,
+      "stop_minus_begin": 22,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:dual_handed_slash_cross": {
+      "path": "assets/bettercombat/player_animations/dual_handed_slash_cross.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "dual_handed_slash_cross",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:dual_handed_slash_uncross": {
+      "path": "assets/bettercombat/player_animations/dual_handed_slash_uncross.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "dual_handed_slash_uncross",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:two_handed_slash_horizontal_left": {
+      "path": "assets/bettercombat/player_animations/two_handed_slash_horizontal_left.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "two_handed_slash_horizontal_left",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:two_handed_slash_horizontal_right": {
+      "path": "assets/bettercombat/player_animations/two_handed_slash_horizontal_right.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "two_handed_slash_horizontal_right",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:two_handed_slam": {
+      "path": "assets/bettercombat/player_animations/two_handed_slam.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "two_handed_slam",
+      "time_fields": {
+        "beginTick": 7,
+        "endTick": 20,
+        "stopTick": 25,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 7,
+      "move_tick_max": 20,
+      "end_minus_begin": 13,
+      "stop_minus_begin": 18,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:pose_two_handed_heavy": {
+      "path": "assets/bettercombat/player_animations/pose_two_handed_heavy.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "pose_two_handed_heavy",
+      "time_fields": {
+        "beginTick": 0,
+        "endTick": 1,
+        "stopTick": 11,
+        "returnTick": 1,
+        "isLoop": "true"
+      },
+      "move_tick_min": 1,
+      "move_tick_max": 10,
+      "end_minus_begin": 1,
+      "stop_minus_begin": 11,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:two_handed_slash_vertical_right": {
+      "path": "assets/bettercombat/player_animations/two_handed_slash_vertical_right.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "two_handed_slash_vertical_right",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:two_handed_slash_vertical_left": {
+      "path": "assets/bettercombat/player_animations/two_handed_slash_vertical_left.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "two_handed_slash_vertical_left",
+      "time_fields": {
+        "beginTick": 9,
+        "endTick": 20,
+        "stopTick": 30,
+        "returnTick": 2,
+        "isLoop": "false"
+      },
+      "move_tick_min": 9,
+      "move_tick_max": 20,
+      "end_minus_begin": 11,
+      "stop_minus_begin": 21,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:pose_two_handed_polearm": {
+      "path": "assets/bettercombat/player_animations/pose_two_handed_polearm.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "pose_two_handed_polearm",
+      "time_fields": {
+        "beginTick": 0,
+        "endTick": 1,
+        "stopTick": 11,
+        "returnTick": 1,
+        "isLoop": "true"
+      },
+      "move_tick_min": 1,
+      "move_tick_max": 10,
+      "end_minus_begin": 1,
+      "stop_minus_begin": 11,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    },
+    "bettercombat:pose_two_handed_katana": {
+      "path": "assets/bettercombat/player_animations/pose_two_handed_katana.json",
+      "exists": true,
+      "format": "emote",
+      "file_name": "pose_two_handed_katana",
+      "time_fields": {
+        "beginTick": 0,
+        "endTick": 1,
+        "stopTick": 11,
+        "returnTick": 1,
+        "isLoop": "true"
+      },
+      "move_tick_min": 1,
+      "move_tick_max": 10,
+      "end_minus_begin": 1,
+      "stop_minus_begin": 11,
+      "boundary": "파일의 tick 구간/끝점만 확인. 게임상 재생초·선딜·타격 tick·후딜 길이는 공속/재생기/동기화로 달라질 수 있어 미확정."
+    }
+  },
+  "registry_static_evidence": {
+    "longsword": {
+      "literal_in_class": true,
+      "matching_fields": [
+        "DIAMOND_LONGSWORD"
+      ],
+      "boundary": "상수/필드 존재만 확인. 실제 등록 실행 또는 정상 스택 생성 증거가 아님."
+    },
+    "cutlass": {
+      "literal_in_class": true,
+      "matching_fields": [
+        "DIAMOND_CUTLASS"
+      ],
+      "boundary": "상수/필드 존재만 확인. 실제 등록 실행 또는 정상 스택 생성 증거가 아님."
+    },
+    "greathammer": {
+      "literal_in_class": true,
+      "matching_fields": [
+        "DIAMOND_GREATHAMMER"
+      ],
+      "boundary": "상수/필드 존재만 확인. 실제 등록 실행 또는 정상 스택 생성 증거가 아님."
+    },
+    "glaive": {
+      "literal_in_class": true,
+      "matching_fields": [
+        "DIAMOND_GLAIVE"
+      ],
+      "boundary": "상수/필드 존재만 확인. 실제 등록 실행 또는 정상 스택 생성 증거가 아님."
+    },
+    "katana": {
+      "literal_in_class": true,
+      "matching_fields": [
+        "DIAMOND_KATANA"
+      ],
+      "boundary": "상수/필드 존재만 확인. 실제 등록 실행 또는 정상 스택 생성 증거가 아님."
+    }
+  },
+  "helper_method_declarations": [
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "getWeaponAbilityCooldownTicks",
+      "descriptor": "(Lnet/sweenus/simplyswords/api/WeaponAbilityContext;)I",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyEntityWeaponHit",
+      "descriptor": "(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;F)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyEntityWeaponPostHit",
+      "descriptor": "(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;F)V",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "getWeaponDamageSource",
+      "descriptor": "(Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/damagesource/DamageSource;",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityMagicDamage",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;FLnet/sweenus/simplyswords/api/SpellScalingProfile;)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityMagicDamage",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;FLnet/minecraft/resources/ResourceLocation;)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityMagicDamageThroughIframes",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;FLnet/sweenus/simplyswords/api/SpellScalingProfile;)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityMagicDamageThroughIframes",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;FLnet/minecraft/resources/ResourceLocation;)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityMagicDamageInternal",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;FLnet/minecraft/resources/ResourceLocation;Z)Z",
+      "public": false,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityBoltDamage",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;F)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "applyAbilityBoltDamageWithoutKnockback",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;F)Z",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "lambda$applyAbilityMagicDamageInternal$5",
+      "descriptor": "([ZZLnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;F)V",
+      "public": false,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "lambda$applyEntityWeaponPostHit$4",
+      "descriptor": "(Lnet/minecraft/world/item/SwordItem;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;)V",
+      "public": false,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "lambda$applyEntityWeaponHit$3",
+      "descriptor": "(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;)V",
+      "public": false,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "method": "lambda$applyEntityWeaponHit$2",
+      "descriptor": "([ZLnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;F)V",
+      "public": false,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/util/HelperMethods.class",
+      "method": "attackScaledDamage",
+      "descriptor": "(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;F)F",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/util/HelperMethods.class",
+      "method": "applyAbilityDamageEnchantments",
+      "descriptor": "(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/damagesource/DamageSource;F)F",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/util/HelperMethods.class",
+      "method": "getAttackFromSlot",
+      "descriptor": "(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;)[D",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/sweenus/simplyswords/util/HelperMethods.class",
+      "method": "getAttackFromStack",
+      "descriptor": "(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlotGroup;)D",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/bettercombat/api/WeaponAttributes.class",
+      "method": "attackRange",
+      "descriptor": "()D",
+      "public": true,
+      "static": false
+    },
+    {
+      "class": "net/bettercombat/api/WeaponAttributes.class",
+      "method": "two_handed",
+      "descriptor": "()Ljava/lang/Boolean;",
+      "public": true,
+      "static": false
+    },
+    {
+      "class": "net/bettercombat/api/WeaponAttributes.class",
+      "method": "attacks",
+      "descriptor": "()[Lnet/bettercombat/api/WeaponAttributes$Attack;",
+      "public": true,
+      "static": false
+    },
+    {
+      "class": "net/bettercombat/logic/PlayerAttackHelper.class",
+      "method": "getAttackCooldownTicksCapped",
+      "descriptor": "(Lnet/minecraft/world/entity/player/Player;)F",
+      "public": true,
+      "static": true
+    },
+    {
+      "class": "net/bettercombat/logic/PlayerAttackHelper.class",
+      "method": "getCurrentAttack",
+      "descriptor": "(Lnet/minecraft/world/entity/player/Player;I)Lnet/bettercombat/api/AttackHand;",
+      "public": true,
+      "static": true
+    }
+  ],
+  "helper_boundary": "public 메서드 선언 존재는 안정된 공개 API 계약·올바른 mapping·사용 가능/부작용 없음의 증거가 아니다. 기존 helper 미채택 유지.",
+  "comparison_summary": {
+    "compared_fields": 38,
+    "conflicts": [],
+    "numeric_recalculation_required_from_observed_release_fields": false,
+    "compared_transition_weapon_rows": 10
+  },
+  "unresolved": [
+    "longsword/cutlass two_handed는 JSON 미명시. 기본값/실제 병합 실행 검증 전 한손 동작 확정 금지.",
+    "animation 파일 tick 값은 실제 전투시간과 같지 않음.",
+    "외부 minecraft 모델 parent는 이 두 JAR 범위 밖.",
+    "NPC 엔진·후킹·NeoForge 21.1.248·dependency lock·등록·화면·효과차단·실효DPS·5인·영상 시험 미실행.",
+    "라이선스 확보/배포허가 미확인. 원본 자산·JAR·코드·라이선스 원문을 public에 포함하지 않음."
+  ],
+  "tests": {
+    "installed_mods": 0,
+    "game_runs": 0,
+    "five_player_runs": 0,
+    "npc_engine_tests": 0,
+    "render_tests": 0,
+    "jar_code_executions": 0
+  },
+  "actual_transition_rows_comparison": [
+    {
+      "key": "OLY-ATH-W01",
+      "profile": "longsword",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1333333333333333,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "OLY-ART-W01",
+      "profile": "cutlass",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 0.9,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "OLY-HEP-W01",
+      "profile": "greathammer",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1666666666666667,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "CTL-THO-W01",
+      "profile": "greathammer",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1666666666666667,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "H01",
+      "profile": "glaive",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.0,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "H03",
+      "profile": "katana",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.0,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_sword",
+      "profile": "longsword",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1333333333333333,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_hammer",
+      "profile": "greathammer",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1666666666666667,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "C05_LANDING_SWORD",
+      "profile": "longsword",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1333333333333333,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    },
+    {
+      "key": "UNIFIED-SWORD",
+      "profile": "longsword",
+      "field_differences": {},
+      "analysis_multipliers_match": true,
+      "mean_match": true,
+      "release_solo_mean": 1.1333333333333333,
+      "boundary": "기존 수식 입력의 일치만 검사. 실효DPS·시간별 실제 피해를 검증한 것 아님."
+    }
+  ],
+  "static_class_presence": [
+    {
+      "path": "net/sweenus/simplyswords/api/SimplySwordsAPI.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/sweenus/simplyswords/util/HelperMethods.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/sweenus/simplyswords/neoforge/ForgeHelperMethods.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/sweenus/simplyswords/item/SimplySwordsSwordItem.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/sweenus/simplyswords/registry/ItemsRegistry.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/bettercombat/api/WeaponAttributes.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/bettercombat/api/WeaponAttributesHelper.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/bettercombat/logic/WeaponRegistry.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/bettercombat/logic/PlayerAttackHelper.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    },
+    {
+      "path": "net/bettercombat/network/ServerNetwork.class",
+      "class_major": 65,
+      "boundary": "class 존재/구조 해석만 수행. 클래스 로딩·초기화·호출 없음."
+    }
+  ]
+}

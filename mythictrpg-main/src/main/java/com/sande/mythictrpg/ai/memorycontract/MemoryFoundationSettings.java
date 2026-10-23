@@ -28,6 +28,12 @@ public final class MemoryFoundationSettings {
         return mode;
     }
 
+    /** Capability only: individual courier, social and reputation services still require their own opt-in rules. */
+    public static boolean supportsRumors() {
+        Mode current = mode();
+        return current == Mode.PERSONAL || current == Mode.RUMOR_TEST;
+    }
+
     public static synchronized void reset() { mode = null; }
     static synchronized void withModeForTest(Mode value, Runnable test) {
         Mode previous = mode;

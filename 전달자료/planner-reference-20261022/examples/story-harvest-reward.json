@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "narrativeRole": "SIDE",
+  "scope": "PLAYER",
+  "triggers": [
+    {
+      "signal": "mythictrpg:mature_crop_harvested",
+      "subject": "minecraft:wheat",
+      "mode": "IMMEDIATE"
+    }
+  ],
+  "prerequisites": {"type": "mythictrpg:always"},
+  "actors": [],
+  "repeatPolicy": {"type": "ONCE"},
+  "resolutionPolicy": "FIXED",
+  "outcomes": [
+    {
+      "id": "example:harvest_thanked",
+      "effects": [
+        {
+          "effectId": "example:give_harvest_material",
+          "type": "GRANT_REWARDS",
+          "god": "mythictrpg:demeter",
+          "rewards": [
+            {"type": "item", "itemId": "minecraft:gold_nugget", "count": 1}
+          ]
+        }
+      ]
+    }
+  ],
+  "failurePolicy": "BLOCK_AND_REPORT"
+}

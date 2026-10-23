@@ -165,7 +165,12 @@ public final class AiCallRoutingTest {
                     public final List<Call> calls=new ArrayList<>();
                     public int attempts;
                     public String rejection;
-                    public void reset(){calls.clear();attempts=0;rejection=null;}
+                    public int liveAttempts;
+                    public void reset(){calls.clear();attempts=0;liveAttempts=0;rejection=null;}
+                    public ConversationRoomSnapshot createLiveTest(ServerPlayer player,RoomType type,List<ResourceLocation> gods,boolean recording){
+                        liveAttempts++;
+                        return create(player,type,gods,recording?RecordingScope.STANDARD:RecordingScope.LIVE_EPHEMERAL);
+                    }
                     public ConversationRoomSnapshot create(ServerPlayer player,RoomType type,List<ResourceLocation> gods,RecordingScope scope){
                         attempts++;
                         if(rejection!=null)throw new IllegalStateException(rejection);
@@ -249,6 +254,7 @@ public final class AiCallRoutingTest {
                         for(var id:List.of(FIRST,SECOND,PROFILE_ONLY))REGISTRY.profiles.put(ResourceLocation.parse(id),new Object());
                         GODS.definitions.addAll(List.of(FIRST,SECOND,GAME_ONLY));
                         allModesAndRecordingScopes();
+                        liveModesAndRecordingScopes();
                         permissionAndPlayerBoundary();
                         explicitSyntax();
                         invalidGodsAreAtomic();
@@ -267,6 +273,7 @@ public final class AiCallRoutingTest {
                             var call=ROOMS.calls.getFirst();
                             check(call.player()==source.player&&call.type()==mode.getValue(),"same player and requested room type");
                             check(call.scope()==(recording.equals("on")?RecordingScope.TEST_RECORDING:RecordingScope.TEST_EPHEMERAL),"explicit recording scope reaches game");
+                            check(ROOMS.liveAttempts==0&&call.scope().isTest(),"legacy syntax remains read-only testing");
                             check(call.gods().stream().map(Object::toString).toList().equals(List.of(FIRST,SECOND)),"all selected full IDs reach game in order");
                             check(source.failures.isEmpty()&&source.successes.size()==1,"one success only after game accepts");
                             String message=source.successes.getFirst();
@@ -279,8 +286,31 @@ public final class AiCallRoutingTest {
                         check(ROOMS.calls.getFirst().gods().stream().map(Object::toString).toList().equals(List.of(SECOND,FIRST)),"duplicate removal preserves first selection order");
                     }
 
+                    private static void liveModesAndRecordingScopes() throws Exception {
+                        var modes=Map.of("public",RoomType.PUBLIC_FIXED,"mobile",RoomType.PUBLIC_MOBILE,"private",RoomType.PRIVATE);
+                        for(var mode:modes.entrySet())for(String recording:List.of("on","off")) {
+                            ROOMS.reset();var source=source(2);
+                            check(COMMANDS.execute("ai_call live "+mode.getKey()+" "+recording+" "+FIRST+" "+SECOND,source)==1,"live route");
+                            check(ROOMS.liveAttempts==1&&ROOMS.attempts==1&&ROOMS.calls.size()==1,"exactly one live API call");
+                            var call=ROOMS.calls.getFirst();
+                            check(call.player()==source.player&&call.type()==mode.getValue(),"live preserves game-owned player and mode");
+                            check(call.scope()==(recording.equals("on")?RecordingScope.STANDARD:RecordingScope.LIVE_EPHEMERAL),"live on preserves native recording and off stays ephemeral");
+                            check(!call.scope().isTest()&&call.scope().recordingAllowed()==recording.equals("on"),"recording toggle never changes live execution permission");
+                            check(call.gods().stream().map(Object::toString).toList().equals(List.of(FIRST,SECOND)),"all validated gods passed unchanged");
+                            check(source.successes.getFirst().contains("실제 행동")&&source.successes.getFirst().contains("기록="+recording),"live mutation mode is visible");
+                        }
+                        for(String selection:List.of("fortuna",PROFILE_ONLY,GAME_ONLY,FIRST+" "+PROFILE_ONLY)) {
+                            ROOMS.reset();var source=source(2);
+                            check(COMMANDS.execute("ai_call live private off "+selection,source)==0,"live rejects incomplete identity/profile");
+                            check(ROOMS.attempts==0&&ROOMS.liveAttempts==0,"live validates entire selection before mutation");
+                        }
+                        ROOMS.reset();ROOMS.rejection="LIVE_GAME_POLICY_REJECTED";var denied=source(2);
+                        check(COMMANDS.execute("ai_call live private off "+FIRST,denied)==0,"game rejects live request");
+                        check(ROOMS.liveAttempts==1&&ROOMS.calls.isEmpty()&&denied.successes.isEmpty(),"live denial never reports creation");
+                    }
+
                     private static void permissionAndPlayerBoundary() throws Exception {
-                        for(int level:List.of(0,1))for(String command:List.of("ai_call public on "+FIRST,"ai_test on "+FIRST,"mythroom open private on "+FIRST)) {
+                        for(int level:List.of(0,1))for(String command:List.of("ai_call public on "+FIRST,"ai_call live private off "+FIRST,"ai_test on "+FIRST,"mythroom open private on "+FIRST)) {
                             ROOMS.reset();var source=source(level);
                             syntaxRejected(command,source);
                             check(ROOMS.attempts==0,"non-OP cannot reach create through any entry point");
@@ -291,12 +321,14 @@ public final class AiCallRoutingTest {
                         ROOMS.reset();var console=new CommandSourceStack(4,null);
                         syntaxRejected("ai_call private on "+FIRST,console);
                         check(ROOMS.attempts==0,"console cannot create a player room");
+                        syntaxRejected("ai_call live private off "+FIRST,console);
+                        check(ROOMS.liveAttempts==0,"console cannot create live player rooms");
                     }
 
                     private static void explicitSyntax() throws Exception {
                         for(String command:List.of("ai_call","ai_call public","ai_call mobile","ai_call private",
                                 "ai_call public on","ai_call public off","ai_call mobile on","ai_call mobile off",
-                                "ai_call private on","ai_call private off")) {
+                                "ai_call private on","ai_call private off", "ai_call live", "ai_call live private", "ai_call live private off")) {
                             ROOMS.reset();var source=source(2);
                             check(COMMANDS.execute(command,source)==1,"incomplete command provides usage");
                             check(ROOMS.attempts==0,"incomplete command never creates a room");
@@ -340,6 +372,7 @@ public final class AiCallRoutingTest {
                         ROOMS.reset();var source=source(2);
                         check(suggestions("ai_call public on mythictrpg:",source).equals(Set.of("ai_call public on "+FIRST,"ai_call public on "+SECOND)),"completion intersects live profiles with game definitions");
                         check(suggestions("ai_call private off "+FIRST+" mythictrpg:",source).equals(Set.of("ai_call private off "+FIRST+" "+SECOND)),"multi-ID completion preserves prefix and excludes selected ID");
+                        check(suggestions("ai_call live private off mythictrpg:",source).equals(Set.of("ai_call live private off "+FIRST,"ai_call live private off "+SECOND)),"live completion uses same authoritative intersection");
                         check(suggestions("ai_call mobile off 포",source).isEmpty(),"Korean aliases are not suggested");
                         check(suggestions("ai_call mobile off fort",source).isEmpty(),"short path aliases are not suggested");
                         check(ROOMS.attempts==0,"tab completion cannot create rooms");

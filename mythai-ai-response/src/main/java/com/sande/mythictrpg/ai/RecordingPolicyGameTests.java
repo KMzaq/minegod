@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-/** Dedicated isolated NEW-config fixture. The real runtime rejects before player lookup or any LLM/legacy recall. */
+/** Dedicated isolated NEW-config fixture. Enabled retrieval is still not player/room authority. */
 @GameTestHolder("mythai_recording_policy")
 @PrefixGameTestTemplate(false)
 public final class RecordingPolicyGameTests {
@@ -25,7 +25,7 @@ public final class RecordingPolicyGameTests {
     private RecordingPolicyGameTests() { }
 
     @GameTest(templateNamespace="mythai_recording_policy",template="empty",timeoutTicks=400,batch=BATCH)
-    public static void unsupportedNewRejectsBeforeLegacyAndLlm(GameTestHelper helper) {
+    public static void nativeNewStillRejectsUnissuedRequestsBeforeLlm(GameTestHelper helper) {
         if(active!=null)throw new IllegalStateException("Policy fixture requires an isolated serial batch");
         var fixture=new Fixture(helper);active=fixture;
         helper.onEachTick(fixture::tick);
@@ -47,8 +47,8 @@ public final class RecordingPolicyGameTests {
                     check(helper.getTick()<300,"Retrieval bootstrap did not resolve NEW fixture config");
                     LockSupport.parkNanos(1_000_000);return;
                 }
-                check(state.equals("BLOCKED_CONTRACT_NOT_READY"),"Fixture requires an explicit NEW config: "+state);
-                check(RecordingRuntime.retrievalForegroundBlocked(server),"Unsupported NEW must not become legacy fallback");
+                check(state.equals("NEW"),"Fixture requires an explicit NEW config: "+state);
+                check(!RecordingRuntime.retrievalForegroundBlocked(server)&&RecordingRuntime.nativeDialogueEnabled(server),"Explicit native path enabled");
                 check(RoomConversationEngineRouter.INSTANCE.engine()==MythAiRoomConversationEngine.INSTANCE,"Real AI engine not installed");
                 check(!RecordingRuntime.projectionEnabled(server)&&!RecordingRuntime.embeddingEnabled(server),"Fixture background native model workers must be OFF");
                 var config=server.getServerDirectory().resolve("config/mythictrpg");
@@ -66,7 +66,7 @@ public final class RecordingPolicyGameTests {
                 var future=MythAiRoomConversationEngine.INSTANCE.respond(request);
                 check(future.isDone(),"Blocked policy must return immediately without worker dispatch");
                 var result=future.join();
-                check(result.failure().equals("BLOCKED_CONTRACT_NOT_READY"),"Policy rejection must precede STALE_ROOM/player lookup");
+                check(result.failure().equals("STALE_ROOM"),"Enabled policy must still reject absent player/room before model calls");
                 check(result.roomId().equals(room)&&result.turnId().equals(turn)&&result.speech().isEmpty()
                         &&result.proposalsJson().equals("[]")&&result.controls().isEmpty(),"Rejected request must contain no speech/actions");
                 check(trap.generationCalls==0&&trap.intentCalls==0,"Neither classification nor generation may run under unsupported NEW");

@@ -67,7 +67,7 @@ public final class SocialRuntime {
         try {
             var path=server.getServerDirectory().resolve("config/mythictrpg/social-rumor.json");
             var settings=SocialSettings.load(path);
-            if(!settings.enabled()||MemoryFoundationSettings.mode()!=MemoryFoundationSettings.Mode.RUMOR_TEST)return;
+            if(!settings.enabled()||!MemoryFoundationSettings.supportsRumors())return;
             var runtime=new SocialRuntime(server,settings,RewardWatchSettings.load(path.resolveSibling("reward-watch.json")));
             INSTANCES.put(server,runtime);
             // The reviewer is owned by this game service; only a validated, single-use prepared verdict can pass.
@@ -94,7 +94,7 @@ public final class SocialRuntime {
         }
     }
     private static void requireThread(MinecraftServer server){if(!server.isSameThread())throw new IllegalStateException("social game thread");}
-    private static SocialRuntime current(MinecraftServer server){requireThread(server);return MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST?INSTANCES.get(server):null;}
+    private static SocialRuntime current(MinecraftServer server){requireThread(server);return MemoryFoundationSettings.supportsRumors()?INSTANCES.get(server):null;}
     /** Content/admin marks a whole current interaction private before confidential speech. AI text cannot do this. */
     public static boolean privateConversation(ServerPlayer player,boolean value) {
         var r=current(player.server);var c=AiConversationRuntimeService.INSTANCE.memoryContext(player).orElse(null);
@@ -401,7 +401,7 @@ public final class SocialRuntime {
                         .then(net.minecraft.commands.Commands.literal("private").then(net.minecraft.commands.Commands.argument("player",net.minecraft.commands.arguments.EntityArgument.player())
                                 .then(net.minecraft.commands.Commands.argument("value",com.mojang.brigadier.arguments.BoolArgumentType.bool()).executes(c->{
                                     boolean applied=privateConversation(net.minecraft.commands.arguments.EntityArgument.getPlayer(c,"player"),com.mojang.brigadier.arguments.BoolArgumentType.getBool(c,"value"));
-                                    c.getSource().sendSuccess(()->net.minecraft.network.chat.Component.literal(applied?"현재 대화의 비밀 구간 설정을 반영했습니다.":"활성 시험 대화/소문 설정을 확인하세요."),false);return applied?1:0;
+                                    c.getSource().sendSuccess(()->net.minecraft.network.chat.Component.literal(applied?"현재 대화의 비밀 구간 설정을 반영했습니다.":"활성 대화/소문 설정을 확인하세요."),false);return applied?1:0;
                                 }))))));
     }
 }

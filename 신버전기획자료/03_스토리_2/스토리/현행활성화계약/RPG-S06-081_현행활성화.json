@@ -1,0 +1,89 @@
+{
+  "document_type": "현행 활성화 저술 계약; 엔진 실행 스키마 아님",
+  "record_key": "RPG-S06-081",
+  "name": "태을진인",
+  "definition_id": "ACTIVATION-RPG-S06-081",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "bootstrap_no_added_history",
+    "world_unlock": {
+      "mode": "explicit_initial_access",
+      "initial_world_available": true,
+      "completion_count": 0,
+      "new_history_required": false,
+      "rule": "신규 세계 초기화 때 이 인물의 세계가용을 true로 명시 채택한다. 추가 과거이력·왕복 수행·새 퀘스트·친분·NPC 선응답 없이 원문 현장에 자연접근한다. 이는 생성·생존·접견·권리 부여가 아니라 세계 해금 관문만의 초기값이다. 현재 시점·차원·접근금지·봉인·생사·활동 제약은 첫 배치 직전에 별도로 통과해야 한다.",
+      "evidence": "플레이어 수행 receipt를 조작하지 않는다. world_uuid+record_key의 초기접근 정책 적용 사실만 초기화 원장에 기록한다.",
+      "event_contract": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization"
+    },
+    "first_encounter": {
+      "site": "기존 연습 빈터의 가장자리. 현재 접근 가능한 기존 장소를 쓰며 새 건축·차원을 만들지 않는다.",
+      "world": "Overworld의 기존 현장 유형을 우선 검토; 실제 등록·배우 배치와 접근 확인 전 고정 거처가 아님. 코어에 확정된 다른 세계 제약이 생기면 본 안은 재검수한다.",
+      "current_predicate": "이 문서 세계가용 AND 원문 허용 현장에 현재 실제 도달한 온라인 생존 플레이어 1명 이상 AND 아래 보존 eligibility의 현재 통행·위험·시점·차원·봉인·생사 제약. 원문에 있는 본체 현존·행동·응답은 등장 후 접촉 검사로 분리한다. 최초미배치가 명시 확인되면 동일 actor 최초 배치 후보 진입에 본체 선재를 요구하지 않는다. 현재 준비와 이후 서비스 준비를 구별한다.",
+      "exact_current_player_requirement": "실제로 이 장소에 도달한 당사자. 인사와 관찰에 전투등급 컷을 만들지 않는다. 도구를 만지거나 동행·대련하려면 해당 작은 행위의 범위와 준비를 따로 확인한다.",
+      "stage_interpretation": "위 인용은 원문 보존이다. 실제 최초 배치 전에는 장소·통행·위험 등 NPC 비의존 조건만 검사하고, 본체 상태는 존재 허용·생사·봉인·단일성 원장으로 검사한다. 이미 있는 배우의 현재 체류·수선·몸짓·발화와 청중 확인은 배치 뒤 단계다. 실제 다른 장소에서 활동 중인 본체를 자동 이동시키지 않는다.",
+      "subject": "현재 조건 충족 실제 플레이어 중 공통 선택의 한 사람이 등장 주체다. 해금자와 달라도 되며 해금자의 과거 현장 방문을 현재 방문자의 이력으로 복제하지 않는다.",
+      "probability_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter",
+      "atomic_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/atomic_contract",
+      "mode": "기존 일반 무작위 경로는 전역 확률·가중치·NONE·주기·CAS 그대로. 확정 전용 경로·기록/꿈 모드는 일반풀로 전환하지 않음.",
+      "new_player_gates": 0
+    },
+    "single_body_state_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization",
+    "already_present_contact": "동일 본체가 PRESENT이면 등장 추첨을 인사마다 반복하지 않는다. 현재 실제 거리·시야·청중·접근을 확인하고 질문·관찰·거절을 선택한다. 사적 협력·수주·전달·서비스는 실제 본인의 별도 수락 뒤에만 실행한다. 유효 비언어 접촉에는 발화 강제0.",
+    "preserve": "연습 빈터 가장자리의 현재 안전한 접근이면 후보가 된다. 기술 습득·연습 완료·도구·교습 수락을 첫 인사와 혼동하지 않는다.",
+    "rights_and_knowledge_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/personal_separation",
+    "no_new_service_gate": "후속 서비스 소품·자료·재료·개인 수락·MAIN 소유·기존 사건 완료를 첫 인사에 추가하지 않는다. exact 단순도달을 outline만의 비무장·휴대기록 후보로 강화하지 않는다. 소품이 없으면 없는 소품 행동을 재연하지 않고 가능한 인사만 한다.",
+    "no_canon_bypass": "세계가용 true는 본체 존재·부활·생존 확정이 아니다. NEVER_PLACED와 실제 부재·미로드·죽음·봉인을 분리한다. 기록전용 상태이면 실제 허용 기록 열람만, 살아 있는 대화 본체 생성0. 새 분신·차원이동·봉인해제·개인별 몸·과거 사건 생성0.",
+    "knowledge": "서버 receipt는 NPC 자동 기억이 아니다. 실제 본 관측, 허락된 전달의 실제 수신, 실제 공개 청중만 대화 근거다. 해금자≠현재 조우주체≠MAIN 소유자≠보상 수령자. 공개 현장 결과만 공유하며 사적 기억·친분·개인 허락은 복제하지 않는다.",
+    "implementation": "좌표·등록 부지·권위 상태·실제 관측 receipt 및 기존 공통 원장 연결은 구현 요구다. 본 저술의 채택은 실제 초기화·등장·게임/API/LLM 시험 완료가 아니다."
+  },
+  "source_contract": {
+    "world_region": "Overworld의 기존 현장 유형을 우선 검토; 실제 등록·배우 배치와 접근 확인 전 고정 거처가 아님. 코어에 확정된 다른 세계 제약이 생기면 본 안은 재검수한다.",
+    "location_scene": "기존 연습 빈터의 가장자리. 현재 접근 가능한 기존 장소를 쓰며 새 건축·차원을 만들지 않는다.",
+    "eligibility": {
+      "server_state": "최초 시점은 보존 입력에서 미정이다. 이 현장은 장 번호 대신 실제 길·현재 배우·접근 가능성을 확인해 채택할 소규모 조우안이며 전/후 일괄 배정을 하지 않는다.",
+      "player_state": "실제로 이 장소에 도달한 당사자. 인사와 관찰에 전투등급 컷을 만들지 않는다. 도구를 만지거나 동행·대련하려면 해당 작은 행위의 범위와 준비를 따로 확인한다.",
+      "actor_availability": "태을진인 한 개체의 현재 장소·접촉 가능 여부를 확인한다. 동시 신청은 같은 배우의 차례를 조정하며 개인별 복제체를 만들지 않는다.",
+      "seal_guard": "현재 장소·봉인·세계 수용 제약을 실행 직전에 다시 확인한다. 완전 봉인 중 일반 대화·디오니소스 연락·스핑크스 보장 조우는 불가하며 부분 해제도 허용 범위만 적용한다.",
+      "permission_or_willingness": "말을 듣고 협력·동행·대련·자발적 계약을 받아들일지는 각각 당사자가 고른다. 적대 근거가 있는 위협·기습·전투에 사전 상호 동의를 강제하는 규칙은 아니다.",
+      "chapter_reason_if_any": "등급·장 번호만으로 새 잠금 없음. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+      "probability_direction": "등록 확률은 미확인이다. 적격 후보의 이른 출현 비중과 실제 접근 불가를 구별하며 등급으로 확률 0을 만들지 않는다. 유효한 보장 안내를 새 확률로 무효화하지 않는다."
+    },
+    "npc_current_action": "훈련 설명에서 피해를 피할 동작과 실패 뒤 복구할 동작을 따로 적는다.",
+    "player_visible_clue": "회피 동작과 복구 동작을 나눠 적은 설명. 목적·정체의 전부를 안다는 단서는 아니다."
+  },
+  "source_contract_role": "정확 원문 보존 인용. 원문의 본체 현존 문구를 최초미배치 선행으로 실행하지 않고 adopted_activation의 단계 분리를 적용한다. 원문 역사적 미정·미채택 표기를 소급 수정하지 않는다.",
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S06-081.json",
+      "pointers": [
+        "/connection_manuscript"
+      ],
+      "sha256": "a2f92dea77b11ec7bc7638ce302afac997ffee791f3033fccb5e9daf839c68d1",
+      "role": "보존 연결 원고; 본 계약의 현행 초기접근보다 우선하지 않는 역사 후보 포함"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S06-081.json",
+      "pointers": [
+        "/current_identity",
+        "/current_access"
+      ],
+      "sha256": "1925d419c16cea2644dc4f84fe65d78da4b2d80eb4763bbbf250080934cc3b42",
+      "role": "정체·접근 보호"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-034/04_RPG-S06-081_태을진인_완결기획.json",
+      "pointers": [
+        ""
+      ],
+      "sha256": "f4485133bff6ec52c3f32608921b8d813fdcfca3b758769ebb175ff77be67a6d",
+      "role": "현행 개별 활동·개인 권리 보존"
+    }
+  ],
+  "common_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json",
+  "precedence": "정체·명시 시점·생사·차원·봉인·개인권리 > 본 문서의 초기 세계가용/최초미배치와 B5 관측대상 분리 > 기존 활동 계약 > 현행 전역 운영 > 역사 후보·보존 사본. 이번 채택 외 일반 조건·확률을 재정의하지 않는다.",
+  "runtime_ready": false,
+  "activation_performed": false,
+  "new_quest_count": 0,
+  "new_reward_count": 0
+}

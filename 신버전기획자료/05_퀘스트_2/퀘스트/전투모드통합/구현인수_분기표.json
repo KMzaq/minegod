@@ -1,0 +1,203 @@
+{
+  "status": "EXPECTED_RESULTS_NOT_RUNTIME_TESTED",
+  "cases": [
+    {
+      "id": "S01",
+      "setup": "공방검 무인챈트·무버프 신규실물",
+      "expected": "A0=90/17=5.294117647058823, 플레이어1/무기73/17. 날카로움II 별도, 기존7.5를속성에중복입력0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S02",
+      "setup": "H01 Strength I와 콤보0.8/0.8/1.4,적격레이드",
+      "expected": "원시9.96/9.96/17.16. A0=9, Strength=3, raid=.36. 두번배율/가산0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S03",
+      "setup": "SS implicit·awakening·rune·gem 태그와 인벤토리소지",
+      "expected": "자체아이템에 원문없는효과0. 단순tooltip숨김은실패",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S04",
+      "setup": "SS 원본/관리소환원본을 캠페인에서 사용",
+      "expected": "획득권과전투효과승인0. 정상기존실물자동파괴0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S05",
+      "setup": "한손+보조손무기, cutlass 부모조건부4단계",
+      "expected": "신규허용쌍수0;단독0.9/0.9만. 타무기 보너스합산0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S06",
+      "setup": "H01/H03/망치 주손+offhand음식/방패/무기",
+      "expected": "offhand전투사용0·장신구2칸정상·상자/NPC직접상호작용유지",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S07",
+      "setup": "H01 피해전feint 100회,망치→빠른검교체",
+      "expected": "같은승인피해0/1,최초고정된재사용시각앞당김0;중복권리/내구/쿨리셋0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S08",
+      "setup": "BC선딜중우클릭/J/대시/패링동시입력",
+      "expected": "기존BC승인만유효,후행무소모거절·버퍼자동발사0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S09",
+      "setup": "K목록선택중 기본공격",
+      "expected": "K선택은기본공격무료취소가아님,다음IDLE J에서새선택사용",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S10",
+      "setup": "스킬선딜중기절·교체·로그아웃",
+      "expected": "미발사취소/비용쿨잔여회수유지,출처modifier만정리",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S11",
+      "setup": "활우클릭20tick완충+4tick회수,근접교체",
+      "expected": "BC근접/우클릭기술중복0·탄약/내구원문1회·회수우회0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S12",
+      "setup": "동일소유자10tick창 t0=8,t5=12,t9=4,t10=8",
+      "expected": "전달8/4/0/8.최대값보존·창연장0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S13",
+      "setup": "서로다른5인 같은tick8씩",
+      "expected": "원문소유자창대상에서는합40.전역hurtTime으로1인8화0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S14",
+      "setup": "보스머리/몸통/날개동일스윙중복",
+      "expected": "본체1회, C05head우선, 내구1회, 같은피해의postHit추가호출0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S15",
+      "setup": "fast_attacks on/timeUntilRegen0 중회피·GATE",
+      "expected": "서버권위무적/phase거절우선,피해게이트최대값갱신0,종료후과거피해재생0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S16",
+      "setup": "C26 임계바로앞마지막콤보와후속스킬",
+      "expected": "다음미해결임계clamp·초과폐기·480tick/적제압/조작AND·소유자10tick정상",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S17",
+      "setup": "C07 주적+방해적광역",
+      "expected": "원문최초N고정과각적소유자창,피해/적수증식0·방해적보호시간유지",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S18",
+      "setup": "C10 BC근접이여러대상타격",
+      "expected": "가디언적격근접가시2반사10tick1회,드라운드에반사복제0·반사재귀0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S19",
+      "setup": "T03 셜커열림50tick끝/닫힘·화살",
+      "expected": "그시점원문방어0/20와화살튕김유지,풍선핵타격도승인된접촉만",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S20",
+      "setup": "T04 HP1제압·패링10tick경직",
+      "expected": "바닐라사망드롭전중재·후속판정중지,패링경직cast당1회,순간창을긴콤보보장으로해석0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S21",
+      "setup": "키메라정상후딜·영구사망·도트",
+      "expected": "후딜피해허용·단일본체상처보존·도트명시펄스별도·리셋치유0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S22",
+      "setup": "아테나조건응수/무사시방어",
+      "expected": "전자는성공원공격자만6,후자는피해0·자동반격0;Strength/콤보추가0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S23",
+      "setup": "합일검 일격과기믹접촉동시",
+      "expected": "일격24는별도피해,무피해접촉마나0;같은행동에서2경로실행0·검/원본6복제0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S24",
+      "setup": "검기한쪽끝벽/아래층/3대상보스",
+      "expected": "전체최초TOI종료·벽동률우선·실제곡선prism·다부위1순번·8/4/4",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S25",
+      "setup": "검기폭1/2/3통로·90도pitch",
+      "expected": "고정R-U곡선/단면실판정;좁은통로자동축소0·빈곡선내부AABB피해0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S26",
+      "setup": "5인검기·30Hz렌더/저TPS/역순패킷",
+      "expected": "코어/예고유지·오래된잔상부터감축·서버tick권위·종료tombstone후시작무시",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S27",
+      "setup": "SS helper delegated actor≠sourcePlayer",
+      "expected": "실제actor위치/속성·검증귀속분리;원격권리/target filter 우회0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S28",
+      "setup": "Iron’s 설치/미설치 비교",
+      "expected": "채택되지않은SS쿨감·저항·spell max변경0. 접점분리못하면조합활성화보류",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S29",
+      "setup": "고정장신구2개·최대마나교체",
+      "expected": "F개별적격사건1회·마나최대증가현재량충전0/감소clamp·권리별쿨유지",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S30",
+      "setup": "H03/헤파/토르 일반CC교대와보스허용표",
+      "expected": "원문family/면역존중·평타신규스턴0. 교차봉쇄실시험실패조합운영보류,보스예고자동취소0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S31",
+      "setup": "토르2인동시요청·9전투자동등록 여부",
+      "expected": "원문2허용전투만,단일본체예약1·마나60/시도1·18피해1회·복귀확인,9전투신규허용0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S32",
+      "setup": "키메라지원·5인·동일본체상처/사망/미로드",
+      "expected": "실제접근/도착후승인·본체HP3000/방어8/강인4·80피해1회·86400초AND시도1회·원격복제0",
+      "runtime_result": "NOT_RUN"
+    },
+    {
+      "id": "S33",
+      "setup": "NPC지원과플레이어동tick·GATE·아군·SS장착",
+      "expected": "원문검증귀속/피해창·무적유지·아군0·BC/SS추가피해0·매듭/재정비신설0",
+      "runtime_result": "NOT_RUN"
+    }
+  ]
+}

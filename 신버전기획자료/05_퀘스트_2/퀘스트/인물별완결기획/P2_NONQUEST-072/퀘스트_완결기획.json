@@ -1,0 +1,1748 @@
+{
+  "packet_id": "P2_NONQUEST-072",
+  "category": "퀘스트",
+  "status": "현행 저술 채택; 실행 구현·등록·시험 미완료",
+  "runtime_ready": false,
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. 실행 스키마, 구현완료, 실제 API/게임/LLM 시험 결과가 아니다.",
+    "원문과보강": "source_contract와 retained_profile은 선택한 원문값 그대로다. 과거 미채택 표기·미정은 역사 원문에만 보존하며 현재 정책은 adopted_detail만 적용한다. 기존 정체·등급·관계·본편 권리·봉인을 바꾸지 않는다.",
+    "조우운영": {
+      "정책참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#general_encounter 및 #atomic_contract",
+      "적용": "현재 채택한 일반 무작위 경로만 공통 정책에 등록한다. 기존 실제 배치 본체는 재추첨 없이 직접 접촉. 제한 봉인석 접촉은 일반풀 제외.",
+      "확률과주기": "일반풀의 300 활동초 창·서버25%·실제 등장 뒤 인물1800 가동초 쿨 및 현재 전투등급 가중치는 참조 정책을 재사용한다. 인물마다 별도25% 추첨하지 않는다.",
+      "공통상태": "world_uuid+canonical_actor 세계 해금. 누구 한 명의 유효 사건으로 전역 개방. 조우조건 맞춘 실제 한 사람만 주체, 해금자와 다를 수 있다.",
+      "단일본체": "전역 canonical_actor CAS와 journal/실제 entity 대조, 재시작 후 동일 결과 복구. 이미 활동중이면 새 본체0.",
+      "권리분리": "동행자는 세계 해금을 반복하지 않고 같은 본체를 목격할 수 있다. 일반 인사·응답은 그 인물의 실제 발화·접촉 모드와 현재 청중 허락 안에서만 가능하다. 침묵·감각 반응에는 발화 의사를 요구하지 않는다. 개인 관계·사적 허가·수신·MAIN·보상은 별도이며 기록 열람·제한 응답을 본체 대면으로 바꾸지 않는다.",
+      "소급": "기존 유효한 조우·초기접근을 새 해금으로 잠그지 않는다. 기존 해금 확인 receipt가 있으면 유지. 과거 이력 증거가 없으면 허위 과거를 생성하지 않고 현재 새 유효 사건을 기다린다."
+    },
+    "현재대화": {
+      "판정순서": [
+        "실제 동일본체·현재 접촉모드",
+        "현재 안전·의사·실제 청중",
+        "본인이 관측/허용전언으로 아는 플레이어 행위",
+        "그 상대와의 실제 관계 기억",
+        "이번 발언의 내용과 말투"
+      ],
+      "독립축": "친밀·존중·불쾌함·두려움·관측한 전투력은 서로 다르다. 강함을 보아도 자동 경외·존댓말·가호 지급 없음. 관계별 기존 profile의 9단계 지침을 유지하되 숨은 호감점수로 모든 반응을 대신하지 않는다.",
+      "강함예문사용": "강함 예문의 구체 행동을 직접 목격했을 때만 “방금 보았다”라고 말한다. 출처 있는 실제 전언을 받았으면 보고의 출처·내용·시점을 밝힌 간접 표현만 사용한다. 미관측·미수신이면 강함을 모르는 반응을 쓴다. 장비 외형으로 승리·숨은 전투력 전체를 알지 않는다.",
+      "대화거리": "대화는 같은 공간8블록 이내 실제 수신. 손을 쓰는 인수·설치·수선만2블록. 관측·이동·큰 몸체는 개별 장면 규칙. 사적 청중 권한 별도.",
+      "중단": "대화 거절·반박·침묵·퇴장은 정상 선택. 실제 위험중이면 안전철수 필요. 사망/로그아웃은 수행중단, 실제완료·소비·대여·수신 기록만 보존. 재회는 현재 접근을 다시 확인하고 끝난 사건을 재연하지 않는다."
+    },
+    "기록과지식": {
+      "저자진실": "정체·관계 정사와 인물의 실제 앎을 분리한다. 개인 미공개 사건·미래 분기·원전 전체를 loreKnowledge에 자동 주입하지 않는다.",
+      "지식영수증": "event_id·speaker/source·receiver_uuid·실제청중·공개허락 범위·received_at를 별도 저장. NPC도 실제 목격/수신 이전에는 모른다.",
+      "정정": "거짓 주장을 수신한 사실과 그 주장 내용의 진위를 분리. 정정은 원청중의 실제 재수신이 있어야 하고 원래 수신을 삭제하지 않는다.",
+      "사적정보": "새 청중이 끼면 비공개 내용 발화 중단 또는 현재 허락된 일반 정보로 전환. 제목으로도 비공개 비밀을 암시하지 않는다.",
+      "본체부재": "기록 열람은 실제 자료와 열람권으로 판정한다. 본체 부재가 공개 기록 열람을 막지 않으며 기록이 새 발화를 생성하지도 않는다."
+    },
+    "서비스와물건": {
+      "수주": "신규 SIDE·개인 MAIN0. 원문 event/dialogue_only/service만 유지. 기존 본편 카드 소유·완료·보상은 해당 원문대로이며 일상으로 대체하지 않는다.",
+      "성장": "신규 장비·가호·주시·습득스킬·레벨·성장량0. 기존 허용된 생활지도/현물채집은 별도 보존.",
+      "정산": "실제 물품과 원장 unique receipt를 대조. 인도불확실이면 새 생성0. 미인도 실제 물건만 현재 소유·보관 합의에 따라 복구. 미차용 반환의무0.",
+      "반복": "회차의 합의품목·정수량·대체재·대가를 실제 수행 전 기록한다. 아래 예시를 고정 납품목록으로 좁히지 않는다. 완료·허락·실인수·수강·미수령은 별도. 새 보상권은 새 원문상 근거 없이 반복 생성하지 않는다."
+    }
+  },
+  "records": [
+    {
+      "record_key": "RPG-S06-005",
+      "name": "황제",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S06-005/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S06-005/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S06-005/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "승전문에 남긴 반대편 이름는 현재 지역 사건·대화·협력으로 완결하며 독점 수주가 없어도 당사자의 실제 선택이 남는다. 공용 본편 배역을 개인 MAIN으로 바꾸지 않는다.",
+          "details": "이 범위에는 MAIN 제시·수락·소유·완료를 만들지 않는다. 별도 현행 MAIN이 있다면 그 최초 유효 소유를 그대로 보존하고 이 사건의 대화·기여로 탈취하지 않는다. 일반 조우를 등급 때문에 후기 잠금하지 않는다. 이 개인 이야기 전체를 초반 전투력 예외로 확대하지 않으며 실제 행동 위험과 수용 능력을 따로 확인한다. ",
+          "sources": [
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-003.json",
+              "sha256": "7ae7565248383a7fcebdb448d3a7deb36a6339cc2a63caba2a1df7407ba91b6e",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-003.json",
+              "sha256": "977a9b20480718f374d7c8db98dabb2c8212b39ebb370338382ca37b56d41b6f",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "NOT_APPLICABLE",
+          "reason": "이 이야기의 대가는 승전문에 남긴 반대편 이름의 실제 관계·처우·작업 결과다. 장비·가호 지급을 목표로 삼지 않는 역할 선택이며 본편의 기존 정산은 별도로 보존한다.",
+          "details": "별도 물품 제출·보상권 없음. 행동에 실제 쓴 자기 물자만 소모하며 문서 열람·발언을 소비로 취급하지 않는다. 후원·통행 등은 명시된 상대의 권한과 실제 응답 범위만, 호감은 가호나 주시가 아니다.",
+          "sources": [
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-003.json",
+              "sha256": "7ae7565248383a7fcebdb448d3a7deb36a6339cc2a63caba2a1df7407ba91b6e",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-003.json",
+              "sha256": "977a9b20480718f374d7c8db98dabb2c8212b39ebb370338382ca37b56d41b6f",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            }
+          ]
+        }
+      },
+      "existing_cards": [],
+      "activities": [
+        {
+          "source_contract": {
+            "episode_id": "EP003A-RPG-S06-005-01",
+            "title": "승전문에 남긴 반대편 이름",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "현장 event/일반 대화의 실제 참여·발언·청취만. 퀘스트 제시·수락·소유·완료 마커는 만들지 않는다. 접견·중재·호명은 누구나 거절 가능하며 다른 만남의 숨은 관문이 아니다. 공개 허락된 이름의 실제 발화·인정 또는 한정 생활 수정안의 실제 수신·답을 확인한다. 거절·미응답은 해당 미합의 결말이며 권리 발효·전후 체제 변경·화해 성공을 부여하지 않는다. 추가 게시와 사본 반환은 실제 맡은 것이 있을 때만.",
+              "group_individual_evidence": "각자 실제 만진 물건·수행·수신·청중을 별도로 확인한다. 대표 완료·같은 팀·서버 결과는 각자의 과거 경험이 아니다. 공용 실물 결과는 관찰 가능하지만 개인 청취·판단은 복제하지 않는다.",
+              "nonowner_route": "MAIN 소유 자체가 없는 이야기다. 일반 대화·공개 현장 관측은 가능하고 자기 행동을 새로 선택한다. SIDE라면 수락과 기여를 별도 기록하고 event·대화 전용은 퀘스트 수락 여부를 묻지 않는다.",
+              "late_join": "후발자는 현재 남은 물건·미실행 행동부터 본인의 의사로 합류한다. 이미 끝난 승전문에 남긴 반대편 이름의 수행·칭찬·사적 청취·보상권을 소급하지 않는다. 현재 공개 기록을 읽으면 오늘 읽은 출처와 지식만 남긴다.",
+              "leave_save_resume": "새 현실48시간·틱 마감·오프라인 벌금 없음. 실제 사건 순서와 유효 수신·수락 시점만 구별하고 재접속으로 소유·소비·이미 한 행동을 초기화하지 않는다. 실제 맡은 물품이 있을 때만 반환·보관을 정리한다. 맡은 물품이 없으면 반환 확인은 해당 없음이며 완료를 막지 않는다. 끊김 뒤 현재 본체·접근·잔량·실행 상태를 다시 읽고 미실행 부분만 이어간다."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이 이야기의 대가는 승전문에 남긴 반대편 이름의 실제 관계·처우·작업 결과다. 장비·가호 지급을 목표로 삼지 않는 역할 선택이며 본편의 기존 정산은 별도로 보존한다.",
+              "earned_condition": "별도 지급권 없음. 실제 식사·짐 반환·수선·사과·호명·공연 결과는 보상 아이템이나 가호가 아니다.",
+              "beneficiary_and_claim_right": "보상 수혜자·청구권 해당 없음. 현장 물품의 원 소유와 식사의 실제 수령은 별도로 유지한다.",
+              "actual_grant_and_consumption": "신규 지급 없음. 원본 소유는 제출자에게 있고 허락한 사본만 작업. 천으로 가리는 것은 증거 파기 아님. / 낭독은 원본 소비 아님. 수정 사본은 작성자 허락과 실제 수신 범위를 지킨다. / 별도 보상 없음. 기록 돌려주기는 제출 완료 보상이나 가호가 아니다.",
+              "unclaimed_retry_no_duplicate": "보상 미수령·가방 검사 해당 없음. 원물 반환은 실물 위치를 대조해 중복 인계하지 않는다. 소비를 반복 클릭으로 복구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계 인정·호감·MAIN·축복·가호·주시·장비는 서로 대체하지 않는다. 현재 원고는 새 가호·주시·능력치·등록 아이템을 지급하지 않는다."
+            },
+            "ending": {
+              "observable_personal_change": "공개 인정안은 황제가 직접 말한 이름이 실제 청중에게 남고, 조용한 문구안은 한정 거주 조항의 수정안과 수신·미응답 상태가 남는다. 그의 거부도 실제 결말이다. 이 변화는 해당 분기의 실제 수행 조건을 충족했을 때만이며 거절·훼손·미수신 경로는 그 고유 미완 결과를 따른다.",
+              "optional_stop": "공개 허락된 이름의 실제 발화·인정 또는 한정 생활 수정안의 실제 수신·답을 확인한다. 거절·미응답은 해당 미합의 결말이며 권리 발효·전후 체제 변경·화해 성공을 부여하지 않는다. 추가 게시와 사본 반환은 실제 맡은 것이 있을 때만. 각 장면 STOP으로 그 자리에서 멈출 수 있으며 후속 장면은 자동 완료가 아니다.",
+              "next_encounter_memory": "직접 만난 상대에 대한 실제 실행·수신만 기억한다. 공개 인정안은 황제가 직접 말한 이름이 실제 청중에게 남고, 조용한 문구안은 한정 거주 조항의 수정안과 수신·미응답 상태가 남는다. 그의 거부도 실제 결말이다. 처음 온 사람에게는 과거 참가를 가정하지 않고 현재 남은 상태만 보여 준다.",
+              "playfeel_and_difference": "왕의 웅변을 이기는 정답 찾기보다 누가 읽을 수 있는 이름과 실제 남길 문장 사이의 선택."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "천 아래 남길 이름 → 승전문 다음의 목소리 → 마당이 빈 뒤 각 경로의 실제 행동과 비용은 beats에 완전 기재. 거절은 현재 END, 재개는 실제 남은 상태부터.",
+              "repeat_and_settlement": "새 현실48시간·틱 마감·오프라인 벌금 없음. 실제 사건 순서와 유효 수신·수락 시점만 구별하고 재접속으로 소유·소비·이미 한 행동을 초기화하지 않는다. 끝난 원물·피해·공연·회수·사과를 반복 보상용으로 다시 만들지 않는다. 남은 이행과 새 자발적 대화는 구분한다.",
+              "no_quest_reason": "현장 event 한 편 세 장면. 증언과 거주 조항 대조, 한정 접견의 실제 발언, 수정 문구의 수신을 나눈다. 이미 있는 공개 접견에서 끝내므로 별도 수락·퀘스트·보상·MAIN을 만들지 않는다. 새 재판이나 전후 체제 재편이 아니다.",
+              "quest_card": null
+            }
+          },
+          "adopted_detail": {
+            "수행": "이번 공개 허락 명부 항목과 생활을 막는 조항 한 줄을 별개로 확인한다. 실제 낭독·황제의 인정 또는 거절·수정안 수신/응답을 구분한다. B3 게시/반환은 실제 위탁물·허락이 있을 때만이며 B2의 유효 인정·미합의 결말에 새 필수로 얹지 않는다. 여발·응룡의 현재 복종·치우 진영 전환·전후 체제 개편0.",
+            "완료가드": "원문 B1의 실제 자료와 공개 허락, B2의 실제 낭독·인정/거절 또는 수정안 실수신/응답을 분리한다. 불동의·미응답은 미합의 결말이다. B3 추가 게시/반환은 실제 맡은 물건·공개 의사가 있을 때만. B2에서 성립한 제한적 인정 또는 미합의 결과를 B3 사양으로 취소하지 않는다. 생활 권리 발효·체제 변경·화해는 이 장면만으로 생성하지 않는다.",
+            "정산": "원문 rewards의 earned_condition·beneficiary_and_claim_right·actual_grant_and_consumption·unclaimed_retry_no_duplicate를 각각 검사. 제안·수강권·실제 연습을 혼동하지 않는다. 생활지도에 전투 능력·성장량0.",
+            "사망로그아웃": "현재 물품 원소유·보관자·실제 이동/소비·허락·수신·남은 목표를 저장. 사망은 이 NPC 부활/자동 귀환권을 만들지 않는다. 재개 시 현재 접근·안전부터 재확인하고 이미 끝난 부분은 재실행하지 않는다.",
+            "예상": "5~10분. 공개 인정과 생활 조항의 한정 답변이 결과; 물질 보상0."
+          }
+        }
+      ],
+      "new_side_count": 0,
+      "new_main_count": 0,
+      "new_combat_reward_count": 0,
+      "implementation_requirements": [
+        "인물별 실제 위치·봉인·생사·단일본체 연결",
+        "실제 청중/발화·관측·기록열람 영수증과 허락 연결",
+        "기존 물품 원장과 회차별 인수·소비·대여 반환 원자 처리",
+        "게임 엔진에 대한 새 구현 요구이며 현재 API 지원 주장 아님"
+      ]
+    },
+    {
+      "record_key": "RPG-S06-011",
+      "name": "우",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S06-011/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S06-011/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S06-011/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "독점 없이 실제 수행과 개인 기억으로 끝나는 옮기지 않은 집의 다음 날에 새 MAIN을 강제하지 않는다.",
+          "details": "이번은 현재 소규모 협력·훈련 또는 기존 장면의 후일담으로 끝나는 선택 활동이다. 우의 목표에 새로운 세계 독점 MAIN을 부여할 필요가 없다. 실제 참여 의사와 맡은 행동만 접수하며 기존 개인 MAIN이 있다면 소유·선행·진행을 읽기만 하고 변경하지 않는다. 공용 C/R 완료·친구의 행동·호감으로 MAIN을 만들지 않는다. 후발자는 현재 남은 일과 별도 학습에 자기 의사로 참여한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/307"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "APPLICABLE",
+          "reason": "이번 실제 행동에 맞는 대가를 구별한다: R04의 정보·기여 결과 유지. 이 후속은 우가 실제 운반 노동을 나누는 것이 대가이며 새 실물·신격 MAIN 보상을 덧붙이지 않는다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+          "details": "R04의 정보·기여 결과 유지. 이 후속은 우가 실제 운반 노동을 나누는 것이 대가이며 새 실물·신격 MAIN 보상을 덧붙이지 않는다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다. 실물 지급권·차감·가방 미수령 복구는 없는 장면이다. 실제 들은 정보·선택·수신 이력 누락만 근거로 복구하며 반복 방문으로 친분·가호·주시·MAIN·인정을 자동 지급하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/307"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-01.json",
+              "sha256": "448de23d5cd3adb9f3486c6811b18ea0c04bd24fd0440035cf9c23c0e52dc3c5",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-02.json",
+              "sha256": "c76b723fb7aee38559c43b775c2b95bffac0087f434003ce0e7ebf749c6bb570",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-03.json",
+              "sha256": "62b98c3533a6277168a281b2dc1728c0cf24a305934a05caaedb8d9a9018801f",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "우의 욕구를 「옮기지 않은 집의 다음 날」의 실제 선택으로 드러낸다. 이미 세운 계획을 빨리 닫을지, 거절 가구를 압박하지 않고 자기 몫의 추가 운반 시간을 내어 남은 비용을 줄일지 고른다. 본편 역할·전투등급만으로 분량이나 필수 퀘스트를 배정하지 않는다.",
+          "no_additional_episode_reason": "R04가 이미 핵심 선택과 실제 귀환을 갖췄으므로 독립 신규 퀘스트 대신 현재 결과의 짧은 후속만 집필한다.",
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/307"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/5"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        }
+      },
+      "existing_cards": [
+        {
+          "card_id": "R04-01",
+          "source_pointer": "/exact_existing_cards/R04-01/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "C02 이후, 정위의 실제 경고 또는 공개 위험 기록; 원문 인계: 안전 경로 통과·귀환점·공개 안내를 R04-02에 넘긴다. (인계는 새 선행 아님).",
+                "server_stage": "C02 이후. 정위가 계속 바라보는 해안의 위험을 한 가지 줄이는 장면이다. 시작은 정위의 실제 경고 또는 현장에 남은 공개 위험 기록이다. 완료는 물과 마른 귀환점의 대조, 실제 안전 경로 통과, 그 경로를 다음 이용자에게 알려 주는 것이다. ‘바다를 메웠다’거나 익사 위험을 전역 삭제했다고 기록하지 않는다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "이 카드에 개인 MAIN 덧장면을 새로 만들지 않는다. 지역 공개 행동만 기록하며 해당 신의 기존 MAIN이 있더라도 별도 수주·진행이다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "실제 안전 통과와 안내 수신. 바다는 그대로이며 전역 익사 방지 아님.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 실제 안전 이동과 안내가 확인되면 공개 경로와 개인 기여가 1회 남는다. 정위는 다음 해난 대화에서 확인된 지점을 가리킨다. 익사·사망 시 일반 규칙을 따르고 이미 발견한 B는 보존한다. 위험을 검증하려고 일부러 익사할 필요는 없다. 후발자는 현재 경로를 쓰거나 막힘을 다시 확인할 수 있지만 최초 개선 보상을 또 받지 않는다. 선택자가 없어도 공개 경로 안내는 유지되고 누군가의 MAIN으로 잠기지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 실제 안전 이동과 안내가 확인되면 공개 경로와 개인 기여가 1회 남는다. 정위는 다음 해난 대화에서 확인된 지점을 가리킨다. 익사·사망 시 일반 규칙을 따르고 이미 발견한 B는 보존한다. 위험을 검증하려고 일부러 익사할 필요는 없다. 후발자는 현재 경로를 쓰거나 막힘을 다시 확인할 수 있지만 최초 개선 보상을 또 받지 않는다. 선택자가 없어도 공개 경로 안내는 유지되고 누군가의 MAIN으로 잠기지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "실제 안전 통과와 안내 수신. 바다는 그대로이며 전역 익사 방지 아님. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-01",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/37",
+            "scene_id": "R04-01"
+          }
+        },
+        {
+          "card_id": "R04-02",
+          "source_pointer": "/exact_existing_cards/R04-02/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "R04-01 이후 그리고 C06 공개 성립; 원문 인계: 상하류 관찰·대피 부담·당사자 권한 안의 실행안을 R04-03에 넘긴다. (인계는 새 선행 아님).",
+                "server_stage": "R04-01 이후이며 C06의 공개 구호·물길 변화 자료가 성립해야 한다. 초기 해안 우회를 도운 경험은 재사용하지만, C06 뒤 달라진 상류 계획과 하류 응답은 이 장면에서 새로 확인한다. 상류에서 좋아 보이는 계획이 하류의 누구에게 부담을 주는지 확인한다. 시작 증거는 우의 공개 치수·대피 제안과 하류 당사자의 응답이다. 완료는 A/B의 실제 높이·물·대피점 관찰, 두 안의 부담 구별, 당사자 권한을 넘지 않는 이번 지역 실행안이다. 강물 시뮬레이션이나 실제 제방 공사를 완료하는 장면이 아니다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "이 카드에 개인 MAIN 덧장면을 새로 만들지 않는다. 지역 공개 행동만 기록하며 해당 신의 기존 MAIN이 있더라도 별도 수주·진행이다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "권한 있는 안전 이동안 1개와 실제 접근·안내. 물리 이주는 별도 검증 없으면 이용 준비만.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 공유 성과는 실제 조사와 권한 있는 지역 이동 안내다. 단순 계획 승인을 주민 이주 완료로 기록하지 않는다. 안전한 안내 하나가 확정되면 다음 장면으로 가며 보류된 대형 공사나 다른 가구의 선택은 별도다. 사망·이탈 시 조사 좌표와 실제 수신 응답을 보존하고 남은 접근만 재시도한다. 오프라인 가구가 자동 침수되거나 재산을 잃지 않는다. 후발자는 현재 안내와 실제 동의한 범위를 읽고 현재 관찰을 보태며, 부재자의 이주 동의를 만들어 내지 않는다. 개인 MAIN 소유권은 발생하지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 공유 성과는 실제 조사와 권한 있는 지역 이동 안내다. 단순 계획 승인을 주민 이주 완료로 기록하지 않는다. 안전한 안내 하나가 확정되면 다음 장면으로 가며 보류된 대형 공사나 다른 가구의 선택은 별도다. 사망·이탈 시 조사 좌표와 실제 수신 응답을 보존하고 남은 접근만 재시도한다. 오프라인 가구가 자동 침수되거나 재산을 잃지 않는다. 후발자는 현재 안내와 실제 동의한 범위를 읽고 현재 관찰을 보태며, 부재자의 이주 동의를 만들어 내지 않는다. 개인 MAIN 소유권은 발생하지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "권한 있는 안전 이동안 1개와 실제 접근·안내. 물리 이주는 별도 검증 없으면 이용 준비만. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-02",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/38",
+            "scene_id": "R04-02"
+          }
+        },
+        {
+          "card_id": "R04-03",
+          "source_pointer": "/exact_existing_cards/R04-03/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "R04-02 이후, C06 조건 계승. 실제 허용한 소규모 이용안; 원문 인계: 안전 왕복·어획/항로 이용 범위를 남긴다. C10 조각과 희귀 유적은 추가 진입 조건이 아니다. (인계는 새 선행 아님).",
+                "server_stage": "R04-02 이후, C06 조건을 유지한다. 바다를 사용할 수 있다는 것과 아무렇게나 사용해도 된다는 것이 다름을 짧은 왕복으로 보여 준다. 시작은 와타쓰미가 실제 허용한 이번 소규모 이용안이다. 완료는 안전 왕복과 그 범위의 어획/항로 규칙 확정이다. C10의 바다 조각이나 희귀 해상 유적 방문을 요구하지 않는다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "와타쓰미 MAIN 소유자는 자신이 주로 쓸 해로의 제한과 재협의 여지를 본인과 정한다. 공유 항로 합의를 자신의 단독 지배권으로 바꾸지 않으며 정위·우 관계를 포기하지 않는다. 소유자가 없거나 부재해도 지역 왕복·독립 경로 결말과 C10 조각 회수는 진행한다. 다른 친구에게 그 MAIN을 재배정하지 않는다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "왕복+실제 이용 합의 OR 독립 경로 확인·지원 없음 결말. 후자는 협력 성과 없음.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 왕복과 합의가 성립하면 공유 항로 이용 결과가 1회 남는다. 합의를 거절한 경우에는 독립 경로 확인·지원 없음이라는 선택 결말로 지역 연쇄를 끝낼 수 있으며 와타쓰미 협력 성과는 주지 않는다. 보상은 실제 항로 정보와 관계다. 보트 소모품 상품은 기존 등록 확인 후에만 접근을 열고 새 최고급 무기는 지급하지 않는다. 죽음·배 파손·이탈 시 기존 규칙을 따르며 왕복의 미완료 구간만 재시도한다. 정위가 ‘돌아왔다’고 반응하는 대상은 실제 귀환자뿐이다. 후발자는 현재 항로를 조사하거나 이용 합의에 자기 의사로 참여하며 과거 어획 약속을 소급하지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 왕복과 합의가 성립하면 공유 항로 이용 결과가 1회 남는다. 합의를 거절한 경우에는 독립 경로 확인·지원 없음이라는 선택 결말로 지역 연쇄를 끝낼 수 있으며 와타쓰미 협력 성과는 주지 않는다. 보상은 실제 항로 정보와 관계다. 보트 소모품 상품은 기존 등록 확인 후에만 접근을 열고 새 최고급 무기는 지급하지 않는다. 죽음·배 파손·이탈 시 기존 규칙을 따르며 왕복의 미완료 구간만 재시도한다. 정위가 ‘돌아왔다’고 반응하는 대상은 실제 귀환자뿐이다. 후발자는 현재 항로를 조사하거나 이용 합의에 자기 의사로 참여하며 과거 어획 약속을 소급하지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "왕복+실제 이용 합의 OR 독립 경로 확인·지원 없음 결말. 후자는 협력 성과 없음. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-03",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/39",
+            "scene_id": "R04-03"
+          }
+        }
+      ],
+      "activities": [
+        {
+          "source_contract": {
+            "episode_id": "EP019A-RPG-S06-011",
+            "title": "옮기지 않은 집의 다음 날",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "event이므로 MAIN 소유자가 없어도 현재 짐 주인이 허락한 운반·공개 관측에 참여할 수 있다. 우의 노동, 플레이어의 노동, 가구의 이주 의사는 각각 기록한다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.\n",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이번 실제 행동에 맞는 대가를 구별한다: R04의 정보·기여 결과 유지. 이 후속은 우가 실제 운반 노동을 나누는 것이 대가이며 새 실물·신격 MAIN 보상을 덧붙이지 않는다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+              "earned_condition": "새 물품·효과·지도 지급권 없음. 실제 노동·관측·허락 문장·관계 결과만 해당 당사자에게 남는다.",
+              "beneficiary_and_claim_right": "실제 행동자·수신자만 자기 경험을 가진다. 실물 보상 수혜자나 MAIN 소유자는 없다.",
+              "actual_grant_and_consumption": "새 보상 지급·소비 없음. 장면에서 실제 맡은 짐 또는 문서가 있으면 그 원소유·현보유·실제 인수만 확인한다.",
+              "unclaimed_retry_no_duplicate": "가방 부족·미수령 보상 정산 없음. 실제 위탁·전달·노동·정보 근거 누락만 복구하며 없던 위탁물을 반환 조건으로 만들지 않는다. 기존 R04 성과·공개 안내를 반복 지급하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "ending": {
+              "observable_personal_change": "R04-02/C06 선행과 실제 선택한 안내·동의를 유지한다. 남은 요청이 있을 때 한정 운반을 실제 도착시키면 그 짐만 옮겨진 결과다. 거절·빠른 마침은 미운반 짐과 우의 남은 노동을 남기는 정상 마침이며 새 퀘스트 완료가 아니다. 요청이 이미 끝났으면 현재 상태 후일담으로 닫는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "우는 실제 자기 계획의 남은 부담을 확인한 뒤 그 일을 자기 일정에 적는다. 플레이어에게는 그 사람이 실제 나른 짐만 말하며 자신의 노동을 플레이어 성취로 쓰지 않는다.",
+              "playfeel_and_difference": "이미 정한 계획의 종이 바깥에서 작은 짐 한 묶음의 무게를 함께 나눈다. 거절 가구를 옮기지 않고 우도 자기 시간을 낸다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 이미 확보한 R04 안내·허락·거절 기록을 읽고 현재 가구에게 남은 한정 요청과 짐 소유·목적지를 확인한다. 이전 이주 거절을 재설득 과제로 바꾸지 않는다.\nB2 추가 운반을 택하면 자기 몫 짐을 실제 나른다. 우도 실제로 나르거나 허용 높은 자리에서 생활 준비를 맡는다. 빨리 마치려면 현재 짐을 안전한 원위치에 두고 미운반을 남긴다.\nB3 각자 실제 한 일을 확인한다. 이주를 거절한 가구는 원래 거처와 기존 안전 선택을 유지하고, 동의한 가구는 실제 허락한 접근·이동이 확인된 범위만 기록한다. 우가 다음에 맡기로 한 일은 예정으로 남기고 실제 수행 전 완료로 쓰지 않는다.\nB4 공공이 직접 짚은 물길을 우가 이번 가구의 허락된 공개 이주 비용과 함께 대조한다. 우는 다음 안의 해당 굽이를 공공에게 먼저 보여 주고 아직 허락받았다는 대외 선언을 하지 않는다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          },
+          "adopted_detail": {
+            "수행": "후속 운반은 R04-02 및 C06의 유효 공개 결과·당사자 허락을 확인한다. 현재 남은 한 묶음의 품목별 정수량·소유자·목적지를 출발 전 합의표에 고정한다. 실제 도착 인수한 부분만 감소, 우의 노동도 실제 수행한 몫만. 요청0·이주 거절·계획까지만 확인한 가지는 무운반 결과로 마친다.",
+            "완료가드": "운반 경로는 실제 현재 요청·원문 R04-02/C06 선행·정수량·당사자 접근 허락·실제 도착/인수 확인이 필요하다. 요청 없는 경로는 무운반 후일담, 계획까지만 경로는 남은 짐이 있는 마침. B4 공공 후일담은 선택이며 앞 결과에 필수 아님.",
+            "정산": "원문 rewards의 earned_condition·beneficiary_and_claim_right·actual_grant_and_consumption·unclaimed_retry_no_duplicate를 각각 검사. 제안·수강권·실제 연습을 혼동하지 않는다. 생활지도에 전투 능력·성장량0.",
+            "사망로그아웃": "현재 물품 원소유·보관자·실제 이동/소비·허락·수신·남은 목표를 저장. 사망은 이 NPC 부활/자동 귀환권을 만들지 않는다. 재개 시 현재 접근·안전부터 재확인하고 이미 끝난 부분은 재실행하지 않는다.",
+            "예상": "5~12분; 거리/물품에 따라 실제 이동시간 추가. 새 실물·지도·성장 보상0."
+          }
+        }
+      ],
+      "new_side_count": 0,
+      "new_main_count": 0,
+      "new_combat_reward_count": 0,
+      "implementation_requirements": [
+        "인물별 실제 위치·봉인·생사·단일본체 연결",
+        "실제 청중/발화·관측·기록열람 영수증과 허락 연결",
+        "기존 물품 원장과 회차별 인수·소비·대여 반환 원자 처리",
+        "게임 엔진에 대한 새 구현 요구이며 현재 API 지원 주장 아님"
+      ]
+    },
+    {
+      "record_key": "RPG-S06-013",
+      "name": "항아",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S06-013/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S06-013/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S06-013/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "독점 없이 실제 수행과 개인 기억으로 끝나는 보내지 않은 관측문에 새 MAIN을 강제하지 않는다.",
+          "details": "이번은 현재 소규모 협력·훈련 또는 기존 장면의 후일담으로 끝나는 선택 활동이다. 항아의 목표에 새로운 세계 독점 MAIN을 부여할 필요가 없다. 실제 참여 의사와 맡은 행동만 접수하며 기존 개인 MAIN이 있다면 소유·선행·진행을 읽기만 하고 변경하지 않는다. 공용 C/R 완료·친구의 행동·호감으로 MAIN을 만들지 않는다. 후발자는 현재 남은 일과 별도 학습에 자기 의사로 참여한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/309"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "APPLICABLE",
+          "reason": "이번 실제 행동에 맞는 대가를 구별한다: 관측 해석과 항아가 공개한 문장의 정보가 대가다. 실제 사적 수신자 외에는 사연이 열리지 않으며 물건·가호 보상은 없다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+          "details": "관측 해석과 항아가 공개한 문장의 정보가 대가다. 실제 사적 수신자 외에는 사연이 열리지 않으며 물건·가호 보상은 없다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다. 실물 지급권·차감·가방 미수령 복구는 없는 장면이다. 실제 들은 정보·선택·수신 이력 누락만 근거로 복구하며 반복 방문으로 친분·가호·주시·MAIN·인정을 자동 지급하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/309"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "항아의 욕구를 「보내지 않은 관측문」의 실제 선택으로 드러낸다. 예에게 안부를 보낼지 이번에는 보내지 않을지 항아가 결정하고, 플레이어는 공개 관측 전달을 맡거나 둘 다 거절한다. 본편 역할·전투등급만으로 분량이나 필수 퀘스트를 배정하지 않는다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/309"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/7"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        }
+      },
+      "existing_cards": [],
+      "activities": [
+        {
+          "source_contract": {
+            "episode_id": "EP019A-RPG-S06-013",
+            "title": "보내지 않은 관측문",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "event이며 MAIN 소유·퀘스트 수락 없음. 항아가 고른 문장과 전달 범위를 실제 맡은 사람만 다룬다. 동행·파티로 사연 열람권이 생기지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.\n",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이번 실제 행동에 맞는 대가를 구별한다: 관측 해석과 항아가 공개한 문장의 정보가 대가다. 실제 사적 수신자 외에는 사연이 열리지 않으며 물건·가호 보상은 없다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+              "earned_condition": "새 물품·효과·지도 지급권 없음. 실제 노동·관측·허락 문장·관계 결과만 해당 당사자에게 남는다.",
+              "beneficiary_and_claim_right": "실제 행동자·수신자만 자기 경험을 가진다. 실물 보상 수혜자나 MAIN 소유자는 없다.",
+              "actual_grant_and_consumption": "새 보상 지급·소비 없음. 장면에서 실제 맡은 짐 또는 문서가 있으면 그 원소유·현보유·실제 인수만 확인한다.",
+              "unclaimed_retry_no_duplicate": "가방 부족·미수령 보상 정산 없음. 실제 위탁·전달·노동·정보 근거 누락만 복구하며 없던 위탁물을 반환 조건으로 만들지 않는다. 기존 R04 성과·공개 안내를 반복 지급하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "ending": {
+              "observable_personal_change": "항아가 안부 발신 여부와 공개 문장을 직접 결정하고 플레이어가 맡기로 한 문장만 실제 대상에게 전달하면 해당 전달 결과다. 안부 비발신·공개문만 전달·둘 다 거절 모두 가능한 event 마침이며 예나 관측소 응답을 발명하지 않는다. 받은 답은 실제 허락 범위에서 항아가 수신한 때만 반영한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "항아는 실제로 답을 재촉하지 않은 상대를 그 경험으로 기억한다. 관측소가 실제 수신 응답한 뒤에만 다음 월식 소식을 보낼 창구를 선택한다. 예의 소재·귀환·화해는 자동으로 알거나 확정하지 않는다.",
+              "playfeel_and_difference": "같은 종이 위였던 공개 하늘 관측과 사적 안부를 두 장으로 나누고, 보내지 않은 종이가 곁에 남는 결과도 끝까지 보인다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 공개할 관측문을 함께 읽되 무엇이 관측이고 무엇이 예상인지 나눈다. 예에게 보낼 사적 안부와 관측소 공개 결과를 각각 항아가 고르게 한다.\nB2 안부를 보내겠다는 항아의 명시 선택이 있으면 정확히 허락 문장·수신자·되돌릴 답의 범위를 확인한다. 공개 관측문 전달은 별개로 맡거나 둘 다 거절할 수 있다.\nB3 각 실제 대상의 접근·봉인·접견 의사·허락 청중을 확인해 해당 문장만 건넨다. 관측소 공개문은 기존 수신자가 실제 받을 때, 예의 안부는 예가 실제 받을 때만 전달 완료다.\nB4 직접 받은 수신 확인·허락 답만 전한다. 미응답은 미응답으로, 답의 재전달 불허는 비공개로, 부재는 미접촉으로 구별한다. 관측소가 실제 답하고 그 답을 항아가 실제 받은 경우에만 다음 창구를 고를 수 있으며, 항아가 원하지 않으면 그 선택 없이 현재 결과 확인만으로 마친다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          },
+          "adopted_detail": {
+            "수행": "공개 관측문과 예에게 보내는 사적 안부를 두 전달건으로 분리한다. 각 문구버전·송신허락·지정 수신자·실수신·재전달 허락을 따로 저장한다. 항아의 비발신/플레이어 거절/예 부재/미응답은 서로 다르다. 답장 없는 마침 가능, 재접견과 귀환 약속을 만들지 않는다.",
+            "완료가드": "B2에서 맡은 각각의 전달건은 B3 실수신 여부를 확인하고 B4에서 항아에게 실제 돌아온 결과만 알린다. 거절·비발신·미접촉·미응답·재전달 불허는 각자 결말이며 상대 답장을 강제하지 않는다. B4의 결과 확인은 선택 후기로 뭉뚱그리지 않으며 다음 연락 창구 선택만 실제 관측소 응답과 항아 의사가 있을 때 선택 가능하다.",
+            "정산": "원문 rewards의 earned_condition·beneficiary_and_claim_right·actual_grant_and_consumption·unclaimed_retry_no_duplicate를 각각 검사. 제안·수강권·실제 연습을 혼동하지 않는다. 생활지도에 전투 능력·성장량0.",
+            "사망로그아웃": "현재 물품 원소유·보관자·실제 이동/소비·허락·수신·남은 목표를 저장. 사망은 이 NPC 부활/자동 귀환권을 만들지 않는다. 재개 시 현재 접근·안전부터 재확인하고 이미 끝난 부분은 재실행하지 않는다.",
+            "예상": "4~9분; 실제 이동과 응답 대기는 별도, 강제 마감 없음. 정보 수신 외 보상0."
+          }
+        }
+      ],
+      "new_side_count": 0,
+      "new_main_count": 0,
+      "new_combat_reward_count": 0,
+      "implementation_requirements": [
+        "인물별 실제 위치·봉인·생사·단일본체 연결",
+        "실제 청중/발화·관측·기록열람 영수증과 허락 연결",
+        "기존 물품 원장과 회차별 인수·소비·대여 반환 원자 처리",
+        "게임 엔진에 대한 새 구현 요구이며 현재 API 지원 주장 아님"
+      ]
+    },
+    {
+      "record_key": "RPG-S06-015",
+      "name": "정위",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S06-015/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S06-015/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S06-015/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "독점 없이 실제 수행과 개인 기억으로 끝나는 돌 하나가 남긴 자리에 새 MAIN을 강제하지 않는다.",
+          "details": "이번은 현재 소규모 협력·훈련 또는 기존 장면의 후일담으로 끝나는 선택 활동이다. 정위의 목표에 새로운 세계 독점 MAIN을 부여할 필요가 없다. 실제 참여 의사와 맡은 행동만 접수하며 기존 개인 MAIN이 있다면 소유·선행·진행을 읽기만 하고 변경하지 않는다. 공용 C/R 완료·친구의 행동·호감으로 MAIN을 만들지 않는다. 후발자는 현재 남은 일과 별도 학습에 자기 의사로 참여한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/310"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "APPLICABLE",
+          "reason": "이번 실제 행동에 맞는 대가를 구별한다: R04의 실제 경로·귀환 반응만 유지한다. 돌 납부·신격 MAIN·별도 장비 보상 없음. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+          "details": "R04의 실제 경로·귀환 반응만 유지한다. 돌 납부·신격 MAIN·별도 장비 보상 없음. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다. 실물 지급권·차감·가방 미수령 복구는 없는 장면이다. 실제 들은 정보·선택·수신 이력 누락만 근거로 복구하며 반복 방문으로 친분·가호·주시·MAIN·인정을 자동 지급하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/310"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-01.json",
+              "sha256": "448de23d5cd3adb9f3486c6811b18ea0c04bd24fd0440035cf9c23c0e52dc3c5",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-02.json",
+              "sha256": "c76b723fb7aee38559c43b775c2b95bffac0087f434003ce0e7ebf749c6bb570",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/cards/R04-03.json",
+              "sha256": "62b98c3533a6277168a281b2dc1728c0cf24a305934a05caaedb8d9a9018801f",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "정위의 욕구를 「돌 하나가 남긴 자리」의 실제 선택으로 드러낸다. 작은 경고를 더 큰 업적으로 부풀려 치켜세울지, 오늘 누가 돌아왔는지만 말하고 정위가 다음 돌을 고르게 둘지 선택한다. 본편 역할·전투등급만으로 분량이나 필수 퀘스트를 배정하지 않는다.",
+          "no_additional_episode_reason": "R04가 이미 핵심 선택과 실제 귀환을 갖췄으므로 독립 신규 퀘스트 대신 현재 결과의 짧은 후속만 집필한다.",
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/310"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-019.json",
+              "sha256": "a390dcc999c7327522094df9286b61ee0b99c78d6fa6e99f5c0505b4c512300e",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-019.json",
+              "sha256": "576133e79b6e88688ba7d68218d35162995609781ca2a5d7b9b4bef756c2a742",
+              "pointer": "/records/8"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        }
+      },
+      "existing_cards": [
+        {
+          "card_id": "R04-01",
+          "source_pointer": "/exact_existing_cards/R04-01/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "C02 이후, 정위의 실제 경고 또는 공개 위험 기록; 원문 인계: 안전 경로 통과·귀환점·공개 안내를 R04-02에 넘긴다. (인계는 새 선행 아님).",
+                "server_stage": "C02 이후. 정위가 계속 바라보는 해안의 위험을 한 가지 줄이는 장면이다. 시작은 정위의 실제 경고 또는 현장에 남은 공개 위험 기록이다. 완료는 물과 마른 귀환점의 대조, 실제 안전 경로 통과, 그 경로를 다음 이용자에게 알려 주는 것이다. ‘바다를 메웠다’거나 익사 위험을 전역 삭제했다고 기록하지 않는다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "이 카드에 개인 MAIN 덧장면을 새로 만들지 않는다. 지역 공개 행동만 기록하며 해당 신의 기존 MAIN이 있더라도 별도 수주·진행이다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "실제 안전 통과와 안내 수신. 바다는 그대로이며 전역 익사 방지 아님.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 실제 안전 이동과 안내가 확인되면 공개 경로와 개인 기여가 1회 남는다. 정위는 다음 해난 대화에서 확인된 지점을 가리킨다. 익사·사망 시 일반 규칙을 따르고 이미 발견한 B는 보존한다. 위험을 검증하려고 일부러 익사할 필요는 없다. 후발자는 현재 경로를 쓰거나 막힘을 다시 확인할 수 있지만 최초 개선 보상을 또 받지 않는다. 선택자가 없어도 공개 경로 안내는 유지되고 누군가의 MAIN으로 잠기지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-01의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 실제 안전 이동과 안내가 확인되면 공개 경로와 개인 기여가 1회 남는다. 정위는 다음 해난 대화에서 확인된 지점을 가리킨다. 익사·사망 시 일반 규칙을 따르고 이미 발견한 B는 보존한다. 위험을 검증하려고 일부러 익사할 필요는 없다. 후발자는 현재 경로를 쓰거나 막힘을 다시 확인할 수 있지만 최초 개선 보상을 또 받지 않는다. 선택자가 없어도 공개 경로 안내는 유지되고 누군가의 MAIN으로 잠기지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "실제 안전 통과와 안내 수신. 바다는 그대로이며 전역 익사 방지 아님. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 287,
+                  "line_end": 311
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-01",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/37",
+            "scene_id": "R04-01"
+          }
+        },
+        {
+          "card_id": "R04-02",
+          "source_pointer": "/exact_existing_cards/R04-02/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "R04-01 이후 그리고 C06 공개 성립; 원문 인계: 상하류 관찰·대피 부담·당사자 권한 안의 실행안을 R04-03에 넘긴다. (인계는 새 선행 아님).",
+                "server_stage": "R04-01 이후이며 C06의 공개 구호·물길 변화 자료가 성립해야 한다. 초기 해안 우회를 도운 경험은 재사용하지만, C06 뒤 달라진 상류 계획과 하류 응답은 이 장면에서 새로 확인한다. 상류에서 좋아 보이는 계획이 하류의 누구에게 부담을 주는지 확인한다. 시작 증거는 우의 공개 치수·대피 제안과 하류 당사자의 응답이다. 완료는 A/B의 실제 높이·물·대피점 관찰, 두 안의 부담 구별, 당사자 권한을 넘지 않는 이번 지역 실행안이다. 강물 시뮬레이션이나 실제 제방 공사를 완료하는 장면이 아니다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "이 카드에 개인 MAIN 덧장면을 새로 만들지 않는다. 지역 공개 행동만 기록하며 해당 신의 기존 MAIN이 있더라도 별도 수주·진행이다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "권한 있는 안전 이동안 1개와 실제 접근·안내. 물리 이주는 별도 검증 없으면 이용 준비만.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 공유 성과는 실제 조사와 권한 있는 지역 이동 안내다. 단순 계획 승인을 주민 이주 완료로 기록하지 않는다. 안전한 안내 하나가 확정되면 다음 장면으로 가며 보류된 대형 공사나 다른 가구의 선택은 별도다. 사망·이탈 시 조사 좌표와 실제 수신 응답을 보존하고 남은 접근만 재시도한다. 오프라인 가구가 자동 침수되거나 재산을 잃지 않는다. 후발자는 현재 안내와 실제 동의한 범위를 읽고 현재 관찰을 보태며, 부재자의 이주 동의를 만들어 내지 않는다. 개인 MAIN 소유권은 발생하지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-02의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 공유 성과는 실제 조사와 권한 있는 지역 이동 안내다. 단순 계획 승인을 주민 이주 완료로 기록하지 않는다. 안전한 안내 하나가 확정되면 다음 장면으로 가며 보류된 대형 공사나 다른 가구의 선택은 별도다. 사망·이탈 시 조사 좌표와 실제 수신 응답을 보존하고 남은 접근만 재시도한다. 오프라인 가구가 자동 침수되거나 재산을 잃지 않는다. 후발자는 현재 안내와 실제 동의한 범위를 읽고 현재 관찰을 보태며, 부재자의 이주 동의를 만들어 내지 않는다. 개인 MAIN 소유권은 발생하지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "권한 있는 안전 이동안 1개와 실제 접근·안내. 물리 이주는 별도 검증 없으면 이용 준비만. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 312,
+                  "line_end": 337
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-02",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/38",
+            "scene_id": "R04-02"
+          }
+        },
+        {
+          "card_id": "R04-03",
+          "source_pointer": "/exact_existing_cards/R04-03/sections",
+          "source_contract": {
+            "prerequisites": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "exact_source_and_logic": "R04-02 이후, C06 조건 계승. 실제 허용한 소규모 이용안; 원문 인계: 안전 왕복·어획/항로 이용 범위를 남긴다. C10 조각과 희귀 유적은 추가 진입 조건이 아니다. (인계는 새 선행 아님).",
+                "server_stage": "R04-02 이후, C06 조건을 유지한다. 바다를 사용할 수 있다는 것과 아무렇게나 사용해도 된다는 것이 다름을 짧은 왕복으로 보여 준다. 시작은 와타쓰미가 실제 허용한 이번 소규모 이용안이다. 완료는 안전 왕복과 그 범위의 어획/항로 규칙 확정이다. C10의 바다 조각이나 희귀 해상 유적 방문을 요구하지 않는다.",
+                "personal_experience": "앞 장면 공개 결과를 실제 확인한 후발자도 현재 작업에 합류. 과거 개인 방문·소비·청취를 대신 생성하지 않음.",
+                "seal_and_access": "완전 봉인·본체 부재에는 새 대역·실시간 통신을 만들지 않는다. 실제 수신된 기록만 사용하고 신규 응답이 필요한 사적 결과는 보류한다. 일반 만남은 지역 사건 개방·위험 수행 준비·개인 MAIN 수락과 별개다.",
+                "recheck_and_optional_content": "01→02→03 보존. R03-03은 C06 이전 가능; R04/05의 02·03만 C06 자료 필요. 지역 완료·MAIN·기부·신과의 관계를 C 본편 새 필수조건으로 올리지 않음. 수락과 실행 직전 실제 자료·권한·안전 상태 재확인."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "ownership": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "offer": "와타쓰미 MAIN 소유자는 자신이 주로 쓸 해로의 제한과 재협의 여지를 본인과 정한다. 공유 항로 합의를 자신의 단독 지배권으로 바꾸지 않으며 정위·우 관계를 포기하지 않는다. 소유자가 없거나 부재해도 지역 왕복·독립 경로 결말과 C10 조각 회수는 진행한다. 다른 친구에게 그 MAIN을 재배정하지 않는다.",
+                "first_valid_acceptance": "기존 MAIN이 실제 채택되고 공개된 고유 수락 조건·자료·접근·봉인·준비가 맞을 때만 명시 수락을 검증. 최초 유효 수락 1명 확정은 별도 권위 경로이며 질문/지원 선택은 수락 아님.",
+                "owner_and_progress": "소유자 부재·로그아웃에도 소유권 자동 이전 없음. 공용 지역 작업은 다른 실제 참가자가 계속한다.",
+                "completion": "이 카드의 지역 완료가 기존 개인 MAIN 전체 완료가 되는 것은 아니다. 덧장면은 해당 소유자의 실제 실행·본인 확인만 기록.",
+                "non_owner_path": "비소유자는 공개 현재 조사·도움·일상 대화와 자기 관계를 이어 간다. 놓친 단독 수주를 복제하지 않으며 동일 결말·보상은 상속하지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "completion": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "objective_satisfied": "왕복+실제 이용 합의 OR 독립 경로 확인·지원 없음 결말. 후자는 협력 성과 없음.",
+                "valid_submission": "목표 충족과 접수는 분리. 원문에서 전달·접수를 요구하는 선택 경로만 실제 지정 대상의 수신을 확인한다. 관찰·보존·독립 경로 확인만으로 완결되는 원문 대안에 새 보고 대상이나 신 승인을 추가하지 않는다. 실제 전달이 필요한 말·약속은 미수신이면 미완료.",
+                "god_confirmation": "신의 사적 응답이 필요한 부분은 유효한 실제 대면 또는 이미 가능한 주시·응답 접촉에서 본인 확인. 주민의 공개 확인을 신의 개인 승인으로 바꾸지 않음.",
+                "settlement": "공용 결과 저장 → 개인 실제 기여/청취 저장 → 해당 첫 성과 정산을 구분. 왕복과 합의가 성립하면 공유 항로 이용 결과가 1회 남는다. 합의를 거절한 경우에는 독립 경로 확인·지원 없음이라는 선택 결말로 지역 연쇄를 끝낼 수 있으며 와타쓰미 협력 성과는 주지 않는다. 보상은 실제 항로 정보와 관계다. 보트 소모품 상품은 기존 등록 확인 후에만 접근을 열고 새 최고급 무기는 지급하지 않는다. 죽음·배 파손·이탈 시 기존 규칙을 따르며 왕복의 미완료 구간만 재시도한다. 정위가 ‘돌아왔다’고 반응하는 대상은 실제 귀환자뿐이다. 후발자는 현재 항로를 조사하거나 이용 합의에 자기 의사로 참여하며 과거 어획 약속을 소급하지 않는다.",
+                "absence_and_remote_contact": "부재하면 제출·응답 필요한 부분만 대기, 공개 안전 조사·현재 안내는 계속. 이미 받은 기록은 그 당시 허용 범위만 유효."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            },
+            "rewards": {
+              "status": "APPLICABLE",
+              "rationale": "R04-03의 원본 행동·선택·비용을 보존하는 저술안. 수량은 원문 실행 제안이며 서버 검증 수치가 아니다.",
+              "facets": {
+                "narrative_category": "이 장면의 보상은 원문에서 실제 남는 경로·관계·관찰 정보이며 공통 실물 보상·공용 지원을 추가하지 않음. 왕복과 합의가 성립하면 공유 항로 이용 결과가 1회 남는다. 합의를 거절한 경우에는 독립 경로 확인·지원 없음이라는 선택 결말로 지역 연쇄를 끝낼 수 있으며 와타쓰미 협력 성과는 주지 않는다. 보상은 실제 항로 정보와 관계다. 보트 소모품 상품은 기존 등록 확인 후에만 접근을 열고 새 최고급 무기는 지급하지 않는다. 죽음·배 파손·이탈 시 기존 규칙을 따르며 왕복의 미완료 구간만 재시도한다. 정위가 ‘돌아왔다’고 반응하는 대상은 실제 귀환자뿐이다. 후발자는 현재 항로를 조사하거나 이용 합의에 자기 의사로 참여하며 과거 어획 약속을 소급하지 않는다.",
+                "beneficiary": "공개 자료는 실제 읽는 사람, 관계·개인 기여는 실제 행위자, 사적 덧장면은 해당 적법 MAIN 소유자만.",
+                "entitlement": "왕복+실제 이용 합의 OR 독립 경로 확인·지원 없음 결말. 후자는 협력 성과 없음. 이후 해당 최초 성과 권리만 확정. 선택 거절·인사는 원문이 정한 만큼만 인정.",
+                "actual_delivery": "아이템·화폐·가호·축복·주시를 신규 지급하지 않음. 원문 선택 상점 후보가 있으면 실제 등록·효과·비용 검증 후 별도 거래이며 공짜 보상 아님.",
+                "once_repeat_and_dedup": "개별 성과·최초 장면 완료·실제 지급 증거를 구별해 한 번 정산. 같은 행동의 FTB/게임 중복 지급 금지.",
+                "unclaimed_recovery": "수신/기여 누락은 저장된 실제 증거로 복구. 이미 실행한 소비를 되돌려 반복 보상하지 않고 없는 실물 미수령을 만들지 않음."
+              },
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 338,
+                  "line_end": 364
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/04_R01_R05_지역과_개인_장면.md",
+                  "sha256": "a88067a83c0529f97b88b8663cd375e4c9504fcde2560247b1fcf49f4c04b5bb",
+                  "line_start": 1,
+                  "line_end": 33
+                },
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/스토리/세부장면/00_전체_안내와_적용_기준.md",
+                  "sha256": "201f22c4fd859407ac8ad45f1123895641b2d444eba2306335bf0bb649abf464",
+                  "line_start": 1,
+                  "line_end": 96
+                }
+              ]
+            }
+          },
+          "current_campaign_ref": "스토리/본편/세부장면/04_R01_R05_지역과_개인_장면.md#R04-03",
+          "adopted_detail": "본편 실제 수행은 해당 현행 카드로만 정산한다. 이 인물 일상·최초조우·전언은 그 완료나 소유권을 대체하지 않는다. 공개자료 열람에 본체 출석을 새 필수로 만들지 않는다.",
+          "current_final_reference": {
+            "file": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+            "pointer": "/scenes/39",
+            "scene_id": "R04-03"
+          }
+        }
+      ],
+      "activities": [
+        {
+          "source_contract": {
+            "episode_id": "EP019A-RPG-S06-015",
+            "title": "돌 하나가 남긴 자리",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "event이며 새 MAIN·돌 납부·장비 보상 없음. 후발자도 공개 경로를 이용할 수 있지만 과거 귀환자 반응·사적 다음 돌 안내를 자동 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.\n과거 귀환자가 아니면 현재 공개 경로를 실제 이용해 자기 오늘 경험을 말할 수 있다. 옛 왕복을 다시 한 척하지 않으며 귀환 전 대화도 가능하되 귀환 전용 반응만 보류한다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이번 실제 행동에 맞는 대가를 구별한다: R04의 실제 경로·귀환 반응만 유지한다. 돌 납부·신격 MAIN·별도 장비 보상 없음. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+              "earned_condition": "새 물품·효과·지도 지급권 없음. 실제 노동·관측·허락 문장·관계 결과만 해당 당사자에게 남는다.",
+              "beneficiary_and_claim_right": "실제 행동자·수신자만 자기 경험을 가진다. 실물 보상 수혜자나 MAIN 소유자는 없다.",
+              "actual_grant_and_consumption": "새 보상 지급·소비 없음. 장면에서 실제 맡은 짐 또는 문서가 있으면 그 원소유·현보유·실제 인수만 확인한다.",
+              "unclaimed_retry_no_duplicate": "가방 부족·미수령 보상 정산 없음. 실제 위탁·전달·노동·정보 근거 누락만 복구하며 없던 위탁물을 반환 조건으로 만들지 않는다. 기존 R04 성과·공개 안내를 반복 지급하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "ending": {
+              "observable_personal_change": "R04 공개 성과를 보존하며 실제 귀환자가 자기 경험만 말하면 정위가 현재 다음 돌의 쓰임을 자발적으로 보여 줄 수 있다. 과장은 정정하고 사적 안내를 거절하는 마침이며 기존 공개 경로를 취소하지 않는다. 새 위험이 없으면 안전한 현재를 확인하고 마친다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "정위는 실제 눈앞에서 돌아온 사람과 받은 경로 보고만 안다. 현재 처음 온 사람을 예전 귀환자로 부르지 않는다. 우와의 교류는 실제 첫 접촉·수신 뒤만 시작되고 이전 협력 기억은 없다.",
+              "playfeel_and_difference": "바다를 이겼다는 큰 칭찬 대신 한 사람이 돌아왔다는 작은 사실 앞에서 정위가 자기 다음 돌을 고른다. 현재 안전하면 더 큰 위험을 만들지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 이미 실제 귀환했다면 그때 쓴 길과 현재 상태를 짧게 보여 준다. 새 방문자는 지금 공개 경로를 읽거나 자기 오늘 이동을 마친 범위만 말한다.\nB2 오늘 실제 돌아온 사실만 말하거나 과장된 업적을 실제 주장할 수 있다. 침묵하며 현재 안전 지점을 가리켜도 되며 정답 답변을 요구하지 않는다.\nB3 정위가 실제 보여 주는 작은 지점을 본다. 이미 안전하면 그대로 안전함을 확인하고 돌의 다음 쓰임은 정위가 나중에 고르도록 둔다.\nB4 정위가 원하면 자기 돌의 현재 위험 표시를 보여 준다. 우는 실제 확인한 표시를 자기 도식의 위험 지점에 반영한다. 정위는 큰 선이 자기 일을 지우지 않았는지 직접 본다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          },
+          "adopted_detail": {
+            "수행": "R04-01 위험 경고/공개기록의 실제 경로와 본인 이동을 대조한다. R04-03 귀환 반응은 실제 귀환자만 받는다. 과장을 사실 주장으로 확인한 때만 바로잡고 사적 안내를 거절해도 이미 공개된 안전 경로는 유지한다. 안전한 길에 돌을 다시 놓아 위험/첫 성과를 재생성하지 않는다.",
+            "완료가드": "R04의 공개 안전 결과는 유지한다. 실제 귀환자만 귀환 반응을 받지만 일반 인사·공개 안내 읽기는 귀환 완료 없이 가능하다. B2 과장은 확인 후 정정하는 독립 END이며 안전 경로를 박탈하지 않는다. B4 우에게 표시 전달은 선택 후일담이다.",
+            "정산": "원문 rewards의 earned_condition·beneficiary_and_claim_right·actual_grant_and_consumption·unclaimed_retry_no_duplicate를 각각 검사. 제안·수강권·실제 연습을 혼동하지 않는다. 생활지도에 전투 능력·성장량0.",
+            "사망로그아웃": "현재 물품 원소유·보관자·실제 이동/소비·허락·수신·남은 목표를 저장. 사망은 이 NPC 부활/자동 귀환권을 만들지 않는다. 재개 시 현재 접근·안전부터 재확인하고 이미 끝난 부분은 재실행하지 않는다.",
+            "예상": "3~7분. 납부 돌0·매립0·신격 MAIN0·추가 물품0."
+          }
+        }
+      ],
+      "new_side_count": 0,
+      "new_main_count": 0,
+      "new_combat_reward_count": 0,
+      "implementation_requirements": [
+        "인물별 실제 위치·봉인·생사·단일본체 연결",
+        "실제 청중/발화·관측·기록열람 영수증과 허락 연결",
+        "기존 물품 원장과 회차별 인수·소비·대여 반환 원자 처리",
+        "게임 엔진에 대한 새 구현 요구이며 현재 API 지원 주장 아님"
+      ]
+    },
+    {
+      "record_key": "RPG-S06-058",
+      "name": "백골부인",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S06-058/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S06-058/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S06-058/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "main_ownership": {
+          "status": "NOT_APPLICABLE",
+          "reason": "독점 없이 실제 수행과 개인 기억으로 끝나는 연민을 미끼로 한 저녁에 새 MAIN을 강제하지 않는다.",
+          "details": "이번은 현재 소규모 협력·훈련 또는 기존 장면의 후일담으로 끝나는 선택 활동이다. 백골부인의 목표에 새로운 세계 독점 MAIN을 부여할 필요가 없다. 실제 참여 의사와 맡은 행동만 접수하며 기존 개인 MAIN이 있다면 소유·선행·진행을 읽기만 하고 변경하지 않는다. 공용 C/R 완료·친구의 행동·호감으로 MAIN을 만들지 않는다. 후발자는 현재 남은 일과 별도 학습에 자기 의사로 참여한다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/334"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-020.json",
+              "sha256": "d7fd9e4c895ce58ee33408af4772341dfc5e7f2e308b175979d2fb500a192d2e",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-020.json",
+              "sha256": "5128819855d74549d40070232038d9ff5b5b01515b563226c047aa5996c41c78",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "rewards_and_costs": {
+          "status": "APPLICABLE",
+          "reason": "이번 실제 행동에 맞는 대가를 구별한다: 살아서 되찾은 자신의 물건과 확인한 위험 정보가 결과다. 백골부인의 유인에 응한 것을 보상·호감·인정 획득으로 취급하지 않는다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다.",
+          "details": "살아서 되찾은 자신의 물건과 확인한 위험 정보가 결과다. 백골부인의 유인에 응한 것을 보상·호감·인정 획득으로 취급하지 않는다. 이 대가는 위 분기에서 약속한 실제 수행 조건을 충족한 몫만 발생한다. 거절·중단·위반을 성공 정산으로 바꾸지 않고 이미 정당하게 얻은 몫만 보존한다. 실물 지급권·차감·가방 미수령 복구는 없는 장면이다. 실제 들은 정보·선택·수신 이력 누락만 근거로 복구하며 반복 방문으로 친분·가호·주시·MAIN·인정을 자동 지급하지 않는다.",
+          "sources": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/334"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-020.json",
+              "sha256": "d7fd9e4c895ce58ee33408af4772341dfc5e7f2e308b175979d2fb500a192d2e",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-020.json",
+              "sha256": "5128819855d74549d40070232038d9ff5b5b01515b563226c047aa5996c41c78",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        },
+        "mode": {
+          "selected": [
+            "event"
+          ],
+          "role_specific_reason": "백골부인의 욕구를 「연민을 미끼로 한 저녁」의 실제 선택으로 드러낸다. 정체를 안다고 곧장 처형하러 들지, 현재 위협만 막고 백골부인의 흔적이 남은 채 퇴각을 받아들일지 고른다. 본편 역할·전투등급만으로 분량이나 필수 퀘스트를 배정하지 않는다.",
+          "no_additional_episode_reason": null,
+          "source_basis": [
+            {
+              "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+              "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+              "pointer": "/records/334"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/cores/CORE-020.json",
+              "sha256": "d7fd9e4c895ce58ee33408af4772341dfc5e7f2e308b175979d2fb500a192d2e",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/encounters/ENC-020.json",
+              "sha256": "5128819855d74549d40070232038d9ff5b5b01515b563226c047aa5996c41c78",
+              "pointer": "/records/4"
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+              "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+              "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+              "pointer": ""
+            },
+            {
+              "file": "outputs/full_authoring_20261014/quest_planning/quest_flow_authoring_contract.md",
+              "sha256": "dc62c92640979341afa7d82b51420a3911dd41098076b60e502cbde2dd84910a",
+              "pointer": ""
+            }
+          ]
+        }
+      },
+      "existing_cards": [],
+      "activities": [
+        {
+          "source_contract": {
+            "episode_id": "EP020A-RPG-S06-058",
+            "title": "연민을 미끼로 한 저녁",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "비수주 event. 적대 유인·실제 공격은 상호 수락이나 참가 동의를 선행 요구하지 않는다. 관찰·음식 놓기·방어·철수·추격은 실제 각자 선택과 행동으로 기록한다. 호소를 들었다는 이유로 계약·MAIN·보상권이 생기지 않는다. 자기방어·생환 판단은 백골부인의 접수·칭찬 없이 실제 현장 증거로 한다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "퀘스트 소유자는 없다. 지나가는 사람은 현재 들리는 호소를 무시하거나 안전한 곳에서 관찰할 수 있다. 남의 매복 생환·사적 대화·물건 회수를 자기 기록으로 받지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.\n",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "검수 범위의 결과는 생환, 실제로 잃거나 내려놓은 자기 물건의 회수, 실제 확인한 위험 정보다. 신규 지급 보상 없음.",
+              "earned_condition": "별도 보상 지급권 없음. 안전한 곳에 실제 도달한 사람의 생환과 그가 실제 확인·수신한 정보만 남는다. 물건 회수는 실제 자기 물건이 따로 남아 있고 실제 되찾은 경우만.",
+              "beneficiary_and_claim_right": "당사자 자신의 실제 경험·현보유물만. 관객·후발자·파티원에게 신규 권리 또는 생환 성과를 복사하지 않는다.",
+              "actual_grant_and_consumption": "백골부인은 새 보상을 지급하지 않는다. 플레이어가 자발적으로 둔 실제 자기 음식은 소비·현보유를 그대로 추적한다. 물건을 내려놓거나 잃지 않았다면 반환·회수 장면을 요구하지 않는다.",
+              "unclaimed_retry_no_duplicate": "미수령 보상권·정산 대화 없음. 실제 남겨진 자기 물건이 있으면 현재 실물·접근·소유를 확인해 한 번 회수하고, 없으면 없다는 결과를 유지한다. 소실물 복제·적대 종료 반복 지급 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "생환·위험 정보·자기 물건 회수는 호감·인정·MAIN·축복·가호·주시·장비 보상이 아니다."
+            },
+            "ending": {
+              "observable_personal_change": "이벤트의 결말은 각자의 실제 생환·현재 위협 차단·추격 중단·진행 중 전투·실제 제압 중 관측한 결과만이다. 백골부인에게 완료 확인이나 수주 수락을 받을 필요가 없다. 위협을 벗어났다는 확인 전 생환을 주지 않는다. 백골부인의 다음 유인 변경은 본인이 살아 퇴각하고 이번 실패를 실제 겪은 경우만. 과거 범행·보지 않은 사망·개심을 확정하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "백골부인이 살아 있고 실제 실패한 호소를 겪었다면 같은 상대 앞에서 다음에는 그 문장을 줄이거나 거리를 바꾼다. 그녀가 보지 못한 플레이어의 사적 보고나 삼장의 판단은 실제 전달 전에는 모른다.",
+              "playfeel_and_difference": "불쌍하다는 말을 믿을지보다 현재 발소리와 목소리가 어디서 오는지 본다. 좁은 길에서 공격을 피하거나 추격 욕심을 버리는 실제 몸의 선택이 생환을 가른다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 플레이어는 넓은 바깥에서 목소리 방향과 실제 발자국을 비교한다. 음식을 놓고 거리를 지키거나, 더 안쪽으로 이동하거나, 바로 떠날 수 있다.\nB2 플레이어는 열린 터를 등지고 관찰하거나 좁은 안쪽에서 엄폐를 잡는다. 백골부인이 실제 공격하려고 접근하면 그 움직임을 보고 B3의 방어·철수를 택한다.\nB3 실제 위협만 막고 이탈할지, 백골부인을 좇아 좁은 길로 다시 들어갈지 고른다. 후자는 별도 실제 전투 위험이며 결과를 미리 쓰지 않는다.\nB4 이미 전부 가지고 있으면 위험 정보만 남기고 마친다. 자기 물건이 현장에 남았다면 현재 접근 안전과 실물을 확인해 회수하거나 그대로 두고 떠난다.\nB5 플레이어는 그 실제 요청을 전할지 거절할지 고른다. 전한다면 삼장에게 직접 본 불일치·실제 위협과 백골부인의 주장을 구별해 전하고 삼장의 실제 반응을 듣는다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          },
+          "adopted_detail": {
+            "수행": "목소리 방향·발자국·실제 접근·위협을 따로 관측한다. 공격 전에는 불일치 확인/관찰/이탈 가능. 실제 공격 뒤 철수는 실제 안전 도착이 있어야 생환. 추격은 미결 전투로 끝날 수 있고 필승·처형을 예약하지 않는다. 음식/물건을 놓지 않은 사람은 회수 단계 생략; 소비·소실물 복제0. B5는 살아 있는 본인이 실제 요청한 경우만 선택 전달.",
+            "완료가드": "B1 즉시 이탈은 실제 안전한 바깥 도달 때만 생환. B2 불일치 관측은 아직 공격이 아니며 B3 실제 위협 방어/철수와 분리한다. 추격은 진행 중 전투로 끝날 수 있다. B4 실제 자기 물건이 없으면 회수 수행 없이 위험 정보만 남기고 종료 가능. B5는 살아 있는 백골부인의 실제 요청이 있을 때만 선택 후일담이며 생환의 조건 아님. NPC의 사망을 확인하거나 미접촉이면 새 발화0.",
+            "정산": "원문 rewards의 earned_condition·beneficiary_and_claim_right·actual_grant_and_consumption·unclaimed_retry_no_duplicate를 각각 검사. 제안·수강권·실제 연습을 혼동하지 않는다. 생활지도에 전투 능력·성장량0.",
+            "사망로그아웃": "현재 물품 원소유·보관자·실제 이동/소비·허락·수신·남은 목표를 저장. 사망은 이 NPC 부활/자동 귀환권을 만들지 않는다. 재개 시 현재 접근·안전부터 재확인하고 이미 끝난 부분은 재실행하지 않는다.",
+            "예상": "5~12분 예상, 실제 전투 길이는 미검증. 신규 전투수치/스킬/장비/가호0; 생환·자기 물건 회수·위험 정보만."
+          }
+        }
+      ],
+      "new_side_count": 0,
+      "new_main_count": 0,
+      "new_combat_reward_count": 0,
+      "implementation_requirements": [
+        "인물별 실제 위치·봉인·생사·단일본체 연결",
+        "실제 청중/발화·관측·기록열람 영수증과 허락 연결",
+        "기존 물품 원장과 회차별 인수·소비·대여 반환 원자 처리",
+        "게임 엔진에 대한 새 구현 요구이며 현재 API 지원 주장 아님"
+      ]
+    }
+  ]
+}

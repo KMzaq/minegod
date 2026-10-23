@@ -1,0 +1,75 @@
+{
+  "record_key": "RPG-S01-102",
+  "name": "아탈란테",
+  "definition_id": "GR021-102-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_unassigned_atalanta",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-102/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-102/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P03_stage2.json#/records/19",
+    "accepted_episodes": [
+      "EP005B-RPG-S01-102"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "상급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "공로를 정하는 결승선",
+  "site": "실제 숲 가장자리나 열린 길. AT-START-01, 반환표식 AT-TURN-01은24~40블록 편도, 기존 완만한 길 A와 짧은 길 B. 새 장애물 강제설치0.",
+  "objectives": [
+    "아탈란테와 현재 두 갈림길·실제 반환표식·귀환방법·중단신호를 함께 확인하고 이 SIDE의 왕복경주 참가를 각자 명시 수락한다. 표식은 옮기거나 가져오지 않고 닿아 확인한다. 각자 안전한 기존 경로를 스스로 골라 출발하며 아탈란테의 진로를 대신 정하지 않는다. 경주를 거절한 비경쟁 길 확인/달리기는 독립 활동으로 남기고 이 SIDE 완료·지도권과 분리한다.",
+    "반환표식1에 실제 닿아 출발점까지 왕복. 중간에 실제 적·낭떠러지·길단절을 발견하면 시간경쟁을 포기하고12블록 내 실제 음성/접촉으로 상대에게 경고한 뒤 허락된 우회로를 걷는다.",
+    "실제 왕복과 누구의 경고·우회 판단이 있었는지를 각자 확인. 승자/패자/위험중단을 분리하고 살아 돌아온 판단을 인정한다."
+  ],
+  "branches": "경쟁구간 시간상한180초, 넘으면 시간기록 실패지만 실제 안전 귀환을 마치면 지도자격 유지. 위험으로 표식 전에 돌아온 경우 부분이동이며 정상완주/지도권0. 위험경고 후 안전우회로 표식에 닿아 귀환했다면 정상완주. 신체속도 정규화/결혼·자동동행·초고속 보상0.",
+  "reward": {
+    "kind": "지형별 이동 훈련",
+    "definition": "GR021-AT102-PACE",
+    "quantity": "개인 이동실습1회",
+    "stock": "물품없음, 아탈란테 실제 지도동의와 90초 시간 예약.",
+    "condition": "명시 수락한 왕복경주의 선택 경로에서 반환표식에 실제 도달하고 출발점 귀환까지 마친 개인. 승패무관, 위험경고 때문에 시간경쟁을 포기했어도 실제 표식·귀환을 마치면 자격 유지. 경주 미수락 독립 활동과 표식미도달 철수는 지도권0, 실제 경고 수신과 공로만 보존.",
+    "effect": "같은 길의 평지8블록 질주→실제 굽은길4블록 걷기→가장자리2블록 전 정지→귀환을1회 수행. 기술 지식만 기록, 신속/대시/K/J/스탯0.",
+    "budget": "B1, 실제 이동판단 훈련"
+  },
+  "expected_minutes": [
+    4,
+    7
+  ],
+  "acceptance_tests": [
+    "패자에게 지도정보 숨기지 않음",
+    "새 장애물 설치0",
+    "위험경고 미수신 구분"
+  ],
+  "special": "",
+  "reward_status_source": "APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "아탈란테는 다음 갈림길 판단을 함께 맡기고 자기 선택을 빚으로 만드는 팀에서는 떠난다. 멜레아그로스의 현재 출동은 전제하지 않는다.",
+  "source_outcome": "공로를 정하는 결승선에서 플레이어가 실제 선택한 행동과 그에게 나타난 반응",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR021-102-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "아탈란테와 플레이어 각각이 직접 관측하거나 허락된 보고를 실제 받은 범위만. 참가명부만으로 지식이 생기지 않으며 실제 청취/목격/열람 UUID별로 기록한다. 외부 상대는 counterpart_delivery의 실제 수신완료 내용만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

@@ -3,6 +3,7 @@ package com.sande.mythictrpg.data.god;
 import com.sande.mythictrpg.condition.api.ConditionDependency;
 import com.sande.mythictrpg.condition.api.ConditionNode;
 import com.sande.mythictrpg.condition.engine.ConditionEngine;
+import com.sande.mythictrpg.quest.reward.blessing.GodRank;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,11 +20,20 @@ public final class GodDefinition {
     private final Optional<ConditionNode> unlockConditions;
     private final Optional<ConditionNode> appearanceConditions;
     private final Optional<ConditionNode> identificationConditions;
+    private final Optional<GodRank> rank;
 
     public GodDefinition(int schemaVersion, Component displayName, ResourceLocation origin,
             ResourceLocation faction, Set<ResourceLocation> categories,
             Optional<ConditionNode> unlockConditions, Optional<ConditionNode> appearanceConditions,
             Optional<ConditionNode> identificationConditions) {
+        this(schemaVersion, displayName, origin, faction, categories, unlockConditions,
+                appearanceConditions, identificationConditions, Optional.empty());
+    }
+
+    public GodDefinition(int schemaVersion, Component displayName, ResourceLocation origin,
+            ResourceLocation faction, Set<ResourceLocation> categories,
+            Optional<ConditionNode> unlockConditions, Optional<ConditionNode> appearanceConditions,
+            Optional<ConditionNode> identificationConditions, Optional<GodRank> rank) {
         this.schemaVersion = schemaVersion;
         this.displayName = displayName.copy();
         this.origin = origin;
@@ -32,10 +42,16 @@ public final class GodDefinition {
         this.unlockConditions = unlockConditions;
         this.appearanceConditions = appearanceConditions;
         this.identificationConditions = identificationConditions;
+        this.rank = java.util.Objects.requireNonNull(rank);
     }
 
     public int schemaVersion() {
         return schemaVersion;
+    }
+
+    /** Missing legacy ranks stay unassigned; table tiers must not be interpreted as deity ranks. */
+    public Optional<GodRank> rank() {
+        return rank;
     }
 
     public Component displayName() {

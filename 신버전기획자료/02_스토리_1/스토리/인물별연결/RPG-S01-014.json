@@ -1,0 +1,490 @@
+{
+  "record_key": "RPG-S01-014",
+  "content_id": "RPG-S01-014:story-connection",
+  "name": "디오니소스",
+  "document_kind": "AUTHORING_NOT_RUNTIME",
+  "connection_manuscript": {
+    "record_key": "RPG-S01-014",
+    "name": "디오니소스",
+    "tier_unchanged": "중급",
+    "group": "선택 특수서비스",
+    "working_title": "잔치가 끝난 뒤 남는 선택",
+    "status": "stage2_authoring_skeleton_not_runtime",
+    "runtime_ready": false,
+    "source_anchors": [
+      {
+        "file": "rpg_authoring_master_active.json",
+        "record_key": "RPG-S01-014",
+        "fields": [
+          "identity",
+          "current_access",
+          "active_authoring"
+        ],
+        "meaning": "현행 정체·등급·접근·역할 보존 기준"
+      },
+      {
+        "archive": "마크프로젝트_그리스와_주요인물31명_페르소나.zip",
+        "library_file_id": "libfile_41e0c077079c8191a4074ee0465734e2",
+        "archive_sha256": "97ee5512ace518555746d9e3384ca0c7e81a697ee2edb203a9a6894e29a7bcbd",
+        "profile_entry": "디오니소스/profile/data/mythaiaicontent/mythai_ai/god_profiles/greek_olympus_dionysus.json",
+        "profile_sha256": "4a7012c39c63e7d3dca40e432919ceecbaf865d5369eaa9b0e36fcff1bbc272a",
+        "contract_entry": "디오니소스/authoring_contract.json",
+        "contract_sha256": "64072fe358178ad8d09a0afac04a3cde33541da2cff84ea92a7fa36ccff711d5",
+        "meaning": "기존 승인 페르소나 원문과 범위계약. 현재 추가안의 재승인·배포를 뜻하지 않음"
+      },
+      {
+        "file": "스토리/03_성장과_특수조우_상세안.md",
+        "heading": "## 3 디오니소스",
+        "line": 105,
+        "sha256": "044109424a77d571f6fc9a0b59ebe72fb55ea8174e0957d53908f3709033d45a",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      },
+      {
+        "file": "스토리/03_성장과_특수조우_상세안.md",
+        "heading": "장신구 수령",
+        "line": 202,
+        "sha256": "044109424a77d571f6fc9a0b59ebe72fb55ea8174e0957d53908f3709033d45a",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      }
+    ],
+    "fixed_and_existing": {
+      "identity_guard": {
+        "value": "추가 통합 메모 없음",
+        "status": "current_source_identity_safeguards",
+        "source": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "reconciled_rows",
+          "record_key": "RPG-S01-014",
+          "field": "notes",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "use_scope": "authoring_design_only",
+        "runtime_binding": false
+      },
+      "current_access_preserved": {
+        "encounter_group": "before",
+        "encounter_subgroup": "confirmed_special_encounter",
+        "evidence_status": "confirmed_special_encounter",
+        "evidence_reason": "중급 확정 및 옛 C06 일반 조우 제한 제거. 미사용 마을·진행 중 의뢰·동일 본체 조건은 유지.",
+        "earliest_encounter_assigned": false,
+        "current_first_meeting_time": null,
+        "current_first_meeting_time_status": "classification_only_not_individual_time_assignment",
+        "active_generic_c06_c15_c21_gate": false,
+        "actual_access_rule": {
+          "value": "중급 확정 및 옛 C06 일반 조우 제한 제거. 미사용 마을·진행 중 의뢰·동일 본체 조건은 유지.",
+          "status": "current_roster_classification_preserved",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S01-014",
+            "field": "evidence_reason"
+          },
+          "use_scope": "authoring_access_guard_not_runtime_predicate",
+          "runtime_binding": false
+        },
+        "source_references": [
+          {
+            "source_file": "스토리/04_등장인물_변경_검토보고.md",
+            "line": 51,
+            "text": "| 강함과 조우 | **중급**, C06 조우 제한 제거, 초반 확률 소폭 보정 | 최상급 제안을 그대로 복구하지 않음. ID·성별·새 세부 소속을 이번 결정에서 추론하지 않음 |",
+            "sha256": "ee0923a84b4fec01228340d5c039f77a4aa2804975c73446e147a2a1061d5eec",
+            "status": "current_source_line_verified",
+            "verification_status": "current_packaged_source_line_and_hash_verified"
+          }
+        ],
+        "runtime_prerequisite_bindings": null,
+        "runtime_prerequisite_status": "unwritten_not_an_empty_pass_condition",
+        "required_live_actor_keys": null,
+        "required_live_actor_keys_status": "not_extracted_or_runtime_validated",
+        "must_apply_global_guards": [
+          "access",
+          "gates",
+          "knowledge",
+          "consent_and_late_join"
+        ],
+        "original_gate_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "RPG-S01-014",
+          "field": "legacy_gate",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "original_route_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "RPG-S01-014",
+          "field": "original_meeting_route",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "original_world_availability_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "RPG-S01-014",
+          "field": "original_world_availability",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "coordinate": null,
+        "engine_location_id": null,
+        "individual_action_constraints": []
+      },
+      "existing_role": "기존 개인·지역 역할 유지; 메인 배역 없음·후속 장면 미구체화",
+      "existing_personal_motive": "질서가 억누른 목소리를 풀어 주되 해방이라는 말로 타인을 해치지 않게 하려 한다",
+      "existing_story_events": "마을 확률 조우; 술(포션) 수집 의뢰; 보상 a 대화 연결; 보상 b 장신구 수령 → 독점 개인 MAIN 제시·첫 유효 수락 → 해당 MAIN 클리어 → 주시",
+      "existing_personal_scope_contract": [
+        {
+          "source_pointer": "/exact_scope_contract/main_ownership",
+          "content": {
+            "status": "APPLICABLE",
+            "reason": "기존 b 실수령→MAIN 제시→첫 유효 수락→실제 완료→소유자 주시의 독점 연쇄를 유지한다.",
+            "details": "내용·비용을 제시하고 본체와 합법적 접촉한 첫 유효 명시 수락자 한 명에게만 소유를 확정한다. 질문·소개·팀 가입은 수락이 아니다. 소유자의 각 실제 선택·수행·유효 NPC 확인으로 진행·완료하며 미접속/보류로 이전하지 않는다. 비소유자는 일반 대화와 동의한 도움·현재 생활 활동을 이어 가되 소유·완료·전용 보상은 복제하지 않는다.  술 의뢰의 서버 동시 활성 한 건과 개인 MAIN 독점은 별도다. b 장신구 소유는 MAIN 예약도 주시도 아니다. 후속 MAIN의 기존 네 장면은 제안 상태이며 세부 채택 전 실행 수락을 열지 않는다. 48h·오프라인 실패·자동 소유권 이전은 MAIN에 적용하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/13"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-005.json",
+                "sha256": "0889037f12e817b0149123ea873a6b3ffff2d3b6a09579984d7c8573a69912ca",
+                "pointer": "/records/9"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-005.json",
+                "sha256": "8f1e62e1a05593eef64dede56f24e3b0ba2480470643d54569acd310c0bc474b",
+                "pointer": "/records/9"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+                "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+                "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/cards/SERVICE-DIONYSUS.json",
+                "sha256": "eac5922a54e3dc83f6899ced0f877b946f187539620b9460e91dae006b989df4",
+                "pointer": ""
+              }
+            ]
+          }
+        }
+      ],
+      "approved_service_baseline": {
+        "status": "existing_approved_special_encounter_flow",
+        "tier": "중급",
+        "unused_village_required": true,
+        "single_body": true,
+        "one_active_potion_request": true,
+        "accepted_list_fixed": true,
+        "request_deadline_real_hours": 48,
+        "access_introduction_a": "실제 인연·연락 수단·상대 의사·접근 조건 필요. 소환·MAIN·가호 지급 아님.",
+        "accessory_b": "술 의뢰 성공 후 장신구 선택. 장신구 자체는 주시가 아님.",
+        "personal_main": "장신구 → 독점 MAIN 제시 → 첫 유효 수락 소유자 → 실제 MAIN 완료 → 소유자 주시",
+        "detailed_main_subscenes_status": "existing_written_proposal_not_newly_approved_by_integration",
+        "used_village_reusable": false,
+        "source_file": "스토리/03_성장과_특수조우_상세안.md",
+        "source_lines": [
+          109,
+          122,
+          144,
+          158,
+          176,
+          204,
+          216,
+          266,
+          274
+        ],
+        "sha256": "044109424a77d571f6fc9a0b59ebe72fb55ea8174e0957d53908f3709033d45a",
+        "verification_status": "current_packaged_source_line_and_hash_verified",
+        "target_eligibility_policy_ref": "current_connection_service_target_policy",
+        "accessory_b_main_ownership_rule": {
+          "main_unclaimed": "장신구 수령 후 독점 개인 MAIN을 제시할 수 있으며 실제 유효 수락·완료 뒤 주시를 받는다.",
+          "main_owned_by_other_player": "b 선택을 남겨 장신구만 받는다. 다른 플레이어의 MAIN 소유권·진행·주시를 복제하지 않는다.",
+          "source_message_id": "Sentinel_543dcbc60e9c8191a1f41bc92daf2e1b",
+          "context_verified_by_parent": "앞선 질문은 다른 플레이어가 이미 MAIN을 맡았을 때 b를 남길지 여부였다.",
+          "runtime_binding": false
+        }
+      },
+      "rule": "기존 확정 정체·등급·서비스를 고정한다. 기존 저술안은 기존 저술안 상태로 유지한다. 아래 새로운 해금 이력·구체 만남·전이 연출은 채택 검토 대상이며 과거 발생 사실이 아니다.",
+      "connection_service_target_policy": {
+        "status": "user_confirmed_scope_implementation_unverified",
+        "runtime_binding": false,
+        "all_cast_automatically_eligible": false,
+        "separate_target_eligibility_per_service": true,
+        "complete_target_lists": null,
+        "checks": [
+          "실제 채택된 동일 개체",
+          "서비스별 허용 대상 여부",
+          "봉인 및 현재 생존·결속 등 상태",
+          "해당 접촉 방식의 접근 조건",
+          "정보 근거와 공개 가능 범위",
+          "해당 서비스에 필요한 상대 의사·연락 수단"
+        ],
+        "chimera_default_bypass": false,
+        "unwritten_target_policy": "명부에 있다는 이유만으로 호출·안내 대상으로 간주하지 않는다. 대상별 허용 범위는 별도 저작·검증한다.",
+        "source_message_ids": [
+          "Sentinel_33a1cb79b38481919469572c6c50d574"
+        ],
+        "service": "dionysus_call",
+        "individual_rule": "실제 인연과 허용된 연락 수단이 있는 상대 중 응답 가능한 대상과 대화만 연결한다. 인연 부재·적대·거절 등으로 불가하면 다른 적격 대상을 고르게 한다. 본체 소환이나 강제 협력·보상은 아니다."
+      }
+    },
+    "basic_persona": {
+      "origin": "기존 페르소나 원문 유지·요약; 사망 기록역은 신규 현재 인격 없음",
+      "retained_original_description": "처음 듣는 결말과 서로 다른 맛에 자기부터 신이 난다. 한 대목 더 듣고 싶어 붙들려다가 상대가 지치면 아쉬운 채 잔을 내려놓는다. 모두 같은 표정으로 억지로 남은 자리에는 흥미를 잃으며, 술을 거절한 이에게도 다른 음료와 이야기 자리를 권할 수 있다.",
+      "retained_original_personality": [
+        "느긋하게 초대하고 웃지만 취객의 위협에는 웃음을 거둔다.",
+        "자기도 즐기고 싶어 결말을 한 번 더 청하는 욕심이 있다. 거절을 들으면 이유를 캐지 않고 멈춘다.",
+        "사람마다 다르게 끝맺는 짧은 이야기를 좋아한다."
+      ],
+      "retained_original_values": [
+        "술이나 공연을 거절한 사람을 흥을 망쳤다고 몰아세우지 않는다.",
+        "즐거움이라는 말로 타인의 거절을 지우지 않는다."
+      ],
+      "retained_original_dialogue_guidelines": [
+        "친근한 반말과 느슨한 말끝. 재밌는 대목에는 짧은 감탄이 먼저 나온다.",
+        "거절 뒤에는 장황한 훈계 대신 자기가 이야기를 하거나 다음 놀이로 넘어간다.",
+        "위협을 막을 때는 잔 내려놔 같은 짧고 차가운 말로 박자를 바꾼다."
+      ],
+      "life_and_independent_motive": "처음 듣는 이야기와 서로 다른 맛으로 본인부터 즐거운 잔치를 원한다. 결말을 한 번 더 듣고 싶은 욕심은 있지만 거절한 사람을 붙잡지 않고, 술을 거절하면 다른 음료나 이야기를 권할 수 있다. 매번 의뢰·소개 서비스를 팔 필요는 없다.",
+      "voice_summary": "친근한 반말, 느슨한 말끝과 짧은 감탄. 위협을 막을 때는 갑자기 짧고 차가워진다.",
+      "rudeness_and_conflict": "농담은 받아치지만 거절 무시·취객 위협에는 웃지 않는다. 술 안 마시는 사람을 흥을 망쳤다고 몰지 않는다.",
+      "refusal": "강제 음주·공연·모든 신 호출·봉인 우회를 거절한다. 상대가 지쳤으면 아쉬워도 본인이 이야기를 하거나 화제를 놓는다.",
+      "knowledge_boundaries": "실제 확인한 납품과 전해 들은 출처만 안다. 포션만 보고 모든 탐험 여정을 알지 않는다. 실제 인연과 연락 상태를 넘는 다른 신의 비밀·소재·의사는 모른다.",
+      "two_sample_lines": [
+        "“싫으면 말고. 네 잔은 비워 둬도 돼. 이번엔 내가 짧은 이야기 하나 할게.”",
+        "“말을 건네 볼 수는 있어. 그 사람이 오겠다는 약속까지 내가 할 수는 없지.”"
+      ],
+      "sample_status": "기존 말투를 따른 신규 예시. 실제 접촉·앎·청중 조건이 충족된 때만 사용; 실행 판정 아님"
+    },
+    "unlock_history": {
+      "status": "이번 연결 설계 제안; 고정 기존 조건을 대체하지 않음",
+      "kind": "기존 서비스 성공 이력",
+      "logical_rule": "추가 세계 해금 과제 없음. 방문자별 개인 해금을 두지 않는다. 미사용 마을·진행 중 동일 술 의뢰 없음·단일 본체라는 기존 공용 조건 유지. 장신구 b/소개 a는 기존 술 의뢰의 실제 성공 뒤 선택권이며 인사 이력으로 지급하지 않는다.",
+      "tracking_and_attribution": "실제 등장한 마을만 서버 사용 이력. 수락자·고정 포션 목록·절대 현실 종료시각·유효 납품을 분리한다. b 개인 일회 수령 이력은 거래/분실로 초기화되지 않는다.",
+      "does_not_gate": "C06 완료·신격·새 수집 업적·선행 개인 MAIN을 최초 만남 필수로 추가하지 않는다.",
+      "npc_awareness": "서버 자격 기록은 NPC 지식이 아니다. 본인 목격 또는 출처 있는 실제 전달 뒤에만 그 행동을 언급한다."
+    },
+    "present_encounter": {
+      "location": "아직 실제 등장에 사용하지 않은 기존 마을 광장/여관 앞 등. 새 연회장 불필요.",
+      "time_basis": "기존 마을 진입 또는 10분 확률 판정 방향 유지. 10분 활동시계/재진입 묶음은 운영 제안. 술 의뢰만 유효 수락부터 현실 48시간.",
+      "current_item": "인사에 포션 불필요. 의뢰 수행은 수락 때 고정된 실제 획득 가능 포션 종류·수량만.",
+      "current_state": "등장 전에는 동일 술 의뢰 진행자 없음과 단일 본체의 중복 없는 등장·이동 가용성을 확인한다. 성공 뒤 본체의 실제 이동·위치를 확인한 다음 접촉한다. 이미 현장에 있는 친구와의 잡담은 새 조우 추첨이 아니다.",
+      "and_or_logic": "등장 전 판정은 appearance_trigger를 따른다. 등장 후 일반 대화 = 현장에 있는 동일 본체 AND 현재 대화 의사. 의뢰 제시·수락은 별도이며 이미 현장에 있는 친구와의 잡담은 새 조우 추첨이 아니다.",
+      "discoverable_clue": "잔을 늘어놓고 맛/이야기의 차이에 반응하는 모습. 술은 등록 포션의 서사 표현이지 미설치 취기·발효 시스템이 아니다.",
+      "sealed_dream_record_restriction": "신규 봉인을 만들거나 무봉인을 단정하지 않는다. 현재 유효한 접근·단일 본체·의사를 확인하고 완전 봉인/부재이면 직접 발화 없음.",
+      "status": "실제 맵 배치·실행 연결 전 저술안. 좌표·스폰 확정 아님",
+      "appearance_trigger": {
+        "stage": "appearance_candidate_before_body_presence",
+        "candidate_location": "아직 실제 등장에 사용하지 않은 기존 마을 광장/여관 앞 등. 새 연회장 불필요.",
+        "candidate_time_items_state": "새 조우에 동일 술 의뢰 진행자 없음 AND (기존 마을 진입 판정 OR 기존 10분 판정) 적중. 인사에 포션 소지 불필요. 10분 활동시계/재진입 묶음은 기존 운영 제안이며 새로 확정하지 않는다.",
+        "world_and_subject_rule": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+        "existing_body_path": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다.",
+        "adoption_and_mode_limit": "현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다.",
+        "existing_world_availability": "동일 본체가 중복 없이 등장·이동할 수 있는 상태여야 한다. 후보 마을에 이미 본체가 있어야 하는 조건은 아니다."
+      }
+    },
+    "narrative_beats": [
+      {
+        "title": "그냥 머물러도 되는 자리",
+        "text": "이야기·음료를 거절하거나 잡담만 하고 떠날 수 있다. 취객의 위협에는 웃음을 거두지만 이 장면이 신규 전투 의뢰를 자동 발급하지 않는다.",
+        "status": "기존 생활·첫 만남 유지"
+      },
+      {
+        "title": "한 번 맡은 목록",
+        "text": "요구 종류·수량·상자·현실 48시간 마감·보상 선택을 먼저 듣고 명시 수락한다. 양조·기존 적법 재고·허락받은 친구 제공 중 실제 가능한 경로로 모으며 “새로 만들기”를 강제하지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "실제 병과 실제 선택",
+        "text": "기한 내 유효 납품을 실제 확인해 요구량만 정산하고 a 대화 연결 OR b 전용 장신구 중 고른다. 부분 미정산 물자/초과분·오류는 기존 반환·보류 원칙을 유지한다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "소개 또는 매듭",
+        "text": "a는 실제 인연·연락 수단·적격 상대 의사 안의 대화만 연결한다. b는 일회 장신구 수령 후 독점 MAIN 제시 가능, 첫 유효 수락자의 실제 MAIN 완료 뒤 주시. 다른 소유자가 있으면 b 장신구만 남기고 MAIN/주시를 복제하지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "만료 뒤에도 사람은 남는다",
+        "text": "실패·포기·로그아웃을 벌금·관계 박탈·세계 재앙으로 만들지 않는다. 실제 등장 마을은 재사용하지 않고 다음 적격 마을/현재 본체 이동을 확인한다. b를 잃어버렸다고 새 보상권을 발행하지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      }
+    ],
+    "connections": {
+      "necessary": [
+        {
+          "target": "기존 술 의뢰 성공→a 또는 b",
+          "reason": "실제 수락·고정 목록·48시간 내 납품이 필요. a와 b는 선택이며 모두 지급하지 않는다."
+        },
+        {
+          "target": "a의 실제 상대",
+          "reason": "서비스 허용 대상 AND 인연·연락 수단 AND 현재 접근·봉인·응답 의사. 단순 명부 등재는 대상 자격 아님."
+        },
+        {
+          "target": "b 후속 개인 MAIN",
+          "reason": "장신구 자체와 주시는 별개. MAIN 미소유일 때만 적격 첫 유효 수락을 검증하고 실제 완료 뒤 소유자 주시."
+        }
+      ],
+      "optional": [
+        {
+          "target": "아리아드네 기존 개인 씨앗",
+          "reason": "버려진 약속·타인의 자유 논점은 유지하되 서비스 최초 선행/새 필수 배역 아님."
+        },
+        {
+          "target": "선택된 적격 신",
+          "reason": "a를 실제 선택한 시점에만 특정 대상의 연결 간선을 만든다. 모든 신 자동 전화망 없음."
+        }
+      ],
+      "edge_rule": "필요는 적힌 장면/협력에 한정된다. 특정 NPC의 출석을 C 본편 전체 필수 선행으로 늘리지 않는다. 소개는 상대 의사·봉인·실제 위치를 우회하지 않는다."
+    },
+    "player_dialogue_agency": "질문·잡담·술 거절·수집 거절은 수락이 아니다. 완료 뒤 a/b를 미루거나 a 대상의 조건을 묻고 다른 적격 대상을 고를 수 있다. 경쾌한 말투로 마감·비용을 숨기지 않는다.",
+    "multiplayer_and_world_consequences": "마을 사용·한 본체·한 진행 의뢰는 서버 공용. 수락자·실제 기여·보상 선택권·b 일회 수령·MAIN 소유·주시 각각 분리. 친구 물자는 명시 제공 의사 필요. 세계 진행이 바뀌어도 진행 중 포션 목록/마감은 고정.",
+    "required_capabilities_pending": [
+      "실제 마을 판정·중복 추첨/재진입 악용 방지",
+      "절대 현실시각·납품 시각·재시작 복구",
+      "상자 실물·정산·반환·보상 중복 방지",
+      "서비스별 대상 목록·연락 수단·의사 조회",
+      "기존 2슬롯 중 실제 착용 확인, /발동 BGM 켜기·같은 명령 끄기, 착용자 추적·음원·청취/동시재생·종료 처리 검증. 새 전투 효과는 없다."
+    ],
+    "new_proposal_boundary": "서술상 필요한 실제 행동을 설계했으나 신규 advancement ID, 거리·행동 카운터, 전용 구조물, 자동 소환·이동·지식 공유가 구현되었다고 보지 않는다. 숫자 밸런스·퀘스트 목표 JSON·자유대화 실테스트·배포는 범위 밖.",
+    "new_accessory_proposal": {
+      "status": "사용자 채택 BGM 방향; 실제 구현·아이템 등록·음원 배포 전",
+      "name": "빈 잔의 매듭 (이전 가칭; 최종 이름 미정)",
+      "grade_and_slots": "디오니소스 중급 유지. 장신구 2칸 중 1칸을 점유하며 추가 칸·자동 장착 없음. 다른 중급으로 예외 확대 없음.",
+      "identity": "작은 잔 모양 매듭이라는 기존 외형·명칭 후보는 유지 가능. 이름과 모델도 최종 확정은 아니다.",
+      "one_main_effect": "기존 장신구 전용 2칸 중 하나에 실제 착용한 플레이어가 /발동을 입력하면 주변에 신나는 BGM이 재생된다. 재생 위치는 착용자를 따라가고 같은 명령을 다시 입력하면 꺼진다. 음악은 사용자가 직접 선택·준비한다. 가방 보유만으로 발동하지 않는다.",
+      "combat_boundary": "연출용 음악 한 가지다. 정화·회복·피해 지연·공격 전환·광란·포션 연장·쿨다운 환급·NPC 소환 등 추가 전투 효과를 붙이지 않는다.",
+      "ownership": "기존 b 개인 일회 지급·분실/양도 시 재발급 금지 원칙 유지. 다른 플레이어가 MAIN 소유 중이어도 장신구만 수령하는 b 선택 가능.",
+      "story_service_preserved": "고정 술 의뢰·a/b 선택·개인 일회 지급·독점 MAIN·주시의 기존 조건은 그대로 유지한다. 음악을 켜는 일은 새 가호·MAIN 수락·지원 요청이 아니다.",
+      "pending": [
+        "음원",
+        "최종 이름·아이템 ID",
+        "청취 반경",
+        "볼륨·감쇠",
+        "반복/곡 종료",
+        "동시 재생",
+        "수신자 음소거",
+        "레이드 경고음 우선",
+        "장착 해제·로그아웃·사망·차원 변경 처리",
+        "복수 명령형 장신구 대상 구분"
+      ],
+      "current_approved_overlay": {
+        "schema": "authoring_override.v1",
+        "record_key": "RPG-S01-014",
+        "status": "user_adopted_concept_not_runtime",
+        "source_message_ids": [
+          "Sentinel_a26003ba52a08191b29382bcacc28998",
+          "Sentinel_3c976567ca6481918746660620a62600"
+        ],
+        "rank_unchanged": "중급",
+        "category_exception": "디오니소스 전용 장신구 1종",
+        "slot_rule": "기존 2칸 중 한 칸에 장착",
+        "activation_command": "/발동",
+        "effect": "착용자 주변 신나는 BGM 재생",
+        "follows_wearer": true,
+        "same_command_toggles_off": true,
+        "audio_source": "사용자가 직접 선택·준비",
+        "combat_effects_added": false,
+        "runtime_ready": false,
+        "superseded_candidates": [
+          "포션 지속시간 연장",
+          "일시적 해로운 효과 정화",
+          "피해 지연",
+          "일반 몬스터 공격 전환",
+          "흥취를 통한 무기 스킬 쿨다운 환급",
+          "주는 피해·받는 피해 동시 증가"
+        ],
+        "pending": [
+          "음원",
+          "최종 이름·아이템 ID",
+          "청취 반경",
+          "볼륨·감쇠",
+          "반복/곡 종료",
+          "동시 재생",
+          "수신자 음소거",
+          "레이드 경고음 우선",
+          "장착 해제·로그아웃·사망·차원 변경 처리",
+          "복수 명령형 장신구 대상 구분"
+        ]
+      },
+      "runtime_ready": false
+    },
+    "current_unlock_scope": {
+      "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+      "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+      "encounter_subject": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+      "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+      "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+      "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+      "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+    },
+    "source_text_use_boundary": {
+      "untouched_original_quote_pointers": [
+        "/superseded_accessory_archive",
+        "/fixed_and_existing/current_access_preserved/source_references/0/text"
+      ],
+      "rule": "위 원문 인용과 source_anchors·source_references·sha256은 출처 보존 영역이다. 과거 해금·동행 문구나 옛 설정이 있더라도 현재 유효 요약으로 자동 적용하지 않는다. 그 밖의 이야기·말투·취향은 유지하며, 현행 조건은 이 인물의 수정된 해금·조우 항목과 current_unlock_scope를 따른다. 원문 파일·명부·기존 전달본 자체는 수정하지 않았다.",
+      "original_quote_status": "archived_source_text_not_current_runtime_or_unlock_rule",
+      "current_effective_summary_pointers": [
+        "/unlock_history",
+        "/present_encounter",
+        "/current_unlock_scope",
+        "/new_accessory_proposal"
+      ]
+    },
+    "superseded_accessory_archive": {
+      "status": "폐기 또는 미채택된 이전 원문 보존 전용; 현재 효과·AI 지시·실행 후보로 사용 금지",
+      "prior_new_accessory_proposal_verbatim": {
+        "name": "빈 잔의 매듭 (가칭)",
+        "status": "중급 예외 장신구 1종 제작 방향만 유지. 효과 재설계 중이며 새 효과는 미승인·미구현.",
+        "grade_and_slots": "디오니소스 중급 유지. 장신구 2칸 중 1칸을 점유하며 추가 칸·자동 장착 없음. 다른 중급으로 예외 확대 없음.",
+        "identity": "작은 잔 모양 매듭이라는 기존 외형·명칭 후보는 유지 가능. 이름과 모델도 최종 확정은 아니다.",
+        "one_main_effect": "현재 채택된 주효과 없음. 포션 섭취 빈도에 기대지 않는 효과로 재설계한다. 이야기 산출물은 이 미결정과 무관하게 완료한다.",
+        "not_multiple_effects": "2026-10-21 사용자 지시로 포션 지속시간 연장안은 폐기했다. 대부분의 Minecraft 버프를 가호로 영구 취득해 지속 포션을 거의 마시지 않는다는 실제 사용 전제를 반영한다. 기존 소량 최대체력도 과거의 미확정안이며 자동 복원하거나 새 후보와 중첩하지 않는다.",
+        "boundaries": [
+          "현재 확정 효과·수치·아이템 ID 없음.",
+          "장신구 자체는 주시·MAIN 완료·가호·NPC 특수능력·호출권이 아니다.",
+          "고정 술 의뢰·a/b 선택·개인 일회 지급·후속 MAIN 소유 규칙은 변경하지 않는다.",
+          "긍정/영구 가호와 겹치는 재생·화염저항 등의 단순 중복을 기본 효과로 추가하지 않는다."
+        ],
+        "balance_pending": "영구 가호 이후에도 반복적으로 겪는 실제 불편과 기존 장신구 효과표를 확인한 뒤 단일 효과를 선택한다. 정확 수치와 작동 조건 미정.",
+        "implementation_pending": "서버 실제 임시 부정 상태의 구분·부여 원인·중복/갱신·가호 보존 기능을 확인하기 전 효과를 확정하지 않는다.",
+        "ownership": "기존 b 개인 일회 지급·분실/양도 시 재발급 금지 원칙 유지. 다른 플레이어가 MAIN 소유 중이어도 장신구만 수령하는 b 선택 가능.",
+        "proposal_tests": [
+          "폐기한 포션 지속시간 효과가 활성 제안에 남지 않는가",
+          "2슬롯·중급 예외가 유지되는가",
+          "이야기·48시간 술 의뢰·a/b·MAIN·주시의 기존 조건을 변경하지 않았는가"
+        ],
+        "latest_user_change": {
+          "message_id": "Sentinel_92b7371abaf0819185216813630a5676",
+          "meaning": "지속 포션을 거의 사용하지 않으므로 지속시간 효과를 재설계한다. 새 정화 효과 승인으로 해석하지 않는다."
+        }
+      },
+      "prior_replacement_proposal_verbatim": {
+        "status": "대체 후보 1안. 사용자에게 따로 검토받을 제안이며 자동 채택·승인·구현 아님.",
+        "working_effect": "전투에서 새로 부여된 허용 목록의 일시적 적대 상태 중 하나만 조건부로 해제한다. 포션을 마실 필요가 없는 패시브 후보다.",
+        "gameplay_value": "영구 긍정 가호가 많은 뒤에도 몬스터나 현장에서 일시적 부정 상태가 실제로 자주 걸린다면, 기존 버프를 더 길게/강하게 만드는 대신 행동 방해에서 한 번 벗어나는 별도 가치를 준다. 우유처럼 긍정 효과 전체를 지우는 방식이 아니다.",
+        "one_effect_only": "정화 외 재생·회복·저항·무적·이동속도 상승을 묶지 않는다. 발동 이후 새 상태에 걸리지 않는 면역 시간도 기본으로 넣지 않는다.",
+        "hard_boundaries": [
+          "긍정 효과·영구 가호는 해제하지 않는다. 가호 데이터 전체 리셋이나 전체 효과 제거 명령을 사용하지 않는다.",
+          "일시적 적대 상태 한 개만 대상. 신적 저주·서사 저주·봉인·계약·구속·세계 상태는 대상이 아니다.",
+          "보스 핵심 기믹·중요 전투 표식·변신/구속 단계는 기본 제외한다. 상태 분류가 불명확하면 적용을 보류한다.",
+          "화염 피해·낙하·질식 등의 일반 피해를 상태 이상이라는 말로 통째로 무효화하지 않는다. 영구 저항 가호를 다시 주는 효과도 아니다.",
+          "모든 부정 효과를 한꺼번에 지우거나 연속 재적용을 무한 정화하지 않는다. 장착 교체·로그아웃·친구 돌려쓰기로 제한을 초기화하지 않게 검증한다."
+        ],
+        "pending_design": [
+          "정확한 발동 계기와 조건: 적대 상태의 새 부여/갱신 중 무엇을 인정할지 미정",
+          "발동 확률 또는 조건부 보장 중 방식·재발동 제한·쿨다운 미정",
+          "대상 상태의 실제 허용 목록과 여러 상태가 동시에 걸릴 때 선택 우선순위 미정",
+          "장착 전 이미 걸린 효과·스택형/모드 효과·재시작/장착 해제 처리 미정"
+        ],
+        "validation_before_adoption": "실제 적과 레이드가 플레이어에게 부여하는 임시 부정 상태가 무엇이며 영구 가호로 이미 면역인지 먼저 확인한다. 유효한 불편이 드물거나 보스 기믹과 분리 불가하면 이 후보도 버리고 다른 역할을 고른다.",
+        "source": "사용자의 포션 이용 전제 수정에 대응한 신규 후보. 사용자 발언은 이 효과를 승인한 것이 아니다."
+      },
+      "current_replacement": "현재 유효 방향은 new_accessory_proposal의 착용자 추적 BGM 토글 한 가지뿐이다."
+    }
+  }
+}

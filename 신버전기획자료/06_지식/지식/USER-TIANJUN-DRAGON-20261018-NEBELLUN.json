@@ -1,0 +1,157 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN",
+  "name": "네벨룬",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "네벨룬",
+    "canonical_name": "네벨룬",
+    "mythology": "게임 고유",
+    "tier": "상급",
+    "combat_tier": "상급",
+    "war_allegiance": {
+      "value": "천군",
+      "status": "user_approved_scoped_design",
+      "source": {
+        "approval_message_id": "Sentinel_68964894b0248191ae5db8589d7ae46e"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "루브라스를 따르는 용족",
+      "status": "user_approved_scoped_design",
+      "source": {
+        "approval_message_id": "Sentinel_68964894b0248191ae5db8589d7ae46e"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "현재 미봉인. 일반 용족 전체나 용 형상의 신수를 루브라스 부하로 만드는 설정이 아니다.",
+      "status": "user_approved_scoped_design",
+      "source": {
+        "approval_message_id": "Sentinel_68964894b0248191ae5db8589d7ae46e"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "이름과 초기 인물 제안 채택. 성별·정확한 조우 시점·장소·퀘스트·보상은 미정.",
+      "status": "user_approved_scoped_design",
+      "source": {
+        "approval_message_id": "Sentinel_68964894b0248191ae5db8589d7ae46e"
+      },
+      "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": null
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/769/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 profile 없음",
+    "verbatim": null,
+    "source": null,
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+        "text": "실제 떠다닌 가까운 물길과 지금 몸이 걸린 상태, 자기 게으름, 직접 겪은 참전 경험.",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/known",
+        "initial_world_public_fact": false,
+        "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:SELF:001"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "조건부 신규 습득 규칙",
+        "content_pointer": "/source_material/current_knowledge_1/verbatim/learning",
+        "occurred": false,
+        "unlock": [
+          "해당 원문의 실제 관측·수신 조건",
+          "출처와 청중별 공개 허락"
+        ],
+        "memory_scope": "실제 개인별 획득",
+        "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:EVENT:001"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known",
+      "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:BOUNDARY:001"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/uncertain",
+      "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:BOUNDARY:002"
+    },
+    {
+      "category": "비공개 또는 공개 거절 가능; 세계 공지 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/private_or_refusable",
+      "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:BOUNDARY:003"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown",
+      "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:BOUNDARY:004"
+    },
+    {
+      "category": "조건부 신규 습득 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/learning",
+      "authoring_item_key": "USER-TIANJUN-DRAGON-20261018-NEBELLUN:BOUNDARY:005"
+    }
+  ],
+  "source_material": {
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/769/outline/stage2_proposal/basic_persona/knowledge"
+      },
+      "verbatim": {
+        "known": "실제 떠다닌 가까운 물길과 지금 몸이 걸린 상태, 자기 게으름, 직접 겪은 참전 경험.",
+        "uncertain": "인간이 왜 서두르는지, 새 물자리의 현재 깊이·폭, 듣기만 한 안부의 정확성.",
+        "private_or_refusable": "숨은 비극·비밀 사명은 추가하지 않는다. 답하기 귀찮거나 말하고 싶지 않다는 이유로도 거절할 수 있다. 실제로 알지만 말하지 않는 사실을 모른다고 거짓말해 숨기지는 않는다.",
+        "unknown": "먼 강의 재난, 모든 항로, 다른 용의 현재 위치와 루브라스 봉인 수단.",
+        "learning": "실제 본 수면·물길과 출처 있는 설명을 구분해 기억한다. 이동은 실제 결과가 확인돼야 새 자기 경험이 된다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": null,
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [
+    "원본 profile 부재; 현행 지식 문단으로 범위 보존",
+    "별도 scope knowledge_events 없음; 사건을 발명하지 않음"
+  ],
+  "knowledge_route_index": []
+}

@@ -59,6 +59,11 @@ neoForge {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+        supportClient {
+            client()
+            gameDirectory = project.file(providers.gradleProperty('roomTestDirectory').orElse('build/support-graphics-runtime').get())
+            programArguments.addAll '--username', 'SupportGUI', '--width', '1280', '--height', '800'
+        }
 
         server {
             server()
@@ -70,6 +75,7 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            gameDirectory = project.file('build/gametest-runtime')
             // The tests are ours, while their minimal structure template is a built-in Minecraft resource.
             systemProperty 'neoforge.enabledGameTestNamespaces', "${project.mod_id},minecraft,mythictrpg_story_evidence"
         }
@@ -99,6 +105,8 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('roomTestNamespaces')
                     .getOrElse('mythictrpg_room_integration,minecraft,mythictrpg_story_evidence')
             systemProperty 'mythai.fixture.nativeRetrievalShadow', providers.gradleProperty('roomNativeRetrievalShadow').orElse('false').get()
+            systemProperty 'mythai.fixture.liveDialogue', providers.gradleProperty('roomLiveDialogue').orElse('false').get()
+            systemProperty 'mythai.fixture.supportStatistics', providers.gradleProperty('roomSupportStatistics').orElse('false').get()
         }
 
         data {
@@ -137,6 +145,56 @@ neoForge {
     }
 }
 
+// Archived personas and authored demo content are test inputs only. Never add this
+// directory to main resources or mod source bindings: production/client/server
+// launches must stay empty until replacement content is authored.
+def legacyGameTestResources = layout.projectDirectory.dir('src/gametest/resources')
+def legacyFixtureSourceDirectory = legacyGameTestResources.asFile.canonicalFile
+def legacyFixtureBuildDirectory = layout.buildDirectory.get().asFile.canonicalFile
+def legacyContentFixtures = providers.gradleProperty('legacyContentFixtures').orElse('true').get()
+if (!(legacyContentFixtures in ['true', 'false'])) {
+    throw new GradleException('legacyContentFixtures must be true or false')
+}
+neoForge.runs.each { run ->
+    if (run.type.get() == 'gameTestServer') {
+        def capitalizedName = run.name.substring(0, 1).toUpperCase(Locale.ROOT) + run.name.substring(1)
+        def legacyRuntimeDirectory = run.gameDirectory.get().asFile.canonicalFile
+        def legacyFixtureDirectory = new File(legacyRuntimeDirectory, 'world/datapacks/mythictrpg-legacy-content-fixture').canonicalFile
+        run.systemProperty('mythictrpg.legacyContentFixtures', legacyContentFixtures)
+        // Main uses --world before server.properties; pin this name to the pack
+        // destination even when a preserved development config uses another name.
+        run.programArguments.addAll('--world', 'world')
+        if (legacyContentFixtures == 'false') {
+            def verifyNoFixture = tasks.register("verify${capitalizedName}HasNoLegacyContentFixture") {
+                doLast {
+                    if (legacyFixtureDirectory.exists()) {
+                        throw new GradleException('A previous legacy content fixture is present; use a fresh GameTest build/ directory')
+                    }
+                }
+            }
+            tasks.named("run${capitalizedName}") { dependsOn verifyNoFixture }
+            return
+        }
+        def prepareFixture = tasks.register("prepare${capitalizedName}LegacyContentFixture", Sync) {
+            from(legacyFixtureSourceDirectory)
+            into(legacyFixtureDirectory)
+            doFirst {
+                def buildPath = legacyFixtureBuildDirectory.toPath()
+                def runtimePath = legacyRuntimeDirectory.toPath()
+                def outputPath = destinationDir.canonicalFile.toPath()
+                if (runtimePath == buildPath || !runtimePath.startsWith(buildPath)
+                        || !outputPath.startsWith(runtimePath)) {
+                    throw new GradleException('Legacy content GameTest fixtures must remain in a development build/ directory')
+                }
+                if (!new File(legacyFixtureSourceDirectory, 'pack.mcmeta').isFile()) {
+                    throw new GradleException('Missing isolated legacy GameTest fixture pack')
+                }
+            }
+        }
+        tasks.named("run${capitalizedName}") { dependsOn prepareFixture }
+    }
+}
+
 // Sets up a dependency configuration called 'localRuntime'.
 // This configuration should be used instead of 'runtimeOnly' to declare
 // a dependency that will be present for runtime testing but that is
@@ -146,6 +204,19 @@ configurations {
 }
 
 dependencies {
+    // Optional combat integration: compile against the pinned API, never bundle external mods.
+    compileOnly files('../external-mods/combat-compat/bettercombat-neoforge-2.4.0+1.21.1.jar',
+            '../external-mods/combat-compat/simplyswords-neoforge-1.70.2-1.21.1.jar')
+    if (providers.gradleProperty('combatMods').orElse('false').get() == 'true') {
+        localRuntime files(
+            '../external-mods/combat-compat/simplyswords-neoforge-1.70.2-1.21.1.jar',
+            '../external-mods/combat-compat/bettercombat-neoforge-2.4.0+1.21.1.jar',
+            '../external-mods/combat-compat/player-animation-lib-forge-2.0.4+1.21.1.jar',
+            '../external-mods/combat-compat/cloth-config-15.0.140-neoforge.jar',
+            '../external-mods/combat-compat/SimplyTooltips-neoforge-0.1.5.jar',
+            '../external-mods/combat-compat/fzzy_config-0.7.7+1.21+neoforge.jar',
+            '../external-mods/combat-compat/kotlinforforge-5.12.0-all.jar')
+    }
     // Recording v2 has one game-owned JDBC/native runtime, never duplicated into the AI JAR.
     // NeoForge 1.21.1 dev runs do not expose ordinary Java implementation libraries to mods.
     // Production still uses the jar-in-jar entry below; this is only the dev launch classpath.
@@ -225,11 +296,13 @@ sourceSets.main.resources.srcDir generateModMetadata
 // Dedicated namespaces keep focused regressions separate from older game fixtures.
 tasks.named('processResources', ProcessResources) {
     dependsOn 'createMinecraftArtifacts'
-    ['mythictrpg_story_choice', 'mythictrpg_component_rewards', 'mythictrpg_recording', 'mythictrpg_recording_rumor',
-     'mythictrpg_god_avatar', 'mythictrpg_npc_activity_body', 'mythictrpg_npc_activity', 'mythictrpg_npc_activity_memory', 'mythictrpg_npc_work', 'mythictrpg_npc_activity_schema', 'mythictrpg_raid', 'mythictrpg_raid_offer', 'mythictrpg_power',
+    ['mythictrpg_content_isolation', 'mythictrpg_content_systems', 'mythictrpg_story_choice', 'mythictrpg_component_rewards', 'mythictrpg_recording', 'mythictrpg_recording_rumor',
+     'mythictrpg_god_avatar', 'mythictrpg_npc_activity_body', 'mythictrpg_npc_activity', 'mythictrpg_npc_activity_memory', 'mythictrpg_npc_work', 'mythictrpg_npc_activity_schema', 'mythictrpg_raid', 'mythictrpg_raid_offer', 'mythictrpg_power', 'mythictrpg_weapon_skills', 'mythictrpg_accessories', 'mythictrpg_special_skills', 'mythictrpg_progression_rewards',
+     'mythictrpg_party', 'mythictrpg_wild_combat', 'mythictrpg_accessory_inventory', 'mythictrpg_combat_compat', 'mythictrpg_combat_optional',
+     'mythictrpg_prototype_catalog', 'mythictrpg_prototype_combat', 'mythictrpg_combat_prototype',
      'mythictrpg_generated_rewards', 'mythictrpg_blessings', 'mythictrpg_quest_contact', 'mythictrpg_quest_participation', 'mythictrpg_recording_channels', 'mythictrpg_recording_read', 'mythictrpg_native_evidence',
      'mythai_native_content_evidence', 'mythictrpg_native_interpretation', 'mythictrpg_story_evidence', 'mythictrpg_home_visit',
-     'mythictrpg_action_confirmation', 'mythictrpg_quest_access', 'mythictrpg_quest_roster', 'mythictrpg_raid_ui', 'mythictrpg_understanding', 'mythictrpg_raid_choice'].each { testNamespace ->
+     'mythictrpg_action_confirmation', 'mythictrpg_quest_access', 'mythictrpg_quest_roster', 'mythictrpg_raid_ui', 'mythictrpg_understanding', 'mythictrpg_raid_choice', 'mythictrpg_activity_support', 'mythictrpg_activity_lifecycle', 'mythictrpg_support_statistics', 'mythictrpg_npc_directive', 'mythictrpg_gm_protection', 'mythictrpg_gm_actions', 'mythai_gm_action_narration'].each { testNamespace ->
         from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
             include 'data/minecraft/structure/bastion/mobs/empty.nbt'
             eachFile { path = "data/${testNamespace}/structure/empty.nbt" }
@@ -464,6 +537,12 @@ tasks.register('roomRecordingCaptureTest', JavaExec) {
     args layout.buildDirectory.dir('room-recording-test').get().asFile.absolutePath
 }
 tasks.named('check') { dependsOn 'roomRecordingCaptureTest' }
+tasks.register('captureReadFenceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.CaptureReadFenceTest'
+}
+tasks.named('check') { dependsOn 'captureReadFenceTest' }
 tasks.register('recordedRoomReadTest', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
@@ -715,6 +794,19 @@ tasks.register('recordedNativeEvidenceStoreTest', JavaExec) {
 }
 tasks.named('check') { dependsOn 'recordedNativeEvidenceStoreTest' }
 
+// Optional read-only replay of a preserved, build-contained synthetic failure archive.
+tasks.register('nativeRecallReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.recording.server.NativeRecallReplay'
+    def replayDatabase = providers.gradleProperty('nativeRecallDatabase')
+    if (replayDatabase.isPresent()) args replayDatabase.get()
+    doFirst {
+        if (!replayDatabase.isPresent())
+            throw new GradleException('Supply -PnativeRecallDatabase=<preserved build fixture SQLite path>')
+    }
+}
+
 // NeoForge 1.21.1 GameTestServer constructs only the FLAT preset, bypassing normal mod-dimension injection.
 // Add the production trial stem to a development-only preset; never ship a minecraft:flat override in the mod.
 if (providers.gradleProperty('roomTestNamespaces').orElse('').get().split(',').contains('mythictrpg_raid_trial')) {
@@ -750,6 +842,8 @@ if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictr
     def buildRootPath = layout.buildDirectory.get().asFile.canonicalFile.toPath()
     def fixtureRetrievalMode = providers.gradleProperty('roomNativeRetrievalMode').orElse(
             providers.gradleProperty('roomNativeRetrievalShadow').orElse('false').map { it == 'true' ? 'SHADOW' : '' }).get()
+    def supportDialogueFixture = providers.gradleProperty('roomSupportDialogue').orElse('false').get() == 'true'
+    def operatingDialogueFile = file('../server/config/mythictrpg/ai-dialogue.json')
     tasks.register('prepareRecordedAuthorityFixture') {
         doLast {
             if (!fixtureRoot.canonicalFile.toPath().startsWith(buildRootPath))
@@ -770,6 +864,14 @@ if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictr
                 settings['recording-v2.json'].maintenanceHeadroomBytes = 16777216L
             }
             def directory = new File(fixtureRoot, 'config/mythictrpg')
+            if (supportDialogueFixture) {
+                settings['action-ledger.json'] = [schemaVersion:1, enabled:true, maxStorageBytes:134217728,
+                    segmentBytes:4194304, maxIndexedEvents:100000, queueCapacity:256]
+                settings['action-detail.json'] = [schemaVersion:1, enabled:true, movementIntervalTicks:0, routineDiagnostics:true]
+                settings['watch-trial.json'] = [schemaVersion:1, enabled:true, maxStorageBytes:67108864, maxEntries:10000, queueCapacity:128]
+                // Exact current operating model/settings, copied only into a new build fixture. Never edit operating configuration.
+                settings['ai-dialogue.json'] = new groovy.json.JsonSlurper().parse(operatingDialogueFile)
+            }
             directory.mkdirs()
             settings.each { name, expected ->
                 def target = new File(directory, name)
@@ -781,6 +883,7 @@ if (providers.gradleProperty('roomTestNamespaces').orElse('').get() == 'mythictr
         }
     }
     tasks.named('runRoomIntegrationGameTestServer') { dependsOn 'prepareRecordedAuthorityFixture' }
+    tasks.named('runSupportClient') { dependsOn 'prepareRecordedAuthorityFixture' }
 }
 
 tasks.register('playerUnderstandingTest', JavaExec) {
@@ -790,3 +893,50 @@ tasks.register('playerUnderstandingTest', JavaExec) {
     args layout.buildDirectory.dir('player-understanding-tests').get().asFile.absolutePath
 }
 tasks.named('check') { dependsOn 'playerUnderstandingTest' }
+
+tasks.register('purposeStateTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.understanding.PurposeStateTest'
+    def artifacts = layout.buildDirectory.dir('purpose-state-tests')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'purposeStateTest' }
+
+tasks.register('activitySupportTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.understanding.ActivitySupportTest'
+    args layout.buildDirectory.dir('activity-support-tests').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'activitySupportTest' }
+
+tasks.register('supportStatisticsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.understanding.SupportStatisticsTest'
+    def destination = layout.buildDirectory.dir('support-statistics-tests')
+    doFirst { destination.get().asFile.mkdirs() }
+    args destination.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'supportStatisticsTest' }
+
+tasks.register('blessingSelectorTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.quest.reward.blessing.BlessingSelectorTest'
+}
+tasks.register('luckSelectorTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.quest.reward.luck.LuckSelectorTest'
+}
+tasks.named('check') { dependsOn 'blessingSelectorTest', 'luckSelectorTest' }
+
+tasks.register('weaponSkillDefinitionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.weaponskill.WeaponSkillDefinitionTest'
+}
+tasks.named('check') { dependsOn 'weaponSkillDefinitionTest' }

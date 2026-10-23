@@ -109,10 +109,15 @@ public final class MemoryRecallPolicy {
     }
     /** Never blindly cut off speaker/action/output constraints at the tail. */
     public static String fitContext(String context, boolean upgraded) {
+        return fitContext(context, upgraded, 12_000);
+    }
+    /** Explicit native room allowance only; legacy callers retain their existing 12k bound. */
+    public static String fitContext(String context, boolean upgraded, int limit) {
+        if (limit != 12_000 && limit != 16_000) throw new IllegalArgumentException("Unsupported context budget");
         if (!upgraded) return context.substring(0, Math.min(12_000, context.length()));
         // No silent permission/data truncation. The caller releases pending and reports a bounded failure.
         // Raw dialogue can contain fake section markers; never parse it to locate privileged sections.
-        if (context.length() > 12_000) throw new IllegalArgumentException("Required dialogue context exceeds safe budget");
+        if (context.length() > limit) throw new IllegalArgumentException("Required dialogue context exceeds safe budget");
         return context;
     }
 

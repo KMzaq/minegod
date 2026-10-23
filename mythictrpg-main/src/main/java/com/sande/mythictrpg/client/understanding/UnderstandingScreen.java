@@ -31,17 +31,21 @@ public final class UnderstandingScreen extends Screen {
         purpose = new EditBox(font, left, height - 55, Math.max(70, available - 154), 20, Component.literal("현재 목적 (본인 진술)"));
         purpose.setMaxLength(160); purpose.setValue(editing); purpose.setHint(Component.literal("현재 목적을 직접 적기 · NPC에게 자동 공유 안 됨"));
         purpose.setEditable(!page.pending() && page.active()); addRenderableWidget(purpose);
-        button(left, 30, 108, page.active() ? "분석 중단" : "여기서 분석 시작", () -> send(page.active() ? UnderstandingRequest.Action.PAUSE : UnderstandingRequest.Action.START, "", ""), !page.pending());
-        button(left + 112, 30, 76, "새로고침", () -> send(UnderstandingRequest.Action.REFRESH, "", ""), !page.pending());
-        button(left + available - 54, 30, 54, "닫기", this::onClose, true);
+        int controlWidth=(available-12)/4;
+        button(left, 30, controlWidth, page.active() ? "분석 중단" : "분석 시작", () -> send(page.active() ? UnderstandingRequest.Action.PAUSE : UnderstandingRequest.Action.START, "", ""), !page.pending());
+        button(left + controlWidth + 4, 30, controlWidth, "새로고침", () -> send(UnderstandingRequest.Action.REFRESH, "", ""), !page.pending());
+        button(left + 2*(controlWidth+4), 30, controlWidth, "진행 도움 전환", () -> send(UnderstandingRequest.Action.ADVICE, "", ""), page.active()&&!page.pending());
+        button(left + 3*(controlWidth+4), 30, controlWidth, "닫기", this::onClose, true);
         button(left, 55, 35, "<", () -> { selected = Math.max(0, selected - 1); scroll = 0; rebuildWidgets(); }, selected > 0);
         button(left + 40, 55, 35, ">", () -> { selected = Math.min(page.cards().size() - 1, selected + 1); scroll = 0; rebuildWidgets(); }, selected + 1 < page.cards().size());
         if (!page.cards().isEmpty()) {
             var c = page.cards().get(selected);
-            if (PlayerUnderstanding.validFeedbackKey(c.key()) && !c.key().equals("purpose"))
+            if (PlayerUnderstanding.validFeedbackKey(c.key()) && !c.key().equals("purpose")&&!c.key().equals(SupportSharing.KEY))
                 button(left + 82, 55, 110, c.disputed() ? "이의 제기 취소" : "이 해석에 이의 제기",
                         () -> send(c.disputed() ? UnderstandingRequest.Action.RESTORE : UnderstandingRequest.Action.DISPUTE, c.key(), ""), !page.pending());
         }
+        boolean shared=page.cards().stream().anyMatch(c->c.key().equals(SupportSharing.KEY)&&c.assessment().equals("허용"));
+        button(left+200,55,available-200,shared?"NPC 공유 끄기":"NPC 공유 켜기",()->send(UnderstandingRequest.Action.SHARING,"",""),page.active()&&!page.pending());
         button(left + available - 148, height - 55, 70, "목적 저장", () -> send(UnderstandingRequest.Action.DECLARE, "purpose", purpose.getValue()), page.active() && !page.pending());
         button(left + available - 74, height - 55, 74, "목적 철회", () -> send(UnderstandingRequest.Action.RETRACT, "purpose", ""), page.active() && !page.pending());
     }

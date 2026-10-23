@@ -1,0 +1,3094 @@
+{
+  "packet_id": "P2_NONQUEST-083",
+  "category": "지식",
+  "status": "현재 저술 완결·정적 검수, 구현/실행 아님",
+  "common_contract": {
+    "status": "현행 저술 채택·구현 명세, 실행 스키마 아님",
+    "new_side": 0,
+    "new_main": 0,
+    "new_growth_rewards": 0,
+    "time": "강제 제한시간 없음. 짧은 대화 2~5분, 생활 장면 5~12분 예상. 이동 시간 별도이며 실플레이 측정 아님.",
+    "range": "인수·집기·펼침·수선 같은 손 작업만 대상 2블록 이내. 보이는 자료 대조·일반 대화는 4블록 이내 및 실제 시야/청취. 지형 관찰은 원문 시야·16블록 이내 관측점. 여행은 실제 경로와 도착 증거이며 손 거리 조건 없음.",
+    "state": "회차 UUID·record_key·actual actor/player·branch·현물 소유/허락·부분 수행·응답·청중·권리·인수 receipt를 분리 저장. 선택은 실행이 아니다.",
+    "resume": "사망은 일반 규칙, 로그아웃은 오프라인 수행0. 현재 본체·현물·미완료만 재검사하고 이미 끝난 이동·소비·인수를 반복하지 않는다. 실제 손실은 되감지 않는다.",
+    "settlement": "원문 합의 범위·종류·정수량·대체재·행동 대가를 그대로 허용한다. 제안 기본값은 유일 경로가 아니다. 권리 성립, 제공 가능, 실제 인수/수강, 미수령, 명시 포기를 별개로 저장. 동일 회차 같은 권리 재정산0.",
+    "audience": "목격과 전언을 구별하고 실제 수신 청중만 앎을 얻는다. 친분·강함·파티는 사적 공개권이 아니다.",
+    "encounter": "스토리/현행활성화계약/00_현행활성화_공통계약.md의 일반 조우 활동300초·서버창25%·출현후1800초·actor 가중·적격 player 1명·NONE·CAS·재시작 원장을 재사용. 기존 전용 경로 우선. PRESENT 접촉 재추첨0; NEVER_PLACED만 첫 배치; UNLOADED_OR_MISSING은 동일 인스턴스 대조; 사망·봉인·기록은 새 생체 생성0.",
+    "runtime": "개별 관측·허락·실행·청중·원자 인수·저장 연결은 구현 요구. 실제 게임/API/LLM/영상/5인 시험 및 설치·배포0."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S14-003",
+      "name": "라파엘",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S14-003/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S14-003/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S14-003/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "라파엘: 천사, 전투등급 최상급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "토비아와 사라의 안전을 살핌; 은혜를 독점하려 하면 작별하고 공동 구호 때 돌아옴",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-NOW",
+            "statement": {
+              "text": "토비아와 사라가 이번 이동에서 실제 필요한 도움 한 가지씩을 스스로 말할 여유를 만들려 한다. 기존 안전한 접점에서 이번에 할 수 있는 짧은 동행과 생활 준비를 따로 살피고 각자에게 직접 물을 질문을 고른다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SOURCE-MEMORY",
+            "statement": {
+              "text": "선택된 원전 참고에 남은 내용: 토빗 이야기의 천사 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-MOTIVE",
+            "statement": {
+              "text": "치유를 자기 숭배의 대가로 만들지 않음",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-R07",
+            "statement": {
+              "text": "R07에서 물길 준비·도움 범위·토비아의 현재 귀환 선택을 구별한다. 라파엘을 만나지 못해도 공개 도움 기록과 토비아 본인의 선택으로 지역 결말을 낼 수 있다. 라파엘의 일반 첫 만남을 C06에 고정하지 않고 실제 접근을 따른다. 숭배·수원 양도·상시 동행·모든 병의 치유를 도움의 자동 대가로 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "R07"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "라파엘가 실제 접촉 가능한 현재를 위한 저술 코어다. 아래 현재 행동은 스스로 이어 갈 작은 창작이며 완료된 서버 사건이 아니다. 자기 과거로 근거가 명시된 내용만 기억에 남기고 현재 상대 정보는 새로 획득한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "토비아와 사라가 이번 이동에서 실제 필요한 도움 한 가지씩을 스스로 말할 여유를 만들려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "앉을 때 자신의 짐을 옆사람 발에 닿지 않게 안쪽으로 붙인다. 긴 길에서 쉬기 좋은 나무 그늘의 모양을 비교한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "치유나 호의를 자기 숭배·영구 동행·타인 통제의 대가로 요구하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "라파엘의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "라파엘에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "라파엘의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+            "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+            "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-REL-1",
+                "fact_or_question": "토비아의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "토비아가 실제 대화에서 오늘 원하는 길과 이번 도움의 범위를 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "라파엘 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "라파엘은 토비아의 답에 맞는 한 구간만 논의하고 가족 귀환·도착을 대신 완료시키지 않는다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-2",
+                "fact_or_question": "사라의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "사라가 실제 요청에서 받고 싶은 도움과 원하지 않는 개입을 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "라파엘 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "라파엘은 사라가 원치 않는 설명을 다른 사람에게 하지 않고 허용된 도움부터 함께 고른다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-069",
+                "fact_or_question": "아나히타가 현재 돕겠다고 실제 답한 한도",
+                "acquisition_event": "R07의 실제 돌봄 문제를 놓고 아나히타의 응답을 직접 듣거나 출처 있는 전달을 받는다.",
+                "required_evidence": "발신자·수신자·원문 범위를 확인하며 자기 관찰과 전언을 구분한다.",
+                "eligible_audience": "실제로 응답을 받은 라파엘와 동석 청중",
+                "after_learning_change": "아나히타가 실제 확인한 물과 보급의 상태를 듣고 자신이 도울 수 있는 구간을 좁혀 답한다.",
+                "not_automatic_from": [
+                  "소개를 요청함",
+                  "종교적 칭호",
+                  "같은 지역 장면에 이름이 있음"
+                ],
+                "source_refs": [
+                  "REL-069",
+                  "R07"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "토비아와 사라가 이번 이동에서 실제 필요한 도움 한 가지씩을 스스로 말할 여유를 만들려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TEXTURE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "앉을 때 자신의 짐을 옆사람 발에 닿지 않게 안쪽으로 붙인다. 긴 길에서 쉬기 좋은 나무 그늘의 모양을 비교한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-BOUNDARY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "치유나 호의를 자기 숭배·영구 동행·타인 통제의 대가로 요구하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "라파엘의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "라파엘에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "라파엘의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-REL-1",
+                  "fact_or_question": "토비아의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "토비아가 실제 대화에서 오늘 원하는 길과 이번 도움의 범위를 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "라파엘 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "라파엘은 토비아의 답에 맞는 한 구간만 논의하고 가족 귀환·도착을 대신 완료시키지 않는다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-2",
+                  "fact_or_question": "사라의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "사라가 실제 요청에서 받고 싶은 도움과 원하지 않는 개입을 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "라파엘 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "라파엘은 사라가 원치 않는 설명을 다른 사람에게 하지 않고 허용된 도움부터 함께 고른다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-069",
+                  "fact_or_question": "아나히타가 현재 돕겠다고 실제 답한 한도",
+                  "acquisition_event": "R07의 실제 돌봄 문제를 놓고 아나히타의 응답을 직접 듣거나 출처 있는 전달을 받는다.",
+                  "required_evidence": "발신자·수신자·원문 범위를 확인하며 자기 관찰과 전언을 구분한다.",
+                  "eligible_audience": "실제로 응답을 받은 라파엘와 동석 청중",
+                  "after_learning_change": "아나히타가 실제 확인한 물과 보급의 상태를 듣고 자신이 도울 수 있는 구간을 좁혀 답한다.",
+                  "not_automatic_from": [
+                    "소개를 요청함",
+                    "종교적 칭호",
+                    "같은 지역 장면에 이름이 있음"
+                  ],
+                  "source_refs": [
+                    "REL-069",
+                    "R07"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+              "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+              "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "라파엘: 천사, 전투등급 최상급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "토비아와 사라의 안전을 살핌; 은혜를 독점하려 하면 작별하고 공동 구호 때 돌아옴",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-NOW",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-NOW",
+              "statement": {
+                "text": "토비아와 사라가 이번 이동에서 실제 필요한 도움 한 가지씩을 스스로 말할 여유를 만들려 한다. 기존 안전한 접점에서 이번에 할 수 있는 짧은 동행과 생활 준비를 따로 살피고 각자에게 직접 물을 질문을 고른다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SOURCE-MEMORY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SOURCE-MEMORY",
+              "statement": {
+                "text": "선택된 원전 참고에 남은 내용: 토빗 이야기의 천사 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-MOTIVE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-MOTIVE",
+              "statement": {
+                "text": "치유를 자기 숭배의 대가로 만들지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-R07",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-R07",
+              "statement": {
+                "text": "R07에서 물길 준비·도움 범위·토비아의 현재 귀환 선택을 구별한다. 라파엘을 만나지 못해도 공개 도움 기록과 토비아 본인의 선택으로 지역 결말을 낼 수 있다. 라파엘의 일반 첫 만남을 C06에 고정하지 않고 실제 접근을 따른다. 숭배·수원 양도·상시 동행·모든 병의 치유를 도움의 자동 대가로 만들지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "R07"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "승인 모드: event. 현재 접촉은 과거 명부·장번호만으로 보장되지 않는다.",
+            "선택 진입·수락·진행·관측·NPC 실수신·완료·보상권·실수령은 각각 구별한다.",
+            "OR 대안은 동시에 강제하지 않는다. 선택 후기·지도·보상 인수 미실행은 이미 끝낸 수행을 취소하지 않는다.",
+            "개별 질문 답변에만 질문 수신. 일반 대화에는 MAIN 소유를 추가하지 않으며 기존 MAIN 전용 덧장면에는 실제 소유를 보존한다.",
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "R07 원문의 한정 도움·관계만; 빵 선택 증여는 실제 수령·소비 연결 때만, 방패 제시는 소모 아님",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            {
+              "observable_personal_change": "실제 약속한 한 구간 도움을 마치고 작별한다: 실제 약속·수행한 한정 도움과 작별. 준비만 한 경우 도착·가족 재회·호송 없음. 동행한 경우 실제 끝점까지만 이동 기록.\n은혜를 이유로 앞으로도 어디든 따라오라고 요구한다: 상시 동행 요구 거절과 실제 작별만 남는다. 이미 이행한 한정 도움은 유지된다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "라파엘은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 따뜻하고 간결하며 상대의 말을 끝까지 듣는다. 약속 범위를 말할 때만 어조가 또렷해진다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「작별할 수 있는 도움」: R07-01 실제 공개 물길 조사·R07-02 실제 한정 도움 결과·C06 이후 R07-03의 현재 행선지 문의·숲의 라파엘 단일 본체·토비아의 현재 응답·한 구간 출발점과 안전 도착점. 초기 답사에 라파엘이 있었다고 역산하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n실제 약속한 한 구간 도움을 마치고 작별한다: 실제 약속·수행한 한정 도움과 작별. 준비만 한 경우 도착·가족 재회·호송 없음. 동행한 경우 실제 끝점까지만 이동 기록.\n은혜를 이유로 앞으로도 어디든 따라오라고 요구한다: 상시 동행 요구 거절과 실제 작별만 남는다. 이미 이행한 한정 도움은 유지된다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "실제 약속한 한 구간 도움을 마치고 작별한다: 실제 약속·수행한 한정 도움과 작별. 준비만 한 경우 도착·가족 재회·호송 없음. 동행한 경우 실제 끝점까지만 이동 기록.\n은혜를 이유로 앞으로도 어디든 따라오라고 요구한다: 상시 동행 요구 거절과 실제 작별만 남는다. 이미 이행한 한정 도움은 유지된다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "라파엘은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 따뜻하고 간결하며 상대의 말을 끝까지 듣는다. 약속 범위를 말할 때만 어조가 또렷해진다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「작별할 수 있는 도움」: R07-01 실제 공개 물길 조사·R07-02 실제 한정 도움 결과·C06 이후 R07-03의 현재 행선지 문의·숲의 라파엘 단일 본체·토비아의 현재 응답·한 구간 출발점과 안전 도착점. 초기 답사에 라파엘이 있었다고 역산하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n실제 약속한 한 구간 도움을 마치고 작별한다: 실제 약속·수행한 한정 도움과 작별. 준비만 한 경우 도착·가족 재회·호송 없음. 동행한 경우 실제 끝점까지만 이동 기록.\n은혜를 이유로 앞으로도 어디든 따라오라고 요구한다: 상시 동행 요구 거절과 실제 작별만 남는다. 이미 이행한 한정 도움은 유지된다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "R07 원문의 한정 도움·관계만; 빵 선택 증여는 실제 수령·소비 연결 때만, 방패 제시는 소모 아님",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. R07 기존 양동이 1개는 선택 제시이고 필수 소비 없음. 자기 빵 1개 선택 증여는 수령자 의사와 실제 납부·소비 연결 확인 때만 실행하며 방패 1개 제시는 소유권 이전 아님. 이 개인 응답에는 새 물품·지도·축복·가호 보상이 없다. 라파엘이 실제 약속한 도움 범위와 실제 수행·수신만 구분해 남긴다. 도와줄 의향은 실제 동행 완료가 아니다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "event": "실제 선택한 에피소드/단계/분기의 수행·수신 receipt만 사건화. 첫 인사와 현재 작업 수신은 별도.",
+        "audience": "관측자·전언 수신자·열람자 UUID와 동의 범위를 각각 저장. 공개 장면도 청취 전에는 개인 지식0.",
+        "private": "가족 의사·사적 손실·수행자의 고백을 친분이나 권위로 공개하지 않는다. 저자 진실·미래 결말·원전의 모든 사건은 자동 지식이 아니다.",
+        "current_consequence": "양동이 1개 선택 제시, 빵 1개 OR 방패 1개 준비 OR 미확인 쉼터 1곳/변경 구간 점검. 빵 증여만 수령 의사·실제 이전을 따로 확인한다. 방패 소유권 이전0. 별도 성장·현물 보상0.",
+        "late_player": "현재 보이는 변화만 직접 관측 가능. 원래 질문·이전 동의·처음의 공로·타인의 수강/수신은 상속하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-005",
+      "name": "토비아",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S14-005/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S14-005/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S14-005/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "토비아: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "라파엘을 믿을 근거와 사라의 의사를 확인; 호위 약속 지속",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-NOW",
+            "statement": {
+              "text": "가족 생활권으로 돌아갈 준비와 잠깐 더 살필 길 중 지금 실제로 원하는 쪽을 고르려 한다. 기존 지도에 실제 답사한 구간과 남의 설명으로만 아는 구간을 나누어 보고, 돌아오는 발판이 있는 길부터 확인할 준비를 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SOURCE-MEMORY",
+            "statement": {
+              "text": "선택된 원전 참고에 남은 내용: 토빗의 아들 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-MOTIVE",
+            "statement": {
+              "text": "부모의 부탁을 수행하며 자기 가정을 지킬 판단을 배움",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-R07",
+            "statement": {
+              "text": "R07에서 물길 준비·도움 범위·토비아의 현재 귀환 선택을 구별한다. 라파엘을 만나지 못해도 공개 도움 기록과 토비아 본인의 선택으로 지역 결말을 낼 수 있다. 라파엘의 일반 첫 만남을 C06에 고정하지 않고 실제 접근을 따른다. 숭배·수원 양도·상시 동행·모든 병의 치유를 도움의 자동 대가로 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "R07"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "토비아가 실제 접촉 가능한 현재를 위한 저술 코어다. 아래 현재 행동은 스스로 이어 갈 작은 창작이며 완료된 서버 사건이 아니다. 자기 과거로 근거가 명시된 내용만 기억에 남기고 현재 상대 정보는 새로 획득한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "가족 생활권으로 돌아갈 준비와 잠깐 더 살필 길 중 지금 실제로 원하는 쪽을 고르려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "짐을 다시 묶을 때 자주 꺼낼 물건을 맨 위에 둔다. 지도 가장자리의 빈 공간에 눈에 띈 길 모양을 작게 그리는 걸 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "고맙다는 이유만으로 원하지 않는 장기 동행이나 행선지를 약속하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "토빗의 아들이라는 자기 가족 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "토비아의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "토비아에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "토비아의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+            "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+            "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-REL-1",
+                "fact_or_question": "토빗의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "토빗에게서 실제 전달받은 현재 부탁과 가족의 생활 사정을 들을 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "토비아는 예전에 들은 부탁만 반복하지 않고 지금 할 수 있는 귀환 준비를 자기 말로 답한다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-2",
+                "fact_or_question": "사라의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "사라가 실제 대화에서 다음 거처와 도움 조건을 직접 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "토비아는 사라의 말을 라파엘에게 대신 결정해 달라고 넘기지 않고 자신의 계획과 나란히 놓고 조정한다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-3",
+                "fact_or_question": "라파엘의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "라파엘이 실제로 가능한 도움과 다음 여정의 한계를 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "토비아는 라파엘의 거절을 은혜의 취소로 취급하지 않고 이번 동행의 고마움을 남긴다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "가족 생활권으로 돌아갈 준비와 잠깐 더 살필 길 중 지금 실제로 원하는 쪽을 고르려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TEXTURE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "짐을 다시 묶을 때 자주 꺼낼 물건을 맨 위에 둔다. 지도 가장자리의 빈 공간에 눈에 띈 길 모양을 작게 그리는 걸 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-BOUNDARY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "고맙다는 이유만으로 원하지 않는 장기 동행이나 행선지를 약속하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-SELF-HISTORY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "토빗의 아들이라는 자기 가족 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "토비아의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "토비아에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "토비아의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-REL-1",
+                  "fact_or_question": "토빗의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "토빗에게서 실제 전달받은 현재 부탁과 가족의 생활 사정을 들을 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "토비아는 예전에 들은 부탁만 반복하지 않고 지금 할 수 있는 귀환 준비를 자기 말로 답한다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-2",
+                  "fact_or_question": "사라의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "사라가 실제 대화에서 다음 거처와 도움 조건을 직접 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "토비아는 사라의 말을 라파엘에게 대신 결정해 달라고 넘기지 않고 자신의 계획과 나란히 놓고 조정한다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-3",
+                  "fact_or_question": "라파엘의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "라파엘이 실제로 가능한 도움과 다음 여정의 한계를 말할 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "토비아 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "토비아는 라파엘의 거절을 은혜의 취소로 취급하지 않고 이번 동행의 고마움을 남긴다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+              "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+              "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "토비아: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "라파엘을 믿을 근거와 사라의 의사를 확인; 호위 약속 지속",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-NOW",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-NOW",
+              "statement": {
+                "text": "가족 생활권으로 돌아갈 준비와 잠깐 더 살필 길 중 지금 실제로 원하는 쪽을 고르려 한다. 기존 지도에 실제 답사한 구간과 남의 설명으로만 아는 구간을 나누어 보고, 돌아오는 발판이 있는 길부터 확인할 준비를 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SOURCE-MEMORY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SOURCE-MEMORY",
+              "statement": {
+                "text": "선택된 원전 참고에 남은 내용: 토빗의 아들 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-MOTIVE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-MOTIVE",
+              "statement": {
+                "text": "부모의 부탁을 수행하며 자기 가정을 지킬 판단을 배움",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-R07",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-R07",
+              "statement": {
+                "text": "R07에서 물길 준비·도움 범위·토비아의 현재 귀환 선택을 구별한다. 라파엘을 만나지 못해도 공개 도움 기록과 토비아 본인의 선택으로 지역 결말을 낼 수 있다. 라파엘의 일반 첫 만남을 C06에 고정하지 않고 실제 접근을 따른다. 숭배·수원 양도·상시 동행·모든 병의 치유를 도움의 자동 대가로 만들지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "R07"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "승인 모드: event. 현재 접촉은 과거 명부·장번호만으로 보장되지 않는다.",
+            "선택 진입·수락·진행·관측·NPC 실수신·완료·보상권·실수령은 각각 구별한다.",
+            "OR 대안은 동시에 강제하지 않는다. 선택 후기·지도·보상 인수 미실행은 이미 끝낸 수행을 취소하지 않는다.",
+            "개별 질문 답변에만 질문 수신. 일반 대화에는 MAIN 소유를 추가하지 않으며 기존 MAIN 전용 덧장면에는 실제 소유를 보존한다.",
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "R07의 실제 도움·동행 관계만; 가족 재회는 실제 목적지 도착과 당사자 만남 후",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            {
+              "observable_personal_change": "귀환을 돕고 실제 도착한 범위만 확인한다: 실제 준비·출발·도착·가족 당사자 만남을 각각 기록한다. 도착 전에는 준비/이동 중이고 실제 만남 전에는 가족 재회 미완료다.\n토비아가 동의한 가까운 미확인 한 곳만 조사한다: 실제 한 구간 공동 조사와 현재 귀환 지연만. 가족 재회·장기 동행·라파엘 참여 없음.\n작별 인사만 하고 각자 간다: 존중한 작별과 실제 들은 현재 행선지. 호송·라파엘 도움·가족 재회 실적 없음.\n도움을 빚 삼아 귀환을 못 하게 막는다: 요구 거절·현재 중단만. 새로운 동행 수락·가족 재회·보상 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "토비아은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 솔직하고 질문이 많으며 생각을 바꾸면 그 이유를 말한다. 감사와 자기 결정은 따로 또렷이 말한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「짐을 내려놓는 귀환」: R07-01 기존 지도 또는 공개 문의·실제 수원 한 곳과 마른 발판 한 곳·R07-02 빵 또는 방패 제시 혹은 무소비 길 기여·R07-03 현재 토비아의 귀환/추가 조사/작별 답·목적지 공개 접수점. 사라와 가족은 실제 접촉·응답하지 않으면 현재 재회 장면에 생성하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n귀환을 돕고 실제 도착한 범위만 확인한다: 실제 준비·출발·도착·가족 당사자 만남을 각각 기록한다. 도착 전에는 준비/이동 중이고 실제 만남 전에는 가족 재회 미완료다.\n토비아가 동의한 가까운 미확인 한 곳만 조사한다: 실제 한 구간 공동 조사와 현재 귀환 지연만. 가족 재회·장기 동행·라파엘 참여 없음.\n작별 인사만 하고 각자 간다: 존중한 작별과 실제 들은 현재 행선지. 호송·라파엘 도움·가족 재회 실적 없음.\n도움을 빚 삼아 귀환을 못 하게 막는다: 요구 거절·현재 중단만. 새로운 동행 수락·가족 재회·보상 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "귀환을 돕고 실제 도착한 범위만 확인한다: 실제 준비·출발·도착·가족 당사자 만남을 각각 기록한다. 도착 전에는 준비/이동 중이고 실제 만남 전에는 가족 재회 미완료다.\n토비아가 동의한 가까운 미확인 한 곳만 조사한다: 실제 한 구간 공동 조사와 현재 귀환 지연만. 가족 재회·장기 동행·라파엘 참여 없음.\n작별 인사만 하고 각자 간다: 존중한 작별과 실제 들은 현재 행선지. 호송·라파엘 도움·가족 재회 실적 없음.\n도움을 빚 삼아 귀환을 못 하게 막는다: 요구 거절·현재 중단만. 새로운 동행 수락·가족 재회·보상 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "토비아은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 솔직하고 질문이 많으며 생각을 바꾸면 그 이유를 말한다. 감사와 자기 결정은 따로 또렷이 말한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「짐을 내려놓는 귀환」: R07-01 기존 지도 또는 공개 문의·실제 수원 한 곳과 마른 발판 한 곳·R07-02 빵 또는 방패 제시 혹은 무소비 길 기여·R07-03 현재 토비아의 귀환/추가 조사/작별 답·목적지 공개 접수점. 사라와 가족은 실제 접촉·응답하지 않으면 현재 재회 장면에 생성하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n귀환을 돕고 실제 도착한 범위만 확인한다: 실제 준비·출발·도착·가족 당사자 만남을 각각 기록한다. 도착 전에는 준비/이동 중이고 실제 만남 전에는 가족 재회 미완료다.\n토비아가 동의한 가까운 미확인 한 곳만 조사한다: 실제 한 구간 공동 조사와 현재 귀환 지연만. 가족 재회·장기 동행·라파엘 참여 없음.\n작별 인사만 하고 각자 간다: 존중한 작별과 실제 들은 현재 행선지. 호송·라파엘 도움·가족 재회 실적 없음.\n도움을 빚 삼아 귀환을 못 하게 막는다: 요구 거절·현재 중단만. 새로운 동행 수락·가족 재회·보상 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "R07의 실제 도움·동행 관계만; 가족 재회는 실제 목적지 도착과 당사자 만남 후",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 토비아의 지도·짐은 본인 소유이며 실제 빌린 것만 반환한다. R07 양동이 선택 제시·빵 1개 또는 방패 1개 준비 대안과 무소비 기여를 그대로 유지한다. 방패는 제시만으로 증여되지 않고 빵 선택 납부는 실제 수령·소비 연결 때만. 개인 응답에는 새 실물 보상·수강·가호·MAIN 없음. 실제 도착과 당사자 만남 전 가족 재회 완료 없음. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "event": "실제 선택한 에피소드/단계/분기의 수행·수신 receipt만 사건화. 첫 인사와 현재 작업 수신은 별도.",
+        "audience": "관측자·전언 수신자·열람자 UUID와 동의 범위를 각각 저장. 공개 장면도 청취 전에는 개인 지식0.",
+        "private": "가족 의사·사적 손실·수행자의 고백을 친분이나 권위로 공개하지 않는다. 저자 진실·미래 결말·원전의 모든 사건은 자동 지식이 아니다.",
+        "current_consequence": "실제 빌린 지도·짐만 반환. 인수 2블록, 관찰은 현재 시야, 이동은 연속 경로 증거로 구분. 길 안내·관계·현재 목적지만 남기고 첫 작별을 반복 보상으로 만들지 않는다.",
+        "late_player": "현재 보이는 변화만 직접 관측 가능. 원래 질문·이전 동의·처음의 공로·타인의 수강/수신은 상속하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-007",
+      "name": "솔로몬",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S14-007/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S14-007/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S14-007/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "솔로몬는 현행 초월급 편성이다. 종족/존재유형 현재값=인간, 신격분류=non_divine, 성별=미지정, 전쟁 소속=미정. 미정·미지정·null은 이 코어가 보충하지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사; 거짓 증거를 기록",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ACCESS",
+            "statement": {
+              "text": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-PERSONA",
+            "statement": {
+              "text": "설정 및 AI 자유 대화 페르소나 제작 대상이며 현재 기록 배역·개별 조우 미정은 제작 취소 사유가 아니다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "scope"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-INTENT",
+            "statement": {
+              "text": "위엄 있는 판결보다 당사자의 실제 손실을 분별하려 함",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TEXTURE",
+            "statement": {
+              "text": "서두르지 않는 보드게임에서 한 수 전의 선택을 다시 생각해 보는 것이 좋다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ADOPTED",
+            "statement": {
+              "text": "평소 자신 없어 보여도 위기에는 책임을 떠안는 조력자. 평소에는 자신 없는 질문으로 시작해도 결정할 때 책임 소재를 말한다",
+              "basis": "adopted_reference_trait",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-REL-1",
+            "statement": {
+              "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사하는 기존 역할이 있다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "현재 코어의 자기 의향·일상 질감과 기존 당사자 관계를 baseline으로 삼는다. 장면 연결은 아직 일어난 사건이 아니다. 직접 듣거나 읽거나 겪은 결과만 뒤에 더한다.",
+          "known_facts": [
+            {
+              "id": "K-NAME",
+              "claim": {
+                "text": "자기를 지칭하는 현행 이름은 솔로몬이다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "fact_ref": "T-IDENTITY",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 자기 지칭과 현행 정체",
+                "when_or_condition": "채택된 자기 정체를 가지고 실제 만남이 성립할 때; 최초 호명의 과거 사건은 새로 만들지 않음",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "위엄 있는 판결보다 당사자의 실제 손실을 분별하려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "fact_ref": "T-INTENT",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 현재 의향·반응 방향",
+                "when_or_condition": "현행 채택된 개인 동기의 baseline; 다른 인물의 마음이나 완료 사건을 뜻하지 않음",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "서두르지 않는 보드게임에서 한 수 전의 선택을 다시 생각해 보는 것이 좋다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TEXTURE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 소소한 취향 또는 제한된 반응 질감",
+                "when_or_condition": "이 코어에서 저술한 일상 자기 앎. 실제 만남 이전에 타인과 공유되었다고 가정하지 않음",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            {
+              "id": "K-REL-1",
+              "claim": {
+                "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사하는 기존 역할이 있다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T-REL-1",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현재 개인 역할에 유지된 본인과 토빗의 관계",
+                "when_or_condition": "기존 관계 설계에서 당사자로 기억하는 상대와 자신의 입장만 유지한다. 최초 만남 날짜·현재 새 요청의 도착·상대 위치는 별도 미정.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "현재 이 인물에게 특정 타인의 의도나 미확인 사건을 의심하게 할 개별 관찰이 없다. 자신의 판단 성향을 세계 사실에 대한 확정 추측으로 채우지 않는다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "반증된 사실을 이미 믿고 있다는 근거가 없다. 빈 칸을 채우기 위한 잘못된 과거 기억이나 자기 정체의 착각을 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "기본 지식 중 숨길 구체 내용이 별도로 확정되지 않았다. 모르는 현재 상황과 알지만 숨기는 비밀을 바꾸어 쓰지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "72악마 전원의 현재 위치·계약·복종·생각은 자동으로 알지 않는다.",
+            "T02의 기록이나 방어 장치에 이름이 남았다고 현재 그 현장을 직접 보고 있거나 원격 명령할 수 있는 것은 아니다.",
+            "본편의 용·여신·저주 가담자 정답은 계약 검토 역할만으로 얻지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L-01",
+                "fact_or_question": "원계약의 무장 제한과 현재 민간 구속 사이에 실제 어떤 변경이 생겼는가",
+                "acquisition_event": "원문·현행 적용·당사자의 통행 피해를 실제 전달받아 대조하는 때",
+                "required_evidence": "서로 구분되는 세 자료와 누가 읽고 진술했는지의 출처",
+                "eligible_audience": "해당 장면을 실제로 겪거나 내용을 실제로 전달받은 본인과 청중만; 공개된 결과와 비공개 대화의 청중은 구분한다.",
+                "after_learning_change": "아스모데우스의 재심 발언권과 실제 해방 결과를 분리하고, 민간 해방 뒤에는 미카엘과 남길 제한을 논의한다.",
+                "not_automatic_from": [
+                  "장 번호의 도달 또는 공유 세계 사건 완료",
+                  "다른 플레이어의 개인 만남·사적 대화·MAIN 수락",
+                  "원전과 외부 작품의 정보 또는 작가용 자료 열람"
+                ],
+                "source_refs": [
+                  "role",
+                  "global:MEMORY-SCOPE",
+                  "global:SOURCE-NOT-KNOWLEDGE"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-NAME",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_lore_or_context_plan",
+            "fact": {
+              "id": "K-NAME",
+              "claim": {
+                "text": "자기를 지칭하는 현행 이름은 솔로몬이다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "fact_ref": "T-IDENTITY",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 자기 지칭과 현행 정체",
+                "when_or_condition": "채택된 자기 정체를 가지고 실제 만남이 성립할 때; 최초 호명의 과거 사건은 새로 만들지 않음",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+            "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+          },
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_lore_or_context_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "위엄 있는 판결보다 당사자의 실제 손실을 분별하려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "fact_ref": "T-INTENT",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 현재 의향·반응 방향",
+                "when_or_condition": "현행 채택된 개인 동기의 baseline; 다른 인물의 마음이나 완료 사건을 뜻하지 않음",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+            "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+          },
+          {
+            "knowledge_id": "K-TEXTURE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_lore_or_context_plan",
+            "fact": {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "서두르지 않는 보드게임에서 한 수 전의 선택을 다시 생각해 보는 것이 좋다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TEXTURE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 소소한 취향 또는 제한된 반응 질감",
+                "when_or_condition": "이 코어에서 저술한 일상 자기 앎. 실제 만남 이전에 타인과 공유되었다고 가정하지 않음",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+            "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+          },
+          {
+            "knowledge_id": "K-REL-1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_lore_or_context_plan",
+            "fact": {
+              "id": "K-REL-1",
+              "claim": {
+                "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사하는 기존 역할이 있다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T-REL-1",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현재 개인 역할에 유지된 본인과 토빗의 관계",
+                "when_or_condition": "기존 관계 설계에서 당사자로 기억하는 상대와 자신의 입장만 유지한다. 최초 만남 날짜·현재 새 요청의 도착·상대 위치는 별도 미정.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제로 접촉하고 이 말을 듣는 상대",
+                "condition": "실제 만남이 성립한 범위에서만 말한다. 아직 일어나지 않은 사건·미전달 타인의 경험을 함께 안다고 덧붙이지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+            "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+          },
+          {
+            "knowledge_id": "author-truth-document",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "facts": [
+              {
+                "id": "T-IDENTITY",
+                "statement": {
+                  "text": "솔로몬는 현행 초월급 편성이다. 종족/존재유형 현재값=인간, 신격분류=non_divine, 성별=미지정, 전쟁 소속=미정. 미정·미지정·null은 이 코어가 보충하지 않는다.",
+                  "basis": "confirmed_current_canon",
+                  "source_refs": [
+                    "identity"
+                  ]
+                },
+                "status": "confirmed_canon",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-ROLE",
+                "statement": {
+                  "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사; 거짓 증거를 기록",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "status": "current_design",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-ACCESS",
+                "statement": {
+                  "text": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+                  "basis": "confirmed_current_canon",
+                  "source_refs": [
+                    "access"
+                  ]
+                },
+                "status": "confirmed_canon",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-PERSONA",
+                "statement": {
+                  "text": "설정 및 AI 자유 대화 페르소나 제작 대상이며 현재 기록 배역·개별 조우 미정은 제작 취소 사유가 아니다.",
+                  "basis": "confirmed_current_canon",
+                  "source_refs": [
+                    "scope"
+                  ]
+                },
+                "status": "confirmed_canon",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-INTENT",
+                "statement": {
+                  "text": "위엄 있는 판결보다 당사자의 실제 손실을 분별하려 함",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "motive"
+                  ]
+                },
+                "status": "current_design",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-TEXTURE",
+                "statement": {
+                  "text": "서두르지 않는 보드게임에서 한 수 전의 선택을 다시 생각해 보는 것이 좋다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "status": "minor_creative_design",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-ADOPTED",
+                "statement": {
+                  "text": "평소 자신 없어 보여도 위기에는 책임을 떠안는 조력자. 평소에는 자신 없는 질문으로 시작해도 결정할 때 책임 소재를 말한다",
+                  "basis": "adopted_reference_trait",
+                  "source_refs": [
+                    "adaptation"
+                  ]
+                },
+                "status": "current_design",
+                "default_npc_access": "none_by_this_entry_alone"
+              },
+              {
+                "id": "T-REL-1",
+                "statement": {
+                  "text": "토빗의 구호 원칙과 계약 문서의 권리 충돌을 심사하는 기존 역할이 있다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "status": "current_design",
+                "default_npc_access": "none_by_this_entry_alone"
+              }
+            ],
+            "source": {
+              "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+              "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+              "pointer": "/records/8/author_truth"
+            }
+          },
+          {
+            "knowledge_id": "L-01",
+            "classification": "future_outcome",
+            "destination": "author_only",
+            "future_acquisition_plan": {
+              "id": "L-01",
+              "fact_or_question": "원계약의 무장 제한과 현재 민간 구속 사이에 실제 어떤 변경이 생겼는가",
+              "acquisition_event": "원문·현행 적용·당사자의 통행 피해를 실제 전달받아 대조하는 때",
+              "required_evidence": "서로 구분되는 세 자료와 누가 읽고 진술했는지의 출처",
+              "eligible_audience": "해당 장면을 실제로 겪거나 내용을 실제로 전달받은 본인과 청중만; 공개된 결과와 비공개 대화의 청중은 구분한다.",
+              "after_learning_change": "아스모데우스의 재심 발언권과 실제 해방 결과를 분리하고, 민간 해방 뒤에는 미카엘과 남길 제한을 논의한다.",
+              "not_automatic_from": [
+                "장 번호의 도달 또는 공유 세계 사건 완료",
+                "다른 플레이어의 개인 만남·사적 대화·MAIN 수락",
+                "원전과 외부 작품의 정보 또는 작가용 자료 열람"
+              ],
+              "source_refs": [
+                "role",
+                "global:MEMORY-SCOPE",
+                "global:SOURCE-NOT-KNOWLEDGE"
+              ]
+            },
+            "source": {
+              "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+              "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+              "pointer": "/records/8/knowledge/future_learning/items/0"
+            },
+            "binding_status": "UNBOUND_NOT_ALREADY_KNOWN"
+          },
+          {
+            "knowledge_id": "unknown-and-inference-boundaries",
+            "classification": "unknown_or_unavailable",
+            "destination": "author_only",
+            "unknown": [
+              "72악마 전원의 현재 위치·계약·복종·생각은 자동으로 알지 않는다.",
+              "T02의 기록이나 방어 장치에 이름이 남았다고 현재 그 현장을 직접 보고 있거나 원격 명령할 수 있는 것은 아니다.",
+              "본편의 용·여신·저주 가담자 정답은 계약 검토 역할만으로 얻지 않는다."
+            ],
+            "suspicions": {
+              "none_reason": "현재 이 인물에게 특정 타인의 의도나 미확인 사건을 의심하게 할 개별 관찰이 없다. 자신의 판단 성향을 세계 사실에 대한 확정 추측으로 채우지 않는다.",
+              "items": []
+            },
+            "misbeliefs": {
+              "none_reason": "반증된 사실을 이미 믿고 있다는 근거가 없다. 빈 칸을 채우기 위한 잘못된 과거 기억이나 자기 정체의 착각을 만들지 않는다.",
+              "items": []
+            },
+            "concealment": {
+              "none_reason": "기본 지식 중 숨길 구체 내용이 별도로 확정되지 않았다. 모르는 현재 상황과 알지만 숨기는 비밀을 바꾸어 쓰지 않는다.",
+              "items": []
+            },
+            "source": {
+              "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+              "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+              "pointer": "/records/8/knowledge"
+            }
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "author_truth는 NPC 지식이 아니다. 사실 상태, 직접 관측, 출처 있는 주장, 추측, 오해, 의도적 비공개, 미정, 미래 습득을 원 CORE대로 분리.",
+          "routing": "중요 비밀·개인 인정은 Story Fact/Actor/Policy/Event와 Knowledge의 검증된 연결 필요. 현재 sidecar는 그 문서 계획이며 실행 필드가 아니다.",
+          "audience": "PRIVATE_ROOM은 방 전원이고 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 중요한 비밀 제외. 공개방은 온라인 전체 청중. OWNER_ONLY도 특정 UUID 소유자를 자동 지정하지 않는다.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어·청취 신만 해당 Knowledge. 조회·자유 의역·정적 lore·Cover Story·TEST/RUMOR_TEST·미열람 메모는 정식 획득 아님.",
+          "layers": "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·청중별 자격 모두 확인. 이름/태그/거절문에도 비밀의 존재를 새로 유출하지 않음.",
+          "late_join": "친구·파티·세계 공용 완료·후발 참가로 개인 기억 복사 없음. 새 보고는 지금 받은 그 보고자의 주장으로 기록.",
+          "unbound_behavior": "검증된 공급이 없으면 상세 자기 기억도 발화하지 않으며 일반 공개 성격으로만 응답. 현재 접촉 없으면 그 일반 fallback도 발화 없음."
+        },
+        "event_state_contract": {
+          "common": [
+            "현재 동일 본체·접촉 모드·실제 청중을 모든 fallback보다 먼저 확인.",
+            "제안/선택/실행/관측/수신/판정/지급을 분리. 선택 분기의 최소 상태만 요구하며 행동 전 경고에 전체 결과 조건을 붙이지 않는다.",
+            "공용 상태와 개인 경험·MAIN·실제 Knowledge 수신을 분리.",
+            "원본 실제 관계 기억은 보존하되 새 장면의 성립/상대 동의로 승격하지 않는다."
+          ],
+          "individual": [
+            {
+              "offer_accept_owner_progress_complete": "퀘스트 제시·수락·소유·완료 없음. 자기 공개/접촉·행동을 선택하고 현재 관측으로 장면을 닫는다. 질문·침묵·농담을 숨은 수주로 만들지 않는다.",
+              "group_individual_evidence": "각자가 실제 한 이동·말·자료 열람·관측을 따로 저장한다. 공용에는 실물·실제 길·배우 위치 결과만 남는다. GROUP 대표 완료 신호/팀 표시는 다른 사람의 개인 수신·수락·수행·지도 권리를 증명하지 않는다.",
+              "nonowner_route": "개인 MAIN 소유자가 없는 장면이다. 동료는 자기 질문·현재 바깥 관찰·침묵·철수를 선택할 수 있으며 다른 사람의 사적 답을 요구할 수 없다.",
+              "late_join": "현재 남은 위치·실제 접촉·유효 허락을 확인하고 자기 장면에서 합류한다. 이미 끝난 통과/자료 전달/발화는 재연하지 않는다. 미수신 응답·당사자 부재는 해당 보완 보류다. 후발자는 공개 허락된 책임 문장을 실제 읽은 뒤 오늘 수신한 내용만 알며 사적 손실과 C16/C17 참가 경험은 받지 않는다.",
+              "leave_save_resume": "장면 종료/이탈 시 현재 위치·물품 소유·실제 소비·완료 관측·실제 청중/수신과 아직 할 일을 분리 저장한다. 재개는 미확인 부분부터다. 자료 훼손·누락이면 실제 보존 사본과 허락 범위만 대조한다. 부재한 토빗의 진술을 만들어 채우지 않고, 실제 허용 전언이 있으면 전언으로 읽는다."
+            }
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "해당 실제 마지막 장면의 근거·행동·수신이 성립한 경우에만 아래 변화가 남는다. 조기 END·자료 부재·거절 경로에 자동 적용하지 않는다. 솔로몬이 계약 앞에 놓아 두었던 작은 물건을 옮겨 손실 자료가 먼저 보이게 한다. 자신이 몰랐던 한 항목을 자기 말로 인정하고, 원치 않는 보완은 빼 둔다. 계약 해방이나 재심 결과를 자동 변경하지 않는다.",
+              "optional_stop": "각 beat에서 자기 행동을 멈추거나 현재 안전 퇴로로 장면을 닫을 수 있다. 재방문은 선택이며 후속 수행표나 숨은 MAIN을 생성하지 않는다.",
+              "next_encounter_memory": "실제 이전 기여/대화를 해당 NPC가 관측하거나 수신한 기록이 있을 때만 그 한정된 지점을 먼저 묻는다. 그 근거가 없으면 솔로몬이 현재 허락된 자료 사이 빈 자리를 가리키며 “내가 놓친 게 있나?”라고 묻는다. 플레이어가 C16/C17의 공개 가능한 실제 손실 자료를 놓으면 검토가 이어진다. 이전 참가/성과를 소급하지 않는다.",
+              "playfeel_and_difference": "왕의 판결에 박수 치기보다 실제 사라진 생활의 한 부분을 탁자 위에 복원하는 증언 대화."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "event": "실제 선택한 에피소드/단계/분기의 수행·수신 receipt만 사건화. 첫 인사와 현재 작업 수신은 별도.",
+        "audience": "관측자·전언 수신자·열람자 UUID와 동의 범위를 각각 저장. 공개 장면도 청취 전에는 개인 지식0.",
+        "private": "가족 의사·사적 손실·수행자의 고백을 친분이나 권위로 공개하지 않는다. 저자 진실·미래 결말·원전의 모든 사건은 자동 지식이 아니다.",
+        "current_consequence": "자료는 원소유자에게 반환하며 새 지급권0. 보완 검토를 맡는다는 답과 실제 보완 완료는 별도다. T02 공개 문서에는 솔로몬 접견 조건을 역추가하지 않는다.",
+        "late_player": "현재 보이는 변화만 직접 관측 가능. 원래 질문·이전 동의·처음의 공로·타인의 수강/수신은 상속하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-010",
+      "name": "아론",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S14-010/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S14-010/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S14-010/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "아론: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "모세의 규율과 미리암의 의견을 듣고 의식 절차 수정; 약속한 참여권을 기억",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-NOW",
+            "statement": {
+              "text": "다음 짧은 의식에서 늦게 온 사람도 몸을 억지로 맞추지 않고 참여할 자리를 만들려 한다. 기존 모이는 자리에서 서는 간격과 쉬는 때를 직접 걸어 보고 미리암에게 목소리가 묻히는 위치를 물을 준비를 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SOURCE-MEMORY",
+            "statement": {
+              "text": "선택된 원전 참고에 남은 내용: 미리암의 형제 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-MOTIVE",
+            "statement": {
+              "text": "사람들을 결속하는 의식이 우상적 권력이 될까 경계",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "아론가 실제 접촉 가능한 현재를 위한 저술 코어다. 아래 현재 행동은 스스로 이어 갈 작은 창작이며 완료된 서버 사건이 아니다. 자기 과거로 근거가 명시된 내용만 기억에 남기고 현재 상대 정보는 새로 획득한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "다음 짧은 의식에서 늦게 온 사람도 몸을 억지로 맞추지 않고 참여할 자리를 만들려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "천이나 물건의 선을 맞추다가 사람이 다가오면 한쪽을 넓힌다. 여러 사람이 박자를 맞출 때 생기는 작은 어긋남과 다시 맞는 순간을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "의식의 완벽함을 위해 참여하지 못하는 사람을 수치스럽게 세우지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "미리암의 형제라는 자기 가족 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "아론의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "아론에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "아론의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+            "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+            "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-REL-1",
+                "fact_or_question": "모세의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "모세가 실제 논의에서 물 나눔과 의식이 겹치는 불편을 구체적으로 보여 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "아론 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "아론은 모세의 말을 의식 전체의 부정으로 받아치지 않고 겹친 순서 하나를 바꾸어 본다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-2",
+                "fact_or_question": "미리암의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "미리암이 실제 연습에서 어떤 목소리가 들리지 않는지 짚어 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "아론 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "아론은 미리암에게 다음 박자의 간격을 먼저 정하게 하고 자리를 넓힌다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "다음 짧은 의식에서 늦게 온 사람도 몸을 억지로 맞추지 않고 참여할 자리를 만들려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TEXTURE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "천이나 물건의 선을 맞추다가 사람이 다가오면 한쪽을 넓힌다. 여러 사람이 박자를 맞출 때 생기는 작은 어긋남과 다시 맞는 순간을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-BOUNDARY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "의식의 완벽함을 위해 참여하지 못하는 사람을 수치스럽게 세우지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-SELF-HISTORY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "미리암의 형제라는 자기 가족 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "아론의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "아론에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "아론의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-REL-1",
+                  "fact_or_question": "모세의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "모세가 실제 논의에서 물 나눔과 의식이 겹치는 불편을 구체적으로 보여 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "아론 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "아론은 모세의 말을 의식 전체의 부정으로 받아치지 않고 겹친 순서 하나를 바꾸어 본다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-2",
+                  "fact_or_question": "미리암의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "미리암이 실제 연습에서 어떤 목소리가 들리지 않는지 짚어 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "아론 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "아론은 미리암에게 다음 박자의 간격을 먼저 정하게 하고 자리를 넓힌다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+              "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+              "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "아론: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "모세의 규율과 미리암의 의견을 듣고 의식 절차 수정; 약속한 참여권을 기억",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-NOW",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-NOW",
+              "statement": {
+                "text": "다음 짧은 의식에서 늦게 온 사람도 몸을 억지로 맞추지 않고 참여할 자리를 만들려 한다. 기존 모이는 자리에서 서는 간격과 쉬는 때를 직접 걸어 보고 미리암에게 목소리가 묻히는 위치를 물을 준비를 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SOURCE-MEMORY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SOURCE-MEMORY",
+              "statement": {
+                "text": "선택된 원전 참고에 남은 내용: 미리암의 형제 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-MOTIVE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-MOTIVE",
+              "statement": {
+                "text": "사람들을 결속하는 의식이 우상적 권력이 될까 경계",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "승인 모드: event. 현재 접촉은 과거 명부·장번호만으로 보장되지 않는다.",
+            "선택 진입·수락·진행·관측·NPC 실수신·완료·보상권·실수령은 각각 구별한다.",
+            "OR 대안은 동시에 강제하지 않는다. 선택 후기·지도·보상 인수 미실행은 이미 끝낸 수행을 취소하지 않는다.",
+            "개별 질문 답변에만 질문 수신. 일반 대화에는 MAIN 소유를 추가하지 않으며 기존 MAIN 전용 덧장면에는 실제 소유를 보존한다.",
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "참가자가 실제 들은 의식과 공동 노래의 기억; 축복 효과·가입·가호 없음",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            {
+              "observable_personal_change": "끊긴 구절을 돌아가며 잇는다: 실제 참여자가 돌아가며 끝구절을 마친다. 늦은 사람에게 첫 구절 기억 없음. 미리암 제안은 실제 수신 때만 남는다.\n소수의 합창을 유지하며 늦은 사람을 밀어낸다: 기존 인원의 실제 합창과 배제된 사람의 미참여가 남는다. 불참자의 참여 이력·효과·보상 없음. 적법한 현재 청중이 실제 들은 공개 구절은 청취한 범위만 남으며 의식 참여로 승격하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "아론은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 차분한 반복을 쓰고 처음에는 형식을 길게 설명한다. 상대가 어려워하면 직접 해 보이며 말을 줄인다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「앉아서 잇는 의식」: 사막의 기존 모임 빈터·실제 의식 참가자·오래 서기 어려워 앉은 사람·바람에 끊긴 짧은 구절·늦게 현재 도착한 사람·미리암이 실제 제안한 응답 구절. 의식 효과·가입 없음. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n끊긴 구절을 돌아가며 잇는다: 실제 참여자가 돌아가며 끝구절을 마친다. 늦은 사람에게 첫 구절 기억 없음. 미리암 제안은 실제 수신 때만 남는다.\n소수의 합창을 유지하며 늦은 사람을 밀어낸다: 기존 인원의 실제 합창과 배제된 사람의 미참여가 남는다. 불참자의 참여 이력·효과·보상 없음. 적법한 현재 청중이 실제 들은 공개 구절은 청취한 범위만 남으며 의식 참여로 승격하지 않는다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "끊긴 구절을 돌아가며 잇는다: 실제 참여자가 돌아가며 끝구절을 마친다. 늦은 사람에게 첫 구절 기억 없음. 미리암 제안은 실제 수신 때만 남는다.\n소수의 합창을 유지하며 늦은 사람을 밀어낸다: 기존 인원의 실제 합창과 배제된 사람의 미참여가 남는다. 불참자의 참여 이력·효과·보상 없음. 적법한 현재 청중이 실제 들은 공개 구절은 청취한 범위만 남으며 의식 참여로 승격하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "아론은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 차분한 반복을 쓰고 처음에는 형식을 길게 설명한다. 상대가 어려워하면 직접 해 보이며 말을 줄인다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「앉아서 잇는 의식」: 사막의 기존 모임 빈터·실제 의식 참가자·오래 서기 어려워 앉은 사람·바람에 끊긴 짧은 구절·늦게 현재 도착한 사람·미리암이 실제 제안한 응답 구절. 의식 효과·가입 없음. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n끊긴 구절을 돌아가며 잇는다: 실제 참여자가 돌아가며 끝구절을 마친다. 늦은 사람에게 첫 구절 기억 없음. 미리암 제안은 실제 수신 때만 남는다.\n소수의 합창을 유지하며 늦은 사람을 밀어낸다: 기존 인원의 실제 합창과 배제된 사람의 미참여가 남는다. 불참자의 참여 이력·효과·보상 없음. 적법한 현재 청중이 실제 들은 공개 구절은 청취한 범위만 남으며 의식 참여로 승격하지 않는다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "참가자가 실제 들은 의식과 공동 노래의 기억; 축복 효과·가입·가호 없음",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 현재 자발적으로 참여한 사람의 목소리·허락된 연주 도구만 쓴다. 서기·앉기·불참을 각자 정하며 타인의 목소리를 강제 차출하지 않는다. 실제 들은 의식·자기 부른 구절만 기억이며 축복·가호·가입·물품 지급권 없음. 늦게 들어온 사람은 실제 들은 끝구절만 알고 처음 구절 참여를 소급하지 않는다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "event": "실제 선택한 에피소드/단계/분기의 수행·수신 receipt만 사건화. 첫 인사와 현재 작업 수신은 별도.",
+        "audience": "관측자·전언 수신자·열람자 UUID와 동의 범위를 각각 저장. 공개 장면도 청취 전에는 개인 지식0.",
+        "private": "가족 의사·사적 손실·수행자의 고백을 친분이나 권위로 공개하지 않는다. 저자 진실·미래 결말·원전의 모든 사건은 자동 지식이 아니다.",
+        "current_consequence": "실제 들은/부른 구절만 결과. 의식의 완벽함·참여권·공동체 전체 결속은 같은 값이 아니다. 가호·가입·물품·새 지급권0.",
+        "late_player": "현재 보이는 변화만 직접 관측 가능. 원래 질문·이전 동의·처음의 공로·타인의 수강/수신은 상속하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-011",
+      "name": "미리암",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S14-011/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S14-011/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S14-011/outline"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "미리암: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "모세·아론과 여성들의 목소리를 연결; 사라진 사람의 이름을 노래에 보존",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-NOW",
+            "statement": {
+              "text": "공동체 노래에 사람들이 직접 기억하는 이름이 묻히지 않도록 한 절의 부르는 순서를 바꾸려 한다. 기존 노래를 작은 소리로 불러 보고 숨이 길게 필요한 부분을 줄이며 실제로 이름을 기억하는 이에게 어떤 이름을 공개해도 되는지 묻을 준비를 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SOURCE-MEMORY",
+            "statement": {
+              "text": "선택된 원전 참고에 남은 내용: 예언자이자 노래 지도자 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-MOTIVE",
+            "statement": {
+              "text": "공동체의 구원이 지도자 한 사람의 공적으로만 남지 않음",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "미리암가 실제 접촉 가능한 현재를 위한 저술 코어다. 아래 현재 행동은 스스로 이어 갈 작은 창작이며 완료된 서버 사건이 아니다. 자기 과거로 근거가 명시된 내용만 기억에 남기고 현재 상대 정보는 새로 획득한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "공동체 노래에 사람들이 직접 기억하는 이름이 묻히지 않도록 한 절의 부르는 순서를 바꾸려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "생각나는 리듬을 손목이나 무릎에 작게 두드린다. 말의 높낮이를 바꾸면 평범한 문장도 노래처럼 들리는 순간을 즐긴다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "확인하지 않은 실종자의 생사나 사적인 사연을 노래의 감동을 위해 꾸며 넣지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "예언자이자 노래 지도자로서 자신의 역할을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "미리암의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "미리암에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "미리암의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+            "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+            "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-REL-1",
+                "fact_or_question": "모세의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "모세가 실제 공동체 논의에서 노래 참여자들의 말을 끝까지 들을 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "미리암 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "미리암은 모세에게 다음 노래가 필요한 시간과 이유를 먼저 설명하고 지도자의 이름만 앞세운 절은 고치자고 말한다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              },
+              {
+                "id": "F-REL-2",
+                "fact_or_question": "아론의 현재 행동과 이번 협력의 실제 범위",
+                "acquisition_event": "아론이 실제 의식에서 노래할 틈과 쉬는 간격을 열어 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                "eligible_audience": "미리암 본인 및 실제로 함께 듣거나 본 상대",
+                "after_learning_change": "미리암은 아론의 준비 순서를 존중하면서도 조용한 사람의 목소리가 들리도록 시작 박자를 늦춘다.",
+                "not_automatic_from": [
+                  "원전의 인연",
+                  "작성된 관계 문장",
+                  "공유 장 완료",
+                  "다른 플레이어의 개인 대화"
+                ],
+                "source_refs": [
+                  "role",
+                  "myth"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "공동체 노래에 사람들이 직접 기억하는 이름이 묻히지 않도록 한 절의 부르는 순서를 바꾸려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-NOW",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TEXTURE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "생각나는 리듬을 손목이나 무릎에 작게 두드린다. 말의 높낮이를 바꾸면 평범한 문장도 노래처럼 들리는 순간을 즐긴다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-BOUNDARY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-BOUNDARY",
+              "claim": {
+                "text": "확인하지 않은 실종자의 생사나 사적인 사연을 노래의 감동을 위해 꾸며 넣지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "지금 스스로 품는 의향과 직접 고른 생활 취향",
+                "when_or_condition": "현재 자기 의향의 범위. 계획한 외부 행동은 이미 완료한 기억이 아니다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-SELF-HISTORY",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-SELF-HISTORY",
+              "claim": {
+                "text": "예언자이자 노래 지도자로서 자신의 역할을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "fact_ref": "T-SOURCE-MEMORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 원전 참고가 명시한 본인의 과거 역할 또는 직접 인연",
+                "when_or_condition": "기존 자기 과거의 좁은 범위만 보존한다. 현재 상대의 위치·생사·계획이나 새 부활 경위는 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화에 참여한 상대",
+                "condition": "본인의 의향·경험만 설명한다. 다른 사람의 현재 답이나 비공개 사정을 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "미리암의 성향에 경계·야심·불만이 있어도 아직 관찰하지 않은 상대의 속내를 초기 가설로 등록하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "미리암에게 확인된 정사로 반증되는 특정 오해가 주어지지 않았다. 불확실한 전언을 거짓 믿음으로 미리 판정하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "미리암의 거절 이유와 비공개 사실을 구별했다. 이 코어에 실제 획득한 특정 비밀을 새로 배정하지 않았으므로 은폐 항목은 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-REL-1",
+                  "fact_or_question": "모세의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "모세가 실제 공동체 논의에서 노래 참여자들의 말을 끝까지 들을 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "미리암 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "미리암은 모세에게 다음 노래가 필요한 시간과 이유를 먼저 설명하고 지도자의 이름만 앞세운 절은 고치자고 말한다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                },
+                {
+                  "id": "F-REL-2",
+                  "fact_or_question": "아론의 현재 행동과 이번 협력의 실제 범위",
+                  "acquisition_event": "아론이 실제 의식에서 노래할 틈과 쉬는 간격을 열어 줄 때 해당 행동을 본인이 직접 목격하거나 당사자의 구체적인 설명을 실제 듣는다.",
+                  "required_evidence": "직접 본 행동과 누구에게 들은 설명을 나눈다. 전언이면 전언을 들었다는 사실까지만 먼저 기억하며 상대 의도 전체를 확정하지 않는다.",
+                  "eligible_audience": "미리암 본인 및 실제로 함께 듣거나 본 상대",
+                  "after_learning_change": "미리암은 아론의 준비 순서를 존중하면서도 조용한 사람의 목소리가 들리도록 시작 박자를 늦춘다.",
+                  "not_automatic_from": [
+                    "원전의 인연",
+                    "작성된 관계 문장",
+                    "공유 장 완료",
+                    "다른 플레이어의 개인 대화"
+                  ],
+                  "source_refs": [
+                    "role",
+                    "myth"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "현행 역할에서 아직 일어나지 않은 교섭·구호·재회·승패의 결과",
+              "직접 보거나 전달받지 않은 상대의 현재 소재·사적 의도·타인과의 대화",
+              "저자용 여신 정체·용 기원·전쟁 책임 전체와 미채택 원전 이본의 세부"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "미리암: 인간, 전투등급 하급. 정체의 미정 필드는 현재 마스터 그대로 둔다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "identity"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "모세·아론과 여성들의 목소리를 연결; 사라진 사람의 이름을 노래에 보존",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-NOW",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-NOW",
+              "statement": {
+                "text": "공동체 노래에 사람들이 직접 기억하는 이름이 묻히지 않도록 한 절의 부르는 순서를 바꾸려 한다. 기존 노래를 작은 소리로 불러 보고 숨이 길게 필요한 부분을 줄이며 실제로 이름을 기억하는 이에게 어떤 이름을 공개해도 되는지 묻을 준비를 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SOURCE-MEMORY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SOURCE-MEMORY",
+              "statement": {
+                "text": "선택된 원전 참고에 남은 내용: 예언자이자 노래 지도자 이 자료가 가리키는 과거와 현재의 소재·생사·미전달 정보를 구분한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "myth"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-MOTIVE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-MOTIVE",
+              "statement": {
+                "text": "공동체의 구원이 지도자 한 사람의 공적으로만 남지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "승인 모드: event. 현재 접촉은 과거 명부·장번호만으로 보장되지 않는다.",
+            "선택 진입·수락·진행·관측·NPC 실수신·완료·보상권·실수령은 각각 구별한다.",
+            "OR 대안은 동시에 강제하지 않는다. 선택 후기·지도·보상 인수 미실행은 이미 끝낸 수행을 취소하지 않는다.",
+            "개별 질문 답변에만 질문 수신. 일반 대화에는 MAIN 소유를 추가하지 않으며 기존 MAIN 전용 덧장면에는 실제 소유를 보존한다.",
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "실제 함께 배운 한 절; 사망·현재 생존 판정이나 신규 NPC 생성 없음",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            {
+              "observable_personal_change": "빈 박자를 남겨 함께 부르고 지도자에게도 자리를 요청한다: 실제 배운 빈 박자 포함 한 절. 응답한 지도자의 짧아진 차례만 추가된다. 모두의 동의·추모 공동체 전체 채택을 자동 생성하지 않는다.\n빈칸을 지도자 이름과 확인하지 않은 공적으로 채운다: 허위로 더한 절의 중단과 실제 남긴 빈 박자. 이전 가사 대조는 유지되고 허위 이름의 생사·공적 사실 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "미리암은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 리듬 있고 밝지만 빠진 사람을 지적할 때는 웃음을 거둔다. 말로만 설교하기보다 한 소절을 함께 바꿔 본다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「사라진 이름의 한 절」: 소유 허락된 낡은 천에 실제 남은 가사·살아 있는 증언자가 자발적으로 부른 공개 허락 이름 한 개·그 뒤의 이름 없는 빈 박자·모세와 아론의 실제 청취·응답. 이름을 원고에서 새 특정 인물로 만들어 명부에 더하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n빈 박자를 남겨 함께 부르고 지도자에게도 자리를 요청한다: 실제 배운 빈 박자 포함 한 절. 응답한 지도자의 짧아진 차례만 추가된다. 모두의 동의·추모 공동체 전체 채택을 자동 생성하지 않는다.\n빈칸을 지도자 이름과 확인하지 않은 공적으로 채운다: 허위로 더한 절의 중단과 실제 남긴 빈 박자. 이전 가사 대조는 유지되고 허위 이름의 생사·공적 사실 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "빈 박자를 남겨 함께 부르고 지도자에게도 자리를 요청한다: 실제 배운 빈 박자 포함 한 절. 응답한 지도자의 짧아진 차례만 추가된다. 모두의 동의·추모 공동체 전체 채택을 자동 생성하지 않는다.\n빈칸을 지도자 이름과 확인하지 않은 공적으로 채운다: 허위로 더한 절의 중단과 실제 남긴 빈 박자. 이전 가사 대조는 유지되고 허위 이름의 생사·공적 사실 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "미리암은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 리듬 있고 밝지만 빠진 사람을 지적할 때는 웃음을 거둔다. 말로만 설교하기보다 한 소절을 함께 바꿔 본다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "「사라진 이름의 한 절」: 소유 허락된 낡은 천에 실제 남은 가사·살아 있는 증언자가 자발적으로 부른 공개 허락 이름 한 개·그 뒤의 이름 없는 빈 박자·모세와 아론의 실제 청취·응답. 이름을 원고에서 새 특정 인물로 만들어 명부에 더하지 않는다. → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n빈 박자를 남겨 함께 부르고 지도자에게도 자리를 요청한다: 실제 배운 빈 박자 포함 한 절. 응답한 지도자의 짧아진 차례만 추가된다. 모두의 동의·추모 공동체 전체 채택을 자동 생성하지 않는다.\n빈칸을 지도자 이름과 확인하지 않은 공적으로 채운다: 허위로 더한 절의 중단과 실제 남긴 빈 박자. 이전 가사 대조는 유지되고 허위 이름의 생사·공적 사실 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "실제 함께 배운 한 절; 사망·현재 생존 판정이나 신규 NPC 생성 없음",
+              "earned_condition": "선택한 분기의 실제 결과와 승인된 인물별 제공 조건만 적용한다. 천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다. 실패·대기·부분 성취 경로를 성공 경로의 보상권으로 바꾸지 않는다. 각 수령자의 현재 필요와 실제 인도는 플레이어의 퀘스트 성공 여부와 별도다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다.",
+              "unclaimed_retry_no_duplicate": "승인된 해당 결과의 실제 수행·제공·수신 기록을 비교한다. 천은 원소유자에게 남고 허락된 열람·펼침만 한다. 증언자의 공개 허락 이름과 실제 청중을 확인한다. 동의 없는 사연·현재 생사·마지막 말을 가사로 쓰지 않는다. 실제 함께 부르고 배운 한 절이 결과이며 수령 버튼·인벤토리·가호·새 지급권 없음. 반복할 때 실제 들은 부분만 확인하고 과거 참여를 복제하지 않는다. 이미 이행한 본작업은 선택 후기 사양으로 취소하지 않는다. 물품 없는 설명·노래·작별에 가방 여유·교습을 새 조건으로 붙이지 않는다. 미수신이면 현재 공개 가능한 부분만 다시 전하고 친구의 공로·권리를 복제하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "event": "실제 선택한 에피소드/단계/분기의 수행·수신 receipt만 사건화. 첫 인사와 현재 작업 수신은 별도.",
+        "audience": "관측자·전언 수신자·열람자 UUID와 동의 범위를 각각 저장. 공개 장면도 청취 전에는 개인 지식0.",
+        "private": "가족 의사·사적 손실·수행자의 고백을 친분이나 권위로 공개하지 않는다. 저자 진실·미래 결말·원전의 모든 사건은 자동 지식이 아니다.",
+        "current_consequence": "천은 원소유자 소유. 공개된 이름도 실제 허용 청중에만 전달한다. 한 절의 실제 학습은 인벤토리 보상이 아니다. 지어낸 마지막 말·생사·공적을 정정할 때 실제 잘못 들은 청중에게 정정을 전달한다.",
+        "late_player": "현재 보이는 변화만 직접 관측 가능. 원래 질문·이전 동의·처음의 공로·타인의 수강/수신은 상속하지 않는다."
+      }
+    }
+  ]
+}

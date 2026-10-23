@@ -120,12 +120,79 @@ public final class AsyncActionLedger implements AutoCloseable {
         rejected += count; long now = System.currentTimeMillis(); if (firstGapUtc == 0) firstGapUtc = now;
         lastGapUtc = now; gapReason = reason.length() <= 256 ? reason : reason.substring(0, 256);
     }
+    /** FIFO-scoped derived purpose read; callers must authorize each original source before NPC projection. */
+    public synchronized CompletableFuture<com.sande.mythictrpg.understanding.PurposeLedger.Slice> purposes(UUID actor) {
+        Objects.requireNonNull(actor);
+        var result = new CompletableFuture<com.sande.mythictrpg.understanding.PurposeLedger.Slice>();
+        if (closing || status.state != State.READY) return CompletableFuture.failedFuture(new IOException("LEDGER_UNAVAILABLE"));
+        Work work = new Work() {
+            public void run(ActionLedgerStore store) throws IOException { result.complete(store.purposes(actor)); }
+            public void fail(Throwable failure) { result.completeExceptionally(failure); }
+        };
+        if (!queue.offer(work)) result.completeExceptionally(new IOException("QUERY_QUEUE_FULL"));
+        return result;
+    }
+    /** Candidate admission is isolated from the raw writer. Invalid model annotations cannot stop recording. */
+    public synchronized CompletableFuture<ActionRecord> annotatePurpose(com.sande.mythictrpg.understanding.PurposeEvidence candidate) {
+        Objects.requireNonNull(candidate);
+        var result=new CompletableFuture<ActionRecord>();
+        if(closing||status.state!=State.READY)return CompletableFuture.failedFuture(new IOException("LEDGER_UNAVAILABLE"));
+        Work work=new Work(){
+            public void run(ActionLedgerStore store)throws IOException {
+                var source=store.find(candidate.sourceId());
+                var control=store.understanding(candidate.playerId()).control();
+                if(source.isEmpty()||control==null||!"START".equals(control.event().payload().get("operation"))
+                        ||source.get().sequence()<=control.sequence()) {
+                    result.completeExceptionally(new IllegalArgumentException("PURPOSE_SOURCE_OUTSIDE_ACTIVE_ANALYSIS"));return;
+                }
+                final ActionRecord.Draft draft;
+                try { draft=com.sande.mythictrpg.understanding.PurposeLedger.annotate(source.get(),candidate); }
+                catch(IllegalArgumentException invalid) {result.completeExceptionally(invalid);return;}
+                var prior=store.find(draft.occurrenceId());
+                if(prior.isPresent()&&!prior.get().event().equals(draft)) {
+                    result.completeExceptionally(new IllegalArgumentException("PURPOSE_SOURCE_CONFLICT"));return;
+                }
+                // Reuses existing bounded FIFO, quota, durable receipt and shutdown handling.
+                submit(draft).durable().whenComplete((saved,failure)->{
+                    if(failure==null)result.complete(saved);else result.completeExceptionally(failure);
+                });
+            }
+            public void fail(Throwable failure){result.completeExceptionally(failure);}
+        };
+        if(!queue.offer(work))result.completeExceptionally(new IOException("QUERY_QUEUE_FULL"));
+        return result;
+    }
     public synchronized Status status() {
         Status s = status;
         return new Status(s.state, s.reason, s.usedBytes, s.maxBytes, s.committedSequence, s.indexedEvents,
                 pending.size(), rejected, firstGapUtc, lastGapUtc, s.recoveredUnclean, s.previousCheckpointUtc);
     }
+    /** Both self-view projections share one worker fence; no pause/restart can interleave them. */
+    public synchronized CompletableFuture<com.sande.mythictrpg.understanding.PurposeSelfView.Snapshot> understandingSnapshot(UUID actor) {
+        Objects.requireNonNull(actor);
+        var result=new CompletableFuture<com.sande.mythictrpg.understanding.PurposeSelfView.Snapshot>();
+        if(closing||status.state!=State.READY)return CompletableFuture.failedFuture(new IOException("LEDGER_UNAVAILABLE"));
+        Work work=new Work(){
+            public void run(ActionLedgerStore store)throws IOException {
+                result.complete(new com.sande.mythictrpg.understanding.PurposeSelfView.Snapshot(store.understanding(actor),store.purposes(actor),store.supportStatistics(actor)));
+            }
+            public void fail(Throwable failure){result.completeExceptionally(failure);}
+        };
+        if(!queue.offer(work))result.completeExceptionally(new IOException("QUERY_QUEUE_FULL"));
+        return result;
+    }
     public CompletableFuture<Void> ready() { return ready; }
+    /** Small enrollment read; does not scan the player's activity history on every reconnect. */
+    public synchronized CompletableFuture<ActionRecord> understandingControl(UUID actor) {
+        Objects.requireNonNull(actor);var result=new CompletableFuture<ActionRecord>();
+        if(closing||status.state!=State.READY)return CompletableFuture.failedFuture(new IOException("LEDGER_UNAVAILABLE"));
+        Work work=new Work(){
+            public void run(ActionLedgerStore store)throws IOException{result.complete(store.understandingControl(actor));}
+            public void fail(Throwable failure){result.completeExceptionally(failure);}
+        };
+        if(!queue.offer(work))result.completeExceptionally(new IOException("QUERY_QUEUE_FULL"));
+        return result;
+    }
     public CompletableFuture<Void> stopped() { return stopped; }
     /** FIFO fence for game-owned watch transitions; includes earlier pending appends, not future captures. */
     public synchronized CompletableFuture<Long> fence() {

@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 
-/** Independent read selection. NEW is understood but cannot activate without the foreground/proof contract. */
+/** Independent read selection. NEW uses game-issued native proofs, never legacy fallback. */
 public record RecordingRetrievalSettings(Mode retrievalMode) {
     public enum Mode { LEGACY, SHADOW, NEW }
     public enum Origin { DEFAULT, ARCHIVE_SCHEMA2_COMPAT, EXPLICIT, INVALID }
-    public enum State { LEGACY, SHADOW, ARCHIVE_OFF, BLOCKED_CONTRACT_NOT_READY, INVALID_RETRIEVAL_CONFIG }
+    public enum State { LEGACY, SHADOW, NEW, ARCHIVE_OFF, BLOCKED_CONTRACT_NOT_READY, INVALID_RETRIEVAL_CONFIG }
     public static final RecordingRetrievalSettings LEGACY=new RecordingRetrievalSettings(Mode.LEGACY);
     public RecordingRetrievalSettings { Objects.requireNonNull(retrievalMode); }
 
@@ -19,14 +19,19 @@ public record RecordingRetrievalSettings(Mode retrievalMode) {
             Objects.requireNonNull(requestedMode);Objects.requireNonNull(origin);Objects.requireNonNull(state);
             boolean valid=switch(state){
                 case LEGACY -> requestedMode.equals(Optional.of(Mode.LEGACY))&&(origin==Origin.DEFAULT||origin==Origin.EXPLICIT);
-                case SHADOW,ARCHIVE_OFF -> requestedMode.equals(Optional.of(Mode.SHADOW))&&(origin==Origin.ARCHIVE_SCHEMA2_COMPAT||origin==Origin.EXPLICIT);
+                case SHADOW -> requestedMode.equals(Optional.of(Mode.SHADOW))&&(origin==Origin.ARCHIVE_SCHEMA2_COMPAT||origin==Origin.EXPLICIT);
+                case NEW -> requestedMode.equals(Optional.of(Mode.NEW))&&origin==Origin.EXPLICIT;
+                case ARCHIVE_OFF -> requestedMode.equals(Optional.of(Mode.SHADOW))&&(origin==Origin.ARCHIVE_SCHEMA2_COMPAT||origin==Origin.EXPLICIT)
+                        || requestedMode.equals(Optional.of(Mode.NEW))&&origin==Origin.EXPLICIT;
                 case BLOCKED_CONTRACT_NOT_READY -> requestedMode.equals(Optional.of(Mode.NEW))&&origin==Origin.EXPLICIT;
                 case INVALID_RETRIEVAL_CONFIG -> requestedMode.isEmpty()&&origin==Origin.INVALID;
             };
             if(!valid)throw new IllegalArgumentException("INVALID_RETRIEVAL_POLICY");
         }
         public boolean shadowReadsAllowed(){return state==State.SHADOW;}
-        public boolean foregroundBlocked(){return state==State.BLOCKED_CONTRACT_NOT_READY||state==State.INVALID_RETRIEVAL_CONFIG;}
+        public boolean nativeReadsAllowed(){return state==State.SHADOW||state==State.NEW;}
+        public boolean foregroundBlocked(){return state==State.BLOCKED_CONTRACT_NOT_READY||state==State.INVALID_RETRIEVAL_CONFIG
+                || state==State.ARCHIVE_OFF&&requestedMode.equals(Optional.of(Mode.NEW));}
     }
     /** Missing new config preserves the prior explicit schema2 SHADOW opt-in, never creates one for RECORD_ONLY. */
     public static Policy resolve(RecordingSettings.Mode archive,Optional<RecordingRetrievalSettings> explicit) {
@@ -34,7 +39,7 @@ public record RecordingRetrievalSettings(Mode retrievalMode) {
         Mode requested=explicit.map(RecordingRetrievalSettings::retrievalMode)
                 .orElse(archive==RecordingSettings.Mode.SHADOW?Mode.SHADOW:Mode.LEGACY);
         Origin origin=explicit.isPresent()?Origin.EXPLICIT:archive==RecordingSettings.Mode.SHADOW?Origin.ARCHIVE_SCHEMA2_COMPAT:Origin.DEFAULT;
-        State state=switch(requested){case LEGACY->State.LEGACY;case NEW->State.BLOCKED_CONTRACT_NOT_READY;
+        State state=switch(requested){case LEGACY->State.LEGACY;case NEW->archive==RecordingSettings.Mode.OFF?State.ARCHIVE_OFF:State.NEW;
             case SHADOW->archive==RecordingSettings.Mode.OFF?State.ARCHIVE_OFF:State.SHADOW;};
         return new Policy(Optional.of(requested),origin,state);
     }

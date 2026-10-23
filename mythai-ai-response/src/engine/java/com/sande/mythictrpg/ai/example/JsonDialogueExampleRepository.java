@@ -30,7 +30,7 @@ public final class JsonDialogueExampleRepository implements DialogueExampleRepos
 
     public synchronized void load() {
         try {
-            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE);
+            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE, "{\"schemaVersion\":1,\"examples\":[]}\n");
             try (Reader reader = Files.newBufferedReader(file)) {
                 examples = parse(GSON.fromJson(reader, RawStore.class));
             }

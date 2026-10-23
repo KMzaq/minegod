@@ -1,0 +1,119 @@
+{
+  "document_type": "현행 활성화 저술 계약; 엔진 실행 스키마 아님",
+  "record_key": "RPG-S05-038",
+  "name": "비슈마",
+  "definition_id": "ACTIVATION-RPG-S05-038",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "circular_unlock_minimal_sensor_split",
+    "world_unlock": {
+      "mode": "body_independent_public_site_observation",
+      "initial_world_available": false,
+      "completion_count": 1,
+      "scope": "같은 세계에서 실제 플레이어 한 명의 완결 관측 1회 → 세계 영구 true. 후발자 재달성0.",
+      "rule": "누구 한 명이 원문 허용 차원의 해당 기존 공개현장에 실제 도달하여 기존 길목의 그늘진 대면 자리의 실제 바닥과 그 자리에서 물러날 기존 길을 같은 방문에서 직접 관측하면 해금한다. NPC 본체·발화·몸짓·응답·개인 수락이 선재할 필요는 없다.",
+      "observation_target": "기존 길목의 그늘진 대면 자리의 실제 바닥과 그 자리에서 물러날 기존 길",
+      "measurement": "기존 site에 현재 실제 도달 + 현재 visit에서 표적 지형 1회 관측. 표적에 시야 가림 없음, 기존 공통 관측의 16블록 이내 안전점 사용. 왕복 완주·대기시간·도구·무장해제·문서 소지·새 물건·신규 건축 요구0. 이탈 가능한 길의 존재 확인이지 왕복 과제 추가가 아니다.",
+      "evidence": "world_uuid, record_key, player_uuid, dimension, site_uuid, visit_uuid, event_id, 실제 위치·시야 표적·접근 상태·관측 시각을 결속. 같은 사람의 도달과 관측을 확인; 말로 방문 주장·지도 열람·타인 부분이력 합산은 불가.",
+      "commit_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization/release_commit",
+      "partial": "도달만 하고 관측하지 않았거나 가림·현장 닫힘이면 미완료. 미완료는 다음 실제 방문에서 현재 도달·시야를 다시 확인한다. 완료 전 이탈·사망·로그아웃은 완료를 만들지 않는다.",
+      "restart": "완료 해금은 재시작·사망·이탈로 취소되지 않는다. 중복 event_id 및 동시 완결의 CAS·재시작은 공통 원장을 그대로 사용한다.",
+      "source_clue_stage": "보존한 NPC 말·몸짓 단서는 실제 본체 배치 후 첫 접촉/현재 행동 관측에만 사용한다.",
+      "existing_world": "이미 검증된 유효 초기접근·세계해금·본체 배치는 소급 잠그지 않는다. 이관 receipt 없는 새 세계에 과거 NPC 관측을 꾸며 넣지 않는다."
+    },
+    "first_encounter": {
+      "site": "기존 길목의 그늘진 대면 자리의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다.",
+      "world": "Overworld",
+      "current_predicate": "이 문서 세계가용 AND 원문 허용 현장에 현재 실제 도달한 온라인 생존 플레이어 1명 이상 AND 아래 보존 eligibility의 현재 통행·위험·시점·차원·봉인·생사 제약. 원문에 있는 본체 현존·행동·응답은 등장 후 접촉 검사로 분리한다. 최초미배치가 명시 확인되면 동일 actor 최초 배치 후보 진입에 본체 선재를 요구하지 않는다. 현재 준비와 이후 서비스 준비를 구별한다.",
+      "exact_current_player_requirement": "현장에 실제 도달해 관찰·질문·거절을 선택한다. 청원의 현재 쟁점을 묻거나 옛 이름으로 상대를 지우는 말을 거절한다는 현재 허용된 범위에서만 실행한다.",
+      "stage_interpretation": "위 인용은 원문 보존이다. 실제 최초 배치 전에는 장소·통행·위험 등 NPC 비의존 조건만 검사하고, 본체 상태는 존재 허용·생사·봉인·단일성 원장으로 검사한다. 이미 있는 배우의 현재 체류·수선·몸짓·발화와 청중 확인은 배치 뒤 단계다. 실제 다른 장소에서 활동 중인 본체를 자동 이동시키지 않는다.",
+      "subject": "현재 조건 충족 실제 플레이어 중 공통 선택의 한 사람이 등장 주체다. 해금자와 달라도 되며 해금자의 과거 현장 방문을 현재 방문자의 이력으로 복제하지 않는다.",
+      "probability_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter",
+      "atomic_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/atomic_contract",
+      "mode": "기존 일반 무작위 경로는 전역 확률·가중치·NONE·주기·CAS 그대로. 확정 전용 경로·기록/꿈 모드는 일반풀로 전환하지 않음.",
+      "new_player_gates": 0
+    },
+    "single_body_state_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization",
+    "already_present_contact": "동일 본체가 PRESENT이면 등장 추첨을 인사마다 반복하지 않는다. 현재 실제 거리·시야·청중·접근을 확인하고 질문·관찰·거절을 선택한다. 사적 협력·수주·전달·서비스는 실제 본인의 별도 수락 뒤에만 실행한다. 유효 비언어 접촉에는 발화 강제0.",
+    "preserve": "서약 반복·시칸디의 청원 회피는 비슈마가 실제 등장한 뒤의 단서다. 그늘진 길목의 접근 가능한 대면 자리 바닥·물러날 기존 길만 먼저 확인하며 대면·답변·화해 완료를 원격 확정하지 않는다.",
+    "rights_and_knowledge_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/personal_separation",
+    "no_new_service_gate": "후속 서비스 소품·자료·재료·개인 수락·MAIN 소유·기존 사건 완료를 첫 인사에 추가하지 않는다. exact 단순도달을 outline만의 비무장·휴대기록 후보로 강화하지 않는다. 소품이 없으면 없는 소품 행동을 재연하지 않고 가능한 인사만 한다.",
+    "no_canon_bypass": "세계가용 true는 본체 존재·부활·생존 확정이 아니다. NEVER_PLACED와 실제 부재·미로드·죽음·봉인을 분리한다. 기록전용 상태이면 실제 허용 기록 열람만, 살아 있는 대화 본체 생성0. 새 분신·차원이동·봉인해제·개인별 몸·과거 사건 생성0.",
+    "knowledge": "서버 receipt는 NPC 자동 기억이 아니다. 실제 본 관측, 허락된 전달의 실제 수신, 실제 공개 청중만 대화 근거다. 해금자≠현재 조우주체≠MAIN 소유자≠보상 수령자. 공개 현장 결과만 공유하며 사적 기억·친분·개인 허락은 복제하지 않는다.",
+    "implementation": "좌표·등록 부지·권위 상태·실제 관측 receipt 및 기존 공통 원장 연결은 구현 요구다. 본 저술의 채택은 실제 초기화·등장·게임/API/LLM 시험 완료가 아니다."
+  },
+  "source_contract": {
+    "world_region": "Overworld",
+    "location_scene": "기존 길목의 그늘진 대면 자리의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다.",
+    "eligibility": {
+      "server_state": "현재 Overworld의 실제 접근 가능한 부지와 단일 배우의 유효한 활동 상태. 사건별 선행은 별도: 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다.",
+      "player_state": "현장에 실제 도달해 관찰·질문·거절을 선택한다. 청원의 현재 쟁점을 묻거나 옛 이름으로 상대를 지우는 말을 거절한다는 현재 허용된 범위에서만 실행한다.",
+      "actor_availability": "한 실제 배우의 위치·일정·접촉 범위를 확인. 코어의 행동안은 현재 실행 성공 증거가 아니다. 부재/완전 봉인 중 일반 대화 불가.",
+      "seal_guard": "명부와 실제 봉인·출입 제한을 소개·추측·첫 용 처치로 우회하지 않음. 이 장면에서 새 봉인 해제·부활·형상 복제를 추가하지 않음.",
+      "permission_or_willingness": "협력·면담·전달·계약은 각 당사자 의사. 실제 적대 근거가 있는 위협·저지·전투는 상호 사전 동의를 새 필수조건으로 삼지 않는다. 승패는 실제 권위 실행 결과다.",
+      "chapter_reason_if_any": "개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다.",
+      "probability_direction": "조건부 초기 후보의 낮은 가중치와 후기 후보 확대는 정성 방향만. 수치·등록 풀 미확정. 강한 등급 전체의 조기 확률 0 금지."
+    },
+    "npc_current_action": "서약을 말하다가 시칸디의 청원을 피했던 지점에서 다시 멈춘다 이는 방문자 수락을 기다리다 시작하는 일이 아니다.",
+    "player_visible_clue": "같은 서약이 대답 대신 반복된다"
+  },
+  "source_contract_role": "정확 원문 보존 인용. 원문의 본체 현존 문구를 최초미배치 선행으로 실행하지 않고 adopted_activation의 단계 분리를 적용한다. 원문 역사적 미정·미채택 표기를 소급 수정하지 않는다.",
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S05-038.json",
+      "pointers": [
+        "/connection_manuscript"
+      ],
+      "sha256": "145fc2e2f774167e452028e0d41b55398d2650abf6b4194b71d9a03267f3978d",
+      "role": "보존 연결 원고; 본 계약의 현행 초기접근보다 우선하지 않는 역사 후보 포함"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S05-038.json",
+      "pointers": [
+        "/current_identity",
+        "/current_access"
+      ],
+      "sha256": "77b1acb90a959988dafde67a1c085e8dba6ffb9d068ccddb8490cc26d1656cbb",
+      "role": "정체·접근 보호"
+    },
+    {
+      "logical_file": "페르소나/인물별완결기획/P2_NONQUEST-071/페르소나_완결기획.json",
+      "pointers": [
+        "/records/6"
+      ],
+      "sha256": "79c7cd3bc31061275b406c31ca2c8913eb6ed0a4c4ef214744b14bf96d086ea9",
+      "role": "현행 개별 활동·개인 권리 보존"
+    },
+    {
+      "logical_file": "스토리/인물별완결기획/P2_NONQUEST-071/스토리_완결기획.json",
+      "pointers": [
+        "/records/6"
+      ],
+      "sha256": "5a8cc68721bd069f43baed9261ec177443c2a9826e56312d8c322b0b8fe528b8",
+      "role": "현행 개별 활동·개인 권리 보존"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P2_NONQUEST-071/퀘스트_완결기획.json",
+      "pointers": [
+        "/records/6"
+      ],
+      "sha256": "22ede998c1a85d5636081e83d705396b7e8748de88df983f0d05cdba772dc041",
+      "role": "현행 개별 활동·개인 권리 보존"
+    },
+    {
+      "logical_file": "지식/인물별완결기획/P2_NONQUEST-071/지식_완결기획.json",
+      "pointers": [
+        "/records/6"
+      ],
+      "sha256": "8e8a146ebdf8ba14d97b9800a6dc5849b67a7b85821033bcac9c940b4fdd40d0",
+      "role": "현행 개별 활동·개인 권리 보존"
+    }
+  ],
+  "common_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json",
+  "precedence": "정체·명시 시점·생사·차원·봉인·개인권리 > 본 문서의 초기 세계가용/최초미배치와 B5 관측대상 분리 > 기존 활동 계약 > 현행 전역 운영 > 역사 후보·보존 사본. 이번 채택 외 일반 조건·확률을 재정의하지 않는다.",
+  "runtime_ready": false,
+  "activation_performed": false,
+  "new_quest_count": 0,
+  "new_reward_count": 0
+}

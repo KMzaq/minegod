@@ -1,0 +1,2490 @@
+{
+  "id": "COMBAT-MOD-03",
+  "revision": 1,
+  "status": "AUTHORING_INITIAL_TRANSITION_NOT_RUNTIME",
+  "scope": {
+    "weapons": 13,
+    "ss_native_candidates": 10,
+    "fan_exception": 1,
+    "bow_exceptions": 2,
+    "excluded_nonweapons": 30,
+    "main_battles": 8,
+    "chimera": 1,
+    "additional_references": 18
+  },
+  "version_boundary": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.248 대상, 실동작 확인0",
+    "simply_swords": "1.70.2-1.21.1 NeoForge 배포 JAR SHA256·선정 자산/프로필 정적 확인; 런타임·정확 조합 검증0",
+    "better_combat": "2.4.0+1.21.1 NeoForge 배포 JAR SHA256·선정 자산/프로필 정적 확인; 런타임·정확 조합 검증0",
+    "game_runs": 0,
+    "five_player_runs": 0,
+    "installed_mods": 0,
+    "final_authoring_edits": 0
+  },
+  "baseline": "BC_NATIVE_BASELINE",
+  "numeric_adoption": "관측한 개발프로필의 단독 유효 단계가 배포와 일치한다는 조건의 초기 채택값. 배포값 차이는 공개 전후표를 다시 계산하고 검수한 뒤 활성화. 실효DPS/게임실행/호환확정 아님.",
+  "immutables": [
+    "고유ID와 무기콘셉트",
+    "획득·단일권리·귀속/세계유일 원장",
+    "무스킬 무기의 무스킬 상태",
+    "신제 무한내구 및 유한내구 원문 예외",
+    "우클릭/활입력과 가호·마나 중복방지",
+    "기존 원고를 묵시적으로 덮어쓰지 않음"
+  ],
+  "damage_contract": {
+    "status": "NEW_TRANSITION_DESIGN_NOT_IMPLEMENTED",
+    "source_references": [
+      "퀘스트/공통설계/전역기준.json#/blessings/effect_details/0",
+      "퀘스트/공통설계/전역기준.json#/power_policy",
+      "퀘스트/공통설계/전역기준.json#/equipment_rules",
+      "퀘스트/전투와보상/공통실행.json"
+    ],
+    "A0_definition": "이 전환의 A0는 정상 플레이어 기본 공격기여+현재 실제 공격손 무기의 기여만 합친 무버프 총공격이다. 힘/약화 등 상태 modifier, 인챈트, 장신구 고정보정, 레이드0.04항, BC combo/dual/sweep 임시배율, 치명·충전·대상방어를 제외한다. H01 정상조건 A0=9. 이 정의는 기존 CP공식의 A를 소급 재작성하지 않는 신규 실행 입력 정의다.",
+    "level": "L은 힘 표시 단계(0=없음, I=1)이며 엔진 amplifier가0부터 시작하면 단계로 한번만 변환한다.",
+    "attribute_constructor": "목표 총공격9를 SS/바닐라 생성자 damage 인자9로 그대로 넣지 않는다. 해당 배포 API가 기본1+재질M+인자C를 만드는 경로라면 C=8-M이고 최종 무버프 속성9로 인수한다. 자체 modifier 경로면 플레이어기본1+무기8 한 번만 부여한다. 두 경로 동시 적용0. 속도1.25도 기본4인 additive 경로에서 modifier -2.75이며, 배포 실제 기본/operation이 다르면 결과1.25를 검증한다. 숫자는 조건부 역산이지 검증된 생성자 호출 코드가 아니다.",
+    "strength_native": "바닐라 Strength/가호가 이미 공격속성에 +3L을 반영하면 통합부는 +3L을 다시 더하지 않는다. 가호가 같은 효과를 주는 여러 출처의 상한/선택은 기존 규칙을 유지한다. 값 자체가 아니라 modifier 식별자·operation·출처와 실제 포함 여부를 기록한다.",
+    "native_order": [
+      "권리·실제손·행동·대상보호 승인 후 A0와 출처별 속성·인챈트·장신구 스냅샷 확보. CP 점수식은 실행하지 않는다.",
+      "기본+무기 및 적격 상태 modifier를 엔진 속성에 정확히1회 반영. 프로젝트 고정추가피해는 이 속성에 중복 등록하지 않는다.",
+      "BC가 해당 단계의 combo 및 허용된 dual/sweep 보정을 자기 경로에서1회 반영한다. 개발소스는 temp_attack ADD_MULTIPLIED_BASE를 사용한다. 통합부가 BC 처리후 피해에 combo를 다시 곱하거나 SS의 피해수치를 더하지 않는다.",
+      "BC가 호출한 정상 공격 경로에서 충전·치명·적격 인챈트를1회 처리한다. 정확1.21.1 배포 경로의 내부 순서는 소스/단계로그로 확인한다. 날카로움 포함 명목값7.5를 속성7.5로 넣고 날카로움II를 다시 실행하지 않는다.",
+      "정상 공격의 방어 전 결과에 프로젝트 추가보정만 합친다. 적격 레이드 직접근접의 추가량은0.04×A0×L, 적격 장신구는 원문 피해사건별 고정량F. 이 두 항은 BC 콤보/치명/인챈트로 재증폭하지 않는 신규 전환안이다. 대상별 적격 여부와 실제 추가량을 기록하고 하나의 피해사건으로 합친다.",
+      "합친 원시피해를 기존 damage type의 방어·강인함·저항·보호·무적/보스억제 경로에 정확히1회 전달한다. 실제 대상별 순서를 후킹 완료로 주장하지 않으며 접점/태그 검증 실패시 해당 경로를 잠근다. 갑옷 후 체력에서 보정량을 직접 빼거나 별도 추가공격 호출0.",
+      "최종 유효피해·출처·이벤트ID 확정 후 기존 가호/장신구 적중 규칙과 내구를 정산한다. 같은 요청·본체중복·추가효과 재귀0; 의도된 여러 펄스는 별도 유지."
+    ],
+    "already_included_rule": "실측 공격속성/방어전 피해에 힘·날카로움·F·레이드항·combo가 이미 포함됐으면 그 항은 재가산0. 어느 단계인지 모르는 최종 float에서 임의로 빼고 다시 더하지 않는다. 소유한 출처 modifier를 이관·제거하고 단일 경로로 정규화한 뒤 결과를 확인한다. 타모드 출처를 안전하게 분리할 수 없으면 해당 조합을 활성화하지 않는다.",
+    "skill_exclusion": "위 근접전환식은 투사체/마법/독립 무기기술/NPC지원에 자동 적용0. 아테나 응수6·합일검24·H03피해0을 무기공격력/힘/콤보로 재증폭0. 장신구는 개별 원문 적격 피해사건 규칙만 적용한다.",
+    "math_boundary": "A0+3L+0.04A0L은 combo=1·완충·비치명·무인챈트·F=0·무방어·적격레이드라는 제한된 비교식이다. CP식이나 BC 결과를 이 식에 재입력하지 않는다. H01 A0=9/L=1이면 일반직접근접12, 적격레이드12.36인 조건부 단일적용 검산이다. BC 단계0.8/0.8/1.4에는 이 값을 다시 곱하지 말고 정상공격 단계로그+독립 레이드0.36 합성으로 검증한다.",
+    "required_log_fields": [
+      "base_entity_attack",
+      "weapon_material_component",
+      "weapon_constructor_or_modifier_component",
+      "A0",
+      "strength_level",
+      "attribute_modifiers_with_ids_operations_sources",
+      "attack_damage_before_BC_temp",
+      "attack_damage_after_BC_temp",
+      "combo_index",
+      "combo_multiplier",
+      "dual_sweep_config_and_delta",
+      "enchantment_contribution",
+      "critical_and_charge_stage",
+      "native_pre_defense_damage",
+      "raid_extra",
+      "accessory_fixed_extra",
+      "combined_raw_damage",
+      "defense_stages",
+      "boss_suppression",
+      "final_hp_delta"
+    ],
+    "acceptance_cases": [
+      "H01 무버프9/속도1.25; 바닥·공격후·주보조교체·해제·재접속에도 SS재질/생성자/기본값 누적0.",
+      "힘0/I/II, 가호와 기존 Strength 동시, BC각단계, 1/3/5표적에서 modifier와 피해 단계로그 대조. 일반에는 레이드항0, 적격레이드만0.04A0L 1회.",
+      "전환 전 공방검 A0=6; 이번 초기안 A0=5.294117647058823 + 날카로움II 별도. 기존 명목총7.5는 최종 비교값이지 item attribute 입력7.5가 아님. 인챈트0/II와 치명 on/off를 BC각단계별 대조.",
+      "장신구0/1/2슬롯·같은품 별도적법권리2개·전투교체에서 원문 적격 F만1회. F를 A0에 포함해 레이드 추가량이나 combo를 증폭하지 않음.",
+      "0.8/0.8/1.4·중도취소·콤보재시작·다중대상 sweeping 설정과 허용쌍수 보정의 합산 operation을 배포소스로 확인. 독립 곱셈을 가정하지 않음.",
+      "갑옷/강인함/저항/보호 각각 on/off, 일반무적·보스10tick억제·페이즈무적에서 전체 한 경로 처리. 추가F/레이드항이 무적을 우회하지 않음.",
+      "패킷재전송·보스다부위·5인 동일tick·동일인 기술/평타 경합에서 피해/방어/가호/내구 추가실행0."
+    ],
+    "implementation_boundary": "목표 배포jar와 실제 API/이벤트 우선순위/후킹 미검증. 위 순서는 기획 입력·소유권·중복방지 인수계약이며 구현완료 증거가 아니다.",
+    "numeric_precedence": "위 source_references는 전환 전 비교기준. 이 문서 weapons.after_initial_design의 A0/W가 새 초기기획값이며 source 문서를 자동 수정하지 않는다."
+  },
+  "weapons": [
+    {
+      "key": "OLY-ATH-W01",
+      "identity": "mythictrpg:greek_olympus_athena_return_guard",
+      "identity_type": "proposed_definition_id",
+      "name": "퇴로검 · 한 수 남기기",
+      "source": "퀘스트/전투와보상/콘텐츠/OLY-ATH-W01.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "보호용 직검: 낮은 기본타격과 조건응수, 방패와 번갈아 사용",
+      "old_summary": "희귀 / 총공격7·속도1.6 / 무한내구",
+      "old_normal": "단일 검 베기 시각만. 넓은 longsword sweep/다단 콤보 피해는 미채택. 우클릭 t2~6 패링과 t6 단일 응수 분리.",
+      "skill_unchanged": "한 수 남기기: 마나28·쿨200tick, 첫1건 패링 후 t6 원공격자에게6, 거리2.5.",
+      "acquisition_source": "퀘스트/인물별완결기획/P0_MAIN-001/03_RPG-S01-007_아테나_완결기획.json#/new_execution_decisions/additional_side_quests/0",
+      "rights_change": 0,
+      "before": {
+        "A0": 7,
+        "speed": 1.6,
+        "W": 6
+      },
+      "after_initial_design": {
+        "A0": 6.176470588235294,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.6,
+        "W": 5.176470588235294,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 5.176470588235294,
+        "speed_modifier_if_base_4": -2.4,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": null,
+        "range_bonus": 0.1,
+        "two_handed": "원문 미명시; 배포 기본값/병합 규칙 검사 필요",
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "angles": [
+          120,
+          120,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left",
+          "bettercombat:one_handed_stab"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_longsword.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "mean": 1.1333333333333333,
+        "long_run_raw_base_only_per_second": 11.200000000000001,
+        "first_hit_only_zero_reset_cost_upper_envelope": 9.882352941176471,
+        "first_hit_at_ticks": 6.25,
+        "full_combo_last_hit_ticks": 31.25,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "OLY-ART-W01",
+      "identity": "mythictrpg:greek_olympus_artemis_boundary_cast",
+      "identity_type": "proposed_definition_id",
+      "name": "경계의 사냥칼 · 멈춤선",
+      "source": "퀘스트/전투와보상/콘텐츠/OLY-ART-W01.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "빠른 견제칼: 짧은 주기와 투척, 쌍수 없이 두 횡베기",
+      "old_summary": "희귀 / 총공격6·속도2.0 / 무한내구",
+      "old_normal": "기존 검 사거리 보존. 빠른 한 손 단일 베기, 주기 속도2.0. 회전 베기·자동투척 평타 금지.",
+      "skill_unchanged": "멈춤선: 마나22·쿨140tick, t5발사·피해8·거리14·속도1.4·반경0.15·관통0.",
+      "acquisition_source": "퀘스트/인물별완결기획/P0_MAIN-001/05_RPG-S01-009_아르테미스_완결기획.json#/new_execution_decisions/additional_side_quests/0",
+      "rights_change": 0,
+      "before": {
+        "A0": 6,
+        "speed": 2,
+        "W": 5
+      },
+      "after_initial_design": {
+        "A0": 6.666666666666666,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 2,
+        "W": 5.666666666666666,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 5.666666666666666,
+        "speed_modifier_if_base_4": -2,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:sickle",
+        "range_bonus": 0,
+        "two_handed": "원문 미명시; 단독 주손 정책 적용",
+        "multipliers": [
+          0.9,
+          0.9
+        ],
+        "angles": [
+          120,
+          120
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left"
+        ],
+        "conditional_attacks": "sickle의 추가1.2/1.3은 DUAL_WIELDING_SAME_CATEGORY와 MAIN_HAND_ONLY/OFF_HAND_ONLY 조건부. 초기 쌍수 허용목록 없으므로 단독2단 비교. 무조건4타 평균을 사용하지 않는다.",
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_cutlass.json",
+          "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/resources/data/bettercombat/weapon_attributes/sickle.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          0.9,
+          0.9
+        ],
+        "mean": 0.9,
+        "long_run_raw_base_only_per_second": 12.0,
+        "first_hit_only_zero_reset_cost_upper_envelope": 12.0,
+        "first_hit_at_ticks": 5.0,
+        "full_combo_last_hit_ticks": 15.0,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "OLY-HEP-W01",
+      "identity": "mythictrpg:greek_olympus_hephaestus_measured_impact",
+      "identity_type": "proposed_definition_id",
+      "name": "손맞춤 망치 · 짧은 울림",
+      "source": "퀘스트/전투와보상/콘텐츠/OLY-HEP-W01.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "공방 망치: 빠른 망치와 일반적 짧은 스턴, 세 번째 내리찍기",
+      "old_summary": "희귀 / 총공격8·속도1.25 / 무한내구",
+      "old_normal": "2.6블록·30도·1명, t4타격/16tick·이동0.8. 짧은 찍기만. preset 다중 횡베기/충격파는 부적합.",
+      "skill_unchanged": "짧은 울림: 마나30·쿨200tick, t8·물리7·3블록90도최대3·일반스턴10tick 및 종료후10tick 면역.",
+      "acquisition_source": "퀘스트/공방/후속제작과훈련.json#/quests/0",
+      "rights_change": 0,
+      "before": {
+        "A0": 8,
+        "speed": 1.25,
+        "W": 7
+      },
+      "after_initial_design": {
+        "A0": 6.857142857142857,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.25,
+        "W": 5.857142857142857,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 5.857142857142857,
+        "speed_modifier_if_base_4": -2.75,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:heavy_axe",
+        "range_bonus": 1,
+        "two_handed": true,
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "angles": [
+          180,
+          180,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_left",
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slam"
+        ],
+        "warning": "bettercombat:hammer와 다른 SS 자체 attacks override다. 짧은 망치에 hammer 프로필을 선택하려면 별도 명시 설계 선택으로 기록한다.",
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_greathammer.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "mean": 1.1666666666666667,
+        "long_run_raw_base_only_per_second": 10.0,
+        "first_hit_only_zero_reset_cost_upper_envelope": 8.571428571428571,
+        "first_hit_at_ticks": 8.0,
+        "full_combo_last_hit_ticks": 40.0,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "CTL-THO-W01",
+      "identity": "mythictrpg:norse_aesir_thor_halt_weight",
+      "identity_type": "proposed_definition_id",
+      "name": "멈춤추 · 끊는 전뢰",
+      "source": "퀘스트/전투와보상/콘텐츠/CTL-THO-W01.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "중량 전뢰추: 느리고 무거운 세 번째 강타, 전뢰는 독립 중거리견제",
+      "old_summary": "희귀 / 총공격11·속도0.8 / 무한내구",
+      "old_normal": "2.9블록·24도·1명, t8/25tick·이동0.45. 머리위0.7에서 내려찍는 경로, 낮은 천장 취약.",
+      "skill_unchanged": "끊는 전뢰: 마나30·쿨240tick·t8발사·마법10·거리12·속도1.2·반경0.2·스턴6tick.",
+      "acquisition_source": "퀘스트/인물별완결기획/P0_SCOPE_DECISION-095/095_획득연결4종.json#/acquisitions/0",
+      "rights_change": 0,
+      "before": {
+        "A0": 11,
+        "speed": 0.8,
+        "W": 10
+      },
+      "after_initial_design": {
+        "A0": 9.428571428571429,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 0.8,
+        "W": 8.428571428571429,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 8.428571428571429,
+        "speed_modifier_if_base_4": -3.2,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:heavy_axe",
+        "range_bonus": 1,
+        "two_handed": true,
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "angles": [
+          180,
+          180,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_left",
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slam"
+        ],
+        "warning": "bettercombat:hammer와 다른 SS 자체 attacks override다. 짧은 망치에 hammer 프로필을 선택하려면 별도 명시 설계 선택으로 기록한다.",
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_greathammer.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "mean": 1.1666666666666667,
+        "long_run_raw_base_only_per_second": 8.8,
+        "first_hit_only_zero_reset_cost_upper_envelope": 7.542857142857144,
+        "first_hit_at_ticks": 12.5,
+        "full_combo_last_hit_ticks": 62.5,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "CTL-FOX-W01",
+      "identity": "mythictrpg:fox_traditions_unified_fox_daji_leafshade_ember",
+      "identity_type": "proposed_definition_id",
+      "name": "잎그늘 부채 · 잔향불씨",
+      "source": "퀘스트/전투와보상/콘텐츠/CTL-FOX-W01.json#/details",
+      "route": "CUSTOM_FAN_EXCEPTION",
+      "role": "부채: 낮은 근접과 잔향견제, SS 검 전환 제외",
+      "old_summary": "희귀 / 총공격4·속도1.8 / 무한내구",
+      "old_normal": "현재 일반 검 평타 범위·총4/속도1.8 유지. 짧은 부채 휘두름 전용 모션 필요. SS 검 콤보를 억지 매칭하지 않음.",
+      "skill_unchanged": "잔향불씨: 마나20·쿨160tick·t4발사·직격5+20/40tick 각1·거리16·속도1.6·반경0.12.",
+      "acquisition_source": "퀘스트/상세저술/RPG-S06-084/여우신_별도전투훈련.json#/acquisitions/0",
+      "rights_change": 0,
+      "before": {
+        "A0": 4,
+        "speed": 1.8,
+        "W": 3
+      },
+      "after_initial_design": {
+        "A0": 4.0,
+        "A0_exact_rule": "원문 유지",
+        "speed": 1.8,
+        "W": 3.0,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 3.0,
+        "speed_modifier_if_base_4": -2.2,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": null,
+      "analysis": {
+        "multipliers": [
+          1
+        ],
+        "mean": 1.0,
+        "long_run_raw_base_only_per_second": 7.2,
+        "first_hit_only_zero_reset_cost_upper_envelope": 7.2,
+        "first_hit_at_ticks": null,
+        "full_combo_last_hit_ticks": null,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "기존 예외 경로 유지"
+    },
+    {
+      "key": "H01",
+      "identity": "mythictrpg:guan_yu_return_blade",
+      "identity_type": "proposed_definition_id",
+      "name": "귀환의 장도",
+      "source": "퀘스트/전투와보상/콘텐츠/H01.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "장도: 긴 양손 공간관리와 세 번째 횡베기, 내장기술 없음",
+      "old_summary": "희귀 / 총공격9·속도1.25 / 내구1561 유한",
+      "old_normal": "4.0블록70도·높이1.5·최대3, t6/16tick. 좌우1.1블록 자루공간 검사. 주9+보조4.5/4.5; 자동찌르기·추가 콤보타 없음.",
+      "skill_unchanged": "없음. 마나0·무스킬 유지. 기존 보조손 사용은 전환 전 비교값이다. BC_NATIVE_BASELINE의 양손 주손 유지 중 보조손 공격·방패·음식·활성기는 차단하고 블록/NPC 상호작용은 유지한다. H02는 별도 습득스킬로 유지한다.",
+      "acquisition_source": "퀘스트/관우/퀘스트와보상.json#/claim_and_recovery",
+      "rights_change": 0,
+      "before": {
+        "A0": 9,
+        "speed": 1.25,
+        "W": 8
+      },
+      "after_initial_design": {
+        "A0": 9.0,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.25,
+        "W": 8.0,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 8.0,
+        "speed_modifier_if_base_4": -2.75,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:glaive",
+        "range_bonus": 0.5,
+        "two_handed": true,
+        "multipliers": [
+          0.8,
+          0.8,
+          1.4
+        ],
+        "angles": [
+          150,
+          150,
+          180
+        ],
+        "hitboxes": [
+          "VERTICAL_PLANE",
+          "VERTICAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_vertical_right",
+          "bettercombat:two_handed_slash_vertical_left",
+          "bettercombat:two_handed_slash_horizontal_right"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_glaive.json",
+          "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/resources/data/bettercombat/weapon_attributes/glaive.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          0.8,
+          0.8,
+          1.4
+        ],
+        "mean": 1.0,
+        "long_run_raw_base_only_per_second": 11.25,
+        "first_hit_only_zero_reset_cost_upper_envelope": 9.0,
+        "first_hit_at_ticks": 8.0,
+        "full_combo_last_hit_ticks": 40.0,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "H03",
+      "identity": "mythictrpg:miyamoto_musashi_clearing_blade",
+      "identity_type": "proposed_definition_id",
+      "name": "빈터의 검",
+      "source": "퀘스트/전투와보상/콘텐츠/H03.json#/details",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "빈터의 검: 양손 네 동작과 순간 방어, 반격 없음",
+      "old_summary": "희귀 / 총공격7·속도1.6 / 내구1561 유한",
+      "old_normal": "기존 단일 검 평타 속도1.6. 카타나 자세 시각 후보, 콤보 차수 추가피해/가속 없음.",
+      "skill_unchanged": "한 번의 응수: 마나20·쿨160tick, [2,6) 첫 적격 근접1건 차단, 자동반격/피해0.",
+      "acquisition_source": "퀘스트/인물별완결기획/P0_MAIN-011/H03_획득과연출.json#",
+      "rights_change": 0,
+      "before": {
+        "A0": 7,
+        "speed": 1.6,
+        "W": 6
+      },
+      "after_initial_design": {
+        "A0": 7.0,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.6,
+        "W": 6.0,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 6.0,
+        "speed_modifier_if_base_4": -2.4,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:katana",
+        "range_bonus": 0.1,
+        "two_handed": true,
+        "multipliers": [
+          0.8,
+          1.2,
+          1.2,
+          0.8
+        ],
+        "angles": [
+          120,
+          120,
+          120,
+          120
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "VERTICAL_PLANE",
+          "VERTICAL_PLANE",
+          "HORIZONTAL_PLANE"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slash_vertical_left",
+          "bettercombat:two_handed_slash_vertical_right",
+          "bettercombat:two_handed_slash_horizontal_left"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_katana.json",
+          "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/resources/data/bettercombat/weapon_attributes/katana.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          0.8,
+          1.2,
+          1.2,
+          0.8
+        ],
+        "mean": 1.0,
+        "long_run_raw_base_only_per_second": 11.200000000000001,
+        "first_hit_only_zero_reset_cost_upper_envelope": 8.96,
+        "first_hit_at_ticks": 6.25,
+        "full_combo_last_hit_ticks": 43.75,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_sword",
+      "identity": "mythictrpg:hephaestus_workshop_plain_sword",
+      "identity_type": "design_id",
+      "name": "작업장 지킴검 · 개량작",
+      "source": "퀘스트/공방/퀘스트와보상.json#/equipment_designs/2",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "공방검: 순수 기본공격과 날카로움II, 우클릭 없음",
+      "old_summary": "희귀 / 기본총6·날카로움II 추가1.5·속도1.6 / 무한내구",
+      "old_normal": "한 손 단일타격. 1.6 공속 보존, 강화 콤보/범위/고유스킬 없음.",
+      "skill_unchanged": "없음. 마나0·스킬없음·임의 우클릭 점유0.",
+      "acquisition_source": "퀘스트/공방/퀘스트와보상.json#/claim_and_failure_policy",
+      "rights_change": 0,
+      "before": {
+        "A0": 6,
+        "speed": 1.6,
+        "W": 5
+      },
+      "after_initial_design": {
+        "A0": 5.294117647058823,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.6,
+        "W": 4.294117647058823,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 4.294117647058823,
+        "speed_modifier_if_base_4": -2.4,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": null,
+        "range_bonus": 0.1,
+        "two_handed": "원문 미명시; 배포 기본값/병합 규칙 검사 필요",
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "angles": [
+          120,
+          120,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left",
+          "bettercombat:one_handed_stab"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_longsword.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "mean": 1.1333333333333333,
+        "long_run_raw_base_only_per_second": 9.6,
+        "first_hit_only_zero_reset_cost_upper_envelope": 8.470588235294118,
+        "first_hit_at_ticks": 6.25,
+        "full_combo_last_hit_ticks": 31.25,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_plain_hammer",
+      "identity": "mythictrpg:hephaestus_workshop_plain_hammer",
+      "identity_type": "design_id",
+      "name": "다짐 망치 · 개량작",
+      "source": "퀘스트/공방/퀘스트와보상.json#/equipment_designs/3",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "다짐망치: 순수 양손 기본강타, 스턴/울림 없음",
+      "old_summary": "희귀 / 총공격12·속도1.0 / 무한내구",
+      "old_normal": "총12·속도1.0, 단일타격만. SS 범위 판정·스턴·추가 넉백은 제외.",
+      "skill_unchanged": "없음. 마나0·짧은 울림 없음.",
+      "acquisition_source": "퀘스트/공방/퀘스트와보상.json#/claim_and_failure_policy",
+      "rights_change": 0,
+      "before": {
+        "A0": 12,
+        "speed": 1,
+        "W": 11
+      },
+      "after_initial_design": {
+        "A0": 10.285714285714285,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1,
+        "W": 9.285714285714285,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 9.285714285714285,
+        "speed_modifier_if_base_4": -3,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": "bettercombat:heavy_axe",
+        "range_bonus": 1,
+        "two_handed": true,
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "angles": [
+          180,
+          180,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:two_handed_slash_horizontal_left",
+          "bettercombat:two_handed_slash_horizontal_right",
+          "bettercombat:two_handed_slam"
+        ],
+        "warning": "bettercombat:hammer와 다른 SS 자체 attacks override다. 짧은 망치에 hammer 프로필을 선택하려면 별도 명시 설계 선택으로 기록한다.",
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_greathammer.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.5
+        ],
+        "mean": 1.1666666666666667,
+        "long_run_raw_base_only_per_second": 12.0,
+        "first_hit_only_zero_reset_cost_upper_envelope": 10.285714285714285,
+        "first_hit_at_ticks": 10.0,
+        "full_combo_last_hit_ticks": 50.0,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "C03_GUIDE_BOW",
+      "identity": "C03_GUIDE_BOW",
+      "identity_type": "key",
+      "name": "길잡이의 활",
+      "source": "퀘스트/본편성장/공용보상과성장_기획.json#/C03_choice/items/1",
+      "route": "RANGED_EXCEPTION",
+      "role": "활: 기존 당김과 힘II, 근접 콤보 제외",
+      "old_summary": "희귀 / 내구384·힘II·내구성I / E6",
+      "old_normal": "원거리 활. SS/BC 근접 preset 비적용, 바닐라 당김·탄도·완충·치명분산 보존.",
+      "skill_unchanged": "별도 스킬/마나 없음. 우클릭은 기존 활 당김·발사.",
+      "acquisition_source": "퀘스트/본편성장/공용보상과성장_기획.json#/C03_choice",
+      "rights_change": 0,
+      "before": {
+        "A0": null,
+        "speed": null,
+        "W": null
+      },
+      "after_initial_design": {
+        "A0": null,
+        "A0_exact_rule": "원문 유지",
+        "speed": null,
+        "W": null,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": null,
+        "speed_modifier_if_base_4": null,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": null,
+      "analysis": {
+        "multipliers": [],
+        "mean": null,
+        "long_run_raw_base_only_per_second": null,
+        "first_hit_only_zero_reset_cost_upper_envelope": null,
+        "first_hit_at_ticks": null,
+        "full_combo_last_hit_ticks": null,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "기존 예외 경로 유지"
+    },
+    {
+      "key": "C05_LANDING_SWORD",
+      "identity": "C05_LANDING_SWORD",
+      "identity_type": "design_id",
+      "name": "착지의 틈을 노리는 검",
+      "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/reward/items/1",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "착지검: 근접노출창의 세 번째 찌르기, 내장기술 없음",
+      "old_summary": "영웅 / 총공격9·속도1.6 / 내구1800, 최초날카로움0·신규상한III",
+      "old_normal": "범위3·단일1·준비0·명목 완충12.5tick은 전환 전 값이다. BC windup 추가는 명시 변경이며 native 안에서 허용·비교한다. 12.5tick을 정수12/13tick 고정으로 반올림하지 않는다.",
+      "skill_unchanged": "없음. 마나/내장스킬 추가0.",
+      "acquisition_source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/reward",
+      "rights_change": 0,
+      "before": {
+        "A0": 9,
+        "speed": 1.6,
+        "W": 8
+      },
+      "after_initial_design": {
+        "A0": 7.9411764705882355,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.6,
+        "W": 6.9411764705882355,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 6.9411764705882355,
+        "speed_modifier_if_base_4": -2.4,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": null,
+        "range_bonus": 0.1,
+        "two_handed": "원문 미명시; 배포 기본값/병합 규칙 검사 필요",
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "angles": [
+          120,
+          120,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left",
+          "bettercombat:one_handed_stab"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_longsword.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "mean": 1.1333333333333333,
+        "long_run_raw_base_only_per_second": 14.4,
+        "first_hit_only_zero_reset_cost_upper_envelope": 12.705882352941178,
+        "first_hit_at_ticks": 6.25,
+        "full_combo_last_hit_ticks": 31.25,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    },
+    {
+      "key": "C05_OPEN_PATH_BOW",
+      "identity": "C05_OPEN_PATH_BOW",
+      "identity_type": "design_id",
+      "name": "열린 길의 활",
+      "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/reward/items/2",
+      "route": "RANGED_EXCEPTION",
+      "role": "활: 20tick 완충과4tick 회복, 비치명 원시10",
+      "old_summary": "영웅 / 완충원시10 / 내구700·발사당1",
+      "old_normal": "20tick 완충만 발사·발사후4tick. 사거리48·속도3·중력0.05·분산0·치명랜덤0.",
+      "skill_unchanged": "별도 무기스킬 없음. 우클릭은 활 사용. 마나 신설0, 화살1/승인발사.",
+      "acquisition_source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/reward",
+      "rights_change": 0,
+      "before": {
+        "A0": null,
+        "speed": null,
+        "W": null
+      },
+      "after_initial_design": {
+        "A0": null,
+        "A0_exact_rule": "원문 유지",
+        "speed": null,
+        "W": null,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": null,
+        "speed_modifier_if_base_4": null,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": null,
+      "analysis": {
+        "multipliers": [],
+        "mean": null,
+        "long_run_raw_base_only_per_second": null,
+        "first_hit_only_zero_reset_cost_upper_envelope": null,
+        "first_hit_at_ticks": null,
+        "full_combo_last_hit_ticks": null,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "기존 예외 경로 유지"
+    },
+    {
+      "key": "UNIFIED-SWORD",
+      "identity": "UNIFIED-SWORD",
+      "identity_type": "editorial_key",
+      "name": "합일검",
+      "source": "퀘스트/본편성장/원본과합일검_기획.json#/sword",
+      "route": "BC_NATIVE_BASELINE",
+      "role": "합일검: 세 번째 찌르기와 별도 일격24, 6→1 단일권리",
+      "old_summary": "전설 / 총공격12·속도1.4 / 표준내구4096 유한·휴면정비, 입증된 신제 동일권리 예외만",
+      "old_normal": "범위3·단일 평타·속도1.4 엔진충전율(20/1.4tick). 14tick 고정 금지, 추가 sweep0.",
+      "skill_unchanged": "결속을 가르는 일격: 마나24·쿨240tick·t8·원시24·3블록40도·단일1·CC0. 기믹접촉은 마나0 별도.",
+      "acquisition_source": "퀘스트/본편성장/원본과합일검_기획.json#/rights",
+      "rights_change": 0,
+      "before": {
+        "A0": 12,
+        "speed": 1.4,
+        "W": 11
+      },
+      "after_initial_design": {
+        "A0": 10.588235294117647,
+        "A0_exact_rule": "기존 A0 / 단독 적격 콤보 산술평균",
+        "speed": 1.4,
+        "W": 9.588235294117647,
+        "entity_base_assumption": 1,
+        "weapon_additive_modifier_if_base_1": 9.588235294117647,
+        "speed_modifier_if_base_4": -2.6,
+        "constructor_rule": "기본1+재질M+생성자인자C 구조일 때 C=A0-1-M; 독립 modifier면 A0-1. 실제 배포 총합 역산/검증, 두 경로 동시 사용0.",
+        "E_K_J": "기존 고유점수 유지; W만 무버프 무기기여와 함께 정정. CP 계수/집계식 변경0.",
+        "status": "채택 초기 기획, 아래 프로필 관측과 동일한 배포만 이 수치로 출시 심사"
+      },
+      "profile_observation": {
+        "parent": null,
+        "range_bonus": 0.1,
+        "two_handed": "원문 미명시; 배포 기본값/병합 규칙 검사 필요",
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "angles": [
+          120,
+          120,
+          0
+        ],
+        "hitboxes": [
+          "HORIZONTAL_PLANE",
+          "HORIZONTAL_PLANE",
+          "FORWARD_BOX"
+        ],
+        "animations": [
+          "bettercombat:one_handed_slash_horizontal_right",
+          "bettercombat:one_handed_slash_horizontal_left",
+          "bettercombat:one_handed_stab"
+        ],
+        "sources": [
+          "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/diamond_longsword.json"
+        ],
+        "upswing": 0.5,
+        "status": "DEVELOPMENT_SOURCE_OBSERVED_NOT_RELEASE_VERIFIED",
+        "boundary": "가변 개발브랜치 관측, 배포1.70.2/2.4.0 동일성·클립 리소스 존재/길이·실효 범위·DPS·5인 미확인. angle0은 각도검사 생략이지 사거리/범위0 아님. range_bonus는 절대 사거리 아님."
+      },
+      "analysis": {
+        "multipliers": [
+          1,
+          1,
+          1.4
+        ],
+        "mean": 1.1333333333333333,
+        "long_run_raw_base_only_per_second": 16.799999999999997,
+        "first_hit_only_zero_reset_cost_upper_envelope": 14.823529411764705,
+        "first_hit_at_ticks": 7.142857142857143,
+        "full_combo_last_hit_ticks": 35.714285714285715,
+        "long_run_not_effective_dps": true,
+        "enchant_note": "A0에 날카로움 포함0. 공방검 별도1.5, 배포 내부 인챈트 순서 확인 전 총합 회귀는 별도 분기.",
+        "multi_note": "대상 모두가 해당 단계 native 형상/시야/거리와 실제 설정을 통과할 때만 대상별 피해. n배는 조건부 합산 민감도이며 타겟상한 약속 아님."
+      },
+      "immutable": "ID·콘셉트·획득/권리·무스킬·내구·우클릭·K/J·가호·장신구권리 보존",
+      "normal_change": "BC native 형상/콤보/타격시점/양손 채택. 기존 좁은형상·주보조피해·고정타점·공격이동 modifier 중첩 제거"
+    }
+  ],
+  "skills": [
+    {
+      "key": "OLY-ATH-W01",
+      "cost": 28,
+      "cd": 200,
+      "lock": 14,
+      "hit": 6,
+      "raw": 6,
+      "cap": 1,
+      "condition": "패링 성공·원공격자2.5블록/방향/시야 유지 시만 응수6; 실패0"
+    },
+    {
+      "key": "OLY-ART-W01",
+      "cost": 22,
+      "cd": 140,
+      "lock": 11,
+      "hit": 5,
+      "raw": 8,
+      "cap": 1,
+      "condition": "t5 발사, 최대10tick 비행·첫적1"
+    },
+    {
+      "key": "OLY-HEP-W01",
+      "cost": 30,
+      "cd": 200,
+      "lock": 18,
+      "hit": 8,
+      "raw": 7,
+      "cap": 3,
+      "condition": "3블록90도; 일반 스턴10tick, 보스 명시 허용 없으면 스턴0"
+    },
+    {
+      "key": "CTL-THO-W01",
+      "cost": 30,
+      "cd": 240,
+      "lock": 16,
+      "hit": 8,
+      "raw": 10,
+      "cap": 1,
+      "condition": "t8 발사, 최대10tick 비행·마법, 스턴6tick는 적격 일반만"
+    },
+    {
+      "key": "CTL-FOX-W01",
+      "cost": 20,
+      "cd": 160,
+      "lock": 10,
+      "hit": 4,
+      "raw": 5,
+      "cap": 1,
+      "dot": [
+        1,
+        1
+      ],
+      "dot_offsets": [
+        20,
+        40
+      ],
+      "condition": "직격 후20/40tick 각1; 허용표/체력피해/전시전자공유 슬롯1 조건, 미분류보스 도트0"
+    },
+    {
+      "key": "H03",
+      "cost": 20,
+      "cd": 160,
+      "lock": 14,
+      "hit": null,
+      "raw": 0,
+      "cap": 0,
+      "condition": "첫 적격근접1건 방어, 응수·피해·매듭0"
+    },
+    {
+      "key": "UNIFIED-SWORD",
+      "cost": 24,
+      "cd": 240,
+      "lock": 20,
+      "hit": 8,
+      "raw": 24,
+      "cap": 1,
+      "condition": "t8 현재위치3블록40도 단일1; 기믹 접촉과 별도"
+    }
+  ],
+  "excluded_nonweapons": [
+    {
+      "key": "OLY-ATH-L01",
+      "identity": "mythictrpg:greek_olympus_athena_rearguard_step",
+      "name": "후미 교대",
+      "document": "퀘스트/전투와보상/콘텐츠/OLY-ATH-L01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "OLY-ART-L01",
+      "identity": "mythictrpg:greek_olympus_artemis_measured_shot",
+      "name": "멈춰 쏘는 숨",
+      "document": "퀘스트/전투와보상/콘텐츠/OLY-ART-L01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "OLY-HEP-L01",
+      "identity": "mythictrpg:greek_olympus_hephaestus_yielding_grip",
+      "name": "충격 흘리기",
+      "document": "퀘스트/전투와보상/콘텐츠/OLY-HEP-L01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "OLY-DIO-A01",
+      "identity": "mythictrpg:greek_olympus_dionysus_empty_cup_music",
+      "name": "빈 잔의 매듭",
+      "document": "퀘스트/전투와보상/콘텐츠/OLY-DIO-A01.json",
+      "pointer": "/details",
+      "category": "장신구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "CTL-THO-S01",
+      "identity": "mythictrpg:norse_aesir_thor_rearguard_thunder",
+      "name": "후미를 위한 한 번의 낙뢰",
+      "document": "퀘스트/전투와보상/콘텐츠/CTL-THO-S01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "CTL-HEL-L01",
+      "identity": "mythictrpg:norse_unassigned_hela_quiet_boundary",
+      "name": "차례를 남기는 서리",
+      "document": "퀘스트/전투와보상/콘텐츠/CTL-HEL-L01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "CTL-HEL-A01",
+      "identity": "mythictrpg:norse_unassigned_hela_reserved_place_charm",
+      "name": "남겨 둔 자리의 패",
+      "document": "퀘스트/전투와보상/콘텐츠/CTL-HEL-A01.json",
+      "pointer": "/details",
+      "category": "장신구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "CTL-ANU-N01",
+      "identity": null,
+      "name": "값이 붙지 않는 이름: 결말 유지",
+      "document": "퀘스트/전투와보상/콘텐츠/CTL-ANU-N01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "CTL-FOX-L01",
+      "identity": "mythictrpg:fox_traditions_unified_fox_daji_leafshade_form",
+      "name": "여우기운: 잎그늘 전투형태",
+      "document": "퀘스트/전투와보상/콘텐츠/CTL-FOX-L01.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "H02",
+      "identity": "mythictrpg:guan_yu_rearguard",
+      "name": "후위를 지키는 자세",
+      "document": "퀘스트/전투와보상/콘텐츠/H02.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "H04",
+      "identity": "mythictrpg:miyamoto_musashi_narrow_step",
+      "name": "좁은 폭의 걸음",
+      "document": "퀘스트/전투와보상/콘텐츠/H04.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "H05",
+      "identity": "mythictrpg:muramasa_handle_finishing_service",
+      "name": "손에 맞추는 마무리",
+      "document": "퀘스트/전투와보상/콘텐츠/H05.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "H06",
+      "identity": "mythictrpg:heo_jun_care_handoff_service",
+      "name": "다음 손을 위한 기록",
+      "document": "퀘스트/전투와보상/콘텐츠/H06.json",
+      "pointer": "/details",
+      "category": "기술/서비스/비보상결말",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "OLY-HEP-T01",
+      "identity": "mythictrpg:greek_olympus_hephaestus_tunnel_pickaxe",
+      "name": "너른굴 곡괭이",
+      "document": "퀘스트/전투와보상/콘텐츠/OLY-HEP-T01.json",
+      "pointer": "/details",
+      "category": "일반도구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_trial_pickaxe",
+      "identity": "mythictrpg:hephaestus_workshop_trial_pickaxe",
+      "name": "손맞춤 곡괭이 · 시험작",
+      "document": "퀘스트/공방/퀘스트와보상.json",
+      "pointer": "/equipment_designs/0",
+      "category": "일반도구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "mythictrpg:hephaestus_workshop_refined_pickaxe",
+      "identity": "mythictrpg:hephaestus_workshop_refined_pickaxe",
+      "name": "손맞춤 곡괭이 · 개량작",
+      "document": "퀘스트/공방/퀘스트와보상.json",
+      "pointer": "/equipment_designs/1",
+      "category": "일반도구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C03_BRACE_CHEST",
+      "identity": "C03_BRACE_CHEST",
+      "name": "버팀의 흉갑",
+      "document": "퀘스트/본편성장/공용보상과성장_기획.json",
+      "pointer": "/C03_choice/items/0",
+      "category": "방어구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C03_DESCENT_BOOTS",
+      "identity": "C03_DESCENT_BOOTS",
+      "name": "하강 장화",
+      "document": "퀘스트/본편성장/공용보상과성장_기획.json",
+      "pointer": "/C03_choice/items/2",
+      "category": "방어구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C05_SURVIVAL_CHEST",
+      "identity": "C05_SURVIVAL_CHEST",
+      "name": "귀환 준비의 흉갑",
+      "document": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "pointer": "/reward/items/0",
+      "category": "방어구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C26-ACC-MANA",
+      "identity": "C26-ACC-MANA",
+      "name": "돌아갈 숨의 고리",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "pointer": "/rewards/definitions/0",
+      "category": "장신구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C26-ACC-REGEN",
+      "identity": "C26-ACC-REGEN",
+      "name": "남은 온기의 고리",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "pointer": "/rewards/definitions/1",
+      "category": "장신구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "C26-ACC-SPEED",
+      "identity": "C26-ACC-SPEED",
+      "name": "귀환 발걸음의 고리",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "pointer": "/rewards/definitions/2",
+      "category": "장신구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-1",
+      "identity": "FRAGMENT-1",
+      "name": "봉인의 문장",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/0",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-2",
+      "identity": "FRAGMENT-2",
+      "name": "침식의 버팀",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/1",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-3",
+      "identity": "FRAGMENT-3",
+      "name": "흐름의 전환",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/2",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-4",
+      "identity": "FRAGMENT-4",
+      "name": "연결의 흔적",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/3",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-5",
+      "identity": "FRAGMENT-5",
+      "name": "강제 맹약의 절단",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/4",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "FRAGMENT-6",
+      "identity": "FRAGMENT-6",
+      "name": "열린 경계의 버팀",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "pointer": "/fragments/5",
+      "category": "스토리원본",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "mythictrpg:wadjet_open_gate_helmet",
+      "identity": "mythictrpg:wadjet_open_gate_helmet",
+      "name": "와제트의 보호 투구",
+      "document": "퀘스트/인물별완결기획/P1_OTHER_QUEST-026/기획정의.json",
+      "pointer": "/records/2/rewards/items/0",
+      "category": "방어구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    },
+    {
+      "key": "mythictrpg:chimera_layered_cuirass",
+      "identity": "mythictrpg:chimera_layered_cuirass",
+      "name": "겹비늘 흉갑",
+      "document": "퀘스트/본편전투/키메라/02_키메라_기획계약.json",
+      "pointer": "/reward/raid_item",
+      "category": "방어구",
+      "include": false,
+      "decision": "BC 신규근접 매핑 제외, 원래 수치/기능/획득 보존; 손 슬롯이 아닌 장신구2칸 효과 정상. 원본6은 합일 이후 동시존재 불가."
+    }
+  ],
+  "additional_reference_audit": [
+    {
+      "key": "C03_BRACE_CHEST",
+      "identity_field": "key",
+      "display_label": "버팀의 흉갑",
+      "kind": "equipment",
+      "document": "퀘스트/본편성장/공용보상과성장_기획.json",
+      "json_pointer": "/C03_choice/items/0",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "2b9152b2cde41a2228b3936c009ecf34e10aa6b2e4bf6490cb9d2b350f68b197"
+    },
+    {
+      "key": "C03_GUIDE_BOW",
+      "identity_field": "key",
+      "display_label": "길잡이의 활",
+      "kind": "equipment",
+      "document": "퀘스트/본편성장/공용보상과성장_기획.json",
+      "json_pointer": "/C03_choice/items/1",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "13무기 전환표의 동일키 참조",
+      "effect_sha256": "187836a328e79729ed748c1bd944daa6a1673cb81d54a330b84b1d9593b792b9"
+    },
+    {
+      "key": "C03_DESCENT_BOOTS",
+      "identity_field": "key",
+      "display_label": "하강 장화",
+      "kind": "equipment",
+      "document": "퀘스트/본편성장/공용보상과성장_기획.json",
+      "json_pointer": "/C03_choice/items/2",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "216c30a228dc38df256475783369d9c6d6466fc631c3e9b5542eafe9d23d6b16"
+    },
+    {
+      "key": "C05_SURVIVAL_CHEST",
+      "identity_field": "design_id",
+      "display_label": "귀환 준비의 흉갑",
+      "kind": "equipment",
+      "document": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "json_pointer": "/reward/items/0",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "71f7feda3206fd0e769d4be844bcc4989b41d5a573b3e1ee5be0d2b724ca168f"
+    },
+    {
+      "key": "C05_LANDING_SWORD",
+      "identity_field": "design_id",
+      "display_label": "착지의 틈을 노리는 검",
+      "kind": "equipment",
+      "document": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "json_pointer": "/reward/items/1",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "13무기 전환표의 동일키 참조",
+      "effect_sha256": "cd9d25e2a859c53783f657fb5cbf7793af2ce71aba7b0819b233353e2876dcce"
+    },
+    {
+      "key": "C05_OPEN_PATH_BOW",
+      "identity_field": "design_id",
+      "display_label": "열린 길의 활",
+      "kind": "equipment",
+      "document": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "json_pointer": "/reward/items/2",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "13무기 전환표의 동일키 참조",
+      "effect_sha256": "400c14508155ca896b993ecf139a41476d0552f95ec7be86514a61420c39bd55"
+    },
+    {
+      "key": "C26-ACC-MANA",
+      "identity_field": "id",
+      "display_label": "돌아갈 숨의 고리",
+      "kind": "accessory",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "json_pointer": "/rewards/definitions/0",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "ad42fe82f31a840e640285e8b48fe16be6c45e4ccccfe137a7f79db5e51bbd53"
+    },
+    {
+      "key": "C26-ACC-REGEN",
+      "identity_field": "id",
+      "display_label": "남은 온기의 고리",
+      "kind": "accessory",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "json_pointer": "/rewards/definitions/1",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "0d7961e0eca8a9ab6777d57e5e9471c5bcd3adc9f630ba0bc40283d622aef816"
+    },
+    {
+      "key": "C26-ACC-SPEED",
+      "identity_field": "id",
+      "display_label": "귀환 발걸음의 고리",
+      "kind": "accessory",
+      "document": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "json_pointer": "/rewards/definitions/2",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "223bf38f5c546a6e6308c365c0e25774a26313158d4762a8d3bf13dcdacfd2fb"
+    },
+    {
+      "key": "FRAGMENT-1",
+      "identity_field": "editorial_key",
+      "display_label": "봉인의 문장",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/0",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "3b6add6a611b92cb83220dc8836aa17f8c616cec83c0b9b50c416592539a3305"
+    },
+    {
+      "key": "FRAGMENT-2",
+      "identity_field": "editorial_key",
+      "display_label": "침식의 버팀",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/1",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "e07e3ab0237a80187d80034001588e240db80321ff0949951fd3ef31c2915a3f"
+    },
+    {
+      "key": "FRAGMENT-3",
+      "identity_field": "editorial_key",
+      "display_label": "흐름의 전환",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/2",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "d1e02180941835bc7889932032fe9f6ded20683b8904ed900ffd19fa9a896a7c"
+    },
+    {
+      "key": "FRAGMENT-4",
+      "identity_field": "editorial_key",
+      "display_label": "연결의 흔적",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/3",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "6f4b26c24cb5dabe18fbacc20d22d9309219d12cf923bfc23c058ae75e3698e8"
+    },
+    {
+      "key": "FRAGMENT-5",
+      "identity_field": "editorial_key",
+      "display_label": "강제 맹약의 절단",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/4",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "985a447a80aab6f6f33b0b46961c93c22c1be14100ea1f394ea57bfd75611994"
+    },
+    {
+      "key": "FRAGMENT-6",
+      "identity_field": "editorial_key",
+      "display_label": "열린 경계의 버팀",
+      "kind": "unique_story_tool",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/fragments/5",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "428a4ca74cbb3f20cfd4c770a85ecccb5ded9958d5d2894542b574784604cfab"
+    },
+    {
+      "key": "UNIFIED-SWORD",
+      "identity_field": "editorial_key",
+      "display_label": "합일검",
+      "kind": "unique_story_weapon",
+      "document": "퀘스트/본편성장/원본과합일검_기획.json",
+      "json_pointer": "/sword",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "13무기 전환표의 동일키 참조",
+      "effect_sha256": "cf7c75c3ebb5f3e5810ff2e524c18e1611d519df453bd8937c45eacd38be3037"
+    },
+    {
+      "key": "mythictrpg:wadjet_open_gate_helmet",
+      "identity_field": "definition_id",
+      "display_label": "와제트의 보호 투구",
+      "kind": "equipment",
+      "document": "퀘스트/인물별완결기획/P1_OTHER_QUEST-026/기획정의.json",
+      "json_pointer": "/records/2/rewards/items/0",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "e0a0c3c1f3822dbe9fa09576ed691687b359a2c84034131913ef1883a18b2e21"
+    },
+    {
+      "key": "mythictrpg:chimera_layered_cuirass",
+      "identity_field": "id",
+      "display_label": "겹비늘 흉갑",
+      "kind": "equipment",
+      "document": "퀘스트/본편전투/키메라/02_키메라_기획계약.json",
+      "json_pointer": "/reward/raid_item",
+      "new_rights_from_index": 0,
+      "runtime_ready": false,
+      "decision": "수치·획득 유지. 방어구/장신구/원본도구를 BC 공격속성으로 승격0.",
+      "effect_sha256": "9837a414ad91c5f743d14c084ae33111c67953d67749b1c528cf0f1c45bafb0d"
+    }
+  ],
+  "raids": [
+    {
+      "key": "C05",
+      "source": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "hp5_before": 7000,
+      "hp5_after": 7000,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "지상400/800tick, 30% 이하520/880tick. 비행 중 근접접촉 불가; 원거리/수정 행동 독립.",
+      "decision": "착지 준비80tick을 이용해 회복 끝낸 뒤 접근, 20/26초 지상창에는 모든3/4단 콤보 완주 가능. 다부위1회·head 우선·공격자별10tick.",
+      "participation5": "초기N 고정 자유후발 유지. 5인 역할은 수정/원거리/머리접근/구조 자율이며 직업강제0.",
+      "target_seconds_design_not_measurement": [
+        180,
+        360
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "breath",
+          "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/patterns/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "charge",
+          "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/patterns/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "bite",
+          "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/patterns/2",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "tail",
+          "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/patterns/3",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "crystal_break",
+          "source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/patterns/4",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          1400,
+          2800,
+          4200,
+          5600,
+          7000
+        ],
+        "hp_source": "퀘스트/본편전투/C05/C05_레이드_기획.json#/boss/hp_by_initial_n",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            180.0,
+            360.0
+          ],
+          [
+            180.0,
+            360.0
+          ],
+          [
+            180.0,
+            360.0
+          ],
+          [
+            180.0,
+            360.0
+          ],
+          [
+            180.0,
+            360.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "C07",
+      "source": "퀘스트/본편전투/C07/C07_열파응집체_기획.json",
+      "hp5_before": 2360,
+      "hp5_after": 2360,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "PALM 준비30·활성4·회복30; HEAT 40/16/24; BURST 44/2/44.",
+      "decision": "두 방해적에 광역 이점 허용, 주적 회복30/24/44tick은 장도 마지막타40tick보다 짧거나 길다. 매 회복만 공격하면 콤보완주 손실.",
+      "participation5": "열판·원형예고 밖 양옆길을 사용. 방해적 보호시간·첫N고정·후발허용 유지.",
+      "target_seconds_design_not_measurement": [
+        60,
+        140
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "C07-PALM",
+          "source": "퀘스트/본편전투/C07/C07_열파응집체_기획.json#/patterns/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C07-HEAT-SHEET",
+          "source": "퀘스트/본편전투/C07/C07_열파응집체_기획.json#/patterns/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C07-SUN-BURST",
+          "source": "퀘스트/본편전투/C07/C07_열파응집체_기획.json#/patterns/2",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          640,
+          1070,
+          1500,
+          1930,
+          2360
+        ],
+        "hp_source": "퀘스트/본편전투/C07/C07_열파응집체_기획.json#/roster_and_state/scaling",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            81.355932,
+            189.830508
+          ],
+          [
+            68.008475,
+            158.686441
+          ],
+          [
+            63.559322,
+            148.305085
+          ],
+          [
+            61.334746,
+            143.114407
+          ],
+          [
+            60.0,
+            140.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "C10",
+      "source": "퀘스트/본편전투/C10/C10_해저방어체_기획.json",
+      "hp5_before": 70,
+      "hp5_after": 70,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "빔 준비60·다음승인100tick. 잡기24/2/28.",
+      "decision": "30/20/20HP 고정 유지. 다중베기로 동시제압 가능하지만 가시2 반사10tick를 각 실제 적격 근접사건에 적용. 수중 시야/거리 필수.",
+      "participation5": "5인 수초 제압은 의도. 인양·귀환 수행을 전투로 대체0.",
+      "target_seconds_design_not_measurement": [
+        1,
+        15
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "C10-BEAM",
+          "source": "퀘스트/본편전투/C10/C10_해저방어체_기획.json#/attacks/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C10-GRAB",
+          "source": "퀘스트/본편전투/C10/C10_해저방어체_기획.json#/attacks/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "hp_source": "퀘스트/본편전투/C10/C10_해저방어체_기획.json#/entities",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            5.0,
+            75.0
+          ],
+          [
+            2.5,
+            37.5
+          ],
+          [
+            1.666667,
+            25.0
+          ],
+          [
+            1.25,
+            18.75
+          ],
+          [
+            1.0,
+            15.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "C11",
+      "source": "퀘스트/본편전투/C11/C11_전투와수행_기획.json",
+      "hp5_before": 70,
+      "hp5_after": 70,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "바람 준비30·비행최대24·회복끝90, 화살24·비행20·회복끝64.",
+      "decision": "30/20/20HP 고정. native 넓은 평타도 절벽 보호·거리·LOS 유지. 바람/화살은 H03 근접패링 대상으로 승격0.",
+      "participation5": "엄폐·짐운반·귀환 참여가 중요하며 HP를 늘려5명 모두 막타 강제0.",
+      "target_seconds_design_not_measurement": [
+        1,
+        15
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "C11-WIND",
+          "source": "퀘스트/본편전투/C11/C11_전투와수행_기획.json#/attacks/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C11-ARROW",
+          "source": "퀘스트/본편전투/C11/C11_전투와수행_기획.json#/attacks/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "hp_source": "퀘스트/본편전투/C11/C11_전투와수행_기획.json#/entities",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            5.0,
+            75.0
+          ],
+          [
+            2.5,
+            37.5
+          ],
+          [
+            1.666667,
+            25.0
+          ],
+          [
+            1.25,
+            18.75
+          ],
+          [
+            1.0,
+            15.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "C17",
+      "source": "퀘스트/본편전투/C17/C17_전투와수행_기획.json",
+      "hp5_before": 60,
+      "hp5_after": 60,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "검24/2/회복끝60, 불탄30/최대30/회복끝90.",
+      "decision": "20/20/20HP 유지. BC로 검수비를 빨리 제압해도 계약·민간출구 수행 별도; 두 공중 블레이즈가 근접거리 밖이면 광역합산0.",
+      "participation5": "5인 강장비 수초제압 허용. 주민 통과 확인은 실제로 수행.",
+      "target_seconds_design_not_measurement": [
+        1,
+        15
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "C17-EXECUTOR-CUT",
+          "source": "퀘스트/본편전투/C17/C17_전투와수행_기획.json#/attacks/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C17-BLAZE-SHOT",
+          "source": "퀘스트/본편전투/C17/C17_전투와수행_기획.json#/attacks/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "hp_source": "퀘스트/본편전투/C17/C17_전투와수행_기획.json#/entities",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            5.0,
+            75.0
+          ],
+          [
+            2.5,
+            37.5
+          ],
+          [
+            1.666667,
+            25.0
+          ],
+          [
+            1.25,
+            18.75
+          ],
+          [
+            1.0,
+            15.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "T03",
+      "source": "퀘스트/본편전투/T03/T03_상층조사_기획.json",
+      "hp5_before": 46,
+      "hp5_after": 46,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "셜커 준비0~30 및 발사후20tick 열림, 이후닫힘; 다음준비는잔탄종료+40과최소100중늦은시점.",
+      "decision": "30+8+8HP 유지. 열림50tick에 장도3타40tick, 카타나4타43.75tick 명목완주 가능; 늦은 접근·이동이면 미완. 닫힘방어20·화살반사 보존.",
+      "participation5": "짧은 지형전투, 핵제거도 실제 타점 승인 필요. 넓은 sweep가 핵/본체 동시처리시 별도적격키.",
+      "target_seconds_design_not_measurement": [
+        1,
+        20
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "T03_SHELL_BULLET",
+          "source": "퀘스트/본편전투/T03/T03_상층조사_기획.json#/attacks/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "T03_MITE_BITE",
+          "source": "퀘스트/본편전투/T03/T03_상층조사_기획.json#/attacks/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          46,
+          46,
+          46,
+          46,
+          46
+        ],
+        "hp_source": "퀘스트/본편전투/T03/T03_상층조사_기획.json#/entities",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            5.0,
+            100.0
+          ],
+          [
+            2.5,
+            50.0
+          ],
+          [
+            1.666667,
+            33.333333
+          ],
+          [
+            1.25,
+            25.0
+          ],
+          [
+            1.0,
+            20.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "T04",
+      "source": "퀘스트/본편전투/T04/T04_마지막통로_기획.json",
+      "hp5_before": 3420,
+      "hp5_after": 3420,
+      "armor_before_after": [
+        8,
+        8
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "손날26/4/34, 문턱40/24/32, 귀환원50/4/36; 기존패링 본체경직10tick는cast당1회.",
+      "decision": "900*(1+0.7*(N-1)),5인3420 유지. 방어8/강인0은 타격 크기별 감소가 달라 평균타격으로 대신 계산하지 않음. 제압HP1 및 후속선택 분리.",
+      "participation5": "최근미표적 순환·5인 실제기여·시작명부 유지; 패링경직10tick에 무거운 첫타12.5tick는 못 들어갈 수 있음.",
+      "target_seconds_design_not_measurement": [
+        80,
+        180
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "T04_HAND_FAN",
+          "source": "퀘스트/본편전투/T04/T04_마지막통로_기획.json#/attacks/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "T04_THRESHOLD_SLIT",
+          "source": "퀘스트/본편전투/T04/T04_마지막통로_기획.json#/attacks/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "T04_RETURN_RING",
+          "source": "퀘스트/본편전투/T04/T04_마지막통로_기획.json#/attacks/2",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          900,
+          1530,
+          2160,
+          2790,
+          3420
+        ],
+        "hp_source": "퀘스트/본편전투/T04/T04_마지막통로_기획.json#/boss/hp_formula",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            105.263158,
+            236.842105
+          ],
+          [
+            89.473684,
+            201.315789
+          ],
+          [
+            84.210526,
+            189.473684
+          ],
+          [
+            81.578947,
+            183.552632
+          ],
+          [
+            80.0,
+            180.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "C26",
+      "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "hp5_before": 12000,
+      "hp5_after": 12000,
+      "armor_before_after": [
+        0,
+        0
+      ],
+      "toughness_before_after": [
+        0,
+        0
+      ],
+      "windows": "ACTIVE 중 일반무적0. 70/40/15% 임계마다 적제압+유효조작+480tick AND. 합계최소72초 별도.",
+      "decision": "2400N 유지. 10tick 소유자공유·다부위1회·임계초과폐기. 콤보마지막타를임계직전에넣으면 손실 가능. 합일검 우클릭과 평타9tick이내경합 차액만.",
+      "participation5": "5인 중 합일검1명과원본6기능동시보유0. 나머지4명 제압/조작/엄폐·지원 참여 유지.",
+      "target_seconds_design_not_measurement": [
+        240,
+        480
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "C26-A1",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C26-A2",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C26-A3",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/2",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C26-A4",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/3",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C26-M1",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/4",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "C26-M2",
+          "source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/patterns/5",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          2400,
+          4800,
+          7200,
+          9600,
+          12000
+        ],
+        "hp_source": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/boss/hp_by_reference_players",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            240.0,
+            480.0
+          ],
+          [
+            240.0,
+            480.0
+          ],
+          [
+            240.0,
+            480.0
+          ],
+          [
+            240.0,
+            480.0
+          ],
+          [
+            240.0,
+            480.0
+          ]
+        ],
+        "gate_seconds": 72,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    },
+    {
+      "key": "CHIMERA",
+      "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json",
+      "hp5_before": 10800,
+      "hp5_after": 10800,
+      "armor_before_after": [
+        8,
+        8
+      ],
+      "toughness_before_after": [
+        4,
+        4
+      ],
+      "windows": "A1 회복24, A2 40, A3 36, A4 32, A5 44tick; 단계idle30/20/16 추가.",
+      "decision": "3000*(1+0.65*(N-1)) 유지. 모든 정상후딜 피해 허용, 별도노출배율0. 직접공격 소유자10tick, 도트명시펄스 별도. 수직/수평native와거대몸통다부위1회.",
+      "participation5": "5인시작명부고정·사망관전·실제기여 유지. 영구사망 단일본체이며 실험용리셋을정사치유로만들지않음.",
+      "target_seconds_design_not_measurement": [
+        240,
+        600
+      ],
+      "target_rule": "전투체류 목표범위이며 강한장비/후발/빠른제압을 억지HP/무적으로 저지하지 않음. 아래 조건부 산술이 목표를 벗어나면 접근시간·분배·억제 로그부터 조사.",
+      "patterns": [
+        {
+          "id": "CH-A1",
+          "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/patterns/0",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "CH-A2",
+          "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/patterns/1",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "CH-A3",
+          "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/patterns/2",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "CH-A4",
+          "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/patterns/3",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        },
+        {
+          "id": "CH-A5",
+          "source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/patterns/4",
+          "decision": "수치·예고·활성·후딜·피해범위·CC·패링 허용표 유지. BC 신규 평타는 이 적패턴을 자동취소/반사하지 않음.",
+          "native_risk": "공격회수와 위험예고가 겹치면 다음 기본공격을 포기하고 보행/엄폐. 기존 허용스킬만 다음자유시점에 사용."
+        }
+      ],
+      "runtime_status": "미시험",
+      "participant_sensitivity": {
+        "N": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hp_before_after_equal": [
+          3000,
+          4950,
+          6900,
+          8850,
+          10800
+        ],
+        "hp_source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/raid/hp_by_players",
+        "party_assumption": "초기N=실제동시출전N 비교. 자유후발 전투의 시간별인원은 별도; 새 입장제한 아님.",
+        "target_scope": "기존 target_seconds_design_not_measurement는 5인 신규 저술목표다. 1~4인 목표는 같은 무버프 H01·가동률 기준의 HP/N 비율로 환산한 검토범위이며 원문 확정목표/실측이 아니다. 고정HP 일반전의 솔로 체류는 5인보다 길어도 허용한다.",
+        "target_seconds_by_n": [
+          [
+            333.333333,
+            833.333333
+          ],
+          [
+            275.0,
+            687.5
+          ],
+          [
+            255.555556,
+            638.888889
+          ],
+          [
+            245.833333,
+            614.583333
+          ],
+          [
+            240.0,
+            600.0
+          ]
+        ],
+        "gate_seconds": 0,
+        "limitations": "공간분산·접근/억제·임계초과손실·스킬·회복 미포함. T03은 열린 셜커 기준만; 닫힘20을 0으로 바꾸지 않는다. T04 제압HP1 차이는 유지."
+      }
+    }
+  ],
+  "source_precedence": "이 문서는 전환안의 신규 기본속성/입력접속만 개정한다. 기존 원고는 비교기준으로 보존, 후속 통합 시 모든 동일키 수치 참조와 CP W를 함께 갱신해야 한다. 별도 원고 직접수정0.",
+  "analysis_model": {
+    "period": "20/speed 실수tick; 정확 배포 양자화/애니메이션시간 미측정",
+    "upswing": 0.5,
+    "critical": false,
+    "strength": 0,
+    "raid_extra": 0,
+    "accessory_F": 0,
+    "enchant": 0,
+    "defense": 0,
+    "target": "모든 타점에 실제거리·LOS·형상을통과한정지대상만",
+    "first_restart": "첫타만 반복하는 상한은 리셋대기0 가정의 비교봉투, 실제달성가능DPS 아님. 실제reset시간을기록해추가해야 함.",
+    "targets": "1/3/5적 합산표는 primary1+q*(n-1), q=1 또는0.5 민감도. 배포대상감쇠/상한/기하미확정, 측정치아님."
+  },
+  "helper_boundary": {
+    "source": "https://github.com/Sweenus/SimplySwords/blob/Architectury-1.21/developer-docs/api/combat-and-damage.md",
+    "status": "개발문서 관측, 배포 미대조",
+    "decision": "SS bolt/through-iframes/synthetic weapon hit/postHit 도우미를 고정 기술피해 전달기로 미채택. actor/sourcePlayer 구분, 아군/관계/참가 필터 자체 검증, Iron’s 쿨감/저항/spell max 숨은연동 미채택."
+  },
+  "npc_support_transition": {
+    "status": "EXECUTION_BRIDGE_DESIGN_NOT_IMPLEMENTED",
+    "thor_source": "퀘스트/전투와보상/콘텐츠/CTL-THO-S01.json#/details",
+    "chimera_source": "퀘스트/본편전투/키메라/02_키메라_기획계약.json#/support",
+    "thor_preserved": {
+      "allowed_battles": [
+        "mythictrpg:workshop_trial_warden",
+        "mythictrpg:ravine_rampager"
+      ],
+      "mana": 60,
+      "uses_per_attempt": 1,
+      "raw_damage": 18,
+      "radius": 3.5,
+      "warning_ticks": [
+        10,
+        30
+      ],
+      "hit_tick": 30,
+      "departure_by_tick": 40,
+      "normal_enemy_stun_ticks": 10,
+      "new_nine_battle_allowlist_entries": 0
+    },
+    "chimera_preserved": {
+      "id": "mythictrpg:chimera_bound_intervention",
+      "max_uses_per_raid_attempt": 1,
+      "real_cooldown_seconds": 86400,
+      "combined_limits": "AND; raid밖위기는동일24h공유",
+      "mana": 0,
+      "material_cost": 0,
+      "action": "CH-A2와같은몸통돌파1회,적대대상당원시물리80HP,다부위합산1회. 플레이어/아군0,보스CC0,일반적1블록밀침",
+      "conditions": "결속수령자 요청·같은차원32블록이내 실제본체·폭5높이4길이16 접근가능통로·살아있음·현재가용·위기 또는 raid active.위기=실제적대피해를최근100tick안에받고적대대상이16블록이내",
+      "arrival": "본체가 실제 이동해 시작점 도착 후 승인. 소환/순간이동/복제0. 이동중 실패는횟수소모0",
+      "approve": "대상과실체도착확인후쿨/시도사용원자저장. 승인후헛침/벽/취소비용유지; 환급0",
+      "timing": "준비40,돌파최대20,회복40tick;그뒤전투개입종료하고실제귀환.파티인원피해배율0",
+      "willingness": "결속후친근하게따르는설정유지,임의확률거절없음.부상/다른현장/경로막힘은가용성실패이며결속취소가아님",
+      "not_pet": "자율연속전투/탈것/상시탱커/영구무적0. 개입중생명피해는동일본체상태에기록하며죽음시지원불가,부활0",
+      "health_basis": "레이드 밖 및 결속 후 본체 최대HP는3000, 현재HP=3000w. 지원받는 레이드 인원수로HP를 확대하지 않는다. 방어8·강인함4·보호0·저항0, 유효 피해/3000만큼 동일w차감. w<=0이면 DEAD_BOUND. 요청자 사망/로그아웃/차원이동/해당시도종료 시 잔여 공격을 취소하고 실제 귀환하며 승인된 쿨/횟수 유지. 부재·죽음·미로드 경계에 원격 대역0."
+    },
+    "bridge": [
+      "NPC_SUPPORT는 플레이어 BC 평타·SS weapon hit가 아닌 기존 별도 행동이다. 실제 본체 UUID/위치·요청자 UUID·원문 귀속·지원 행동ID·대상 본체·펄스ID를 분리한다.",
+      "토르 단일본체 예약·현재동의·실제이동/안전복귀와 키메라 실제접근/상처/죽음을 검증한다. SS 장착만으로 NPC AI·분신·원격 대역을 생성하지 않는다.",
+      "정상 지원피해도 대상의 관계/참가/무적/phase/방어와 원문 소유자 피해창을 통과한다. 검증된 요청자 귀속을 버리고 NPC를 새 소유자로 만들어 같은 창을 우회하지 않는다. 원문이 허용하지 않는 귀속을 새로 부여하지 않는다.",
+      "BC 콤보/Strength/현재손 A0/인챈트/SS implicit을 원시18 또는80에 자동 가산0. 장신구는 원문 적격만, 매듭/재정비를 지원에 새로 발동0.",
+      "플레이어·아군·중립/비참가자를 적으로 자동승격0. 전투 적격목록과 시야/벽/부위중복을 통과한 대상만. 승인 이후 미적중/취소는 원문 비용 유지, 불명 영수증 재발사0."
+    ],
+    "acceptance": "단일본체 동시요청2명·다른현장예약·미로드/죽음·귀환실패·요청자사망·5인/다부위·벽·아군·GATE·fast_attacks·장비교체를 교차시험. 실제 구현/시험 전 지원을 활성화하지 않는다."
+  },
+  "release_static_evidence_ref": "배포실물_정적확인.json"
+}

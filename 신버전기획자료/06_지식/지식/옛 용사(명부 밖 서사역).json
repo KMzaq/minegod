@@ -1,0 +1,128 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "옛 용사(명부 밖 서사역)",
+  "name": "옛 용사 (사망·기록)",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "설정 설명 전용",
+  "current_identity": {
+    "name": "옛 용사 (사망·기록)",
+    "canonical_name": "옛 용사",
+    "mythology": "게임 고유",
+    "tier": "초월급",
+    "combat_tier": "초월급",
+    "war_allegiance": {
+      "value": "독립·중립(어느 진영의 무기도 거부)",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "옛 용사(명부 밖 서사역)",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "옛 용사(명부 밖 서사역)",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "연인의 저주를 대신 받아 실제 사망. 신격·환생·부활·검 조각 속 인격 없음. 생전 정점의 전투등급은 초월급이며 현재 사망 상태는 유지함",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "옛 용사(명부 밖 서사역)",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "여신의 죽은 연인. 아서 또는 플레이어와 별개의 과거 인물",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "옛 용사(명부 밖 서사역)",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/715/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 profile 없음",
+    "verbatim": null,
+    "source": null,
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": false,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim",
+      "authoring_item_key": "옛 용사(명부 밖 서사역):BOUNDARY:001"
+    }
+  ],
+  "source_material": {
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/715/outline/basic_persona/knowledge_boundaries"
+      },
+      "verbatim": "기록은 작성 시점 이후를 배우지 않는다. 사후 신격·현재 감금·현재 플레이어의 질문은 기록 속 용사의 앎이 아니다. 새로운 생전 세부 인격은 출처 없으면 미정.",
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": null,
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [
+    "원본 profile 부재; 현행 지식 문단으로 범위 보존",
+    "별도 scope knowledge_events 없음; 사건을 발명하지 않음",
+    "설정전용: 현재 AI 입력 지식 목록을 만들지 않음"
+  ],
+  "knowledge_route_index": []
+}

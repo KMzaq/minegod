@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public record ConversationIntent(Set<DialogueExampleTag> tags, Set<String> knowledgeKeywords,
         Set<PlayerSpeechTone> playerToneTags, ConversationAct conversationAct, int confidence, Source source,
-        TurnInterpretation turnInterpretation) {
+        TurnInterpretation turnInterpretation, SupportConsultation supportConsultation, CharacterInterest characterInterest) {
     public enum Source {
         HEURISTIC,
         LOCAL_LLM
@@ -51,6 +51,8 @@ public record ConversationIntent(Set<DialogueExampleTag> tags, Set<String> knowl
         confidence = Math.max(0, Math.min(100, confidence));
         source = source == null ? Source.HEURISTIC : source;
         turnInterpretation = turnInterpretation == null ? TurnInterpretation.empty() : turnInterpretation;
+        supportConsultation = supportConsultation == null ? SupportConsultation.NONE : supportConsultation;
+        characterInterest = characterInterest == null ? CharacterInterest.NONE : characterInterest;
     }
 
     public static ConversationIntent heuristicFallback() {
@@ -58,12 +60,22 @@ public record ConversationIntent(Set<DialogueExampleTag> tags, Set<String> knowl
     }
 
     public ConversationIntent withConversationAct(ConversationAct act) {
-        return new ConversationIntent(tags, knowledgeKeywords, playerToneTags, act, confidence, source, turnInterpretation);
+        return new ConversationIntent(tags, knowledgeKeywords, playerToneTags, act, confidence, source, turnInterpretation, supportConsultation,characterInterest);
     }
 
     public ConversationIntent withValidatedInterpretation(String currentPlayerMessage) {
         return new ConversationIntent(tags, knowledgeKeywords, playerToneTags, conversationAct, confidence, source,
-                turnInterpretation.validatedFor(currentPlayerMessage));
+                turnInterpretation.validatedFor(currentPlayerMessage), supportConsultation.validatedFor(currentPlayerMessage),characterInterest.validatedFor(currentPlayerMessage));
+    }
+    public ConversationIntent(Set<DialogueExampleTag> tags,Set<String> keywords,Set<PlayerSpeechTone> tones,
+            ConversationAct act,int confidence,Source source,TurnInterpretation interpretation,SupportConsultation consultation) {
+        this(tags,keywords,tones,act,confidence,source,interpretation,consultation,CharacterInterest.NONE);
+    }
+
+    public ConversationIntent(Set<DialogueExampleTag> tags, Set<String> knowledgeKeywords,
+            Set<PlayerSpeechTone> playerToneTags, ConversationAct conversationAct, int confidence, Source source,
+            TurnInterpretation turnInterpretation) {
+        this(tags, knowledgeKeywords, playerToneTags, conversationAct, confidence, source, turnInterpretation, SupportConsultation.NONE);
     }
 
     /** Compatibility constructor for existing callers and classifiers without the optional meaning extension. */

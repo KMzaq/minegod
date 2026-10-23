@@ -30,7 +30,7 @@ public final class NpcCharacterTagRepository {
 
     public synchronized void load() {
         try {
-            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE);
+            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE, "{\"schemaVersion\":1,\"npcs\":{}}\n");
             try (Reader reader = Files.newBufferedReader(file)) {
                 profiles = parse(GSON.fromJson(reader, RawRepository.class));
             }

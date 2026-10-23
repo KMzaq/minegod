@@ -13,13 +13,34 @@ import java.util.*;
 public record CombatPowerPolicy(String id, Aggregation aggregation, double basePower, double equipmentCoefficient,
         double effectCoefficient, double permanentCoefficient, double lowRatioExclusive,
         List<ItemRule> items, Map<String, Double> effects, Map<String, Double> permanent,
-        List<Recommendation> recommendations) {
+        List<Recommendation> recommendations, CombatPowerEvaluator.Model model) {
     public enum Aggregation { MAX_ALL, SUM_SLOT_BEST }
-    public record ItemRule(ResourceLocation itemId, CompoundTag components, String slot, double score, boolean ignored) {
-        public ItemRule { components = components.copy(); }
+    public record ItemRule(ResourceLocation itemId, CompoundTag components, String slot, double score, boolean ignored,
+            double attackDamage, int sharpnessLevel, int protectionLevel, Map<String, Double> skills,
+            ResourceLocation rightClickSkill) {
+        public ItemRule(ResourceLocation itemId, CompoundTag components, String slot, double score, boolean ignored,
+                double attackDamage, int sharpnessLevel, int protectionLevel, Map<String, Double> skills) {
+            this(itemId, components, slot, score, ignored, attackDamage, sharpnessLevel, protectionLevel, skills, null);
+        }
+        public ItemRule(ResourceLocation itemId, CompoundTag components, String slot, double score, boolean ignored) {
+            this(itemId, components, slot, score, ignored, 0, 0, 0, Map.of());
+        }
+        public ItemRule {
+            components = components.copy(); skills = Map.copyOf(skills);
+            if (rightClickSkill != null && (ignored || !slot.equals("weapon") || !skills.containsKey(rightClickSkill.toString())))
+                throw new IllegalArgumentException("Right-click skill requires a bound weapon and an explicit power skill entry");
+        }
         @Override public CompoundTag components() { return components.copy(); }
-        CompoundTag identity(HolderLookup.Provider registries) {
+        public CompoundTag identity(HolderLookup.Provider registries) {
             return RewardPowerState.identity(new NpcRewardEntry(itemId, 1, components).createStack(registries), registries);
+        }
+        boolean enchantmentsMatch(HolderLookup.Provider registries) {
+            var stack = new NpcRewardEntry(itemId,1,components).createStack(registries);
+            var lookup = registries.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+            return sharpnessLevel == net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(
+                    lookup.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS),stack)
+                    && protectionLevel == net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(
+                    lookup.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.PROTECTION),stack);
         }
     }
     public record Range(int minimum, int maximum) { }
@@ -31,9 +52,23 @@ public record CombatPowerPolicy(String id, Aggregation aggregation, double baseP
         }
     }
     public record Gear(String slot, double score) { }
+    public CombatPowerPolicy(String id, Aggregation aggregation, double basePower, double equipmentCoefficient,
+            double effectCoefficient, double permanentCoefficient, double lowRatioExclusive, List<ItemRule> items,
+            Map<String, Double> effects, Map<String, Double> permanent, List<Recommendation> recommendations) {
+        this(id, aggregation, basePower, equipmentCoefficient, effectCoefficient, permanentCoefficient, lowRatioExclusive,
+                items, effects, permanent, recommendations, null);
+    }
     public CombatPowerPolicy {
         items = List.copyOf(items); effects = Map.copyOf(effects); permanent = Map.copyOf(permanent);
         recommendations = List.copyOf(recommendations);
+    }
+    /** Keep legacy authored rows untouched; reusable equipment definitions contribute their generated rules. */
+    public CombatPowerPolicy withAdditionalItems(List<ItemRule> additional) {
+        if(additional.isEmpty())return this;
+        if(items.size()+additional.size()>4096)throw new IllegalArgumentException("Combined equipment rule limit");
+        var combined=new ArrayList<>(items);combined.addAll(additional);
+        return new CombatPowerPolicy(id,aggregation,basePower,equipmentCoefficient,effectCoefficient,permanentCoefficient,
+                lowRatioExclusive,combined,effects,permanent,recommendations,model);
     }
     public List<Gear> scoreItems(List<CompoundTag> acquired, HolderLookup.Provider registries) {
         List<CompoundTag> identities = items.stream().map(rule -> rule.identity(registries)).toList();
@@ -50,7 +85,38 @@ public record CombatPowerPolicy(String id, Aggregation aggregation, double baseP
     public CombatPowerPolicy withEffectDefaults(Map<String, Double> defaults) {
         Map<String, Double> combined = new HashMap<>(defaults); combined.putAll(effects);
         return new CombatPowerPolicy(id, aggregation, basePower, equipmentCoefficient, effectCoefficient,
-                permanentCoefficient, lowRatioExclusive, items, combined, permanent, recommendations);
+                permanentCoefficient, lowRatioExclusive, items, combined, permanent, recommendations, model);
+    }
+    /** Exact registered reward variants only; IGNORE never supplies attributes, enchantments or skills. */
+    public List<CombatPowerState.Gear> stateGear(List<CompoundTag> acquired, HolderLookup.Provider registries) {
+        List<CompoundTag> identities = items.stream().map(rule -> rule.identity(registries)).toList();
+        if (new HashSet<>(identities).size() != identities.size()) throw new IllegalArgumentException("AMBIGUOUS_ITEM_RULE");
+        List<CombatPowerState.Gear> result = new ArrayList<>();
+        for (CompoundTag identity : acquired) {
+            int index = identities.indexOf(identity);
+            if (index < 0) throw new IllegalArgumentException("UNKNOWN_REWARD_VARIANT");
+            ItemRule rule = items.get(index);
+            if (!rule.ignored()) {
+                if (model != null && !rule.enchantmentsMatch(registries)) throw new IllegalArgumentException("GEAR_ENCHANTMENT_POLICY_MISMATCH");
+                result.add(new CombatPowerState.Gear(id + "/item/" + index, rule.slot(), rule.score(),
+                        rule.attackDamage(), rule.sharpnessLevel(), rule.protectionLevel(), rule.skills()));
+            }
+        }
+        return List.copyOf(result);
+    }
+    public CombatPowerAssessment evaluate(CombatPowerState state, Map<String, Integer> progress) {
+        if (model == null) return CombatPowerAssessment.unavailable("EVALUATED_STATE_REQUIRES_V2_POLICY");
+        List<Recommendation> matching = recommendations.stream().filter(row -> row.matches(progress)).toList();
+        if (!recommendations.isEmpty() && matching.size() != 1)
+            return CombatPowerAssessment.unavailable("RECOMMENDATION_MISSING_OR_AMBIGUOUS");
+        try {
+            var result = CombatPowerEvaluator.evaluate(state, model);
+            double recommended = matching.isEmpty() ? 0 : matching.getFirst().power();
+            return new CombatPowerAssessment(CombatPowerAssessment.Status.AVAILABLE, result.total(), recommended,
+                    recommended > 0 && result.total() < recommended * lowRatioExclusive ? 1 : 0,
+                    "policy=" + id + "; model=PROPOSED_V2; " + result + "; no_equipped_gear_input; recommendation="
+                            + (recommended == 0 ? "NOT_AUTHORED" : "AUTHORED"));
+        } catch (IllegalArgumentException invalid) { return CombatPowerAssessment.unavailable(invalid.getMessage()); }
     }
     public CombatPowerAssessment evaluate(List<Gear> gear, Map<String, Integer> progress,
             Set<String> activeEffects, Map<String, Double> actualPermanentModifiers) {
@@ -79,6 +145,7 @@ public record CombatPowerPolicy(String id, Aggregation aggregation, double baseP
                         + "; actualPermanentModifiers=" + permanentPower + "; no_equipped_gear_input");
     }
     public static CombatPowerPolicy parse(String id, JsonObject json) {
+        if (integer(json, "schemaVersion") == 2) return parseV2(id, json);
         fields(json, "schemaVersion", "aggregation", "basePower", "equipmentCoefficient", "effectCoefficient",
                 "permanentCoefficient", "permanentMode", "lowRatioExclusive", "items", "effects", "permanentModifiers", "recommendations");
         if (integer(json, "schemaVersion") != 1 || !string(json, "permanentMode").equals("ACTUAL_PERMANENT_MODIFIERS_ONLY"))
@@ -111,6 +178,47 @@ public record CombatPowerPolicy(String id, Aggregation aggregation, double baseP
             unique(permanent, namespaced(string(rule, "attributeId")) + "#" + namespaced(string(rule, "modifierId")) + "#" + operation,
                     number(rule, "coefficient"));
         }
+        List<Recommendation> recommendations = parseRecommendations(json);
+        if (recommendations.isEmpty()) throw new IllegalArgumentException("recommendation table required");
+        return new CombatPowerPolicy(id, Aggregation.valueOf(string(json, "aggregation")), number(json, "basePower"),
+                number(json, "equipmentCoefficient"), number(json, "effectCoefficient"), number(json, "permanentCoefficient"),
+                ratio, items, effects, permanent, recommendations);
+    }
+    private static CombatPowerPolicy parseV2(String id, JsonObject json) {
+        fields(json, "schemaVersion", "status", "aggregation", "lowRatioExclusive", "model", "items", "recommendations");
+        if (!string(json, "status").equals("PROPOSED_INITIAL_BALANCE")) throw new IllegalArgumentException("V2 proposal status required");
+        Aggregation aggregation = Aggregation.valueOf(string(json, "aggregation"));
+        double ratio = number(json, "lowRatioExclusive");
+        if (ratio <= 0 || ratio >= 1) throw new IllegalArgumentException("lowRatioExclusive must be in (0,1)");
+        var model = CombatPowerEvaluator.parse(json.getAsJsonObject("model"), aggregation);
+        List<ItemRule> items = new ArrayList<>();
+        for (JsonElement element : array(json, "items")) {
+            JsonObject row = element.getAsJsonObject();
+            JsonObject required = row.deepCopy(); required.remove("rightClickSkill");
+            fields(required, "itemId", "components", "classification", "slot", "intrinsicPower", "attackDamage", "sharpnessLevel", "protectionLevel", "skills");
+            String classification = string(row,"classification"), slot = string(row,"slot");
+            if (!Set.of("BOUND_REWARD_GEAR", "IGNORE").contains(classification) || !slot.matches("[a-z0-9_]{1,32}"))
+                throw new IllegalArgumentException("V2 gear must be explicitly classified as bound reward gear or ignored");
+            double intrinsic = number(row,"intrinsicPower"), attack = number(row,"attackDamage");
+            int sharpness = integer(row,"sharpnessLevel"), protection = integer(row,"protectionLevel");
+            Map<String, Double> skills = new LinkedHashMap<>();
+            JsonObject skillObject = row.getAsJsonObject("skills");
+            if (skillObject == null) throw new IllegalArgumentException("Explicit skill table required");
+            skillObject.keySet().forEach(key -> { namespaced(key); skills.put(key, number(skillObject,key)); });
+            new CombatPowerState.Gear("validate", slot, intrinsic, attack, sharpness, protection, skills);
+            boolean ignored = classification.equals("IGNORE");
+            if (ignored && (!slot.equals("none") || intrinsic != 0 || attack != 0 || sharpness != 0 || protection != 0 || !skills.isEmpty()))
+                throw new IllegalArgumentException("IGNORE must supply no power inputs");
+            JsonObject components = row.getAsJsonObject("components");
+            if (components == null || components.toString().length() > 16_384) throw new IllegalArgumentException("components required/bounded");
+            items.add(new ItemRule(namespaced(string(row,"itemId")), (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE,components),
+                    slot, intrinsic, ignored, attack, sharpness, protection, skills,
+                    row.has("rightClickSkill") ? namespaced(string(row, "rightClickSkill")) : null));
+        }
+        return new CombatPowerPolicy(id, aggregation, model.basePower(), model.equipmentCoefficient(), 1, 0,
+                ratio, items, Map.of(), Map.of(), parseRecommendations(json), model);
+    }
+    private static List<Recommendation> parseRecommendations(JsonObject json) {
         List<Recommendation> recommendations = new ArrayList<>();
         for (JsonElement element : array(json, "recommendations")) {
             JsonObject row = element.getAsJsonObject(); fields(row, "progress", "recommendedPower");
@@ -127,10 +235,7 @@ public record CombatPowerPolicy(String id, Aggregation aggregation, double baseP
             if (recommended <= 0) throw new IllegalArgumentException("recommendedPower must be positive");
             recommendations.add(new Recommendation(ranges, recommended));
         }
-        if (recommendations.isEmpty()) throw new IllegalArgumentException("recommendation table required");
-        return new CombatPowerPolicy(id, Aggregation.valueOf(string(json, "aggregation")), number(json, "basePower"),
-                number(json, "equipmentCoefficient"), number(json, "effectCoefficient"), number(json, "permanentCoefficient"),
-                ratio, items, effects, permanent, recommendations);
+        return List.copyOf(recommendations);
     }
     private static void unique(Map<String, Double> map, String key, double value) {
         if (map.putIfAbsent(key, value) != null) throw new IllegalArgumentException("Duplicate power rule " + key);

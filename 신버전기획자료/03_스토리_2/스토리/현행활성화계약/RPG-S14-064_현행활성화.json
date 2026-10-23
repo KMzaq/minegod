@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S14-064",
+  "name": "구시온",
+  "definition_id": "ACTIVATION-RPG-S14-064",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "자기 소유 일반 물품1개 이상을 다른 실제 플레이어에게 동의하에 인계1회. source owner 감소와 recipient inventory 증가를 동일 transfer UUID로 확인. 바닥 투기만·자기 대체인벤토리·수신자 없는 인계0. 물품 종류 추가 제한0; 소유/사용권 경계 유지.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "정확 원문 encounter의 허용 지형·공간에 현재 실제 도달. 현재 통행권·안전·배치공간·귀환로를 확인한 공개 방문. 별도 소지품·과거 개인행동·선행 NPC응답·수주 조건 없음.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-052/RPG-S14-064.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "역사 access override null은 실행 허가가 아님. 실제 원문 세계해금/현재접근 및 패킷 선후행·배치를 대조. 052/053의 기존 네더 차원·바이옴·대체부지·소유·봉인을 그대로 유지.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-052/RPG-S14-064.json",
+      "record_key": "RPG-S14-064",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "149ea0df11806cc23a8c94db5b4d808f4c241700d8dbbe983696597cdef223fb"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-052/RPG-S14-064_구시온.json",
+      "record_key": "RPG-S14-064",
+      "pointers": [
+        "/adopted_detail"
+      ],
+      "sha256": "0db311c3efb51298a6fc5dcd36728f7e207a91d776318c63088293a49111bca2"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

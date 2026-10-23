@@ -1,0 +1,169 @@
+{
+  "definition_id": "mythictrpg:p0m006_shared_contract",
+  "status": "채택된 저술·구현 기획. 실행 파서 설정이 아니며 구현·배포·게임 시험은 미실시.",
+  "precedence": "명부 772명의 관리키·정체·생사·등급·소속과 원문 개인 MAIN/보상 범위를 보존한다. 수량·시간·부지·정산은 이번 저술에서 확정한 작업값이다. 원문의 등록 ID 미정 문구는 이 작업값의 보류 사유가 아니다.",
+  "identity": "우투(샤마시, RPG-S04-005)와 우투·직조신(우투우, RPG-S04-036)은 별개다. 길가메시·루갈반다·후와와는 비신격이다. 후와와는 현재 살아 있는 특정 비인간 숲 수호자이며 전승을 현재 토벌·부활로 재연하지 않는다. 다른 인물도 현재 허용 본체만 사용한다.",
+  "world_unlock": {
+    "rule": "인물별 기존 초기/조기 접근을 보존하고, 명시된 신규 세계 후보만 이번 저술의 작업기준으로 채택한다. 신규 조건은 누구 한 명의 유효 행동이면 세계 공통 true. 이미 열린 접근은 소급 잠그지 않는다. 기존 봉인·차원·생사 제한은 별도다. 초기 후보에 신규 제작/수집 업적을 덧붙이지 않는다.",
+    "legacy": "기존 권위 로그의 행위자·대상·결과를 이관하되 로그 부재를 과거 공로로 추정하지 않는다. 이미 열린 플래그는 유지한다.",
+    "encounter": "배치형/이미 존재하는 본체는 추첨하지 않는다. 아직 미배치인 확률 후보만 적합 부지에서 서버 300초마다 판정한다. 이번 패킷 후보별 가중치1, NONE4. 기존 공용 풀의 다른 후보 가중치는 바꾸지 않는다.",
+    "subject": "현장 입구 16블록 안의 통행 허용 온라인 적격자 중 균등 1명. worldId/siteId/checkSequence로 판정을 저장한다. 재접속·동행자 증가로 같은 회차 재굴림0.",
+    "body": "worldId+productionGodId 단일 본체 예약. 중복 본체0, 원격 소환0. 등장 후 현 위치·잔여 봉인·감각·의사 확인을 일반 접촉에 사용한다. MAIN 소유·재료·다른 NPC 출석은 일반 인사 조건이 아니다."
+  },
+  "ownership": {
+    "key": "worldId + canonicalMainDefinitionId",
+    "accept": "범위·비용·현재 위험·단독 소유·중단 후 유지 고지 후 최초 유효 명시 수락 compare-and-set. 기존 MAIN 자격 조회와 같은 트랜잭션으로 소유자 1명만 결속한다. 제안·인사·질문·공개 도움은 수락0.",
+    "canonical": "원문 episodeId와 새 기획 definitionId는 동일 이야기/소유/보상 원장으로 매핑한다. 옛 카드와 새 카드 양쪽에서 별도 소유·보상을 만들지 않는다.",
+    "retain": "사망·로그아웃·부재·실패·포기는 자동 양도0/복제 0. 수락 전 거절은 권리0, 수락 후 중단은 소유와 실제 진행을 유지한다. 원문에 없는 재수주·소유권 이전 기능은 없다.",
+    "cooperation": "소유자와 동의한 보조자 최대4명, 현재 활동명부 최대5명. NPC는 별도 실제 배우. 안전 체크포인트에서만 역할 추가·변경. 보조자의 실제 기여와 소유자 필수 행동은 별도다. 명부 밖 구조·일상 이용은 가능하나 MAIN 공로 소급0.",
+    "scope_guard": "MAIN 권리는 세계 공용 물자·통행·타인의 의사 소유가 아니다. 서비스는 claim 수혜자 또는 자체 기여 조건으로 판단하며 mainOwner 조건을 일괄 삽입하지 않는다. 특히 엔키의 기여자 수선은 MAIN 소유/완료와 무관하다."
+  },
+  "execution": {
+    "state_machine": [
+      "OFFERABLE",
+      "OWNED",
+      "ACTIVE",
+      "PAUSED",
+      "WAITING_RESPONSE",
+      "READY_FOR_CONFIRMATION",
+      "COMPLETED",
+      "CLOSED_LOSS"
+    ],
+    "attempt": "worldId/mainId/ownerUuid/attemptSequence. 단계·분기·대상UUID·물품lineage·실제위치·재료소비·응답영수증을 저장. 성공 단계는 되돌리지 않고 미완료만 재개.",
+    "deadline": "각 장면에 별도 값이 없으면 수주/완료/수령 만료 없음. 수행시간은 해당 청크 활성·행위자 온라인·거리/시야 충족 중에만 누적하며 AFK·로그아웃 대기는 수행 아님.",
+    "death": "원래 서버 사망/드롭 규칙을 적용한다. 사망은 성공·귀환이 아니다. 연결 관전 중 타인 행동은 본인 공로0. 정상 부활 후 실제 현장 복귀로 미완료 재개. 고유 NPC 사망·유일 대상 파괴는 복제/부활0, 불가능한 결말은 CLOSED_LOSS와 무보상으로 남긴다.",
+    "logout": "소유와 증거 유지. NPC는 현재 안전 정지/대피 행동만 실제 수행하며 미인도 물자는 마지막 안전 보관함으로 실제 인계 가능할 때만 옮긴다. 자동 귀환·자동 인수0. 비활성 청크에서 물리 진행은 정지, 기존 실시간쿨은 유지.",
+    "stop": "작업 취소는 새 입력만 중지. 움직이는 줄기/설비는 실제 정지·고정해야 안전중단. 위험·손상·소비를 되감지 않는다.",
+    "anti_grief": "보호된 작업 대상은 현재 위임된 작업 권한만 쓰기 허용. 공용 길과 구조는 막지 않는다. 권한 밖 시도는 차단 기록이며 실제 훼손으로 꾸미지 않는다. 보호 밖에서 실제 손상이 발생했다면 그 결과만 기록한다.",
+    "no_replay": "다른 사람이 끝낸 일을 소유자에게 재연시켜 성과를 복제하지 않는다. 현재 남은 실제 역할을 할 수 있으면 그 역할만 진행한다. 소유자 필수 수행이 없고 더는 수행할 대상도 없으면 개인 미완료로 보존하고 새 피해/대상을 생성하지 않는다.",
+    "threats": "새 레이드/무한 웨이브는 없다. 기본은 현재 해당 이동/작업에 실제 위협이 되는 기존 개체만 UUID로 추적한다. 위협 없음이면 안전 접근으로 진행하고 전투 공로0. 실제 현재 적을 저지/우회/엄폐해 넘어갈 수 있다. 기존 개체의 실제 드롭은 기존 규칙, 이 패킷 처치 보너스0. NPC 등급·생명을 퀘스트 편의로 낮추지 않는다."
+  },
+  "inventory_and_claim": {
+    "states": [
+      "AVAILABLE",
+      "RESERVED",
+      "DELIVERY_PENDING",
+      "DELIVERED"
+    ],
+    "first_key": "worldId + canonicalRewardDefinitionId + beneficiaryUuid + originalEpisodeId",
+    "selection": "택1 보상은 최초 유효 선택을 claim에 고정한다. 인벤 부족·재접속·리로드·정의 개정은 재선택0. 사양은 완료취소0. 선택 미확정이면 권리만 유지한다.",
+    "stock": "원소유·초기량·예약·소모·현재량·보충근거를 별도 원장으로 관리. 재고 부족이면 지급 대기, 이미 성립한 권리를 다른 사람에게 빼앗기지 않는다. 시간 경과 자동 보충0.",
+    "delivery": "인벤 부족은 바닥드롭0. itemUuid/claimLineId/transactionId와 인벤·서비스 완료 로그를 대조하는 복구형 outbox. 원자 저장 미지원 상태에서 원자라고 주장하지 않는다. 응답 불명은 실제 인도/수선 결과 확인 후 누락만 이행.",
+    "loss": "실제 받은 소모품 사용/분실과 미지급은 별개. 소실품 자동 재지급 0. 수선은 같은 물건의 손상만 줄이고 새 장비/내구등급/인챈트/수리비 레벨을 만들지 않는다.",
+    "loan": "대여품·위탁 짐 반환은 보상이 아니다. 대여품 설치/회수는 같은 lineage로 1회 이동하며 드롭과 인벤 양쪽에 생성하지 않는다.",
+    "repeat": "모든 MAIN은 세계 단독 소유의 1회 사건. 재수주/완료 보상 반복 0, 전투 성장권0, 골드0. 생활 지도는 K/J 기술·가호·주시·장신구·특수지원권이 아니다."
+  },
+  "knowledge": {
+    "baseline": "원문 baseline_knowledge.known_facts만 초기 자기 지식으로 보존. 미래 사건/상대의 새 동의/숨은 스탯은 초기0.",
+    "fact_event": "Story Fact와 NPC/플레이어가 실제 안 사실은 별도. 사실은 사건ID·관측자·증거·시각·범위·결과로 기록하며 이벤트 생성 자체로 전원 공급0.",
+    "perception": "기본 현장 시야24블록 이내+블록 raycast, 발화12블록 실제 청취. 개별 의미 있는 관측은 목표의 더 좁은 거리 사용. 들은 보고는 report와 출처로 저장하고 목격으로 승격하지 않는다.",
+    "audience": "사적 고백/견적/수선물 소유정보는 해당 발화자가 허락한 UUID 청중만 개인 전달. 공용 채팅·제목·거절문으로 누출0. 실제 청중 전원 자격을 만족하지 못하면 사적 내용을 분리하거나 보류한다.",
+    "handoff": "허락 범위→자료 실제 전달→상대 실제 열람/응답은 세 상태. 미응답은 거절 아님. 다만 원문이 명시한 부분판결/도보대안은 별도 유효 결말이다.",
+    "latecomers": "현재 공개 현장과 실제 열람한 공개기록만 배운다. 친구·파티·세계 해금·MAIN 완료 표시로 사적 기억/칭찬/공로를 상속하지 않는다."
+  },
+  "repair_service": {
+    "allowed_items": [
+      "minecraft:wooden_pickaxe",
+      "minecraft:wooden_axe",
+      "minecraft:wooden_shovel",
+      "minecraft:wooden_hoe",
+      "minecraft:stone_pickaxe",
+      "minecraft:stone_axe",
+      "minecraft:stone_shovel",
+      "minecraft:stone_hoe",
+      "minecraft:iron_pickaxe",
+      "minecraft:iron_axe",
+      "minecraft:iron_shovel",
+      "minecraft:iron_hoe"
+    ],
+    "target_count": 1,
+    "repair_durability": "min(현재 damage, floor(기본 max_damage×0.25), 64)",
+    "material_cost": "목재 공구: oak_planks 1, 석재 공구: cobblestone 1, 철 공구: iron_ingot 1. 제공자 명시 지원재고 또는 수혜자가 사전에 동의한 자기 재료만 1개 소비.",
+    "invariants": "itemUuid·원소유·종류·이름·인챈트·max_damage·repair_cost 동일. 손상 0/무한내구/허용목록 밖이면 입력 거절·미이행권 유지·소비 0. 완성 후 같은 공구를 돌려주고 인수 확인.",
+    "process": "수혜자 본인이 공구를 위탁→제공자가 실제 점검→수혜자가 고정대에서 손잡이/날 위치 2곳을 각3초 고정→재료1개 소비와 손상수정→같은 공구 반환. 시작 뒤 중단은 실제 끝난 수정/재료만 영수증. 부분 수선 동일 claim 잔여만 복구.",
+    "grant_scope": "회당 한 공구 한도이며 다른 공구로 바꾸어 남은 수선량을 분할 지급하지 않는다. 최초 공구가 확정되기 전 종류를 바꿀 수 있으나 확정 뒤 교환0."
+  },
+  "shared_forest": {
+    "site_id": "mythictrpg:p0m006_shared_forest_site",
+    "areas": "기존 숲-장터 접경 64×64 안에 U(우투 비교 돌턱), H(후와와 어린 나무), G(길가메시 운송용 죽은 목재)를 각8블록 이상 떨어져 배치. 살아 있는 나무·보호 경계·귀환길을 공유한다. 부지 미충족이면 같은 기존 생활권에서 세 앵커를 최대128블록까지 분산하며 신규 숲·차원을 생성하지 않는다.",
+    "objects": "U 조사 절단면 3개는 read-only 증거, H 압박 줄기 oak_log 6개, G 운송 원목 oak_log 4개는 서로 다른 objectUuid/lineage. 물리적으로 같은 실물이 확인되면 하나의 원장을 참조하고 두 재고로 세지 않는다.",
+    "permits": "후와와의 현재 permitId는 대상UUID·허용동작·수량·범위·수혜자·회수시점에 결속. 우투 판결은 벌목허가가 아니며 길가메시의 왕권도 허가를 대신하지 않는다.",
+    "no_cycle": "세 인물 MAIN 완료는 서로의 선행이 아니다. 필요한 현장 대화·허가·전언은 현재 접촉/의사만으로 독립 요청한다. 우투는 미응답 부분판결 가능, 후와와는 전달 상대 찬성 없이 실제 보존 확인으로 완료, 길가메시는 실제 현행 채집허가가 있어야 진행한다.",
+    "version": "permitVersion/siteRevision이 바뀌면 미수행 조작을 멈추고 현재 허용만 재확인. 완료된 정당 작업은 취소하지 않는다. 같은 원목은 수집·판결·두 MAIN 보상에서 복제하지 않는다."
+  },
+  "implementation_boundary": {
+    "existing_documented": "profile God ID, Story/quest·보상/지식의 기존 설계 기반과 Minecraft 블록/인벤토리/피해를 사용한다. 개별 필드·이벤트 이름을 실제 엔진 지원 enum이라고 주장하지 않는다.",
+    "new_required": [
+      "현재 접촉·세계 해금/조우/단일본체 권위 연결",
+      "동시 MAIN 수락과 구 episode 별칭의 단일 원장",
+      "블록·물품 lineage/부지권한/정밀 목표 증거 어댑터",
+      "개인 청중별 지식 Context 공급과 실제 수신 증거",
+      "보상 선택·재고예약·인벤/수선 복구형 outbox",
+      "각 인물 아래의 이동/물리실습/설비 어댑터"
+    ],
+    "release_gate": "정의 등록·현장 바인딩·파서 변환·reload·인수시험을 실제 서버에서 통과해야 운영 활성화한다. 이는 기획값 미정이나 사용자 추가 답변 필요를 뜻하지 않는다."
+  },
+  "acceptance_tests": [
+    {
+      "id": "mythictrpg:p0m006_shared_test_accept_race",
+      "scenario": "같은 tick 두 명이 최초 MAIN 수락",
+      "expected": "소유자1명, 다른 사람 일반 질문/현장 도움 유지, 권리복제 0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_world",
+      "scenario": "A 해금 뒤 B 조우·C 동행",
+      "expected": "B에게 개인 재해금 요구 0, C 일반접촉 가능, A 공로/지식/보상 복제 0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_crash",
+      "scenario": "실물 인도/수선 직후 저장응답 유실 및 재로그인",
+      "expected": "영수증·itemUuid·실제 damage 대조 후 누락만 복구, 총지급/수선 증가0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_service_scope",
+      "scenario": "엔키 비소유 기여자 지원 요청, 다른 인물은 해당 수령권 없이 서비스 요청",
+      "expected": "엔키는 실제 기여면 제공 가능; 나머지는 유효 claim 요구. 일반 질문에 어떤 MAIN 소유도 요구 0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_silence",
+      "scenario": "엔키·마르두크 등 협의 상대가 부재/침묵",
+      "expected": "무응답을 거절/합의로 변환0. 개별 부분판결·도보대안만 명시조건대로 처리"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_death",
+      "scenario": "소유자 사망·관전·로그아웃 중 보조자 완료",
+      "expected": "보조자 실제 공로만, 소유자 필수 행동 미완료 유지. 본체/물자 복제 0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_identity",
+      "scenario": "태양신 우투에게 직조 주문, 후와와에게 신 가호, 루갈반다에게 안주 서판 기억 요청",
+      "expected": "동명/비신격/서로 다른 안주 분리, 관련 없는 기억·권리 생성 0"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_future",
+      "scenario": "아직 시작 안 한 최종 결과와 다른 파티의 사적 고백 질의",
+      "expected": "초기 지식/비공개 UI에 없음. 실제 전달 뒤 허락된 수신자만 갱신"
+    },
+    {
+      "id": "mythictrpg:p0m006_shared_test_forest",
+      "scenario": "한 원목을 H 보상·G 납품·U 증거로 동시에 사용",
+      "expected": "동일 lineage 상태에 따른 정당한 이동만; 수량/보상 복제 0, U 증거 읽기는 소유권변경0"
+    }
+  ],
+  "life_material_repair": {
+    "definition_id": "mythictrpg:p0m006_shared_cloth_patch",
+    "scope": "퀘스트 보상능력이 아니라 보통 재료를 쓰는 생활 작업",
+    "material": "minecraft:white_wool 1",
+    "target": "실제 설치된 소유/작업허락이 있는 비장비 천막·포장 objectUuid의 손상단계 1 이상",
+    "effect": "손상 1단계 감소, 각 대상 최대손상2. 플레이어 장비 내구·방어·마법·인벤슬롯 효과 0.",
+    "action": "수혜자가 대상의 손상영역1블록에서3초 실제 덧대기. 완료 시 wool1 소비와 동일대상 손상수정.",
+    "guard": "손상 0·물건없음·권한없음이면 소비 0. 바닐라 갑옷 수선레시피로 등록하지 않는다. 새 생활천 대상 어댑터 구현 필요."
+  },
+  "scene_binding_policy": {
+    "site_ids": "각 인물 world_and_contact.site_definition_id를 부지 정의로 사용한다. 부지별 좌표·크기·거리·높이는 본문의 site/geometry를 따른다. 절대좌표는 기존 지형에서 그 조건으로 선정한다.",
+    "object_ids": "각 인물 scene_object_ids는 본문의 A/B/C, S1/S2/S3 같은 지역기호와 일대일 대응한다. suffix 1_to_N은 실제개체 N개의 인덱스1..N로 펼쳐 별도 UUID를 결속한다. player/NPC는 새개체를 생성하지 않고 기존 actorUuid만 바인딩한다.",
+    "world_instance": "worldId + definitionId + initialObjectUuid를 저장한다. 회수/이동/반환/재시작은 같은 lineage. 현재 객체가 없으면 생성성공으로 꾸미지 않으며 명시된 기존 소품/재고 공급을 먼저 실제 배치한다.",
+    "placement": "본문에 기존구조 OR 적합자연부지가 허용된 경우 두 대안을 AND로 강제하지 않는다. 소품·작업부지는 현재 소유자 허가와 안전한 통행/충돌공간 안에서만 설치한다.",
+    "owner_must_not_privately_claim": "부지ID/오브젝트ID가 MAIN_OWNER 전용 통행권을 뜻하지 않는다. 공개길/구호/실제원소유의 반환은 계속 가능하다."
+  }
+}

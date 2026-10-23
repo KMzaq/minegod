@@ -31,6 +31,12 @@ public final class RecordedRecallQueryTest {
         return RecordedRecallQuery.prepare(request, Optional.of(RecallQuery.plan(scope(request), input, 1, 1000, null))).orElseThrow();
     }
     public static void main(String[] args) {
+        check(RecordedRecallQuery.lexicalTopics("디오니소스에 대해서").startsWith("디오니소스 "), "topic locative is not a different remembered person");
+        check(RecordedRecallQuery.lexicalTopics("디오니소스를 만나보고 싶어").startsWith("디오니소스 "), "object particle shares the same topic stem");
+        check(RecordedRecallQuery.lexicalTopics("아폴론에게 스핑크스는").equals("아폴론 스핑크스"), "no character-specific query vocabulary");
+        check(RecordedRecallQuery.lexicalTopics("내가 네가 신이 test:아테나 English !?").equals("내가 네가 신이 test:아테나 English !?"), "short words, IDs and non-Korean literals preserved");
+        check(planned("내가 디오니소스에 대해서 뭐라고 했었지?").query().actorSelection().matches(A)
+                && !planned("내가 디오니소스에 대해서 뭐라고 했었지?").query().actorSelection().matches(SELF), "normalization never widens speaker authority");
         selection("내가 뭐라고 말했지?", Set.of(A));
         selection("네가 뭐라고 말했지?", Set.of(SELF));
         selection("다른 신이 뭐라고 말했지?", Set.of(ANOTHER));

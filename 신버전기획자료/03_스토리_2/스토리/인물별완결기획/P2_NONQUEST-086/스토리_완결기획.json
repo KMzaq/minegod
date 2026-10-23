@@ -1,0 +1,1313 @@
+{
+  "packet_id": "P2_NONQUEST-086",
+  "category": "스토리",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. runtime_ready=false. 실제 게임/API/LLM/영상/5인 시험 미실행. 새 조건·저장 장치는 지원 확인된 API가 아니다.",
+    "원문보존": "source_contract/retained_profile은 원문값이다. 원문 미채택 상태를 소급 고치지 않고 adopted_detail에 현행 채택을 분리한다. 미정 실제 운영 바인딩은 구현 검증 사항이다.",
+    "세계와본체": {
+      "정책참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+      "규칙": "누구 한 명의 유효 달성으로 세계 영구 해금. 현재 후보 조건을 충족한 실제 한 사람이 추첨 주체이며 해금자일 필요 없음. 해금·등장 주체는 MAIN/보상 소유자가 아니다. 초기 접근·기존 유효 해금 유지. 현재 배치 본체는 재추첨 없이 접촉한다.",
+      "상태": "최초 미배치는 일반 후보가 될 수 있다. 미로드는 저장된 본체를 불러오며 새 본체를 생성하지 않는다. 사망·봉인은 새 추첨으로 복구하지 않는다. 허용된 기록 열람은 본체 발화와 다르며 본 패킷은 새 봉인석 인사 예외를 만들지 않는다.",
+      "확률": "일반풀 300 활동초 창, 서버 공통 25%, 현행 등급 가중치, 실제 등장 뒤 인물 공용 1800 서버 가동초 쿨을 재사용한다. 인물별 독립25%가 아니다. 단일본체 CAS·journal·재시작 대조는 참조 정책 그대로다."
+    },
+    "행동과허락": "대화 기본 8블록 내 실제 시야/음성 수신. 손으로 인수·배치·수선하는 작업만 2블록. 이동·원거리 관측은 실제 경로와 시야를 쓴다. 현재 같은 본체·의사·청중·봉인 확인. 동물 외형만으로 발화불가를 추정하지 않고 profile의 실제 발화를 보존한다.",
+    "수행과분기": "선택 클릭·준비·대사만으로 물리 수행 완료0. 한 선택의 조건은 AND, 서로 다른 대안은 OR. 선택 후기·지도 거절로 이미 끝난 작업을 취소하지 않는다. 위험 중단·사망·로그아웃 때 실제 수행·소비·소유·미수령·수신을 저장하고 현재 접근 재검사 후 남은 부분만 재개한다.",
+    "생활제공": "원문 APPLICABLE 지도는 실제 대상자 권리와 선택 수강을 보존한다. 제공/시범/본인 연습/피드백은 별도, 미수강은 수강 아님. 한 사건·한 수혜자·한 제공권으로 정산하며 새 요청은 실제 다른 요청일 때만. 기존 권리를 새 성장 보상·스킬·가호로 승격하지 않는다. 정해진 대가가 없으면 신규 수수료0, 실제 물건·수량·소유와 합의한 대체/행동 대가는 그대로 보존한다.",
+    "지식": "세계 사실, 개인 수행, 실제 청중별 수신을 따로 기록한다. event_uuid/source/speaker/receiver/허락범위/실제수신시각을 저장한다. NPC도 실제 본 사실 또는 받은 전언만 안다. 후발 친구의 과거 기억·권리 복사0. 사적 청중이 바뀌면 비공개 발화만 멈춘다.",
+    "본편경계": "C16 선행 C15. C16은 네더 차원 해금이 아니라 계약·오분류·접근로 조사다. C17 연결 수정은 전 악마 해방·솔로몬 자동 지배가 아니다. 재심 접수·발언기회·결론과 개인 약속 이행을 나눈다. 기존 SIDE·레이드/봉인/지원은 해당 원문 조건으로만 진행한다. 본 패킷 신규 SIDE/개인 MAIN/성장 보상0."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S14-058",
+      "name": "가미긴",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 이미 실제 전달받은 말이 있을 때만 끊긴 끝부분 앞에서 목소리를 멈춘다. 없으면 자기 짧은 낭독의 호흡을 고른다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「끝나지 않은 한 문장」는 현재 참가자의 국소 행동·관계 선택다. 가미긴은 자기 목소리로 빈 끝을 채우지 않은 채 다음 만남의 침묵을 허용한다. 죽은 이의 새 답이나 부활은 생기지 않는다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/597"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/2"
+              }
+            ]
+          },
+          "rule": "마르바스의 승인 MAIN만 해당 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「끝나지 않은 한 문장」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "이미 실제 전달받은 말이 있을 때만 끊긴 끝부분 앞에서 목소리를 멈춘다. 없으면 자기 짧은 낭독의 호흡을 고른다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "가미긴은 자기 목소리로 빈 끝을 채우지 않은 채 다음 만남의 침묵을 허용한다. 죽은 이의 새 답이나 부활은 생기지 않는다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/597"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 기존 탐험에서 적법하게 회수한 기록 물품 1개의 획득 출처와 실제 인벤 인수를 확인한다. 망자 사본일 필요는 없으며 새 죽음·소환·전언을 만들지 않는다.",
+          "first_encounter_site": "영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-058/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님. 이 후보는 위 first_encounter_site 및 아래 current_player_condition을 함께 충족해야 한다. 이미 등장한 본체의 일반 인사에는 이 등장 후보 조건을 재검사하지 않는다.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0.",
+          "current_player_condition": "현재 후보 본인이 적법하게 소지하고 열람할 수 있는 기존 기록 1건의 실제 내용과 출처를 현장에서 대조한다. 자기 기록도 가능하며 타인 비밀·망자의 새 말·청원 성공·세계 해금 행동의 재수행을 요구하지 않는다. 대조 상대는 자료 자체이며 아직 없는 NPC의 응답을 요구하지 않는다.",
+          "current_player_condition_source": "772명_스토리와기본페르소나_통합.json#/records/595/outline/encounter_generation/current_candidate_requirement",
+          "placement_binding": {
+            "preferred_biome_id": "minecraft:soul_sand_valley",
+            "alternative_biome_ids": "minecraft:nether_wastes;minecraft:warped_forest",
+            "vanilla_fallback_ids": "minecraft:soul_sand_valley;minecraft:nether_wastes;minecraft:warped_forest",
+            "guard": "선호 OR 허용 대체 OR 바닐라 fallback 중 실제 안전한 기존 부지 하나. 모든 바이옴을 방문할 AND 조건이 아니며 새 차원·건물·본체 복제 없음."
+          }
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035A-RPG-S14-058",
+            "title": "끝나지 않은 한 문장",
+            "entry": {
+              "actual_location": "네더의 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래 {\"conceptual_site\": \"영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래\", \"placement_reference\": \"네더 영혼 모래 골짜기의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 영혼 모래 골짜기 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:soul_sand_valley\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:nether_wastes;minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:soul_sand_valley;minecraft:nether_wastes;minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 영혼 모래 골짜기의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-058\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-058\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-058\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-058\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 제안할 때 실제 전언 사본·출처와 가미긴 본인의 수신 범위를 먼저 확인한다. 가미긴이 실제 받은 말과 끊긴 끝을 확인한 뒤에만 “여기까지는 들은 말이야. 그 뒤는 비어 있어.”라고 한다. 원전·수신이 미확인이면 “전언의 출처부터 함께 보자. 아직 받은 말이라고 하지는 않을게.”라고 하며 없는 전언을 낭독하지 않는다.",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 제안할 때 실제 전언 사본·출처와 가미긴 본인의 수신 범위를 먼저 확인한다. 가미긴이 실제 받은 말과 끊긴 끝을 확인한 뒤에만 “여기까지는 들은 말이야. 그 뒤는 비어 있어.”라고 한다. 원전·수신이 미확인이면 “전언의 출처부터 함께 보자. 아직 받은 말이라고 하지는 않을게.”라고 하며 없는 전언을 낭독하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n빈 끝을 그대로 읽는다: 원전과 사본의 현재 확인 가능한 대목을 대조하고 유족이 허락한 청중 앞에서 있는 낱말까지만 읽는다. 끊긴 곳에서 입을 다물고 유족이 다음 행동을 정할 시간을 준다.\n위로할 결말을 덧붙인다: 실제 없는 문장을 망자의 전언인 것처럼 읽은 경우 가미긴이 낭독을 멈춘다. 들은 청중에게 원문과 가필을 나누어 실제 정정하기 전 재접견을 닫는다.\n실제 원전이 없어 읽지 않는다: 사본의 출처와 전언 근거를 확인할 수 없으면 미확인으로 남기고 낭독하지 않는다. 유족의 현재 이야기는 원한다면 별도로 들을 수 있다.",
+                "visible_change": "빈 끝을 그대로 읽는다: 들은 말과 살아 있는 사람의 바람이 나뉜다. 가미긴은 마지막 낱말 뒤에 긴 간격을 남긴다.\n위로할 결말을 덧붙인다: 위조 전언·그것을 들은 청중·미정정 부분이 남는다. 정정은 망자의 새 답이 아니다.\n실제 원전이 없어 읽지 않는다: 망자의 말·용서·새 기억을 만들지 않는다. 현재 확인 가능한 사본이 생길 때만 그 자료를 새로 살핀다."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n살아 있는 사람의 답장을 남긴다: 유족이 원할 때 다른 종이를 내고 본인의 말을 직접 쓰게 돕는다. 전언과 섞이지 않게 구분하고 유족이 고른 허락된 보관처에 실제 두거나 본인이 가져간다.\n아무 답장 없이 마친다: 유족이 쓰지 않겠다고 하면 종이를 접어 치우고 전언은 원보관자에게 실제 돌려준다. 현재 맡은 사본이 없으면 반환을 강요하지 않는다.",
+                "visible_change": "살아 있는 사람의 답장을 남긴다: 유족의 답장과 보관만 성립한다. 망자가 읽었다거나 동의했다는 사실 없음. 가미긴은 빈 끝을 유지한다.\n아무 답장 없이 마친다: 침묵한 채 이 만남을 끝낸다. 가미긴이 다음 만남의 침묵도 허용하며 보상·새 망자 답 없음."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 영혼 모래 골짜기 바깥의 소음이 덜 겹치는 바위 아래 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 사본은 현재 보관자 허락 범위로 읽는다. 유족의 답장은 유족 소유이며 보관 위치도 본인이 고른다. 별도 지급 보상·소환·망자 수신·용서는 없다.",
+                "visible_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n살아 있는 사람의 답장을 남긴다: 유족의 답장과 보관만 성립한다. 망자가 읽었다거나 동의했다는 사실 없음. 가미긴은 빈 끝을 유지한다.\n아무 답장 없이 마친다: 침묵한 채 이 만남을 끝낸다. 가미긴이 다음 만남의 침묵도 허용하며 보상·새 망자 답 없음."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n살아 있는 사람의 답장을 남긴다: 유족의 답장과 보관만 성립한다. 망자가 읽었다거나 동의했다는 사실 없음. 가미긴은 빈 끝을 유지한다.\n아무 답장 없이 마친다: 침묵한 채 이 만남을 끝낸다. 가미긴이 다음 만남의 침묵도 허용하며 보상·새 망자 답 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "가미긴은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 짧은 말을 넓은 간격으로 한다. 상대가 말을 가로채면 새 설명보다 원래 마지막 낱말을 되풀이한다.\n현재 인물의 손·몸·시선: 사본 마지막 낱말에서 손끝을 멈추고 다음 줄로 옮기지 않는다. 유족이 말하기 전 긴 간격을 남긴다. 해당 행동의 실제 대상과 상황이 있을 때만 한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "끝나지 않은 한 문장: 실제로 입수하고 열람 허락받은 전언 사본의 끊긴 끝, 유족의 별도 답장 → 실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n살아 있는 사람의 답장을 남긴다: 유족의 답장과 보관만 성립한다. 망자가 읽었다거나 동의했다는 사실 없음. 가미긴은 빈 끝을 유지한다.\n아무 답장 없이 마친다: 침묵한 채 이 만남을 끝낸다. 가미긴이 다음 만남의 침묵도 허용하며 보상·새 망자 답 없음."
+            }
+          }
+        ],
+        "specific_boundary": "B1-1의 낭독과 B2-1의 유족 답장은 별개다. B2-2 무답장도 정상 마감이며 유족이 돌아오거나 망자가 답할 필요가 없다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-060",
+      "name": "발레포르",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "before",
+            "encounter_subgroup": "legacy_initial_candidate",
+            "evidence_status": "legacy_initial_proposal",
+            "evidence_reason": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+            "actual_access_rule": {
+              "value": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 자기 소지품을 잠깐 사라진 듯 손뒤로 감췄다가 내놓으며 남의 시선이 어디로 가는지 살핀다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「동료의 무거운 주머니」는 현재 참가자의 국소 행동·관계 선택다. 발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있지만 절도 동맹이나 전면 개심은 생기지 않는다. 반환 거부는 미해결 피해로 남는다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/599"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/4"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/4"
+              }
+            ]
+          },
+          "rule": "마르바스의 승인 MAIN만 해당 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「동료의 무거운 주머니」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "자기 소지품을 잠깐 사라진 듯 손뒤로 감췄다가 내놓으며 남의 시선이 어디로 가는지 살핀다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있지만 절도 동맹이나 전면 개심은 생기지 않는다. 반환 거부는 미해결 피해로 남는다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/599"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/4"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/4"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "초기 접근 보존. 추가 행동 잠금 없이 기존 접근 가능한 세계에서 일반풀 후보로 유지한다.",
+          "first_encounter_site": "진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-060/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0."
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035A-RPG-S14-060",
+            "title": "동료의 무거운 주머니",
+            "entry": {
+              "actual_location": "네더의 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱 {\"conceptual_site\": \"진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱\", \"placement_reference\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 진홍빛 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 공개 방문 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:crimson_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-060\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-060\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-060\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-060\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 발레포르: “우리 사이에 이 정도 몫도 못 나누나?”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 발레포르: “우리 사이에 이 정도 몫도 못 나누나?”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n표식을 대조하고 반환을 요구한다: 나누기 전에 현재 보이는 표식과 발레포르가 가리는 부분을 물어 확인한다. 확인된 소유 근거만 제시하며 분배를 멈추고 반환을 요구한다.\n몫을 받고 묵인한다: 실제 내민 물건을 받고 원소유가 따로 있음을 확인한 경우 현재 손에 남은 장물과 알고도 받은 사실을 기록한다.\n증거 부족으로 분배를 보류한다: 소유를 특정할 근거가 없으면 물건을 받지 않고 표식을 훼손하지 않은 채 현재 보유자에게 남긴다. 누구 것인지 확인할 실제 자료만 요청한다.",
+                "visible_change": "표식을 대조하고 반환을 요구한다: 발레포르는 자기 몫을 숨기고 거래를 멈춘다. 반환 요구만으로 물건이 원주인에게 돌아가지는 않는다.\n몫을 받고 묵인한다: 소유 분쟁과 반환 의무가 남는다. 친분·절도 동맹·성공 보상은 확정되지 않는다.\n증거 부족으로 분배를 보류한다: 절도 확정·무죄 확정 모두 없음. 확인된 주인이 실제 나타나면 B2 반환 논의로 갈 수 있고 없으면 보류 종료다."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n실제 반환 뒤 제한된 관계만 남긴다: 확인된 주인이 실제 나타나면 현재 보유자가 허락 범위의 물건을 실제 인도하고 주인이 받는 것을 확인한다. 발레포르에게 실제 반환 비용을 함께 낼지 묻고 실제 답만 남긴다. 반환을 조건으로 한 제한된 동행은 별도로 서로 원할 때만 논의한다.\n사실 범위로 고발하고 관계를 끊는다: 확인된 주인에게 실제 본 표식·현재 보유·반환 여부만 전달하고 발레포르에게 더 동행하지 않겠다고 말한다. 보지 못한 절도를 덧붙이지 않는다.",
+                "visible_change": "실제 반환 뒤 제한된 관계만 남긴다: 실제 인수된 물건만 반환이다. 발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있으나 비용 동의·전면 개심·동행 실행은 자동 아님.\n사실 범위로 고발하고 관계를 끊는다: 전달받은 사람만 내용을 알고 친분은 이 사건 범위에서 끊긴다. 반환 거부품·피해는 미해결로 남으며 고발 한마디로 회수되지 않는다."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 진홍빛 숲 경계의 서로 몸을 비킬 수 있는 통행턱 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 발레포르의 제안은 소유 이전 근거가 아니다. 확인된 원소유자의 물건·실제 현재 보유·반환 비용을 구분한다. 장물 몫은 보상으로 생성하지 않는다. 이벤트이며 퀘스트 수락 없음.",
+                "visible_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n실제 반환 뒤 제한된 관계만 남긴다: 실제 인수된 물건만 반환이다. 발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있으나 비용 동의·전면 개심·동행 실행은 자동 아님.\n사실 범위로 고발하고 관계를 끊는다: 전달받은 사람만 내용을 알고 친분은 이 사건 범위에서 끊긴다. 반환 거부품·피해는 미해결로 남으며 고발 한마디로 회수되지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n실제 반환 뒤 제한된 관계만 남긴다: 실제 인수된 물건만 반환이다. 발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있으나 비용 동의·전면 개심·동행 실행은 자동 아님.\n사실 범위로 고발하고 관계를 끊는다: 전달받은 사람만 내용을 알고 친분은 이 사건 범위에서 끊긴다. 반환 거부품·피해는 미해결로 남으며 고발 한마디로 회수되지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "발레포르은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 농담으로 거리를 좁히고 ‘우리 사이에’라는 말을 잘 쓴다. 들키면 웃음부터 거두기보다 조건을 다시 제안한다.\n현재 인물의 손·몸·시선: 몫을 내미는 손을 가까이 뻗었다가 소유 표식을 지적받으면 천천히 자기 쪽으로 당긴다. 웃음을 남긴 채 다른 조건을 흥정한다. 해당 행동의 실제 대상과 상황이 있을 때만 한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "동료의 무거운 주머니: 발레포르가 내놓은 실제 물건의 소유 표식과 숨긴 흔적, 확인된 주인의 수령 → 실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n실제 반환 뒤 제한된 관계만 남긴다: 실제 인수된 물건만 반환이다. 발레포르는 쉽게 흔들리지 않은 상대에게 관심을 남길 수 있으나 비용 동의·전면 개심·동행 실행은 자동 아님.\n사실 범위로 고발하고 관계를 끊는다: 전달받은 사람만 내용을 알고 친분은 이 사건 범위에서 끊긴다. 반환 거부품·피해는 미해결로 남으며 고발 한마디로 회수되지 않는다."
+            }
+          }
+        ],
+        "specific_boundary": "B1 반환 요구는 반환 완료가 아니다. B2-1은 원주인의 실제 인수와 발레포르의 비용 질문에 대한 실제 답을 각각 기록한다. 비용 동의·동행은 선택이며 자동 합의하지 않는다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-062",
+      "name": "파이몬",
+      "source_contract": {
+        "first_contact_original_contract": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": "Nether",
+          "location_scene": "네더의 기존 길 중 뜨거운 낙하 구간을 피한 넓은 돌턱. 무작위 후보는 네더만이며 새 궁전·군단은 만들지 않는다.",
+          "why_here": "로노베의 통역과 오리아스의 서열 경쟁 사이에서 모호한 청원을 되돌리고, 실제로 무엇을 바라는지 말하는 상대를 고르려 한다. 이 목적에 맞춰 위 기존 현장을 쓰는 새 저술 장면이며 고향·통치권·영구 거처를 새로 확정하지 않는다.",
+          "discovery": {
+            "ordinary_path": "위 장소를 실제 탐험하며 번역된 요청과 원래 말 사이에 목적어가 다르다. 통역자가 지금 현장에 있다고 가정하지 않는다. 이 단서는 이 원고의 새 소규모 장면이며 과거에 발생한 사실이나 등록된 스폰 표가 아니다.",
+            "introduction_path": "필수 소개자는 없다. 기존 관계를 아는 사람의 실제 위치 보고를 받았다면 확인 단서로 쓸 뿐, 그 관계가 자동 추천서나 면담 수락은 아니다.",
+            "missing_introducer_fallback": "소개자가 없어도 위 현장 유형의 현재 열린 길을 직접 탐험한다. 인물이 부재하면 실제 흔적만 관찰하거나 돌아와 현재 위치를 다시 확인한다. 확인되지 않은 다른 연락망을 발명하지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 도달할 수 있는 Nether 현장과 동일 인물의 위치·접촉 상태를 확인한다. 장 번호나 등급 자체를 일반 인사의 문턱으로 쓰지 않는다. 무작위 조우 후보는 네더에만 둔다. 네더 도착·72악마 번호가 출현, 봉인 해제, 복종을 보장하지 않는다.",
+            "player_state": "현장까지 실제 도달하고 현재 열린 통행 범위를 지킨다. 질문과 관찰은 임무 수락이 아니며 위험한 수행 준비·가호 수용력은 별도 판정한다.",
+            "actor_availability": "동일 실제 개체가 이곳에서 접촉 가능한 때만 직접 대화한다. 다른 장소의 진행 중 사건이 있으면 동시 배치·개인별 복제를 하지 않는다.",
+            "seal_guard": "완전 봉인·부재 상태에서는 일반 대화와 소개 실행을 하지 않는다. 봉인석 예외가 이 인물에게 새로 생기지 않으며 이름·추첨·소개로 우회하지 않는다.",
+            "permission_or_willingness": "대화 지속·동행·소개·계약은 당사자의 현재 수락 범위를 확인한다. 적대 전투는 상호 수락을 보편 전제로 삼지 않고 실제 위협·침해 근거와 권위 실행 결과를 따른다.",
+            "chapter_reason_if_any": "일반 첫 인사에 장 번호를 새로 붙이지 않는다. 이 인물에게 새 독점 MAIN이나 본편 필수 관문을 만들지 않는다.",
+            "probability_direction": "현행 초반 후보는 실제 접근 가능할 때 낮은 비중으로도 가능하다. 미정 개체는 장·등급만으로 전후를 일괄 배정하지 않는다. 실제 수치·등록 확률은 미정이며 기록·미승인 접촉은 추첨으로 뚫지 않는다."
+          },
+          "first_contact": {
+            "npc_current_action": "전달된 청원을 읽다 사라진 주어를 짚고, 방문자가 “무엇이든”이라 하자 종이를 내려놓는다.",
+            "player_visible_clue": "번역된 요청과 원래 말 사이에 목적어가 다르다. 통역자가 지금 현장에 있다고 가정하지 않는다.",
+            "player_possible_action": [
+              "자신이 원하는 한 가지를 직접 말한다.",
+              "원문과 전달문의 차이를 짚는다.",
+              "청원을 거두고 이름에 관한 잡담만 한다."
+            ],
+            "opening_intent": "로노베의 통역과 오리아스의 서열 경쟁 사이에서 모호한 청원을 되돌리고, 실제로 무엇을 바라는지 말하는 상대를 고르려 한다.",
+            "question_response": "“높은 번호나 서열이면 더 강합니까?”에는 청원 내용부터 제대로 말하라며 주제를 돌린다. 고에티아 번호·작위는 현행 최상급 전투력과 별개다.",
+            "refusal_response": "막연한 복종에는 지루해하며 물리고 구체적으로 돌아오라 한다. 빈정거림에 위협적으로 반응할 수 있어도 말 한마디로 전 악마의 적대가 생기지 않는다.",
+            "early_deduction_boundary": "통역의 누락을 빨리 찾으면 인정한다. 로노베의 고의·오리아스의 현재 속내·아스모데우스 재심 결과까지 추론 보상으로 주지 않는다."
+          },
+          "refusal_and_return": "막연한 복종에는 지루해하며 물리고 구체적으로 돌아오라 한다. 빈정거림에 위협적으로 반응할 수 있어도 말 한마디로 전 악마의 적대가 생기지 않는다. 재방문에는 실제 남아 있는 상태와 본인이 겪은 행동부터 잇고 처음의 문제·관찰을 강제로 반복하지 않는다. 자기 청원을 분명히 고치는 짧은 협력과 선택 재심 소개. 파이몬에게 독점 MAIN을 새로 배정하지 않는다.",
+          "post_ender_change": {
+            "before": "현재 실제 도달할 수 있는 Nether 현장과 동일 인물의 위치·접촉 상태를 확인한다. 장 번호나 등급 자체를 일반 인사의 문턱으로 쓰지 않는다. 무작위 조우 후보는 네더에만 둔다. 네더 도착·72악마 번호가 출현, 봉인 해제, 복종을 보장하지 않는다. 초반 실제 접근이 가능한 일반 후보는 낮은 비중으로도 만날 수 있지만 수치 확률은 미정이다. 첫 용 전에도 실제 네더 왕복 경로가 있으면 그 현장 후보를 검토한다.",
+            "after": "첫 용 뒤 실제 열린 길·생활권·탐사 범위에 따라 이 현장까지 도달하거나 같은 인물을 다시 찾을 기회가 늘 수 있다. 자동 소환·전 문화권 동시 해금은 아니다. 이미 네더에 갈 수 있었다면 처치가 최초 진입 열쇠인 것처럼 쓰지 않는다.",
+            "unchanged_guards": "완전 봉인·부재 상태에서는 일반 대화와 소개 실행을 하지 않는다. 봉인석 예외가 이 인물에게 새로 생기지 않으며 이름·추첨·소개로 우회하지 않는다. 일반 첫 인사에 장 번호를 새로 붙이지 않는다. 이 인물에게 새 독점 MAIN이나 본편 필수 관문을 만들지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "동일 실제 개체가 이곳에서 접촉 가능한 때만 직접 대화한다. 다른 장소의 진행 중 사건이 있으면 동시 배치·개인별 복제를 하지 않는다.",
+            "special_presentation": "기록·흔적·전언은 각 출처가 남아 있는 범위만 표현한다. 이를 현재 본체의 발화나 자동 원격 수신으로 바꾸지 않는다. 현재 실제 대면 외의 새 분신·대리 인격은 없다.",
+            "no_state_bypass": true
+          },
+          "role_specific_continuation": "자기 청원을 분명히 고치는 짧은 협력과 선택 재심 소개. 파이몬에게 독점 MAIN을 새로 배정하지 않는다.",
+          "existing_scene_limits": [],
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer",
+            "effective_policy"
+          ]
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 기존 네더 황무지 안전 경계 부지까지 실제 도달하고 같은 열린 길의 복귀 지점을 확인한다. 개인 청원 제출·파이몬의 답은 해금 요건이 아니다.",
+          "first_encounter_site": "네더의 기존 길 중 뜨거운 낙하 구간을 피한 넓은 돌턱. 무작위 후보는 네더만이며 새 궁전·군단은 만들지 않는다.",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-062/authoring_contract.json#/first_contact_original_contract/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0."
+        },
+        "current_story": [
+          {
+            "episode_id": "EP004B-RPG-S14-062-01",
+            "title": "통역에서 사라진 주어",
+            "entry": {
+              "actual_location": "Nether 기존 길의 뜨거운 낙하 구간을 피해 넓어진 돌턱. 길 쪽과 안쪽 문서를 펼칠 자리를 나누고 퇴로를 비워 둔다. 새 궁전·군단·연락망은 없다.",
+              "start_trigger": "파이몬이 로노베가 실제 전달한 청원의 원문과 전달문을 놓는다. 그 문서가 없다면 서비스 접수는 열지 않고 현재 본인의 말 한 문장을 다듬는 일반 대화만 가능하다.",
+              "access_seal_presence": "동일 실제 개체가 이곳에서 접촉 가능한 때만 직접 대화한다. 다른 장소의 진행 중 사건이 있으면 동시 배치·개인별 복제를 하지 않는다. 완전 봉인·부재 상태에서는 일반 대화와 소개 실행을 하지 않는다. 봉인석 예외가 이 인물에게 새로 생기지 않으며 이름·추첨·소개로 우회하지 않는다.",
+              "ordinary_contact_vs_task_readiness": "현재 유효한 동일 본체 접촉에서 인사·질문은 자유다. 실제 위험 수행은 현재 대상·물건 권리·자기 장비·퇴로·동행 의사를 따로 확인한다. 수락을 묻는 말은 수락이 아니다.",
+              "early_exception_boundary": "현재 실제 도달할 수 있는 Nether 현장과 동일 인물의 위치·접촉 상태를 확인한다. 장 번호나 등급 자체를 일반 인사의 문턱으로 쓰지 않는다. 무작위 조우 후보는 네더에만 둔다. 네더 도착·72악마 번호가 출현, 봉인 해제, 복종을 보장하지 않는다. 일부 신 초반 예외를 이 인물의 무조건 전투 허가로 확대하지 않는다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "돌턱 안쪽. 파이몬은 청원 위를 두드리다가 “무엇이든”에서 손을 멈춘다.",
+                "action": "로노베가 실제 전달한 원문에서 요청자의 자기 말과 전달문에 덧붙은 평가를 각각 가리킨다. 원 청원자 본인이면 요구를 직접 고치고 대리인이면 허락 범위만 설명한다.",
+                "visible_change": "찬사 옆에 지워지지 않은 원 요구가 드러나고 파이몬의 질문이 구체화된다."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "동일 돌턱. B1의 구체 청원이 실제 확정된 뒤.",
+                "action": "원 청원자가 허락한 수신자와 공개 문장을 다시 읽고 실제 연락 가능한 그 수신자의 수신 의사를 확인한다. 파이몬이 맡겠다고 한 문장만 남긴다. 아스모데우스 재심 청원이면 실제 그 대상과 사안을 확인하며 없던 사건을 만들지 않는다.",
+                "visible_change": "덮인 문장과 실제 맡긴 문장이 구별되고 파이몬의 역할이 한정된다."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "파이몬의 실제 현재 대면 자리. 수신자의 실제 응답을 받은 뒤.",
+                "action": "답 원문에서 접수·거절·재심 대기·실제 결론을 나누어 청원자가 허락한 청중에게 그대로 되돌린다. 답이 “읽었다”뿐이면 그 말만 들려준다.",
+                "visible_change": "파이몬은 다음에 찬사보다 질문 한 문장을 먼저 받아 주지만 타인의 승낙 권한은 얻지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "파이몬은 한정된 발언만 맡기고 실제 받은 답의 범위만 되돌린다. 부재한 수신자의 재심 결과나 전 악마 복종을 만들지 않는다. 실제 해당 행동·수신이 성립한 분기만 적용한다. 파이몬은 다음에 찬사보다 질문 한 문장을 먼저 받아 주지만 타인의 승낙 권한은 얻지 않는다.",
+              "optional_stop": "원문 주체와 요구·수신자·공개 범위를 확정하여 실제 전달한 상태와 실제 받은 답만 돌려준다. 수신 거절·미수신·접수 후 결론 대기는 서로 다른 정산이다.",
+              "next_encounter_memory": "그 청원의 허락된 문장과 실제 받은 답만 기억한다. 다음 요청에서 간결한 질문을 먼저 받지만 전 악마 응낙을 보증하지 않는다.",
+              "playfeel_and_difference": "말을 맡기는 서비스의 정확한 범위와 흥미. 파이몬은 누구의 명령을 실행하는 자동 접수기가 아니다."
+            }
+          }
+        ],
+        "specific_boundary": "B2/전달의 available_when에 실제 답 수신까지 적혀 있으므로 이는 완료 전이 자격으로만 보존한다. 전달 시작은 원청원자 공개허락 AND 파이몬 맡음 AND 수신의사 AND 기존경로 확인으로 별도 판정한다. 발송만=미수신, 수신만=답대기, 실제 답= B3 가능. B3/정산에서 당사자의 실제 답 열람까지 확인한다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-065",
+      "name": "시트리",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 한 걸음 가까이 와 칭찬을 던졌다가 말끝을 끊어 상대가 먼저 묻게 만든다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「붙잡지 않은 저녁」는 현재 참가자의 국소 행동·관계 선택다. 시트리는 돌아온 관심과 만들어 낸 반응을 다르게 기억한다. 아무도 돌아오지 않는 결말도 유지하며 자동 호감·연애는 없다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/604"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "rule": "마르바스의 승인 MAIN만 해당 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「붙잡지 않은 저녁」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "한 걸음 가까이 와 칭찬을 던졌다가 말끝을 끊어 상대가 먼저 묻게 만든다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "시트리는 돌아온 관심과 만들어 낸 반응을 다르게 기억한다. 아무도 돌아오지 않는 결말도 유지하며 자동 호감·연애는 없다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/604"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 책과 깃펜 1개를 실제 제작하고 자기 문장 1개 이상을 저장한다. 내용·연애 성공·특정 시구는 검사하지 않는다.",
+          "first_encounter_site": "진홍빛 숲 경계의 시야가 트이는 좁은 머묾터",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-065/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0."
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035A-RPG-S14-065",
+            "title": "붙잡지 않은 저녁",
+            "entry": {
+              "actual_location": "네더의 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터 {\"conceptual_site\": \"진홍빛 숲 경계의 시야가 트이는 좁은 머묾터\", \"placement_reference\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 진홍빛 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 공개 방문 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:crimson_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-065\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-065\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-065\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-065\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 시트리: “벌써 가겠다고? 한마디쯤 더 듣고 싶을 수도 있잖아.”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 시트리: “벌써 가겠다고? 한마디쯤 더 듣고 싶을 수도 있잖아.”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n끝난 대화를 끝낸다: 상대가 더 듣지 않겠다고 실제 말하면 길을 비키고 추가 호명·붙잡기를 멈춘다. 상대가 실제 자유롭게 떠나도록 두고 시트리에게 대신 돌아올 약속을 하지 않는다.\n발길을 막아 계속 듣게 한다: 실제로 출구를 막거나 중단 의사 뒤에도 붙잡는 압박을 가한 때만 그 결과를 기록한다. 길을 다시 비우고 더 강요하지 않는다.",
+                "visible_change": "끝난 대화를 끝낸다: 상대의 떠남만 남는다. 시트리는 입에 올리던 장난을 접고 빈 통로를 바라본다.\n발길을 막아 계속 듣게 한다: 자발적인 관심의 증거를 얻지 못하며 압박으로 끝난 대화와 실제 피해가 남는다. 자동 호감·연애 없음."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n스스로 돌아온 상대에게 다시 묻는다: 실제로 상대가 자유롭게 돌아온 경우에만 지금 대화하고 싶은지 다시 묻는다. 실제 동의를 받은 범위의 새 말을 나누고 싫다고 하면 종료한다.\n돌아오지 않은 채 마친다: 현재 상대가 돌아오지 않았다면 기다림을 끝내고 시트리와 그 부재만 이야기한다. 소재·속마음·향후 귀환을 추측하지 않는다.\n부재를 핑계로 상대를 깎아내린다: 돌아오지 않은 상대를 실패작이라 말하면 시트리는 그 표현을 듣고 현재 자신의 기대와 상대의 자유를 구별해 답한다. 부재자의 성품을 사실로 확정하지 않는다.",
+                "visible_change": "스스로 돌아온 상대에게 다시 묻는다: 실제 새 동의와 들은 말만 관계 경험이다. 시트리는 강제 반응과 자발적 관심을 구분하지만 연애·호감 수치·영구 동의는 없다.\n돌아오지 않은 채 마친다: 아무도 돌아오지 않는 결말이 유지된다. 기다림 보상이나 재방문 강제 조건 없음.\n부재를 핑계로 상대를 깎아내린다: 실제 이 발언과 현재 응답만 남고 부재자 판단·자동 재방문 없음."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 진홍빛 숲 경계의 시야가 트이는 좁은 머묾터 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 대화·관계 이벤트이며 물품·보상·MAIN·호감 수치 없음. 상대의 중단 의사와 현재 새 대화 동의만 본인이 정한다. 돌아오지 않은 경우도 완결된 결말이다.",
+                "visible_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n스스로 돌아온 상대에게 다시 묻는다: 실제 새 동의와 들은 말만 관계 경험이다. 시트리는 강제 반응과 자발적 관심을 구분하지만 연애·호감 수치·영구 동의는 없다.\n돌아오지 않은 채 마친다: 아무도 돌아오지 않는 결말이 유지된다. 기다림 보상이나 재방문 강제 조건 없음.\n부재를 핑계로 상대를 깎아내린다: 실제 이 발언과 현재 응답만 남고 부재자 판단·자동 재방문 없음."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n스스로 돌아온 상대에게 다시 묻는다: 실제 새 동의와 들은 말만 관계 경험이다. 시트리는 강제 반응과 자발적 관심을 구분하지만 연애·호감 수치·영구 동의는 없다.\n돌아오지 않은 채 마친다: 아무도 돌아오지 않는 결말이 유지된다. 기다림 보상이나 재방문 강제 조건 없음.\n부재를 핑계로 상대를 깎아내린다: 실제 이 발언과 현재 응답만 남고 부재자 판단·자동 재방문 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "시트리은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 가볍고 장난스럽게 말하지만 무시당했다고 느끼면 짧고 뾰족해진다. 솔직한 거절에는 잠깐 말을 고른다.\n현재 인물의 손·몸·시선: 떠나는 발길을 부르려 입을 열었다가 멈춘다. 상대가 스스로 돌아오면 장난보다 현재 의사를 묻는 말을 먼저 고른다. 해당 행동의 실제 대상과 상황이 있을 때만 한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "붙잡지 않은 저녁: 현재 대화 상대의 실제 중단 의사, 자유로운 출구, 자발적 재방문 여부 → 실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n스스로 돌아온 상대에게 다시 묻는다: 실제 새 동의와 들은 말만 관계 경험이다. 시트리는 강제 반응과 자발적 관심을 구분하지만 연애·호감 수치·영구 동의는 없다.\n돌아오지 않은 채 마친다: 아무도 돌아오지 않는 결말이 유지된다. 기다림 보상이나 재방문 강제 조건 없음.\n부재를 핑계로 상대를 깎아내린다: 실제 이 발언과 현재 응답만 남고 부재자 판단·자동 재방문 없음."
+            }
+          }
+        ],
+        "specific_boundary": "B1-1 이탈 후 B2-1 자발 귀환 OR B2-2 미귀환 마감. 귀환은 강제 선행이 아니며 대기시간 제한·호감 지급 없음.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-066",
+      "name": "벨레트",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 길을 비켜 달라는 말에 몸을 돌리지 않고 빠진 호칭을 되묻는다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「비켜 선 행렬」는 현재 참가자의 국소 행동·관계 선택다. 벨레트는 양보가 조롱이 되지 않은 일을 기억한다. 파이몬 전체 행렬 질서나 새 영구 통행권은 정하지 않는다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/605"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/9"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/9"
+              }
+            ]
+          },
+          "rule": "마르바스의 승인 MAIN만 해당 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「비켜 선 행렬」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "길을 비켜 달라는 말에 몸을 돌리지 않고 빠진 호칭을 되묻는다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "벨레트는 양보가 조롱이 되지 않은 일을 기억한다. 파이몬 전체 행렬 질서나 새 영구 통행권은 정하지 않는다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/605"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/9"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/9"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 기존 진홍빛 숲의 안전한 좁은 자연 통로를 한 번 통과하고 확인한 복귀 지점으로 돌아온다. 부상자·행렬·예우 승인을 새로 만들지 않는다.",
+          "first_encounter_site": "진홍빛 숲 경계의 통과 순서가 겹치는 돌턱",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-066/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님. 이 후보는 위 first_encounter_site 및 아래 current_player_condition을 함께 충족해야 한다. 이미 등장한 본체의 일반 인사에는 이 등장 후보 조건을 재검사하지 않는다.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0.",
+          "current_player_condition": "현재 후보 본인이 적법하게 소지하고 열람할 수 있는 기존 기록 1건의 실제 내용과 출처를 현장에서 대조한다. 자기 기록도 가능하며 타인 비밀·망자의 새 말·청원 성공·세계 해금 행동의 재수행을 요구하지 않는다. 대조 상대는 자료 자체이며 아직 없는 NPC의 응답을 요구하지 않는다.",
+          "current_player_condition_source": "772명_스토리와기본페르소나_통합.json#/records/603/outline/encounter_generation/source_route_candidate_without_preexisting_body_check",
+          "placement_binding": {
+            "preferred_biome_id": "minecraft:crimson_forest",
+            "alternative_biome_ids": "minecraft:warped_forest;minecraft:nether_wastes",
+            "vanilla_fallback_ids": "minecraft:crimson_forest;minecraft:warped_forest;minecraft:nether_wastes",
+            "optional_structure_candidate_id": null,
+            "guard": "선호 OR 허용 대체 OR 바닐라 fallback 중 실제 안전한 기존 부지 하나. 모든 바이옴을 방문할 AND 조건이 아니며 새 차원·건물·본체 복제 없음."
+          }
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035A-RPG-S14-066",
+            "title": "비켜 선 행렬",
+            "entry": {
+              "actual_location": "네더의 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱 {\"conceptual_site\": \"진홍빛 숲 경계의 통과 순서가 겹치는 돌턱\", \"placement_reference\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 진홍빛 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:crimson_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-066\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-066\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-066\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-066\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 벨레트: “먼저 길을 청하려면 누구에게 청하는지부터 분명히 하라.”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 상급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 상급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 벨레트: “먼저 길을 청하려면 누구에게 청하는지부터 분명히 하라.”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n합당한 호칭으로 부상자 우선을 청한다: 실제 대기 공간과 통과 가능한 틈을 확인하고 벨레트에게 합당한 호칭으로 이번 부상자 우선 통과와 뒤의 자기 순서를 제시한다. 실제 동의가 있을 때만 선두가 물러나고 부상자와 짐을 통과시킨다.\n자기 차례를 늦춰 기다린다: 자기 짐을 허락된 대기 공간으로 실제 비켜 놓고 양쪽에 가능한 순서를 제안한다. 벨레트가 동의한 부분만 진행하며 미동의면 기다림 상태로 끝낸다.\n굴복 호칭을 강요하거나 강행한다: 실제 모욕적 호칭·강제 통과가 발생하면 당사자 반응과 충돌·지연을 확인하고 안전하게 멈춘다.",
+                "visible_change": "합당한 호칭으로 부상자 우선을 청한다: 동의·선두 이동·실제 통과가 각각 있어야 부상자 통과다. 벨레트는 끝의 순서를 직접 다시 말한다.\n자기 차례를 늦춰 기다린다: 자기 양보만으로 타인의 동의·부상자 도착은 생성하지 않는다. 실제 합의된 통과가 끝났다면 남은 약속을 B2에서 이행한다.\n굴복 호칭을 강요하거나 강행한다: 전면 복종·통행권 없음. 실제 피해와 막힌 짐이 남고 성공 양보를 부여하지 않는다."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n약속한 순서로 끝까지 안내한다: 먼저 보낸 쪽의 마지막 짐이 실제 지나간 것을 확인한 뒤 합의 순서에 맞춰 벨레트 일행을 안내한다. 잃은 짐이 없는지는 각 당사자에게 실제 확인받는다.\n빈 틈으로 자기만 먼저 간다: 합의된 순서와 달리 실제로 자기 짐만 앞세운 때 현재 밀린 행렬과 지연을 확인한다. 이미 떠난 사람을 순간 복귀시키지 않는다.",
+                "visible_change": "약속한 순서로 끝까지 안내한다: 실제 마지막 인수·통과까지 확인한 범위만 종료다. 벨레트가 이번 양보가 조롱으로 바뀌지 않았음을 기억한다.\n빈 틈으로 자기만 먼저 간다: 약속 위반과 실제 통과·손실은 남는다. 벨레트의 양보 신뢰·영구 권리는 생기지 않는다."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 진홍빛 숲 경계의 통과 순서가 겹치는 돌턱 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 각자의 짐은 각자의 소유다. 임시 통과 순서의 실제 동의·양보·도착만 성립한다. 전체 파이몬 행렬 질서·영구 통행권·보상·복종 없음.",
+                "visible_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n약속한 순서로 끝까지 안내한다: 실제 마지막 인수·통과까지 확인한 범위만 종료다. 벨레트가 이번 양보가 조롱으로 바뀌지 않았음을 기억한다.\n빈 틈으로 자기만 먼저 간다: 약속 위반과 실제 통과·손실은 남는다. 벨레트의 양보 신뢰·영구 권리는 생기지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n약속한 순서로 끝까지 안내한다: 실제 마지막 인수·통과까지 확인한 범위만 종료다. 벨레트가 이번 양보가 조롱으로 바뀌지 않았음을 기억한다.\n빈 틈으로 자기만 먼저 간다: 약속 위반과 실제 통과·손실은 남는다. 벨레트의 양보 신뢰·영구 권리는 생기지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "벨레트은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 처음에는 길고 격식을 차리다가 화가 나면 한 낱말씩 끊는다. 양보할 때는 마지막 말을 자신이 한다.\n현재 인물의 손·몸·시선: 통과 순서를 길게 말하다가 어긋나면 낱말을 짧게 끊는다. 양보에 동의한 때는 마지막 순서를 본인이 다시 명시한다. 해당 행동의 실제 대상과 상황이 있을 때만 한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "비켜 선 행렬: 좁은 통과 지점, 실제 대기 공간, 부상자와 양쪽 행렬의 마지막 짐 → 실제로 택한 경로의 결과만 남긴다. 선택 후기·관계 비교는 본작업 완료의 새 의무가 아니다.\n약속한 순서로 끝까지 안내한다: 실제 마지막 인수·통과까지 확인한 범위만 종료다. 벨레트가 이번 양보가 조롱으로 바뀌지 않았음을 기억한다.\n빈 틈으로 자기만 먼저 간다: 약속 위반과 실제 통과·손실은 남는다. 벨레트의 양보 신뢰·영구 권리는 생기지 않는다."
+            }
+          }
+        ],
+        "specific_boundary": "B1-1의 허락 대사는 실제 동의 직후, 선두 이동 전이다. 완료는 선두 이동 AND 부상자 실제 통과. B2-1은 앞쪽 마지막 짐 통과 AND 약속 순서 안내 AND 각 당사자의 짐 확인. 실제 행렬·부상자가 없으면 일반 통행 협의만 가능.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-069",
+      "name": "보티스",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 화해를 말하는 상대에게 가장 듣기 싫은 대가 한 문장을 소리 내어 다시 말하게 한다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「싫어한 채 건네는 컵」는 현재 참가자의 국소 행동·관계 선택다. 보티스는 서로 싫어해도 지킨 한 번을 기억하며 전면 화해·영구 중재권은 생기지 않는다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/608"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/12"
+              }
+            ]
+          },
+          "rule": "이 배치에 새로운 MAIN을 만들지 않으며 기존 카드의 MAIN 조건만 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「싫어한 채 건네는 컵」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "화해를 말하는 상대에게 가장 듣기 싫은 대가 한 문장을 소리 내어 다시 말하게 한다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "보티스는 서로 싫어해도 지킨 한 번을 기억하며 전면 화해·영구 중재권은 생기지 않는다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/608"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 소유자 허락 아래 빌린 도구 1개를 한 번 사용하고 동일 물품을 원소유자가 실제 인수한다. 화해·친밀감은 검사하지 않는다.",
+          "first_encounter_site": "뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-069/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님. 이 후보는 위 first_encounter_site 및 아래 current_player_condition을 함께 충족해야 한다. 이미 등장한 본체의 일반 인사에는 이 등장 후보 조건을 재검사하지 않는다.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0.",
+          "current_player_condition": "현재 후보 본인이 적법하게 소지하고 열람할 수 있는 기존 기록 1건의 실제 내용과 출처를 현장에서 대조한다. 자기 기록도 가능하며 타인 비밀·망자의 새 말·청원 성공·세계 해금 행동의 재수행을 요구하지 않는다. 대조 상대는 자료 자체이며 아직 없는 NPC의 응답을 요구하지 않는다.",
+          "current_player_condition_source": "772명_스토리와기본페르소나_통합.json#/records/606/outline/encounter_generation/source_route_candidate_without_preexisting_body_check",
+          "placement_binding": {
+            "preferred_biome_id": "minecraft:warped_forest",
+            "alternative_biome_ids": "minecraft:crimson_forest;minecraft:nether_wastes",
+            "vanilla_fallback_ids": "minecraft:warped_forest;minecraft:crimson_forest;minecraft:nether_wastes",
+            "optional_structure_candidate_id": null,
+            "guard": "선호 OR 허용 대체 OR 바닐라 fallback 중 실제 안전한 기존 부지 하나. 모든 바이옴을 방문할 AND 조건이 아니며 새 차원·건물·본체 복제 없음."
+          }
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035B-RPG-S14-069",
+            "title": "싫어한 채 건네는 컵",
+            "entry": {
+              "actual_location": "네더의 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이 {\"conceptual_site\": \"뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이\", \"placement_reference\": \"네더 뒤틀린 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 뒤틀린 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:warped_forest;minecraft:crimson_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 뒤틀린 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-069\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-069\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-069\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-069\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 보티스: “좋아한다는 말은 빼도 돼. 누가 먼저 쓰고 언제 넘길지 말해.”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 중급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 중급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 보티스: “좋아한다는 말은 빼도 돼. 누가 먼저 쓰고 언제 넘길지 말해.”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n친밀감 없이 차례만 합의한다: 두 당사자가 직접 지금 필요한 사용 범위를 말하게 한다. 원소유자의 대여 허락과 다음 차례를 맞추고 첫 사용자가 도구를 실제 받아 허락된 작업을 한다. 보티스는 두 사람의 말이 끝날 때까지 컵을 사이에 두고 기다린다.\n공유를 중지한다: 두 사람에게 공유 중단을 실제 알리고 쥔 도구를 원소유자에게 반환한다. 남은 작업은 각자 보류한다.\n좋아한다는 말만 강요하고 도구를 붙잡는다: 위반: 실제 거짓 친밀감을 강요하거나 약속한 도구를 놓지 않은 행동을 확인한다. 보티스는 그 상태를 화해라고 부르지 않고 미반환 물건과 실패한 차례를 짚는다.",
+                "visible_change": "친밀감 없이 차례만 합의한다: 첫 인도·사용이 확인된 범위만 좁은 합의다. 아직 반환이나 화해는 아니다.\n공유를 중지한다: 물건 반환과 공유 종료만 남는다. 합의 성공·화해 없음.\n좋아한다는 말만 강요하고 도구를 붙잡는다: 합의 실패와 미반환이 남는다. 말로 고쳐도 실제 반환 전 정상 결과 없음."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n불만을 남긴 채 두 번째 차례를 지킨다: 첫 사용 뒤 두 번째 사용자에게 실제 도구를 건네고 허락된 사용 뒤 원소유자에게 돌려준다. 추가 비용이 생겼으면 쓰기 전에 모두에게 다시 묻고 미동의 부분은 하지 않는다. 각자가 남은 불만을 말해도 배신으로 바꾸지 않는다.\n추가 비용을 숨기거나 반환을 거부한다: 위반: 실제 추가 비용을 숨겨 사용했거나 약속한 반환을 거부하면 사용을 멈추고 원소유와 손해를 확인한다. 보티스는 다음 차례를 성공 처리하지 않는다.",
+                "visible_change": "불만을 남긴 채 두 번째 차례를 지킨다: 보티스는 서로 싫어해도 실제 지킨 한 번만 기억한다. 전면 화해·영구 중재권 없음.\n추가 비용을 숨기거나 반환을 거부한다: 실제 사용·비용과 미반환이 남으며 좁은 합의도 실패한 부분을 구분한다."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 뒤틀린 숲 경계의 서로 목소리가 닿는 바위 사이 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 도구는 원소유자의 것이다. 차례 합의는 소유 이전이 아니다. 실제 허락받은 사용·인도·반환만 남기고 무보상으로 마친다.",
+                "visible_change": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n불만을 남긴 채 두 번째 차례를 지킨다: 보티스는 서로 싫어해도 실제 지킨 한 번만 기억한다. 전면 화해·영구 중재권 없음.\n추가 비용을 숨기거나 반환을 거부한다: 실제 사용·비용과 미반환이 남으며 좁은 합의도 실패한 부분을 구분한다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "수주나 퀘스트 성공 완료를 만들지 않는다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n불만을 남긴 채 두 번째 차례를 지킨다: 보티스는 서로 싫어해도 실제 지킨 한 번만 기억한다. 전면 화해·영구 중재권 없음.\n추가 비용을 숨기거나 반환을 거부한다: 실제 사용·비용과 미반환이 남으며 좁은 합의도 실패한 부분을 구분한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "보티스은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 낮고 거친 말로 불편한 핵심부터 꺼낸다. 상대가 화를 내도 음량을 따라 올리지는 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "싫어한 채 건네는 컵: 현재 다투는 두 작업자의 도구 사용 순서, 첫 인도와 실제 반환, 추가 사용 비용 → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n불만을 남긴 채 두 번째 차례를 지킨다: 보티스는 서로 싫어해도 실제 지킨 한 번만 기억한다. 전면 화해·영구 중재권 없음.\n추가 비용을 숨기거나 반환을 거부한다: 실제 사용·비용과 미반환이 남으며 좁은 합의도 실패한 부분을 구분한다. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          }
+        ],
+        "specific_boundary": "B1-1 첫 인도·사용은 반환/화해가 아니다. B2-1 두 번째 인수·허락사용·원소유자 인수가 완료 근거이며 추가비용은 사용 전 동의된 몫만. 컵·도구의 실제 부재 시 없는 소품을 생성하지 않는다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-071",
+      "name": "살레오스",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 끼어들던 몸을 한 걸음 물려 대화를 끝낼 자리를 먼저 남긴다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「비워 둔 맞은편」는 현재 참가자의 국소 행동·관계 선택다. 살레오스는 성립한 대화만 기억하고 사랑·용서·호감을 지급하지 않는다. 거절한 상대에게 반복 추적하지 않는다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/610"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/14"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/14"
+              }
+            ]
+          },
+          "rule": "이 배치에 새로운 MAIN을 만들지 않으며 기존 카드의 MAIN 조건만 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「비워 둔 맞은편」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "끼어들던 몸을 한 걸음 물려 대화를 끝낼 자리를 먼저 남긴다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "살레오스는 성립한 대화만 기억하고 사랑·용서·호감을 지급하지 않는다. 거절한 상대에게 반복 추적하지 않는다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/610"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/14"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/14"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 기존 생활권의 서로 16블록 이상 떨어진 안전 지점 두 곳을 열린 길로 걸어서 왕복한다. 상대의 승낙이나 특정 NPC 만남은 요구하지 않는다.",
+          "first_encounter_site": "진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-071/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0."
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035B-RPG-S14-071",
+            "title": "비워 둔 맞은편",
+            "entry": {
+              "actual_location": "네더의 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부 {\"conceptual_site\": \"진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부\", \"placement_reference\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 진홍빛 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 공개 방문 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:crimson_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:warped_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 진홍빛 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-071\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-071\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-071\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-071\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 살레오스: “무슨 말을 전할까? 오지 않겠다는 답을 놓을 자리도 있어야 해.”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 중급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 중급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 살레오스: “무슨 말을 전할까? 오지 않겠다는 답을 놓을 자리도 있어야 해.”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n쌍방 응답에 따라 자리를 정한다: 청원자의 말을 듣고 전달할 내용만 직접 확인받아 초대를 만든다. 실제 연락 가능한 허락된 상대에게만 전달하고 받은 응답을 그대로 청원자에게 알린다. 둘 다 현재 원할 때만 마주 앉을 자리를 마련한다. 거절이면 빈자리를 유지하고 미수신이면 응답 대기다.\n거절을 숨겨 만남을 강행한다: 위반: 실제 거절을 감추거나 동의 없이 상대를 데려오려 한 때 살레오스가 중재를 멈추고 각자의 현재 의사를 다시 분리한다.",
+                "visible_change": "쌍방 응답에 따라 자리를 정한다: 초대 수신·동의·거절·미수신이 분리된다. 동의만으로 실제 만남이나 대화가 생기지 않는다.\n거절을 숨겨 만남을 강행한다: 중재 실패와 실제 압박이 남는다. 강행한 자리는 사랑·화해 성과가 아니다."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n열린 대화를 각자 끝낸다: 두 사람이 실제 도착하고 현재 대화 의사가 있을 때만 대화한다. 각자가 그만둘 때를 직접 말하면 실제 대화를 끝내고 초대 물품을 거둔다. 서로 용서하라고 요구하지 않는다.\n거절 또는 미성립으로 자리를 거둔다: 한쪽이 거절했거나 미수신 상태에서 청원자가 취소하면 청원자와 초대 물품을 실제 거둔다. 미수신을 거절로 기록하지 않고 거절한 상대를 재추적하지 않는다.",
+                "visible_change": "열린 대화를 각자 끝낸다: 살레오스는 실제 성립한 대화 범위만 기억한다. 관계 회복은 부여하지 않는다.\n거절 또는 미성립으로 자리를 거둔다: 빈자리와 초대 종료만 남는다. 성립한 대화·상대 호감·용서 없음."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 진홍빛 숲 경계의 서로 비킬 폭이 있는 통행부 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 초대 문구·물품의 소유와 전달 허락을 따로 확인한다. 상대 거절은 만남 완료가 아니다. 사랑·용서·호감·지급 보상 없음.",
+                "visible_change": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n열린 대화를 각자 끝낸다: 살레오스는 실제 성립한 대화 범위만 기억한다. 관계 회복은 부여하지 않는다.\n거절 또는 미성립으로 자리를 거둔다: 빈자리와 초대 종료만 남는다. 성립한 대화·상대 호감·용서 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "수주나 퀘스트 성공 완료를 만들지 않는다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n열린 대화를 각자 끝낸다: 살레오스는 실제 성립한 대화 범위만 기억한다. 관계 회복은 부여하지 않는다.\n거절 또는 미성립으로 자리를 거둔다: 빈자리와 초대 종료만 남는다. 성립한 대화·상대 호감·용서 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "살레오스은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 부드럽되 섣불리 희망을 주지 않는다. 거절을 설명할 때는 완곡한 표현보다 짧은 끝맺음을 택한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "비워 둔 맞은편: 청원자가 실제 허락한 초대 문구, 상대의 실제 응답, 비운 자리와 초대 물품 → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n열린 대화를 각자 끝낸다: 살레오스는 실제 성립한 대화 범위만 기억한다. 관계 회복은 부여하지 않는다.\n거절 또는 미성립으로 자리를 거둔다: 빈자리와 초대 종료만 남는다. 성립한 대화·상대 호감·용서 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          }
+        ],
+        "specific_boundary": "B1-1 수신/거절/미수신 분리. (쌍방 실제 동의 AND 실제 도착 AND 현재 대화의사)는 B2-1에만 적용. (거절 OR (미수신 AND 청원자 취소))는 B2-2. 실제 만남 미성립은 유효 마감이며 상대를 재추적하지 않는다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-078",
+      "name": "로노베",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "before",
+            "encounter_subgroup": "legacy_initial_candidate",
+            "evidence_status": "legacy_initial_proposal",
+            "evidence_reason": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+            "actual_access_rule": {
+              "value": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 울림이 짧은 바위 곁에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 평범한 한 문장의 주어만 바꾸어 소리 내어 읽고 그 차이에 혼자 웃는다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「누가 바라는가」는 현재 참가자의 국소 행동·관계 선택다. 로노베는 불편한 거절도 옮긴 상대를 다음 번역에 부른다. 청원 전달은 수락·파이몬 알현·새 계약이 아니다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/617"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/21"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/21"
+              }
+            ]
+          },
+          "rule": "이 배치에 새로운 MAIN을 만들지 않으며 기존 카드의 MAIN 조건만 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「누가 바라는가」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "평범한 한 문장의 주어만 바꾸어 소리 내어 읽고 그 차이에 혼자 웃는다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "로노베는 불편한 거절도 옮긴 상대를 다음 번역에 부른다. 청원 전달은 수락·파이몬 알현·새 계약이 아니다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/617"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/21"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/21"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "초기 접근 보존. 추가 행동 잠금 없이 기존 접근 가능한 세계에서 일반풀 후보로 유지한다.",
+          "first_encounter_site": "뒤틀린 숲 경계의 울림이 짧은 바위 곁",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-078/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님. 이 후보는 위 first_encounter_site 및 아래 current_player_condition을 함께 충족해야 한다. 이미 등장한 본체의 일반 인사에는 이 등장 후보 조건을 재검사하지 않는다.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0.",
+          "current_player_condition": "현재 후보 본인이 적법하게 소지하고 열람할 수 있는 기존 기록 1건의 실제 내용과 출처를 현장에서 대조한다. 자기 기록도 가능하며 타인 비밀·망자의 새 말·청원 성공·세계 해금 행동의 재수행을 요구하지 않는다. 대조 상대는 자료 자체이며 아직 없는 NPC의 응답을 요구하지 않는다.",
+          "current_player_condition_source": "772명_스토리와기본페르소나_통합.json#/records/615/outline/encounter_generation/current_candidate_requirement",
+          "placement_binding": {
+            "preferred_biome_id": "minecraft:warped_forest",
+            "alternative_biome_ids": "minecraft:crimson_forest;minecraft:nether_wastes",
+            "vanilla_fallback_ids": "minecraft:warped_forest;minecraft:crimson_forest;minecraft:nether_wastes",
+            "guard": "선호 OR 허용 대체 OR 바닐라 fallback 중 실제 안전한 기존 부지 하나. 모든 바이옴을 방문할 AND 조건이 아니며 새 차원·건물·본체 복제 없음."
+          }
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035B-RPG-S14-078",
+            "title": "누가 바라는가",
+            "entry": {
+              "actual_location": "네더의 뒤틀린 숲 경계의 울림이 짧은 바위 곁 {\"conceptual_site\": \"뒤틀린 숲 경계의 울림이 짧은 바위 곁\", \"placement_reference\": \"네더 뒤틀린 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 뒤틀린 숲 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:crimson_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:warped_forest;minecraft:crimson_forest;minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 뒤틀린 숲의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-078\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-078\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-078\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-078\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 뒤틀린 숲 경계의 울림이 짧은 바위 곁에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 로노베: “찬사는 잠깐 접자. 누가 누구에게 무엇을 해 달라는 거지?”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 울림이 짧은 바위 곁에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 울림이 짧은 바위 곁에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 뒤틀린 숲 경계의 울림이 짧은 바위 곁에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 뒤틀린 숲 경계의 울림이 짧은 바위 곁에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 로노베: “찬사는 잠깐 접자. 누가 누구에게 무엇을 해 달라는 거지?”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n주어와 행동을 분명히 고친다: 청원자가 원문을 직접 읽게 하고 요청자·받는 사람·원하는 행동을 짧게 다시 말한다. 이름 공개는 당사자 허락 범위로 한정하고 원뜻과 다른 부분을 청원자가 실제 고치게 한다. 수정본을 다시 읽어 그 뜻을 확인한다.\n주어를 숨기고 교정을 거절한다: 위반: 책임 주체를 실제 지우고 당사자의 뜻 교정을 거절한 경우 로노베는 그 번역을 자기 말로 보증하지 않는다.",
+                "visible_change": "주어와 행동을 분명히 고친다: 실제 교정본이 생기며 아직 전달·수락은 없다.\n주어를 숨기고 교정을 거절한다: 미교정 청원과 보증 거절만 남으며 성공 지도 없음."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 뒤틀린 숲 경계의 울림이 짧은 바위 곁에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n실제 답을 그대로 돌려준다: 청원자가 허락한 현재 실제 수신자에게 교정본을 전하고 실제 수신·답을 확인한다. 답이 거절이면 그 거절을 그대로 청원자에게 전달·수신시킨다. 미수신·무응답이면 해당 전달만 보류하고 답을 만들지 않는다.\n전달을 취소하고 돌려준다: 청원자의 실제 취소를 확인해 아직 전달하지 않은 문서를 원소유자에게 실제 반환한다. 이미 전한 내용은 취소로 없애지 않고 그 전달 범위를 남긴다.\n거절을 듣기 좋은 승낙으로 바꾼다: 위반: 실제 수신자의 거절을 승낙인 것처럼 청원자에게 옮긴 경우 원답과 왜곡 수신자를 기록하고 정정을 요구한다.",
+                "visible_change": "실제 답을 그대로 돌려준다: 전달·응답·회신 수신을 끝낸 범위만 정직한 번역이다. 로노베가 다음 번역을 제안할 수 있고 짧은 지도 제시권이 생긴다. 파이몬 알현·계약·요청 수락은 별개다.\n전달을 취소하고 돌려준다: 허락된 취소·반환만 완료한다. 새 수신자 답이나 거절 수신은 만들지 않는다. 정확한 교정·취소 처리의 짧은 지도는 선택 제공이다.\n거절을 듣기 좋은 승낙으로 바꾼다: 거절 왜곡·미정정이 남고 계약·승낙·성공 지도 없음."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 뒤틀린 숲 경계의 울림이 짧은 바위 곁 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 원문과 교정본은 청원자 허락 범위로만 전달한다. 취소하면 실제 맡은 문서를 반환한다. 정확한 전달·거절 보존 또는 허락된 취소를 마친 사람에게 짧은 청원 번역 지도를 제시한다. 알현·계약 없음.",
+                "visible_change": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n실제 답을 그대로 돌려준다: 전달·응답·회신 수신을 끝낸 범위만 정직한 번역이다. 로노베가 다음 번역을 제안할 수 있고 짧은 지도 제시권이 생긴다. 파이몬 알현·계약·요청 수락은 별개다.\n전달을 취소하고 돌려준다: 허락된 취소·반환만 완료한다. 새 수신자 답이나 거절 수신은 만들지 않는다. 정확한 교정·취소 처리의 짧은 지도는 선택 제공이다.\n거절을 듣기 좋은 승낙으로 바꾼다: 거절 왜곡·미정정이 남고 계약·승낙·성공 지도 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "수주나 퀘스트 성공 완료를 만들지 않는다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n실제 답을 그대로 돌려준다: 전달·응답·회신 수신을 끝낸 범위만 정직한 번역이다. 로노베가 다음 번역을 제안할 수 있고 짧은 지도 제시권이 생긴다. 파이몬 알현·계약·요청 수락은 별개다.\n전달을 취소하고 돌려준다: 허락된 취소·반환만 완료한다. 새 수신자 답이나 거절 수신은 만들지 않는다. 정확한 교정·취소 처리의 짧은 지도는 선택 제공이다.\n거절을 듣기 좋은 승낙으로 바꾼다: 거절 왜곡·미정정이 남고 계약·승낙·성공 지도 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "로노베은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 빠르고 명료하며 날카로운 농담을 곁들인다. 오류를 인정하는 사람에게는 교정 이유까지 친절하게 풀어 준다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "누가 바라는가: 당사자가 허락한 청원 원문·요청자·수신자·요구 행동, 실제 교정·전달·응답 → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n실제 답을 그대로 돌려준다: 전달·응답·회신 수신을 끝낸 범위만 정직한 번역이다. 로노베가 다음 번역을 제안할 수 있고 짧은 지도 제시권이 생긴다. 파이몬 알현·계약·요청 수락은 별개다.\n전달을 취소하고 돌려준다: 허락된 취소·반환만 완료한다. 새 수신자 답이나 거절 수신은 만들지 않는다. 정확한 교정·취소 처리의 짧은 지도는 선택 제공이다.\n거절을 듣기 좋은 승낙으로 바꾼다: 거절 왜곡·미정정이 남고 계약·승낙·성공 지도 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          }
+        ],
+        "specific_boundary": "지도 자격 = 정확한 교정 AND ((요청 전달·실제 답·청원자 회신 수신) OR (청원자 허락 취소 AND 실제 맡은 문서 반환·인수)). 답대기는 아직 자격 없음. 실제 맡은 문서가 없으면 반환 동작을 만들지 않으며 그 사실과 취소 확인을 남긴다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S14-079",
+      "name": "포르네우스",
+      "source_contract": {
+        "exact_access_baseline": {
+          "immutable_baseline": {
+            "encounter_group": "pending",
+            "encounter_subgroup": "individual_timing_unresolved",
+            "evidence_status": "individual_timing_unresolved",
+            "evidence_reason": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+            "actual_access_rule": {
+              "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+              "status": "current_roster_classification_preserved",
+              "use_scope": "authoring_access_guard_not_runtime_predicate",
+              "runtime_binding": false
+            },
+            "individual_action_constraints": []
+          },
+          "override": null,
+          "effective_rule": "기존 접근 사본과 개별 제한을 보존한다. 황무지 경계의 마주 보며 말할 수 있는 평지에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.",
+          "new_detail_delta": "현재 코어의 목적을 실제 자기 발언의 순서를 바꾸어 같은 사실이 어떻게 다르게 들리는지 시험한다라는 소규모 첫 접촉으로 구체화한다. 완료된 역사·새 영구 거처·부활·봉인 해제·진영 변경이 아니다.",
+          "source_refs": [
+            "reviewed_core",
+            "frozen_writer"
+          ]
+        },
+        "approved_main_boundary": {
+          "exact_main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「불리한 문장을 남기다」는 현재 참가자의 국소 행동·관계 선택다. 청중이 믿지 않는 결말도 유지한다. 포르네우스는 정직한 편집을 지킨 실제 수행자와만 다음 원고를 다룬다.라는 개인적 결과는 실제 참여자에게 남기되 독점 MAIN은 필요하지 않다. 기존 배정된 개인 MAIN이나 C 본편은 취소·대체하지 않는다.",
+            "details": "개인 MAIN 신규 제시·첫 수락 경쟁·소유·전용 완료는 해당 없음. 일반 수행/대화/서비스의 실제 수락과 개인 기여만 확인한다. 기존 MAIN 조건부 대사가 있더라도 정식 채택·소유·현장 참여를 별도 조회하며 공개 C 완료를 개인 MAIN으로 바꾸지 않는다. 현재 세계 창구와 본체의 응답·수행 준비·수용 능력은 별도 확인하며 조기 조우에서 신적 효과를 자동 얻지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/618"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "rule": "이 배치에 새로운 MAIN을 만들지 않으며 기존 카드의 MAIN 조건만 원문대로 유지한다. 첫 수락은 기존 소유를 요구하지 않으며 전용 진행·완료·보상에는 실제 소유를 요구한다. 공개 도움·일반 문의·잡담에는 MAIN 소유를 요구하지 않는다. 다른 인물의 SIDE/event/service를 새 MAIN으로 만들지 않는다."
+        },
+        "existing_scene_integration_boundaries": {
+          "exact_reuse": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 실제 카드에서 이름·동결 record_key·현재 별칭을 검색했다. 이 인물의 개인 행동·선택·결과를 충족하는 기존 배역 카드는 확인되지 않았다. ENC의 첫 접촉과 관계 씨앗은 있으나 「불리한 문장을 남기다」의 실제 실행과 결말까지 완료한 것은 아니다.",
+            "what_is_only_encounter_or_seed": "실제 자기 발언의 순서를 바꾸어 같은 사실이 어떻게 다르게 들리는지 시험한다는 첫 접촉 단서이며 이번 사건의 실제 완료가 아니다.",
+            "missing_personal_outcome": "청중이 믿지 않는 결말도 유지한다. 포르네우스는 정직한 편집을 지킨 실제 수행자와만 다음 원고를 다룬다.",
+            "duplicate_avoidance": "기존 C/R 장면의 선행·대상·공개 결말·소비·지급권은 원문대로 재사용한다. 다른 사람의 공용 배역을 이 인물의 개인 이야기로 가져오지 않는다. 실제로 먼저 알아낸 논점은 다시 정답 시험하지 않으며 현재 후속 선택부터 이어간다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/618"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-035.json",
+                "sha256": "266c5036c0135081d072be2092f74593ac20fa9994c1d8edac5d10452ed6cb3d",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-035.json",
+                "sha256": "65b8a19c4c87784f5b624447b9e64506a088ce25e157633a9c7519fe6c8933a2",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/quest_planning/existing_scene_source_catalog.json",
+                "sha256": "3a9968e1fcd756e8cbfb2acd958b2f76a6b36d79fc9aa9cc0036046931b2c123",
+                "pointer": ""
+              }
+            ]
+          },
+          "new_episode_not_old_main_completion": "이 event/SIDE/service는 기존 MAIN 전체 완료·소유 이전·가호·장면 재발생을 대신하지 않는다. 기존 카드의 해당 배우·실제 자료·개인 소유·청중·참여 조건을 그대로 검사한다.",
+          "initial_access": "이 배치 인물의 일반 조우에 다른 신화 일부 인물의 초반 전투력 최소컷 예외를 확대하지 않는다. frozen_identity 전투등급 유지."
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "이번 현행 저술로 채택; 실제 등록/배치/시험 아님",
+          "world_unlock": "누구 한 명이 실제 내구가 감소한 자기 장비 1개를 적법한 기존 수선 방식으로 수선하고 동일 장비를 한 번 다시 사용한다. 실패 고백·여론 호감은 요구하지 않는다.",
+          "first_encounter_site": "황무지 경계의 마주 보며 말할 수 있는 평지",
+          "dimension": "minecraft:the_nether",
+          "place_source": "인물 원문/RPG-S14-079/authoring_contract.json#/exact_encounter_snapshot/encounter_design/location_scene",
+          "candidate": "(세계 해금 또는 기존 초기접근) AND 현재 허용 생존·봉인·출연모드 AND 실제 열린 네더 경로·안전 후보지 도달 AND 일반풀 가용 본체 상태. 아직 없는 본체 응답·개인 청원·이벤트 소품은 최초 후보 조건 아님. 이 후보는 위 first_encounter_site 및 아래 current_player_condition을 함께 충족해야 한다. 이미 등장한 본체의 일반 인사에는 이 등장 후보 조건을 재검사하지 않는다.",
+          "contact": "실제 배치 본체 위치 도달 AND 현재 접촉모드·안전 AND (공개 인사/현재 질문 OR 별도 허락받은 사적 행위). 발화는 본인의 현재 의사와 수신 청중을 확인한다.",
+          "service_site": "각 아래 에피소드 entry.actual_location과 beat.location_and_start를 별도 적용한다. 최초 조우 부지가 원문 수행 장소를 대체하지 않는다.",
+          "historical_reconciliation": "과거 outline 일반 후보는 아래 현행 세계 해금으로 채택 또는 구체화한다. exact 접근·네더 차원·초기접근·생사/봉인 우선. 이미 유효한 접근은 새 센서로 소급 봉쇄하지 않는다.",
+          "quantity_time": "해금 관측은 1회의 유효 사건, 만료 없음. 좌표는 해당 바이옴의 기존 고체지형 중 통행·높이·퇴로가 안전한 부지로 바인딩한다. 허용된 대체 바이옴도 원문 범위만. 새 차원·구조물 의무0.",
+          "current_player_condition": "현재 연결 기획: 후보 본인이 적법하게 접근한 오버월드의 실제 물가 1곳을 직접 확인한 관측 기록을 소지하고, 네더 후보지에서 그 허락된 기록을 실제 열람·대조한다. 기존 유효 기록도 인정하며 매 방문 재탐사를 요구하지 않는다. 원문의 네더 현장 물가 연결 보류는 원문대로 두고 이 기록 경유안을 이번 현행안으로 별도 채택한다. 물가를 용암가로 바꾸거나 본체를 오버월드에 배치하지 않는다.",
+          "current_player_condition_source": "772명_스토리와기본페르소나_통합.json#/records/616/outline/encounter_generation/current_candidate_requirement",
+          "placement_binding": {
+            "preferred_biome_id": "minecraft:nether_wastes",
+            "alternative_biome_ids": "minecraft:basalt_deltas;minecraft:warped_forest",
+            "vanilla_fallback_ids": "minecraft:nether_wastes;minecraft:basalt_deltas;minecraft:warped_forest",
+            "guard": "선호 OR 허용 대체 OR 바닐라 fallback 중 실제 안전한 기존 부지 하나. 모든 바이옴을 방문할 AND 조건이 아니며 새 차원·건물·본체 복제 없음."
+          }
+        },
+        "current_story": [
+          {
+            "episode_id": "EP035B-RPG-S14-079",
+            "title": "불리한 문장을 남기다",
+            "entry": {
+              "actual_location": "네더의 황무지 경계의 마주 보며 말할 수 있는 평지 {\"conceptual_site\": \"황무지 경계의 마주 보며 말할 수 있는 평지\", \"placement_reference\": \"네더 네더 황무지의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"네더 네더 황무지 공용 풀. 해당 네더 바이옴에서 통행·본체 위치·안전을 확인한 기존 경계 부지. 물가 현장 확인 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"meeting_route\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"encounter_family\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:the_nether\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"world_dimension\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:nether_wastes\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"preferred_biome_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:basalt_deltas;minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"alternative_biome_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:nether_wastes;minecraft:basalt_deltas;minecraft:warped_forest\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"vanilla_fallback_ids\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"기존 Minecraft 1.21.1 registry 근거의 바닐라 네더 바이옴 ID. 사용자 승인 저작 배치이며 실제 서버 registry·seed·생성·좌표 미검증.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"biome_evidence\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"네더 네더 황무지의 안전한 기존 경계 부지. 실제 통행·높이·위험 및 본체 위치 확인; 인물 전용 건축 없음\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"placement_anchor\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": null, \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"optional_structure_candidate_id\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"특정 구조물 ID를 요구하지 않는다. 지정 네더 바이옴의 안전한 기존 자연 부지를 사용한다. 실제 발견된 적합한 네더 구조물을 쓸 때도 생성·접근·안전 확인이 필요하며 새 건축은 요구하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"structure_dependency\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"location_source_urls\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"지정한 네더 대체 바이옴·바닐라 fallback 안의 이미 조사된 안전한 기존 자연 부지를 사용한다. 오버월드 대체·새 건물·보장되지 않은 좌표와 생성 수치를 추가하지 않는다.\", \"status\": \"approved_nether_location_authoring_server_unverified\", \"source\": {\"approval_message_id\": \"Sentinel_38cb009e751481919201176dcb6232b1\", \"source_file\": \"outputs/nether_encounter_revision_20261009/nether_location_updates.json\", \"record_key\": \"RPG-S14-079\", \"field\": \"exploration_cap_fallback\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-079\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-079\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S14-079\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+              "start_trigger": "네더의 황무지 경계의 마주 보며 말할 수 있는 평지에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 포르네우스: “이 문장은 보기 흉하군. 그러니 잘 보이는 자리에 남겨 두자.”",
+              "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 황무지 경계의 마주 보며 말할 수 있는 평지에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+              "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 황무지 경계의 마주 보며 말할 수 있는 평지에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다.",
+              "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 황무지 경계의 마주 보며 말할 수 있는 평지에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. 현행 전투등급 하급, 신격 분류 divinity_review를 보존한다. 기술적 God 프로필과 신격은 별개다. 현재 72악마 무작위 조우는 네더이며 기존 ENC의 현장 유형은 등록 바이옴 ID가 아니다. 실제 열린 네더 경로에서 동일 본체의 위치·봉인·의사·현재 사건을 확인한다. 지상·바다·묘역 관련 자료는 허락된 기록 또는 현장 모형으로 다루며 다른 장소에서 직접 행동하려면 실제 이동과 접근을 따로 확인한다. 이 배치에 초반 퀘스트 최소컷 면제를 일괄 적용하지 않는다. 수행 준비와 세계 창구·수용 능력은 조우와 별도이며 숫자 컷을 발명하지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+            },
+            "beats": [
+              {
+                "beat_id": "B1",
+                "scene": "네더의 황무지 경계의 마주 보며 말할 수 있는 평지에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 포르네우스: “이 문장은 보기 흉하군. 그러니 잘 보이는 자리에 남겨 두자.”",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n불리한 문장을 남기고 순서를 고친다: 허락된 원문에서 겹친 말의 순서를 바꾸되 잘못을 말한 문장을 따로 읽어 증언자에게 의미가 보존됐는지 확인한다. 원문과 수정본을 나란히 두고 실제 허락받은 수정만 반영한다.\n불리한 문장을 삭제한다: 위반: 실제 불리한 사실 삭제를 강행해 뜻을 바꾼 경우 포르네우스는 그 원고에서 자기 이름을 빼고 협조를 중지한다.",
+                "visible_change": "불리한 문장을 남기고 순서를 고친다: 듣기 쉬운 증언과 불리한 사실이 함께 남는다. 아직 청중 수신·신뢰 없음.\n불리한 문장을 삭제한다: 세탁 시도와 수정본은 남지만 정직한 편집·지도권 없음."
+              },
+              {
+                "beat_id": "B2",
+                "scene": "네더의 황무지 경계의 마주 보며 말할 수 있는 평지에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+                "action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n허락 청중에게 읽고 모르는 것은 남긴다: 현재 동석자 전원의 해당 증언 접근 허락을 확인한 자리에서 실제 낭독한다. 질문에 직접 아는 범위와 전언·미지를 나누어 답하고 청중이 믿지 않더라도 사실을 바꾸지 않는다.\n나쁜 반응 때문에 증언을 꾸민다: 위반: 청중 반응을 바꾸려 실제 모르는 사실을 덧붙이거나 불리한 문장을 지운 경우 원문과 가필을 구분하고 들은 청중에게 정정해야 할 부분을 남긴다.",
+                "visible_change": "허락 청중에게 읽고 모르는 것은 남긴다: 실제 청취자는 받은 증언만 안다. 청중 불신도 유효 결과이며 정직한 편집 수행자만 다음 원고·구성 지도 제시 대상이다.\n나쁜 반응 때문에 증언을 꾸민다: 실제 왜곡 수신·미정정과 불신이 남는다. 설득 성과·지도권 없음."
+              },
+              {
+                "beat_id": "B3",
+                "scene": "네더의 황무지 경계의 마주 보며 말할 수 있는 평지 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+                "action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 증언자의 허락은 지정 내용·청중에 한정한다. 정직한 재배열·실제 낭독·아는 범위 답변 뒤 증언 구성 지도를 선택 제공한다. 청중의 신뢰·무죄·평판은 보상이 아니다.",
+                "visible_change": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n허락 청중에게 읽고 모르는 것은 남긴다: 실제 청취자는 받은 증언만 안다. 청중 불신도 유효 결과이며 정직한 편집 수행자만 다음 원고·구성 지도 제시 대상이다.\n나쁜 반응 때문에 증언을 꾸민다: 실제 왜곡 수신·미정정과 불신이 남는다. 설득 성과·지도권 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "수주나 퀘스트 성공 완료를 만들지 않는다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n허락 청중에게 읽고 모르는 것은 남긴다: 실제 청취자는 받은 증언만 안다. 청중 불신도 유효 결과이며 정직한 편집 수행자만 다음 원고·구성 지도 제시 대상이다.\n나쁜 반응 때문에 증언을 꾸민다: 실제 왜곡 수신·미정정과 불신이 남는다. 설득 성과·지도권 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "포르네우스은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 세련되고 조금 과장된다. 추한 사실도 태연히 말하지만 감추라는 부탁에는 냉소를 드러낸다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "불리한 문장을 남기다: 허락된 증언 원문과 불리한 사실, 재배열본·허락 청중·실제 낭독·질문 응답 → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n허락 청중에게 읽고 모르는 것은 남긴다: 실제 청취자는 받은 증언만 안다. 청중 불신도 유효 결과이며 정직한 편집 수행자만 다음 원고·구성 지도 제시 대상이다.\n나쁜 반응 때문에 증언을 꾸민다: 실제 왜곡 수신·미정정과 불신이 남는다. 설득 성과·지도권 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+            }
+          }
+        ],
+        "specific_boundary": "지도 자격 = 불리한 사실을 보존한 허락 편집 AND 허락청중의 실제 낭독 수신 AND 현재 제기된 질문에 아는 범위의 실제 응답. 질문이 없으면 없던 질문/정답 시험을 만들지 않는다. 청중 신뢰는 요건 아님. 최초 조우는 황무지 안전 평지이며 물가는 네더 용암가로 치환하지 않는다. 지상 물가 자료는 허락 기록/모형으로 대조하고 현장 수행에는 실제 이동·접근이 필요하다.",
+        "campaign_connection": "본편 C16/C17의 실제 약속·공용 조사와 개인 청원은 별도다. 일반 네더 조우가 본편 완료/부활/봉인해제를 주지 않는다."
+      }
+    }
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "documentType": "AUTHORING_SPEC_NOT_RUNTIME_DATAPACK",
+  "status": {
+    "design": "DECIDED_WORKING_BASELINE",
+    "arithmetic": "EXECUTED_DECIMAL_MANA",
+    "serverImplementation": "NOT_EXECUTED",
+    "playtest": "NOT_EXECUTED",
+    "deployment": "NOT_EXECUTED"
+  },
+  "raidId": "mythictrpg:workshop_trial_warden",
+  "boss": {
+    "name": "석재 시험 수호체",
+    "person": false,
+    "addsTo772Characters": false,
+    "entityType": "NEW_ENTITY_TYPE_REQUIRED",
+    "armor": 0,
+    "toughness": 0,
+    "resistance": 0,
+    "protection": 0,
+    "stationary": true,
+    "ccResistance": 1,
+    "hpByFrozenRoster": {
+      "2": 4000,
+      "3": 6000,
+      "4": 8000,
+      "5": 10000
+    }
+  },
+  "arena": {
+    "width": 28,
+    "length": 28,
+    "wallHeight": 4,
+    "plates": [
+      {
+        "number": 1,
+        "centerXZ": [
+          -7,
+          0
+        ]
+      },
+      {
+        "number": 2,
+        "centerXZ": [
+          7,
+          0
+        ]
+      },
+      {
+        "number": 3,
+        "centerXZ": [
+          0,
+          7
+        ]
+      }
+    ],
+    "plateSize": [
+      3,
+      3
+    ],
+    "blockMutation": false
+  },
+  "lifecycle": {
+    "mode": "PARTY_ISOLATED",
+    "minimumPlayers": 2,
+    "maximumPlayers": 5,
+    "queueTimeoutTicks": 12000,
+    "combatTimeoutTicks": 12000,
+    "livesPerPlayer": 2,
+    "deathBoundaryIntent": "FIRST_DEATH_RESPAWN_SECOND_DEATH_ELIMINATE_VERIFY_RUNTIME_COUNTER",
+    "disconnectGraceTicks": 1200,
+    "rosterFreeze": "START",
+    "newJoinAfterStart": false,
+    "hpRescaleAfterStart": false,
+    "restart": "FAIL_AND_CLEANUP",
+    "playerDeathDrops": "RESPECT_EXISTING_SERVER_POLICY_NO_NEW_INVENTORY_ISOLATION",
+    "cleanup": "ONLY_ATTEMPT_OWNED_BOSS_AND_TRANSIENT_STATE_KEEP_PLAYER_DROPS"
+  },
+  "hurtController": {
+    "implementationRequired": true,
+    "scope": "THIS_BOSS_ONLY",
+    "key": [
+      "attemptUUID",
+      "bossCombatId",
+      "attackerPlayerUUID"
+    ],
+    "suppressionTicks": 10,
+    "sameOrLowerHit": "SUPPRESS_WITHIN_WINDOW",
+    "largerHit": "DAMAGE_DIFFERENCE_ONLY_WITHIN_WINDOW",
+    "skillsProjectilesShareOwnerKey": true,
+    "phaseImmunityPreserved": true,
+    "oneCastOneTargetDedupPreserved": true,
+    "globalVanillaRuleChanged": false,
+    "withoutController": "DO_NOT_ENABLE_RAID",
+    "windowRefreshOnFollowup": false
+  },
+  "damage": {
+    "unit": "HP_POINT",
+    "type": "ORDINARY_PHYSICAL_BOSS_OWNED",
+    "armorBypass": false,
+    "resistanceBypass": false,
+    "protectionBypass": false,
+    "percentHealthDamage": false
+  },
+  "patterns": [
+    {
+      "id": "hammer",
+      "rawDamage": 8,
+      "periodTicks": 120,
+      "telegraphTicks": 24,
+      "rangeBlocks": 3,
+      "coneDegrees": 120,
+      "direction": "LOCK_AT_TELEGRAPH",
+      "recoveryTicks": 36,
+      "parry": true,
+      "dash": true,
+      "ordinaryShield": "EXISTING_DIRECTIONAL_PIPELINE"
+    },
+    {
+      "id": "pressure_line",
+      "rawDamage": 10,
+      "periodTicks": 360,
+      "telegraphTicks": 40,
+      "sizeBlocks": [
+        3,
+        20
+      ],
+      "axes": "ALTERNATE_NS_EW",
+      "recoveryTicks": 40,
+      "damageEventsPerTarget": 1,
+      "parry": false,
+      "dash": true,
+      "ordinaryShield": "EXISTING_PIPELINE"
+    },
+    {
+      "id": "two_plates",
+      "healthThresholds": [
+        0.7,
+        0.35
+      ],
+      "phaseDamageRule": "CLAMP_TO_NEXT_THRESHOLD_DISCARD_OVERFLOW_NO_DEATH_UNTIL_BOTH_COMPLETED",
+      "durationTicks": 300,
+      "activePlatePairs": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "distinctPlayersRequired": 2,
+      "movementNoticeTicks": 120,
+      "continuousHoldTicks": 60,
+      "holdWindowTicks": [
+        120,
+        180
+      ],
+      "failureTelegraphTicks": [
+        180,
+        220
+      ],
+      "failureRawDamage": 16,
+      "failureHitTick": 220,
+      "failureParry": false,
+      "failureDash": false,
+      "failureOrdinaryShield": "ALLOWED_EXISTING_DIRECTIONAL_RULES_ORIGIN_BOSS_CENTER_NOT_PLATE_CREDIT",
+      "failureRecovery": "CONTINUE_AT_TICK300_NO_HP_HEAL_OR_REWARD_PENALTY",
+      "bossInvulnerableDuringPattern": true,
+      "postPatternAttackDelayTicks": 80
+    }
+  ],
+  "priority": [
+    "two_plates",
+    "pressure_line",
+    "hammer"
+  ],
+  "patternOverlapAllowed": false,
+  "baseline": {
+    "H0": 20,
+    "A0": 1,
+    "weaponTotalAttackRange": [
+      7,
+      9
+    ],
+    "averageHit": 8,
+    "attackSpeed": 1.6,
+    "strength": 0,
+    "haste": 0,
+    "regeneration": 0,
+    "resistance": 0,
+    "healthBoost": 0,
+    "sharpness": 0,
+    "crit": false,
+    "uptime": 0.65,
+    "hitEfficiency": 0.9,
+    "perPlayerDps": 7.488,
+    "forcedPauseSeconds": 30,
+    "skillExtraDamageCredited": 0,
+    "manaMax": 200,
+    "manaRegenPerSecond": 2,
+    "armor": 15,
+    "toughness": 0,
+    "protection": 8,
+    "permanentBuffNormalization": false
+  },
+  "rewardCredit": {
+    "engineRosterPolicy": "ALL_FROZEN_ROSTER",
+    "newQuestCreditIntegrationRequired": true,
+    "q2BeforeEntry": true,
+    "minimumTime": "min(60,combatElapsedSeconds*0.5)",
+    "action": "one_effective_damage_OR_one_successful_plate_hold",
+    "damageRankRequired": false,
+    "firstRosterDeathOrLinkedSpectatorConnectedTimeCounts": true,
+    "disconnectedTimeCounts": false,
+    "voluntaryLeaveTimeCounts": false,
+    "eligibilityMetBeforeLeaveRetained": true,
+    "offlineClaim": "PENDING_RECEIPT",
+    "economySource": "퀘스트와보상.md"
+  },
+  "q2PracticeConstruct": {
+    "id": "mythictrpg:workshop_practice_construct",
+    "hp": 18,
+    "armor": 0,
+    "toughness": 0,
+    "rawDamage": 4,
+    "attackPeriodTicks": 100,
+    "telegraphTicks": 30,
+    "rangeBlocks": 2,
+    "coneDegrees": 120,
+    "movementTargetBlocksPerTick": 0.18,
+    "movementTargetIsNotVanillaAttribute": true,
+    "recoveryTicks": 40,
+    "knockback": 0,
+    "countPerWave": "ceil(players/2)",
+    "waves": 3,
+    "loot": 0,
+    "xp": 0,
+    "plateOpens": "FIRST_WAVE_IMMEDIATELY_THEN_AFTER_ALL_PREVIOUS_WAVE_ENEMIES_DEAD",
+    "sizeBlocks": {
+      "height": 1.5,
+      "width": 0.8
+    },
+    "appearance": "STONE_BRICK_BODY_ANDESITE_ARMS_COPPER_BAND_WHITE_NUMBER",
+    "waveOrder": [
+      "TWO_PLATES_HOLD_THREE_SECONDS",
+      "SPAWN_CEIL_N_OVER_TWO",
+      "DEFEAT_ALL",
+      "NEXT_WAVE_OR_COMPLETE"
+    ]
+  },
+  "arithmeticResults": {
+    "status": "ARITHMETIC_EXECUTED_NOT_SERVER_TESTED",
+    "model": "per-attacker 10-tick hurt suppression proposed boss-only controller; no game simulation",
+    "party": [
+      {
+        "players": 2,
+        "boss_hp": 4000,
+        "party_output_multiplier": 0.7,
+        "party_dps": 10.4832,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 411.563
+      },
+      {
+        "players": 2,
+        "boss_hp": 4000,
+        "party_output_multiplier": 1,
+        "party_dps": 14.976,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 297.094
+      },
+      {
+        "players": 2,
+        "boss_hp": 4000,
+        "party_output_multiplier": 1.3,
+        "party_dps": 19.4688,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 235.457
+      },
+      {
+        "players": 3,
+        "boss_hp": 6000,
+        "party_output_multiplier": 0.7,
+        "party_dps": 15.7248,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 411.563
+      },
+      {
+        "players": 3,
+        "boss_hp": 6000,
+        "party_output_multiplier": 1,
+        "party_dps": 22.464,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 297.094
+      },
+      {
+        "players": 3,
+        "boss_hp": 6000,
+        "party_output_multiplier": 1.3,
+        "party_dps": 29.2032,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 235.457
+      },
+      {
+        "players": 4,
+        "boss_hp": 8000,
+        "party_output_multiplier": 0.7,
+        "party_dps": 20.9664,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 411.563
+      },
+      {
+        "players": 4,
+        "boss_hp": 8000,
+        "party_output_multiplier": 1,
+        "party_dps": 29.952,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 297.094
+      },
+      {
+        "players": 4,
+        "boss_hp": 8000,
+        "party_output_multiplier": 1.3,
+        "party_dps": 38.9376,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 235.457
+      },
+      {
+        "players": 5,
+        "boss_hp": 10000,
+        "party_output_multiplier": 0.7,
+        "party_dps": 26.208,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 411.563
+      },
+      {
+        "players": 5,
+        "boss_hp": 10000,
+        "party_output_multiplier": 1,
+        "party_dps": 37.44,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 297.094
+      },
+      {
+        "players": 5,
+        "boss_hp": 10000,
+        "party_output_multiplier": 1.3,
+        "party_dps": 48.672,
+        "forced_pause_seconds": 30,
+        "kill_seconds": 235.457
+      }
+    ],
+    "incoming_damage": {
+      "iron_protection_8": {
+        "8": 3.733333,
+        "10": 5.0,
+        "16": 9.6
+      },
+      "diamond_unenchanted": {
+        "8": 2.24,
+        "10": 3.0,
+        "16": 5.76
+      }
+    },
+    "mana_300sec": [
+      {
+        "cost": 24,
+        "period_seconds": 8,
+        "attempts": 38,
+        "successes": 33,
+        "first_rejected_at_seconds": 184.0,
+        "remaining_mana": 8.0
+      },
+      {
+        "cost": 20,
+        "period_seconds": 6,
+        "attempts": 50,
+        "successes": 39,
+        "first_rejected_at_seconds": 138.0,
+        "remaining_mana": 20.0
+      },
+      {
+        "cost": 30,
+        "period_seconds": 10,
+        "attempts": 30,
+        "successes": 26,
+        "first_rejected_at_seconds": 180.0,
+        "remaining_mana": 20.0
+      },
+      {
+        "cost": 24,
+        "period_seconds": 16,
+        "attempts": 19,
+        "successes": 19,
+        "first_rejected_at_seconds": null,
+        "remaining_mana": 200.0
+      },
+      {
+        "cost": 20,
+        "period_seconds": 12,
+        "attempts": 25,
+        "successes": 25,
+        "first_rejected_at_seconds": null,
+        "remaining_mana": 200.0
+      }
+    ],
+    "strength1_seconds_5players": 218.75902268128414,
+    "unsupported_global_iframe_fallback_seconds_5players": 922.094017094017
+  },
+  "limitations": [
+    "NO_SERVER_OR_CLIENT_TEST",
+    "NO_PRETEND_DPS_FROM_POWER_SCORE",
+    "PER_ATTACKER_HURT_IS_NEW_CONTROLLER_REQUIREMENT",
+    "ARMOR_FORMULA_IS_MODEL_PENDING_SERVER_PIPELINE_VERIFICATION",
+    "FOOD_REGEN_SERVER_SETTINGS_NOT_TESTED"
+  ],
+  "common_policy_ref": "../공통설계/전역기준.json"
+}

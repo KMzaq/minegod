@@ -36,6 +36,8 @@ public final class ActionLedgerCapture {
         try {
             var responsible = GameplayObservationAdapters.playerResponsibleForKill(source);
             if (responsible.isEmpty()) return;
+            com.sande.mythictrpg.understanding.MinecraftActivityCapture.record(responsible.orElseThrow(),
+                    com.sande.mythictrpg.understanding.ActivityEvidence.Signal.KILL_ENTITY,1);
             com.sande.mythictrpg.gameplay.ledger.detail.ImportantEvents.namedDeath(responsible.orElseThrow(),victim);
             var runtime = ActionLedgerService.current(level.getServer());
             if (runtime == null || !runtime.acceptsCapture() || !routineNeeded(level)) return;

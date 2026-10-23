@@ -1,0 +1,652 @@
+{
+  "문서유형": "AUTHORING_SPEC_NOT_RUNTIME_DATAPACK",
+  "scene_id": "C26",
+  "상태": {
+    "기획": "초기값 결정",
+    "산술": "별도 재현 스크립트 실행",
+    "플레이테스트": "미실행",
+    "모드_API_지원검증": "미실행",
+    "구현_배포": "미실행"
+  },
+  "대상버전": "Minecraft 1.21.1 / NeoForge 자체 구현 대상, 호환 확인 아님",
+  "정사": {
+    "새로운_비신격_단일_방어생명": true,
+    "AI_자유대화": false,
+    "첫용_부활": false,
+    "최종_패배횟수": 1,
+    "전장": "C25 기존 엔더섬 일반 물리 세계",
+    "최소_최대인원_잠금": null,
+    "C27_명부변경": false
+  },
+  "boss": {
+    "hp_formula": "2400*N; 최초 위험고지 후 연결 시 현재 출전 동의·준비한 현장 참가자 수 N, 최소1. 사건 중 재산정0",
+    "hp_by_reference_players": {
+      "1": 2400,
+      "2": 4800,
+      "3": 7200,
+      "4": 9600,
+      "5": 12000,
+      "6": 14400
+    },
+    "armor": 0,
+    "toughness": 0,
+    "resistance": 0,
+    "protection": 0,
+    "ground_speed_blocks_tick": 0.12,
+    "max_turn_degrees_tick": 6,
+    "fly_height_blocks": 8,
+    "body_width_height_length": [
+      6,
+      4,
+      10
+    ],
+    "wing_span_visual_blocks": 20,
+    "contact_damage": 0,
+    "block_break": false,
+    "knockback": 0,
+    "general_stun": false,
+    "general_slow": false,
+    "forced_displacement": false,
+    "phase_thresholds": [
+      0.7,
+      0.4,
+      0.15
+    ],
+    "threshold_overflow": "다음 미해결 임계에서 clamp하고 초과분 폐기·사전고지. 도달 즉시 pendingGate를 원장에 고정, 현시전 후딜이 끝날 때까지 그 임계 아래 피해0. GATE에서는 현재 임계에 고정하며 적제압·유효조작·480tick 모두 충족해 ACTIVE로 전이할 때만 다음 임계/0까지 피해 개방. 일반 ACTIVE의 추가 무적0, 한 피해로 여러 단계 생략0.",
+    "parts": "가슴4×3×5, 머리2×2×3, 좌우 날개6×1×3; 공통 bossCombatId, 부위배율1, 여러부위 중복타0; 착지 가슴바닥0.8블록",
+    "defense_type": "모든 보스/보조적 공격 일반 물리, 갑옷/강인함/보호/저항/등록 무적 보존",
+    "hurt_controller": {
+      "key": [
+        "eventUUID",
+        "bossCombatId",
+        "attackerUUID"
+      ],
+      "window_ticks": 10,
+      "same_or_lower": "억제",
+      "higher": "차액만",
+      "refresh": false,
+      "owner_shared": true,
+      "multibody_dedup": true,
+      "global_vanilla_change": false,
+      "key_semantics": "eventUUID는 공격별 eventId/castId가 아니라 전투 전체에 고정된 canonicalC26EventUUID이다. 10tick은 첫 유효 타격 tick부터 [t,t+10); 각 피해eventId 중복제거는 별도. 같은 시도 중 공격마다 새 키를 만들지 않는다."
+    }
+  },
+  "arena": {
+    "footprint_blocks": [
+      56,
+      56
+    ],
+    "origin": "C25 핵 연결자리 실제 안전면 기준, 좌표값은 제작 바인딩",
+    "combat_radius": 24,
+    "cliff_minimum_buffer": 12,
+    "cover_labels": [
+      "바깥 자리",
+      "옆 자리",
+      "귀환 자리"
+    ],
+    "cover_reference_xz": [
+      [
+        -12,
+        8
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        0,
+        -12
+      ]
+    ],
+    "cover_minimum_size": [
+      4,
+      3,
+      2
+    ],
+    "corridor_minimum_width": 4,
+    "interaction_radius": 3,
+    "minimum_safe_escape_from_warning": 4,
+    "warning_geometry": "서버 확정 판정경계와 동일, 지형 차폐·높이 동일. 지면공격은 발 중심 XZ 및 feetY 범위로 판정. 경계선 위 포함. 투사체만 AABB swept",
+    "build_mine_trade": "기존 전투 중 금지 유지, 허용 공용 조작만. 일반 인벤토리 거래를 조작으로 우회하지 않음",
+    "no_artificial_instance": true,
+    "occlusion_contract": {
+      "ground_reference": "C25에서 확인한 연결된 전투 바닥의 기준면과 실제 표면을 사용한다. 별도 위층·아래층은 같은 XZ라는 이유로 명중하지 않는다. 경고 때 실제 보행 가능한 안전동선과 시야를 확인한다.",
+      "A1_M1": "경고 고정 공격원점의 기준면+1에서 대상 발점+1까지 고체가 없고 부채꼴/발높이를 모두 만족할 때만 명중. 부채꼴 경고도 같은 차폐로 자른다.",
+      "A2": "고정 선의 폭4·높이4 전체가 처음 고체와 만나는 전방거리에서 사각형을 자른다. 피해와 경고의 잘린 끝 일치.",
+      "A3": "각 고정 원 중심의 해당 바닥+1에서 대상 발점+1까지 고체가 없는 원 부분만 유효. 벽뒤 같은높이/아래층0; 겹침은 기존 합집합1회.",
+      "M2": "반경0.15 swept 구체의 최초 고체 또는 적격 대상 충돌. 동거리면 고체 우선; 블록뒤 관통0.",
+      "friendly": "보스 패턴은 실제 현장 참가자만 피해. 보스·방어체끼리 피해0. 피해가능 아군은 선을 공유할 수 있으므로 관전자 지점은 실제 모든공격 밖에 둔다. 원거리침이 비대상 생명체 충돌 시 소멸하되 피해0.",
+      "dynamic": "시전 중 새 고체가 생기면 실제 고체 차폐를 우선하고 숨은 관통0. 경고영역을 도중 확장하지 않는다. 막힘으로 탈출 불가하면 해당 시전 취소. 등록된 보스경고와 일반 플레이어 장식은 우선순위 분리."
+    }
+  },
+  "patterns": [
+    {
+      "id": "C26-A1",
+      "name": "외피 앞발 쓸기",
+      "raw_damage": 10,
+      "cooldown_ticks": 120,
+      "timeline": {
+        "prepare": [
+          0,
+          12
+        ],
+        "warning": [
+          12,
+          36
+        ],
+        "execute": [
+          36,
+          40
+        ],
+        "hit_ticks": [
+          38
+        ],
+        "dissolve": [
+          40,
+          48
+        ],
+        "recovery_end": 80
+      },
+      "shape": {
+        "kind": "sector",
+        "radius": 5,
+        "angle_degrees": 120,
+        "feet_y": [
+          0,
+          3
+        ]
+      },
+      "target": "현재 가시선 있는 최근접 생존자; 거리 동률 UUID 오름차순; tick12 방향 고정",
+      "speed": "공격 전 추적0.12블록/tick, 선후딜 중0; 쓸기120도/4tick",
+      "parry": true,
+      "H02": true,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "추가 상태 없음",
+      "visual": "흑요석빛 외피의 세 갈퀴를 들어 올림 → 120도 톱니 윤곽과 반경5블록·정확히120도인 바닥 부채꼴, 바깥/옆 지형명 표시 → 황백색 세 갈퀴 리본이 왼쪽에서 오른쪽으로 회전 → 실제 맞은 발점에 짧은 흰 균열 → 바닥선과 리본8tick 감쇠",
+      "sound": "돌 마찰1회/3박 금속 경고/짧은 타격/잔향; 경고32블록, 명중16블록"
+    },
+    {
+      "id": "C26-A2",
+      "name": "닫히는 연결 흡수선",
+      "raw_damage": 14,
+      "cooldown_ticks": 600,
+      "timeline": {
+        "prepare": [
+          0,
+          10
+        ],
+        "warning": [
+          10,
+          60
+        ],
+        "execute": [
+          60,
+          64
+        ],
+        "hit_ticks": [
+          62
+        ],
+        "dissolve": [
+          64,
+          72
+        ],
+        "recovery_end": 100
+      },
+      "shape": {
+        "kind": "rectangle",
+        "width": 4,
+        "length": 24,
+        "feet_y": [
+          0,
+          4
+        ]
+      },
+      "target": "귀환→옆→바깥 순서로 현장 연결 하나, 플레이어 추적 아님; tick10 고정",
+      "speed": "주 경고의 안쪽 흡수 줄무늬1블록/tick; 피해선 순간1회(이동탄 아님)",
+      "parry": false,
+      "H02": false,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "추가 상태 없음",
+      "visual": "목 외피가 접히며 한 연결을 바라봄 → 폭4 길이24의 빈 내부 사각틀과 안쪽 화살표3개, 해당 지형명 → 고정 선 안에서 얇은 백자색 다발1회 닫힘 → 실제 맞은 곳에 가는 자주 균열 → 경계선8tick 지움",
+      "sound": "낮은 흡기/분리된2박 경고/줄 끊김/짧은 저음; 경고48블록, 나머지24블록"
+    },
+    {
+      "id": "C26-A3",
+      "name": "갈라진 흐름 표식",
+      "raw_damage": 12,
+      "cooldown_ticks": 600,
+      "timeline": {
+        "prepare": [
+          0,
+          10
+        ],
+        "warning": [
+          10,
+          60
+        ],
+        "execute": [
+          60,
+          64
+        ],
+        "hit_ticks": [
+          62
+        ],
+        "dissolve": [
+          64,
+          74
+        ],
+        "recovery_end": 120
+      },
+      "shape": {
+        "kind": "discs_union",
+        "radius": 3,
+        "count": "N<=2:1, N>=3:2",
+        "feet_y": [
+          0,
+          3
+        ]
+      },
+      "target": "마지막 이 패턴 표적이 된 지 가장 오래된 생존자, 동률 UUID; tick10 발 위치 고정, 겹친 원은 합집합1회",
+      "speed": "경고 쐐기만 반경3에서0으로0.06블록/tick; 원 중심 이동0",
+      "parry": false,
+      "H02": false,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "명중 후 일반 감속20% 40tick만 해제 가능; 피해/조작실패를 정화하지 않음",
+      "visual": "어깨 외피2곳의 틈이 벌어짐 → 각 반경3 고리, 내부 빈 삼각쐐기와 1/2 번호 → 지면에서 높이3의 얇은 세 갈래 균열기둥 → 실제 명중 발목에 작은 잠김표식 → 고리10tick 소멸, 감속표식은 실제 상태끝 제거",
+      "sound": "마른 갈라짐/번호별 같은 길이 짧은 차임/돌 파열/잔향; 경고48블록"
+    },
+    {
+      "id": "C26-A4",
+      "name": "귀환 방향 낮은 활강",
+      "raw_damage": 18,
+      "cooldown_ticks": 600,
+      "timeline": {
+        "prepare": [
+          0,
+          20
+        ],
+        "warning": [
+          20,
+          70
+        ],
+        "execute": [
+          70,
+          100
+        ],
+        "hit_ticks": "[70,100) swept, 대상당1회",
+        "dissolve": [
+          100,
+          110
+        ],
+        "recovery_end": 120
+      },
+      "shape": {
+        "kind": "swept_rectangle",
+        "width": 6,
+        "length": 24,
+        "feet_y": [
+          0,
+          4
+        ]
+      },
+      "target": "가시선 있는 최원 생존자 방향; tick20 경로고정; 경고 때 대상 소실해도 재조준0",
+      "speed": "t0~20 수직상승0.4블록/tick로 바닥기준+8. t20~60 수직하강0.2블록/tick로 기준면까지, t60~70 지상 준비. 수평 이동은 t70~100에만0.8블록/tick×30=24블록. 진행 고체 충돌 직전 정지·피해 스윕 종료, t100~120 지상회수. 수직 준비에는 접촉피해0.",
+      "parry": false,
+      "H02": false,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "추가 상태 없음",
+      "visual": "날개를 접고8블록 높이로 상승 → 폭6 길이24 깃 모양 평행선과 착지 가로턱, 지형명 → 흰 외피 코어가 표시선을 따라0.8블록/tick 이동 → 피격점에 얇은 갈퀴 접촉광 → 착지 뒤10tick 잔상 제거",
+      "sound": "한 번의 날갯짓/긴 호흡과1박 경고/낮은 바람/착지 돌소리; 경고48블록, 이동32블록",
+      "sweep_contract": {
+        "coordinate": "tick20에 확정한 수평 전방F, 우측R, 지상 출발면Y0. 경고전체 F[0,24], R[-3,3], 발높이[0,4].",
+        "step": "정수tick t=70..99, 피해 절편은 F[0.8*(t-70),0.8*(t-69)]의 닫힌 직사각형. R[-3,3], feetY[0,4]. 매tick 구간 합집합 길이24; 길이24 사각형을 다시24 이동하지 않음.",
+        "collision": "표시 때와 실제 각tick 고체를 확인. 스윕 절편의 폭6·높이4 중 고체와 최초 충돌하는 전방거리에서 전체 진행을 정지, 그 면 뒤 피해0. 낮은 장애물도 뚫지 않음. 몸통6×4×10의 실제 이동 가능공간을 경고 전에 확인해 불가하면 시전 취소.",
+        "dedup": "castId+targetUUID로 총1회, t100 이후 신규명중0. 인접 절편 경계 중복0.",
+        "visual": "백색 타격 코어는 해당0.8블록 절편과 높이0~4에만 표시. 몸·날개 나머지는 접촉피해0의 외형. 벽 충돌면에서 경고의 미진행부를 취소표시하고 잔상만8tick."
+      }
+    },
+    {
+      "id": "C26-M1",
+      "name": "근접 방어체 찌르기",
+      "raw_damage": 6,
+      "cooldown_ticks": 60,
+      "timeline": {
+        "prepare": [
+          0,
+          6
+        ],
+        "warning": [
+          6,
+          24
+        ],
+        "execute": [
+          24,
+          28
+        ],
+        "hit_ticks": [
+          26
+        ],
+        "dissolve": [
+          28,
+          34
+        ],
+        "recovery_end": 60
+      },
+      "shape": {
+        "kind": "sector",
+        "radius": 2,
+        "angle_degrees": 90,
+        "feet_y": [
+          0,
+          2.5
+        ]
+      },
+      "target": "근접 가시선 최근접; tick6 방향고정",
+      "speed": "접근0.12블록/tick, 준비이후0",
+      "parry": true,
+      "H02": true,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "추가 상태 없음",
+      "visual": "기존 근접몹이 돌 창을 뒤로 젖힘 → 반경2·90도 부채꼴 경계와 끝호 전체를 빈 윤곽으로 표시 → 폭0.3 돌 창은 중심 장식이고 tick26에 부채꼴 전체를 덮는 얇은 돌빛 부채가 한 번 펼쳐짐 → 실제 접점 돌가루6개 → 6tick 제거",
+      "sound": "돌 끌기/짧은 딱/작은 타격/없음;16블록"
+    },
+    {
+      "id": "C26-M2",
+      "name": "원거리 방어체 연결침",
+      "raw_damage": 6,
+      "cooldown_ticks": 100,
+      "timeline": {
+        "prepare": [
+          0,
+          8
+        ],
+        "warning": [
+          8,
+          30
+        ],
+        "execute": [
+          30,
+          70
+        ],
+        "hit_ticks": "발사tick30 이후 첫 충돌1회",
+        "dissolve": "충돌 또는 tick70 후6tick",
+        "recovery_end": 100
+      },
+      "shape": {
+        "kind": "projectile",
+        "radius": 0.15,
+        "maximum_distance": 20
+      },
+      "target": "가시선 있는 생존 최근접; tick8 조준고정",
+      "speed": "0.5블록/tick, 매tick swept collision",
+      "parry": false,
+      "H02": false,
+      "shield": true,
+      "dash": true,
+      "invulnerability": true,
+      "cleanse": "추가 상태 없음",
+      "visual": "기존 스켈레톤 외형 팔을 모음 → 목표 선에 가는 열린 창살 윤곽 → 길이0.8 폭0.3 세조각 돌침 이동 → 블록충돌은 회색 부스러기, 실제 피격은 흰 점 →6tick 소멸",
+      "sound": "활대 마찰/두 번 딱/짧은 휘파람/작은 부스러짐;20블록"
+    }
+  ],
+  "scheduler": {
+    "cycle_ticks": 600,
+    "slots": {
+      "0": "A1",
+      "120": "A2",
+      "260": "P1 A1, P2/P3/P4 A3",
+      "480": "A4"
+    },
+    "phase": "P1 100~70%, P2 70~40%, P3 40~15%, P4 15~0%. 70/40/15%에만 연결게이트3개; 0%는 실제 패배확정·안정확인으로 인계하며 네 번째 게이트0.",
+    "priority": [
+      "전투종료/서버정지",
+      "현시전 실제타격 및 후딜 종료",
+      "미해결 연결게이트",
+      "주기슬롯"
+    ],
+    "overlap": false,
+    "delay": "슬롯을 지나갔으면 건너뜀. 지연분 몰아치기0. 게이트 뒤 사이클0부터 새로 시작, 첫 공격80tick 유예",
+    "during_gate": "보스 공격/비행0; 보조적만; 조작 시작 전 보조적 전멸 필요",
+    "hard_enrage_seconds": null,
+    "changing_players": "출전/기여 명부 갱신하되 HP/피해/현재표적경고 재산정0, 반복 원 생성수만 최초N 사용",
+    "gate_grace_note": "게이트 종료80tick 안전유예 뒤 cycle0 시작; 주기600tick에 유예를 끼워넣어 A4를 자르지 않음. 유예시간은 별도12초 상한민감도."
+  },
+  "connections": {
+    "gates": [
+      {
+        "threshold": 0.7,
+        "order": [
+          4,
+          2
+        ],
+        "purpose": "잘못 닫히는 연결 식별·버팀"
+      },
+      {
+        "threshold": 0.4,
+        "order": [
+          3,
+          1
+        ],
+        "purpose": "확인된 완충방향 전환·남은 강제결속 판독"
+      },
+      {
+        "threshold": 0.15,
+        "order": [
+          5,
+          6
+        ],
+        "purpose": "옛 강제명령 연결절단·열린 경계 유지"
+      }
+    ],
+    "minimum_gate_ticks": 480,
+    "add_wave_total_hp": "24*N per gate",
+    "add_count": "ceil(N/2), N1은1",
+    "add_hp": "24*N/ceil(N/2)",
+    "composition": "홀수 인덱스 근접, 짝수 원거리, 한 묶음 전멸 뒤 조작, 총3묶음",
+    "add_armor": 0,
+    "add_toughness": 0,
+    "add_loot_xp": 0,
+    "add_stun": "기존 출처별 일반적 허용·잠금 그대로. 교차영구스턴 미검증",
+    "dispersed": "해당 순서 원본 실물·허락·접근 증명 후 각40tick 실제 조작. 원본 성능 수치 재정의0",
+    "unified": "공개 현장자료로 목표지목40tick→허락된 실제 합일검1회 결속 접촉→결속분리 확인40tick. 일반 무기로 대체0. 기본18행 비교는 합일검 추가딜0, 현재 공용성장 합일검 수치와 입력회전 민감도는 별도표로 검산한다.",
+    "sequential_single_player": true,
+    "six_simultaneous_inputs": false,
+    "interaction_interrupt": "거리>3/손실/권한철회/피격/사망/접속중단이면 현재40tick만 초기화, 이미 확정 원본 단계 유지",
+    "timeout": "없음; 실제 조작/적제압 완료와 최소480tick 모두 충족 뒤 전투재개",
+    "failure_damage": 0,
+    "invulnerability_bypass": false,
+    "scene_override_contract": "C26 기믹만: 반경3 안에서40tick; 거리>3/손실/권한철회/피격/사망/접속중단이면 현재 미완40tick만 즉시초기화. 이동은 범위 내 자체로 취소하지 않음. 이 조건은 공용 원본 일반능동의 피격취소0·원정위임 기본 철회시점보다 우선. 이미 확정된 이전노드/기여/기존비용/권리는 유지. 기믹 마나0·쿨0·내구0·재료0, 성공 중복0, 일반능동/공격기의 비용쿨 초기화0. 실제 현물접근·허락 없으면 안전창 보류.",
+    "node_placement": "게이트70%는 귀환 자리,40%는 옆 자리,15%는 바깥 자리의 기존 확인된 연결면을 사용. 각 한 자리의 두 대응점은1블록 이내이며 같은 반경3 접근에서 순차조작 가능. 기존 C25 지형에 바인딩, 새블록 생성0. 모든 생존 전투위치에서 안전 실제길40블록 이내인 조작 접근점을 확보하지 못하면 해당 지형 배치보류. 이동+조작12초는 평균가정이며 실제길/조작 중단은24초 최소창을 연장할 수 있다."
+  },
+  "rewards": {
+    "adoption": "조건부 최종 장비 선택을 이번 초기기획에서 채택. 전설1개, 영구권리1회",
+    "source": "RAID_DIRECT",
+    "budget": "B4의 전설 단일 주보상, 핵/유일물 아님",
+    "definitions": [
+      {
+        "id": "C26-ACC-MANA",
+        "name": "돌아갈 숨의 고리",
+        "effect": "MAX_MANA",
+        "amount": 60,
+        "unit": "mana"
+      },
+      {
+        "id": "C26-ACC-REGEN",
+        "name": "남은 온기의 고리",
+        "effect": "REGEN",
+        "amount": 0.08,
+        "unit": "HP/second"
+      },
+      {
+        "id": "C26-ACC-SPEED",
+        "name": "귀환 발걸음의 고리",
+        "effect": "SPEED",
+        "amount": 0.01,
+        "unit": "attribute ADD_VALUE"
+      }
+    ],
+    "quality": "전설",
+    "fixedPower": 32,
+    "slots_per_item": 1,
+    "primary_effects": 1,
+    "choice_count": 1,
+    "quantity": 1,
+    "durability": "기존 장신구 비내구 유형, 무기 무한내구 권리 아님",
+    "skills": [],
+    "first_eligibility": "최초 패배 확정 전 성공으로 이어진 사건 구간의 실제 공격/엄호/유효조작/귀환확보. 실패구간 단독기여만0, 영구확정 연결기여 유지, 사망/오프라인으로 성립권리삭제0.",
+    "support_evidence": "실제 적의 공격 차단/치유한 참가자의 활동/유효 귀환구간 확인, 본인자해 반복으로0",
+    "material": "보스 외피의 비고유 분리 잔재. 핵/원본/검은 재료0. 최초 승리 기여명부 Q명에 Q회 제작가능 회수분 예약; N은 보상수 상한 아님",
+    "provider": "소유자 합의된 현장 회수·표준 비신격 장신구 제작 공정; NPC 출연/호의 강제0. 구현 시 하나의 등록 제작·지급 흐름으로 연결",
+    "initial_stock": "Q개 묶음, 1인1개분 예약; 다른사람이 소진 불가",
+    "reserved_stock": "Q - DELIVERED 수 - DECLINED_ITEM_RECORD_ONLY 수. 명시포기분은 해당개인 RESERVED→RETIRED, 재배분·재입고·다른권리생성0. DELIVERY_PENDING/CHOICE_LOCKED/AVAILABLE는 해당개인 예약유지.",
+    "replenishment": 0,
+    "repeat": {
+      "gear": 0,
+      "gold": 0,
+      "xp_bonus": 0,
+      "consumable": 0
+    },
+    "strong_player_option": "수령 보류 또는 장비 포기하고 동일 사건 기념기록만. 별도 새 권리/점수/교환재화0",
+    "claim_key": [
+      "worldEventUUID",
+      "playerUUID",
+      "C26_FINAL_CHOICE"
+    ],
+    "states": [
+      "AVAILABLE",
+      "CHOICE_LOCKED",
+      "DELIVERY_PENDING",
+      "DELIVERED",
+      "DECLINED_ITEM_RECORD_ONLY"
+    ],
+    "inventory_full": "바닥드롭0, 선택 고정·미수령 유지",
+    "world_objects_duplicate": false,
+    "C27_vote_right": "별개 지정명부, 참전/장비로 생성0",
+    "loss_recovery": "전달불확실·인벤부족은 동일권리/itemInstance 대조 후 미완전달만 회복. DELIVERED 뒤 실제 분실은 일반 장신구 현행 복구정책을 따르며 이 계약만으로 영구 무상복원 승인0. 복구가 적법하게 승인된 경우에도 같은 권리만, 새3택1/두번째 장비권0."
+  },
+  "lifecycle": {
+    "states": [
+      "READY",
+      "ACTIVE",
+      "GATE",
+      "RETRY_SAFE",
+      "SUSPENDED",
+      "DEFEATED_UNSTABLE",
+      "STABLE_STORED"
+    ],
+    "death": "기존 서버 사망/드롭/부활점 유지, 새2목숨 규칙0. 실제 길로 복귀 가능, 자동부활/즉시전장텔레포트0",
+    "spectator": "기존 실제 관전 기능만, 피해/기여/조작0. 안전한 귀환점에서 볼 수 있음",
+    "reconnect": "동일UUID/사건/실물/원장 확인, 무적/쿨초기화0. 개인 인벤토리 무단 접근0",
+    "late_join": "C23 현재준비·위험 수락·기존 접근 충족 후 실제 길로 합류, 이미 지난 행동 소급0, HP재산정0",
+    "no_active_players": "보스가 실제 접근 가능한 참가자를 잃은 뒤100tick 경고 후 공격중단·SUSPENDED; 오프라인 세계 공격0",
+    "wipe": "같은 개체 RETRY_SAFE, 현 임계 구간 시작HP로 회복. 완료된 연결·권리·소모·사망 유지. 무적위장 신규적 생성0",
+    "retry_hp": "미완 게이트면 해당 임계HP 유지, 완료게이트 뒤 패배면 그 임계HP 회복, 최초게이트전이면100%. 최종제압이면0 유지",
+    "leave": "살아있는 실제 귀환로로 직접이동, 즉시 무피해탈출 약속0. 전원철수 후 동일 SUSPENDED",
+    "server_restart": "지속 원장/현물/개체 대조 후 확정HP와 연결 복구, 진행 중 일시공격 취소·경고80tick. 중복 개체 소환0",
+    "defeated": "실제 HP0와 적 패배사건을 유일 확정. 남은 잔존 방어체 실제제압/기존사건 회수 확인, 새보스 재소환0",
+    "stable_checks": [
+      "핵 옛 방어 정지",
+      "새 유입 차단 실상태",
+      "옛 명령 연결 및 여신 단독접속 분리 실상태",
+      "핵 잔여힘 안전·실제 퇴로 왕복 확인"
+    ],
+    "no_offline_penalty": true
+  },
+  "ledger": {
+    "world_key": [
+      "worldUUID",
+      "canonicalC26EventUUID"
+    ],
+    "entity": "유일 coreObjectUUID와 returnDragonEntityUUID; 최초연결 CAS 예약 후 현물대조",
+    "attempt": "attemptUUID, 시작종료, N, HPsnapshot, 단계, cast/event dedup, 참가/권한 이력",
+    "connections": "connection1..6 별도 상태와 원본/검 objectUUID, authorityVersion, 조작자, tick, 결과",
+    "contribution": "damage, block, cover, add_defeat, interaction, return_check 실제 eventId, 사적대화 제외",
+    "victory": "UNCONFIRMED/DEFEAT_CONFIRMED, 단일 defeatEventId",
+    "storage": "각4확인별 PENDING/VERIFIED와 관측증거, 전부 VERIFIED일 때 STABLE_STORED",
+    "reward": "claim+선택+재고예약+itemInstanceUUID+전달증거; uncertain은 RECONCILE만, 무조건재지급0",
+    "ending": "C27 별도원장 읽기 인계만; 명부/조건버전/전원동의 수정0",
+    "atomicity": "DB와 게임인벤 원자거래 지원 주장0; 예약→실물전달→영수증, 장애시 동일 itemInstance 대조로 회복"
+  },
+  "presentation": {
+    "priority": "보스경고>실제공격>자기상태>아군장식>잔상",
+    "five_player_particles_in_radius8": 120,
+    "alpha_core_edge_trail": [
+      0.85,
+      0.35,
+      0.18
+    ],
+    "ally_alpha_multiplier": 0.55,
+    "camera_force": false,
+    "debug": "실제 sweep/판정경계와 메시 별도표시, castId/tick/피해/eventId 기록",
+    "audio": "장식80ms 병합, 경고 ducking 6dB 초기안, 전역천둥0",
+    "asset_requirements": [
+      "귀환룡 외피 균열·흡수 방향·날개/가슴/머리 피격부위 모델",
+      "A1~A4 각 준비/실행/착지 애니메이션",
+      "3개 지형명·번호/화살표 경고 메시",
+      "일반 몹 외형과 근접/투사체 새 제어기",
+      "분산 원본실물/합일검 결속접촉 상호작용",
+      "회수 외피 장신구3종 실물 아이콘/모델/고리색 이외 문양 차별",
+      "서버권위 단계·피해/무적·원장 동기화"
+    ],
+    "no_placeholder_final": true
+  },
+  "산술_기준": {
+    "피해공식": "raw*(1-min(20,max(A/5,A-raw/(2+T/4)))/25)/(1+P/40)*(1-0.2*R); 마지막 적격고정감소, 최소0",
+    "등록보호": "바닐라 EPF와 다른 공방/관우 등록모델, 이중적용 금지",
+    "CP_to_DPS": false,
+    "base_mana": 200,
+    "regen_per_second": "currentMaximumMana*0.01",
+    "accessory_slots": 2,
+    "skills_unchanged": true,
+    "weak_nominal_attack_speed": [
+      7.5,
+      1.6
+    ],
+    "baseline_nominal_attack_speed": [
+      9,
+      1.25
+    ],
+    "strong_nominal_attack_speed": [
+      10.5,
+      1.6
+    ],
+    "effective_member_dps": [
+      5.28,
+      7.29,
+      12.768
+    ],
+    "predicted_seconds": [
+      526.5454545454545,
+      401.2181069958848,
+      259.96992481203006
+    ],
+    "gate_grace_conservative_seconds": 12,
+    "growth_distributed_member_dps": 10.296,
+    "growth_unified_one_sword_member_dps": 10.809,
+    "growth_unified_five_party_dps": 51.993,
+    "runtime_verified": false,
+    "growth_reference_status": "공용성장 현재 적용 저술기준과 장면별 기믹 취소계약을 참조한다. 수치10.296/10.809/51.993은 연속평균·피격억제 무손실 가정이며 서버실측값 아님.",
+    "discrete_sensitivity": {
+      "status": "독립 저술검산; 실제서버/영상/API0",
+      "normal_policy": "보수적인 완전충전만 사용: 1.6은13tick,1.4는15tick,1.25는16tick. 기존 무기 attack_speed 변경0.",
+      "rotation": "합일검240tick 반복: 능동t0 승인/t8 명중/t20 잠금종료; 평타t20,35,...230 총15회. 모든유효타간격>=10tick. 평타가동0.65·명중0.9, 기술명중0.9 별도.",
+      "ordinary_dps": 9.9,
+      "sword_dps": 10.575,
+      "five_party_dps": 50.175,
+      "five_party_seconds": 311.1629297458894,
+      "warning": "연속평균과 다른 입력회전 민감도이며 실제 DPS 보장이나 엄격한 상하한 아님. 경고회피·기믹·스킬명중률·임계손실·저TPS 실측 별도. 막타 직후9tick 내 기술을 맞히면 차액만이므로 그 로그를 따로 검사.",
+      "hp_gate_note": "게이트72초 포함, 최종안정보관30~60초/접근·휴식/실패시도 제외. 유예전부 공격불가 가정은 별도12초 추가."
+    },
+    "mana_endpoint": "표는0초 선사용→tick마다 회복, 종료시각600초/300초까지 회복 포함. 공용성장 표의599.95초 직전잔량과0.05초 끝점 차이는 회복1tick이며 성공횟수 차이 아님."
+  }
+}

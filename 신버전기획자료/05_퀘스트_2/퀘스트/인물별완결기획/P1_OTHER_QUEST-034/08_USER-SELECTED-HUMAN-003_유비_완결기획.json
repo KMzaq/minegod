@@ -1,0 +1,89 @@
+{
+  "record_key": "USER-SELECTED-HUMAN-003",
+  "name": "유비",
+  "episode_id": "EP020B-USER-SELECTED-HUMAN-003",
+  "definition_alias": "Q034-08",
+  "god_id": "mythictrpg:chinese_unassigned_liu_bei",
+  "status": "저술 채택 / 구현·플레이시험 미실행",
+  "identity": {
+    "combat_tier": "중급",
+    "main_status": "NOT_APPLICABLE",
+    "record_only": false
+  },
+  "title": "오늘 나눌 한 끼",
+  "common_contract": "P034_COMMON",
+  "source_refs": [
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-003/profile.json",
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-003/authoring_contract.json#/exact_existing_cards/EP020B-USER-SELECTED-HUMAN-003",
+    "원문제작범위_보존색인.json#/records/USER-SELECTED-HUMAN-003/contract",
+    "P23_stage2.md"
+  ],
+  "persona": "유비에게는 남은 시간에 손댈 구호 준비 한 가지를 정하고 과하게 벌여 둔 약속을 줄이기라는 욕망이 있다. 좋은 사람으로 남고 싶어서 거절이 늦어지고, 모든 부탁을 받으면 약속이 가벼워질까 두렵다.",
+  "source_completion_guard": "현재 인간 경로 자격으로 유효 수락한 조리 참가자가 소유자가 허락한 실제 재료와 사전 합의한 조리·배식 몫을 수행하고 그 한 끼가 실제 가능한 분량대로 나뉜 때 해당 SIDE 완료다. 미배식분이 남아 있으면 전체 한 끼 완료로 세지 않는다. 자기 실제 조리의 정당한 합의 식사 몫은 부분수행에서도 해당 조건을 충족한 만큼 보존한다. 추가 부탁 거절 자체·칭찬·빈 그릇 배치는 조리 완료가 아니며 기본 식사나 굶주림을 거절의 벌로 조작하지 않는다.",
+  "source_reward_guard": "실제 조리 참가자가 사전에 합의한 자기 조리 몫의 조건을 충족한 만큼 식사권이 생긴다. 전체 한 끼 완료와 정당한 부분 조리 식사권은 구별한다. 단순 수락·관찰·추가 부탁·미수행에는 새 보상 없음. 거절자를 굶기는 벌은 없으며 기본 식사의 기존 규칙을 변경하지 않는다.",
+  "site": "기존 부엌의 허락 화로/작업대와 배식자리, 실제 감자4개와 연료1개가 있으면4끼 소형 회차.",
+  "objectives": [
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-003:O1",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "가호 미보유 자격·재료 소유자 허락을 확인하고 실제 감자4개를 굽는다. 재료가 적으면 수락 전 n(1~4)개로 낮춘다. 0이면 조리과업0."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-003:O2",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "자기가 맡은 굽기·꺼내기를 실제 실행해 완성 감자 n개를 원물 변환이력과 연결한다. 추가 운반 요청은 OR 거절 / 별도 수락해 실제 조리 지연을 감수, 양쪽 자동완료0."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-003:O3",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "합의 수령자에게 n개 실제 배식하면 한 끼 완료. 수행자 대가1개도 n 안에 포함하며 이미 조리한 합의 몫의 식사권은 나머지 미배식과 별개다."
+    }
+  ],
+  "branch_and_partial": "추가 부탁을 받았다고 즉시 실패는 아니며 실제 지연·미배식만 기록. 기본 구호식사와 노동 대가를 분리, 거절자 굶주림 증가벌0. 재료 도난·중복생성0.",
+  "reward": {
+    "definition": "실제 맡은 조리 완료자 식사 구운감자1개, 총 n에서 배분. 여러 조리자면 수락 전 총 n 이내 배분 확정. 별도 지도권0·무한식량0.",
+    "additional_combat_reward_count": 0,
+    "recipient": "유효 수락하고 해당 실제 몫을 수행한 본인만",
+    "limit": "동일 원물 요청의 정당한 몫1회; 반복 같은 원물 정산0",
+    "recovery_ref": "P034_COMMON#/rights"
+  },
+  "service": null,
+  "reaction": "“지금 더 약속하면, 이 그릇도 늦겠군요.” 유비는 맡지 못한 부탁에 다른 사람의 협조를 보장하지 않는다.",
+  "knowledge": {
+    "fact_id": "EP020B-USER-SELECTED-HUMAN-003:RESULT",
+    "payload": "선택한 분기, 실제 목표증거, 수행자, 소유자 인수, 남은 손해/미완료, 시점; 추론은 주장표시",
+    "npc_receipt": "직접 목격 또는 허락 보고 실제수신 뒤에만 반응",
+    "private": "개인약속·비공개 피해/채무·현재 관계는 실제 청중별 제한",
+    "relationship_handoff": {
+      "items": [],
+      "none_reason": "이번 이야기는 유비와 실제 수행자의 선택으로 끝난다. 코어에 현재 명부 상대가 없으면 새 인연·강제 소개를 만들지 않는다. 명부 밖 전승 인연은 기억으로만 보존하며 현재 등장·응답을 발명하지 않는다."
+    }
+  },
+  "failure_resume": "P034_COMMON#/recovery 적용. 재료 부족이면 실제 가능한 분량을 먼저 설명하고 소유자가 허락한 재료만 쓴다. 거절하거나 실패해도 굶주린 사람의 상태를 자동 악화시켜 벌주지 않는다.",
+  "late_join": "P034_COMMON#/late_join 및 독립서비스 회차키 적용",
+  "estimated_play": "5~10분",
+  "balance": "일반 재료의 실제 몫 또는 능력치 없는 지도. 무한 생성 경제 없음. 생활·조작·판단 학습 가치, 전투등급 보상 우회0. 예상시간은 정적 기획 추정.",
+  "acceptance_tests": [
+    {
+      "case": "정상",
+      "expect": "해당 선택경로 목표의 실제 증거 후 해당몫만 정산"
+    },
+    {
+      "case": "미실행 후기 거절",
+      "expect": "이미 끝낸 원사건·권리 유지"
+    },
+    {
+      "case": "원물 소실/수령거절",
+      "expect": "잔존/미인수·손해 별도, 복제0"
+    },
+    {
+      "case": "후발 실습",
+      "expect": "독립 service/session만, 원EP완료0"
+    },
+    {
+      "case": "권리 지급중 재시작",
+      "expect": "같은 권리·실지급 receipt 대조, 중복0"
+    }
+  ],
+  "runtime_ready": false
+}

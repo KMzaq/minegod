@@ -33,6 +33,8 @@ public final class UnderstandingGameTests {
         final Map<MinecraftServer,ActionLedgerService.Runtime> runtimes; final ActionLedgerService.Runtime prior;
         final List<EmbeddedChannel> channels=new ArrayList<>(); final ServerPlayer owner,other;
         UUID token; long at; int phase; boolean finished;
+        java.util.concurrent.CompletableFuture<PlayerUnderstanding.Slice> purposeRead;
+        java.util.concurrent.CompletableFuture<ActionRecord> purposeWrite;
         @SuppressWarnings("unchecked") Fixture(GameTestHelper h)throws Exception {
             this.h=h;server=h.getLevel().getServer();
             Path base=server.getServerDirectory().toAbsolutePath().normalize();
@@ -100,10 +102,35 @@ public final class UnderstandingGameTests {
                 case 7 -> {
                     if(busy(owner))return;
                     h.assertTrue(((PlayerUnderstanding.View)get(session(owner),"view")).cards().stream().anyMatch(c->c.key().equals("purpose")),"purpose not shown");
-                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,2,UnderstandingRequest.Action.CLOSE,"",""));
-                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,3,UnderstandingRequest.Action.PAUSE,"",""));
+                    purposeRead=ledger.understanding(owner.getUUID());phase++;
+                }
+                case 8 -> {
+                    if(!purposeRead.isDone())return;
+                    var source=purposeRead.join().feedback().stream().filter(r->"purpose".equals(r.event().payload().get("key"))).findFirst().orElseThrow();
+                    var evidence=new PurposeEvidence(source.worldId(),owner.getUUID(),source.event().occurrenceId(),source.sequence(),PurposeLedger.episodeOf(source),
+                            new PurposeEvidence.Goal(PurposeEvidence.Kind.DO_ACTIVITY,"test:exploration"),PurposeEvidence.Origin.SELF_SPEECH,
+                            PurposeEvidence.Attribution.DIRECT_SELF,PurposeEvidence.Signal.DESIRE,PurposeEvidence.Context.DIRECTED,false,false,source.event().payload().get("text"));
+                    purposeWrite=ledger.annotatePurpose(evidence);at=server.getTickCount();phase++;
+                }
+                case 9 -> {
+                    if(!purposeWrite.isDone()||server.getTickCount()-at<12)return;
+                    purposeWrite.join();
+                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,2,UnderstandingRequest.Action.REFRESH,"",""));at=server.getTickCount();phase++;
+                }
+                case 10 -> {
+                    if(busy(owner)||server.getTickCount()-at<12)return;
+                    var view=(PlayerUnderstanding.View)get(session(owner),"view");
+                    h.assertTrue(view.cards().stream().anyMatch(c->c.key().startsWith("purpose_")&&c.assessment().contains("희망")),"source-bound typed purpose not shown");
+                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,3,UnderstandingRequest.Action.RETRACT,"purpose",""));phase++;
+                }
+                case 11 -> {
+                    if(busy(owner))return;
+                    var view=(PlayerUnderstanding.View)get(session(owner),"view");
+                    h.assertTrue(view.cards().stream().anyMatch(c->c.key().startsWith("purpose_")&&c.assessment().contains("철회")),"typed goal survived UI withdrawal");
+                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,4,UnderstandingRequest.Action.CLOSE,"",""));
+                    UnderstandingRuntime.receive(owner,new UnderstandingRequest(token,5,UnderstandingRequest.Action.PAUSE,"",""));
                     h.assertTrue(session(owner)==null,"closed session retained grant");
-                    h.assertTrue(ledger.status().committedSequence()==3,"closed grant executed");
+                    h.assertTrue(ledger.status().committedSequence()==5,"closed grant executed");
                     close();h.succeed();
                 }
             }

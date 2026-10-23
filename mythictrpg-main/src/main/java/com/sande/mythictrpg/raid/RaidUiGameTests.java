@@ -97,6 +97,12 @@ public final class RaidUiGameTests {
             var refreshedQueue = ui.handle(member, request(queued, RaidRequestPayload.Action.REFRESH, -1));
             h.assertValueEqual(refreshedQueue.view(), RaidPagePayload.View.IN_PROGRESS, "refresh forgot in-progress grant category");
             h.assertTrue(refreshedQueue.rows().stream().anyMatch(r -> r.key().equals("a:" + run)), "refresh lost the queued attempt");
+            state.find(run).orElseThrow().status = RaidState.Status.STARTING;
+            RaidPagePayload preparing = ui.page(member, RaidPagePayload.View.IN_PROGRESS, 0, false, "");
+            h.assertTrue(row(preparing, RaidRequestPayload.Action.LEAVE) < 0
+                    && preparing.rows().stream().anyMatch(r -> r.status().equals("STARTING")
+                    && r.details().contains("입장을 준비") && r.details().contains("대기 제한")
+                    && r.details().contains("명단 고정")), "preparing arena lost waiting guidance or roster protection");
             state.find(run).orElseThrow().status = RaidState.Status.ACTIVE;
             h.assertTrue(!RaidRuntime.INSTANCE.leave(member, run).succeeded(), "active roster leave was accepted");
             state.find(run).orElseThrow().status = RaidState.Status.QUEUED;

@@ -24,6 +24,23 @@ import java.util.function.*;
 /** Only this game issuer binds a read session to a live, game-issued room request. SHADOW never changes dialogue. */
 public final class RecordedMemoryAccess {
     private RecordedMemoryAccess() { }
+    /** Fresh speech read: wait at most five seconds for previously admitted room captures, then issue
+     * a fixed committed snapshot. Never blocks a game tick, enables NEW, or replaces owner validation. */
+    public static CompletableFuture<Optional<MemoryReadSession>> openAfterCapture(MinecraftServer server, Request request) {
+        if (!server.isSameThread()) throw new IllegalStateException("Memory authority requires game thread");
+        var mode = MemoryFoundationSettings.mode();
+        var engine = RoomConversationEngineRouter.INSTANCE.engine();
+        var store = RecordingRuntime.current(server).orElse(null);
+        if (mode == MemoryFoundationSettings.Mode.OFF || readableDataset(store).isEmpty()
+                || !ConversationRooms.INSTANCE.memoryReadCurrent(server, request))
+            return CompletableFuture.completedFuture(Optional.empty());
+        return CaptureReadFence.after(RecordingRuntime.pendingRoomCaptures(server, store), server::execute,
+                () -> MemoryFoundationSettings.mode() == mode && RoomConversationEngineRouter.INSTANCE.engine() == engine
+                        && RecordingRuntime.current(server).filter(value -> value == store).isPresent()
+                        && ConversationRooms.INSTANCE.memoryReadCurrent(server, request),
+                () -> open(server, request), 5000);
+    }
+    /** Immediate committed snapshot for diagnostics/proof validation. Does not wait for pending capture. */
     public static Optional<MemoryReadSession> open(MinecraftServer server, Request request) {
         if (!server.isSameThread()) throw new IllegalStateException("Memory authority requires game thread");
         var mode = MemoryFoundationSettings.mode();

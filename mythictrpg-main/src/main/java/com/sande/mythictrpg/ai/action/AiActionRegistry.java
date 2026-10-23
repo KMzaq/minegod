@@ -26,6 +26,7 @@ public final class AiActionRegistry {
         register(RaidOfferAiAction.definition());
         register(NpcVisitAiAction.definition());
         register(NpcActivityAiAction.definition());
+        register(NpcDirectiveAiAction.definition());
         register(StructureEvaluationRequestAiAction.definition());
         register(GodRelationTransitionAiAction.definition());
         register(StoryEventHookAiAction.definition());

@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S13-016",
+  "name": "헨리 아미티지",
+  "definition_id": "ACTIVATION-RPG-S13-016",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "허가된 기존 폐허의 회수 가능한 기록물1개(minecraft:written_book, writable_book, filled_map 중 실제 기록내용/출처가 있는 것)를 적법 인수하여 안전 생활권 기존 보관점에 실제 보관1회. 같은 물품 UUID/획득 출처/운반/보관 receipt 필요. 빈 책·임의 명칭변경·훔친책 불가; 새 금서/저자 대면0.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "정확 원문 encounter의 허용 지형·공간에 현재 실제 도달. 현재 통행권·안전·배치공간·귀환로를 확인한 공개 방문. 별도 소지품·과거 개인행동·선행 NPC응답·수주 조건 없음.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-047/RPG-S13-016.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. / 현재 행동은 성격 저술의 진행 방향이다. 여기 적었다고 새 공격·계약·피해·승전·탈출을 이미 실행한 세계 사실이 되지 않는다. / 실제 접근·본인 의사·현재 봉인을 먼저 적용한다. 자유대화 제작과 현재 본체 출현·최초 조우의 허용을 구별한다. / 코어는 Story 등록 JSON이나 퀘스트 수주 gate 구현물이 아니다. 조건부 공개·canonical 전달도 실제 청중·입수 경위가 있어야 하며 미연결 gate·개인 상태 일괄 동기화를 지원한다고 가정하지 않는다. / 기존 세계·네더·엔드 안에서 쓴다. 새 건축·새 차원·전투 수치·필수 개인 퀘스트를 생성하지 않는다. / 윌버·기타 현재 명부 밖 원전 인물의 새 현장 참여·생존·계산을 전제하지 않는다. 과거 작품의 사건을 새 게임 사건으로 완료 처리하지 않는다. 신규 문장은 현행 effective_rule 범위에서만 사용하며 제한 접촉을 유창한 새 아바타·전지적 해설로 확대하지 않는다. 예수·하나님 및 명부 밖 인물의 현재 출연 없음.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-047/RPG-S13-016.json",
+      "record_key": "RPG-S13-016",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "2d54a1827d2e7f4a1e19211cd46fc7a0472b1c73669a055095267b5b90113798"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-047/03_RPG-S13-016_헨리 아미티지_완결기획.json",
+      "record_key": "RPG-S13-016",
+      "pointers": [
+        "/world_unlock_and_encounter"
+      ],
+      "sha256": "565caca3eae7eed2f30aeb932d8085c952cd96ed4f122af9c236365480308745"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

@@ -112,7 +112,7 @@ public final class ConversationIntentRouter {
         }
         return new ConversationIntent(safe.tags(), safe.knowledgeKeywords(), combined,
                 ConversationAct.resolve(safe.conversationAct(), rawText, session == null ? "" : latestDivineText(session)),
-                safe.confidence(), safe.source(), safe.turnInterpretation().validatedFor(rawText));
+                safe.confidence(), safe.source(), safe.turnInterpretation().validatedFor(rawText), safe.supportConsultation().validatedFor(rawText),safe.characterInterest().validatedFor(rawText));
     }
 
     public List<AiDialogueModels.OllamaMessage> messages(AiDialogueModels.SessionSnapshot session,

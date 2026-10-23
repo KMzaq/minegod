@@ -129,7 +129,7 @@ final class RoomPlayerClaimAudit {
             if(!primary&&!secondary)continue;
             var view=new JsonObject();view.addProperty("responseKind",primary?"PRIMARY":"SECONDARY");
             for(String key:List.of("authorizedSpeakerId","speaker","currentPlayer","ownPermittedMemory","actuallyHeardMemory",
-                    "gameContextWithSourceBoundaries","ownAuthoritativeContext","gameConfirmedActionOutcomes"))
+                    "gameContextWithSourceBoundaries","ownAuthoritativeContext","gameConfirmedActionOutcomes",PurposeDialogueContext.KEY))
                 if(source.has(key))view.add(key,source.get(key).deepCopy());
             partition(source,view,primary);
             contexts.add(view);

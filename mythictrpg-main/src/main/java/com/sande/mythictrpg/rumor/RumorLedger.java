@@ -10,12 +10,19 @@ public final class RumorLedger {
         public Courier { Objects.requireNonNull(subject); Objects.requireNonNull(entity); Objects.requireNonNull(epoch); }
     }
     public record Evidence(UUID id, UUID subject, UUID observer, UUID epoch, String excerpt,
-            Set<String> receivers, Set<UUID> disclosureAudience, CourierProof proof) {
+            Set<String> receivers, Set<UUID> disclosureAudience, CourierProof proof, String memoryMode) {
         public Evidence(UUID id,UUID subject,UUID observer,UUID epoch,String excerpt,Set<String> receivers,Set<UUID> audience) {
             this(id,subject,observer,epoch,excerpt,receivers,audience,null);
         }
+        public Evidence(UUID id,UUID subject,UUID observer,UUID epoch,String excerpt,Set<String> receivers,
+                Set<UUID> audience,CourierProof proof) {
+            this(id,subject,observer,epoch,excerpt,receivers,audience,proof,"RUMOR_TEST");
+        }
         public Evidence {
             Objects.requireNonNull(id); Objects.requireNonNull(subject); Objects.requireNonNull(observer); Objects.requireNonNull(epoch);
+            // Every root written before gameplay support was test-only; never promote legacy evidence into PERSONAL.
+            memoryMode = memoryMode == null ? "RUMOR_TEST" : memoryMode;
+            if(!Set.of("PERSONAL","RUMOR_TEST").contains(memoryMode))throw new IllegalArgumentException("Invalid rumor birth mode");
             excerpt = bounded(excerpt, 600);
             if(proof!=null&&!proof.excerptHash().equals(CourierSettings.hash(excerpt)))throw new IllegalArgumentException("witness excerpt changed");
             receivers = Set.copyOf(receivers); disclosureAudience = Set.copyOf(disclosureAudience);
@@ -113,12 +120,16 @@ public final class RumorLedger {
     }
     boolean observe(UUID eventId, UUID subject, UUID observer, Set<UUID> mentionedSubjects,
             String excerpt, Set<String> authorizedGods, Set<UUID> disclosureAudience,CourierProof proof) {
+        return observe(eventId,subject,observer,mentionedSubjects,excerpt,authorizedGods,disclosureAudience,proof,"RUMOR_TEST");
+    }
+    boolean observe(UUID eventId, UUID subject, UUID observer, Set<UUID> mentionedSubjects,
+            String excerpt, Set<String> authorizedGods, Set<UUID> disclosureAudience,CourierProof proof,String memoryMode) {
         if (gated()) return mutate(false, draft -> draft.observe(eventId, subject, observer, mentionedSubjects,
-                excerpt, authorizedGods, disclosureAudience, proof));
+                excerpt, authorizedGods, disclosureAudience, proof, memoryMode));
         Courier courier = couriers.get(subject);
         if (!Set.of(subject).equals(mentionedSubjects) || courier == null || courier.blocked()
                 || !courier.entity().equals(observer) || evidence.containsKey(eventId) || evidence.size() >= LIMIT) return false;
-        Evidence accepted = new Evidence(eventId, subject, observer, courier.epoch(), excerpt, authorizedGods, disclosureAudience,proof);
+        Evidence accepted = new Evidence(eventId, subject, observer, courier.epoch(), excerpt, authorizedGods, disclosureAudience,proof,memoryMode);
         evidence.put(eventId, accepted); revision++;
         return true;
     }
@@ -169,10 +180,14 @@ public final class RumorLedger {
     }
 
     public List<HeardRumor> heard(UUID subject, String god, Set<UUID> currentAudience) {
+        return heard(subject,god,currentAudience,null);
+    }
+    List<HeardRumor> heard(UUID subject, String god, Set<UUID> currentAudience,String memoryMode) {
         if (currentAudience.isEmpty()) return List.of();
         return receipts.values().stream().filter(r -> r.godId().equals(god)).filter(r -> {
             Evidence e = evidence.get(r.rootId()); Claim c = claims.get(r.rootId());
             return e != null && c != null && !c.revoked() && r.revision() == c.revision() && e.subject().equals(subject)
+                    && (memoryMode == null || memoryMode.equals(e.memoryMode()))
                     && e.disclosureAudience().containsAll(currentAudience);
         }).map(r -> { Claim c = claims.get(r.rootId()); return new HeardRumor(r.rootId(), r.revision(), c.text(), c.epithet()); })
                 .toList().reversed().stream().limit(64).toList();

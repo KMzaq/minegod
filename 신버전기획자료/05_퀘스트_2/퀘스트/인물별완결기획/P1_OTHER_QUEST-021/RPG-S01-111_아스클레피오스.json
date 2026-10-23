@@ -1,0 +1,75 @@
+{
+  "record_key": "RPG-S01-111",
+  "name": "아스클레피오스",
+  "definition_id": "GR021-111-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_unassigned_asclepius",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-111/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-111/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P03_stage2.json#/records/6",
+    "accepted_episodes": [
+      "EP007B-RPG-S01-111"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "중급",
+    "identity_boundary": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음"
+  },
+  "title": "묻지 않기로 한 증례",
+  "site": "아스클레피오스가 현재 있는 안전 공용공간에서 별도 동의한 관측자리 AS-OBS-01. 관측대상은 수락한 현장 플레이어 자신의 게임 상태만이며 다른 환자를 데려오거나 생성하지 않는다. 다른 사람은 허락된 범위를 실제 관찰하는 청중일 뿐 본인의 수행/지도권을 자동 얻지 않는다.",
+  "objectives": [
+    "관측할 게임상태(자기 HP 또는 게임 내 상태효과 중1)·열람자·기록보존·중단권을 대상에게 명시 동의받는다. 타인의 사연/현실의료정보는 수집하지 않는다. 거절 항목은 질문하지 않는다. 기본 관측은 t=0/30초 두 시점으로 합의하고 질문/관측을 끝낼 실제 중단어도 정한다. 답하지 않기로 한 항목은 빈칸으로 유지한다.",
+    "기본 관측은 합의한 상태값을 t=0과 안전하게30초 쉰 뒤 t=30초의 두 시점에서 실제 비교한다. 기존 음식섭취 등 본인의 자발적 행동·자연경과·변화없음을 구분하고 일부러 다치게 하거나 치료효과를 만들어내지 않는다. 두번째 관측 뒤 합의한 중단어로 질문/관측 종료를 요청하고 아스클레피오스가 실제 멈춘 것을 확인한다.",
+    "확인사실1과 대안가설2·미확인을 구별하여 아스클레피오스와 비교하고 선택 추가 관측1회(t=60초) 여부를 다시 묻는다. 추가 시각이 오기 전에 해당 항목·열람자·보존에 새 동의를 받은 때만 실제 관측한다. 거절/미수신/시점경과는 추가 관측 미실행이며 기본 두 시점 비교·실제 중단·가설검토 완료와 지도제안권을 취소하지 않는다."
+  ],
+  "branches": "중간 동의철회는 즉시 관측중지, 이미 허락된 보존분만 유지. 표본부족이면 결론불충분, 관측완료/지도권을 만들지 않고 기존 동의분만 보존. 대화/부활/회복 스킬 지급0, 하데스 관할 변경0.",
+  "reward": {
+    "kind": "관찰·돌봄 지도",
+    "definition": "GR021-AS111-OBSERVE",
+    "quantity": "개인 게임내 관찰 지도1회",
+    "stock": "물품·치유효과 없음, 아스클레피오스 실제 의사와 60초 지도시간.",
+    "condition": "동의한 서로 다른 두시점 실제 관측과 가설/미확인 검토, 동의범위를 지킨 개인. 추가관측 거절은 불이익0. 한시점만 관측 후 철회는 미완료로 보존, 지도권0. 합의한 중단 요청과 실제 관측중지를 확인하며 답하지 않은 항목은 그대로 둔다. 상태값 변화없음도 두 시점의 실제 비교이면 인정하고 치료성공으로 바꾸지 않는다.",
+    "effect": "자기 상태변화를 두 시각에서 비교하고 관측과 추측을 나눈 기록1을 직접 작성. 현실 진단/치료지침 아닌 게임 HP·상태값 해석, K/J·자동힐·부활·스탯0.",
+    "budget": "B1, 원문 돌봄 기술지도"
+  },
+  "expected_minutes": [
+    3,
+    6
+  ],
+  "acceptance_tests": [
+    "동의철회 즉시 기록중단",
+    "파티원 의료사연 자동공유0",
+    "HP변화 원인을 치료성공으로 단정0"
+  ],
+  "special": "",
+  "reward_status_source": "APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 그는 다음 연구의 가설을 더 자세히 나누고 계속해도 되는지 다시 묻는다. 부활·무제한 치유·하데스 관할 변경은 없다.",
+  "source_outcome": "묻지 않기로 한 증례에서 실제 선택한 행동과 결과: 그는 다음 연구의 가설을 더 자세히 나누고 계속해도 되는지 다시 묻는다. 부활·무제한 치유·하데스 관할 변경은 없다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR021-111-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "아스클레피오스와 플레이어 각각이 직접 관측하거나 허락된 보고를 실제 받은 범위만. 참가명부만으로 지식이 생기지 않으며 실제 청취/목격/열람 UUID별로 기록한다. 외부 상대는 counterpart_delivery의 실제 수신완료 내용만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

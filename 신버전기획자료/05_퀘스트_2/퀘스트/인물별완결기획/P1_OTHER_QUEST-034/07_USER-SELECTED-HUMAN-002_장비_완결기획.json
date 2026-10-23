@@ -1,0 +1,95 @@
+{
+  "record_key": "USER-SELECTED-HUMAN-002",
+  "name": "장비",
+  "episode_id": "EP020B-USER-SELECTED-HUMAN-002",
+  "definition_alias": "Q034-07",
+  "god_id": "mythictrpg:chinese_unassigned_zhang_fei",
+  "status": "저술 채택 / 구현·플레이시험 미실행",
+  "identity": {
+    "combat_tier": "상급",
+    "main_status": "NOT_APPLICABLE",
+    "record_only": false
+  },
+  "title": "한 번 더 오가는 짐",
+  "common_contract": "P034_COMMON",
+  "source_refs": [
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-002/profile.json",
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-002/authoring_contract.json#/exact_existing_cards/EP020B-USER-SELECTED-HUMAN-002",
+    "원문제작범위_보존색인.json#/records/USER-SELECTED-HUMAN-002/contract",
+    "P23_stage2.md"
+  ],
+  "persona": "장비에게는 쌓아 둔 무거운 짐을 한 번에 해치우려다 어지른 배분을 다시 끝내기라는 욕망이 있다. 시원하게 해치웠다는 반응을 좋아하고 무시당하면 성급해지지만 엉뚱한 사람에게 화낸 뒤에는 쑥스럽다.",
+  "source_completion_guard": "자기 수락한 실제 짐 몫을 안전하게 재포장·운반하여 원소유자와 정한 도착점에 온전히 인계한 만큼 SIDE 완료와 해당 운반 대가를 확인한다. 큰 묶음이 실제 무너졌으면 남은 짐의 자기 재포장·도착까지 필요하다. 무너지지 않은 경로는 가짜 파손·복구가 필요 없다. 시합의 승패와 완료는 별개이며 장비가 대신 옮긴 몫을 플레이어 성취로 복제하지 않는다.",
+  "source_reward_guard": "인간 경로의 실제 수락·운반자가 합의한 자기 몫의 재포장·온전한 도착·인계를 마친 범위에 해당 일반 포장 끈의 허용 남은 몫과 무게 분산 지도권만 생긴다. 장비 대행·시합 승리·관찰만으로 권리 없음. 실제 독립 완료한 부분 몫의 약속 대가는 보존한다.",
+  "site": "기존 짐더미 A와 도착함 B 24~40블록, 완만한 길과 가파르되 안전한 길을 선택한다.",
+  "objectives": [
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-002:O1",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "허락한 원물 판자24개를 작업용 묶음 단위8개×3으로 나눠 각 운반자의 맡은 수량을 접수한다. 실제 적으면 존재량만 고정한다. 대여 실은 실제 있는 수량만."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-002:O2",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "작게 나눠 여러 왕복 OR 한 번에 자기 합의몫 운반. 일반 인벤토리 허용을 임의 무게 패널티로 덮지 않는다. 실제 낙하·흩어짐이 발생한 원물만 다시 수거·포장한다."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-002:O3",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "자기 맡은 원물 전량을 B 소유자에게 인계하면 종료. 첫 왕복에 온전하면 추가 왕복0. 시합승패는 완료와 무관."
+    }
+  ],
+  "branch_and_partial": "큰 묶음이 실제 무너지면 해당 잔여만 복구. 장비 대행몫은 자기 공로0. 다칠 위험이면 즉시 시합중단 후 새 안전분배 동의.",
+  "reward": {
+    "definition": "완료한 자기 합의몫에 무게분산 지도1회, 사전 허락 잔여 실 최대2개를 전체 회차에서 배분. 잔량0이면 실물0이며 약속되지 않은 미수령권 생성0.",
+    "additional_combat_reward_count": 0,
+    "recipient": "유효 수락하고 해당 실제 몫을 수행한 본인만",
+    "limit": "동일 원물 요청의 정당한 몫1회; 반복 같은 원물 정산0",
+    "recovery_ref": "P034_COMMON#/rights"
+  },
+  "service": {
+    "service_id": "SVC034-07",
+    "session_key": "service_id+world_uuid+npc_uuid+player_uuid+session_uuid",
+    "relationship_to_episode": "선택 보상 지도이행 또는 별도 새 독립실습; 원사건 수행으로 소급0",
+    "objective": "원물8개를2묶음으로 나눠 짧은 안전길8블록을 왕복해 인계한다. 실제 완료 부분은 저장한다. 새 힘·운반용량·이동속도 효과0.",
+    "repeat": "실습 반복 가능, 보상물/스탯/MAIN 추가0"
+  },
+  "reaction": "“잠깐, 내 매듭부터 보자.” 실제 풀린 경우에만 자기 실수를 보며, 안 풀렸으면 없던 파손을 고백하지 않는다.",
+  "knowledge": {
+    "fact_id": "EP020B-USER-SELECTED-HUMAN-002:RESULT",
+    "payload": "선택한 분기, 실제 목표증거, 수행자, 소유자 인수, 남은 손해/미완료, 시점; 추론은 주장표시",
+    "npc_receipt": "직접 목격 또는 허락 보고 실제수신 뒤에만 반응",
+    "private": "개인약속·비공개 피해/채무·현재 관계는 실제 청중별 제한",
+    "relationship_handoff": {
+      "items": [],
+      "none_reason": "이번 이야기는 장비와 실제 수행자의 선택으로 끝난다. 코어에 현재 명부 상대가 없으면 새 인연·강제 소개를 만들지 않는다. 명부 밖 전승 인연은 기억으로만 보존하며 현재 등장·응답을 발명하지 않는다."
+    }
+  },
+  "failure_resume": "P034_COMMON#/recovery 적용. 허리를 다칠 무게면 멈춰 재분배한다. 이미 옮긴 짐을 다시 뒤섞지 않고 실제 남은 묶음으로 재개한다.",
+  "late_join": "P034_COMMON#/late_join 및 독립서비스 회차키 적용",
+  "estimated_play": "6~12분",
+  "balance": "일반 재료의 실제 몫 또는 능력치 없는 지도. 무한 생성 경제 없음. 생활·조작·판단 학습 가치, 전투등급 보상 우회0. 예상시간은 정적 기획 추정.",
+  "acceptance_tests": [
+    {
+      "case": "정상",
+      "expect": "해당 선택경로 목표의 실제 증거 후 해당몫만 정산"
+    },
+    {
+      "case": "미실행 후기 거절",
+      "expect": "이미 끝낸 원사건·권리 유지"
+    },
+    {
+      "case": "원물 소실/수령거절",
+      "expect": "잔존/미인수·손해 별도, 복제0"
+    },
+    {
+      "case": "후발 실습",
+      "expect": "독립 service/session만, 원EP완료0"
+    },
+    {
+      "case": "권리 지급중 재시작",
+      "expect": "같은 권리·실지급 receipt 대조, 중복0"
+    }
+  ],
+  "runtime_ready": false
+}

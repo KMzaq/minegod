@@ -20,6 +20,7 @@ abstract class ServerPlayerGameModeLedgerMixin {
     @Inject(method = "removeBlock", at = @At("RETURN"), require = 1)
     private void mythictrpg$recordRemoval(BlockPos pos, BlockState state, boolean canHarvest,
                                          CallbackInfoReturnable<Boolean> result) {
+        com.sande.mythictrpg.understanding.MinecraftActivityCapture.blockRemoved(player,state,Boolean.TRUE.equals(result.getReturnValue()));
         com.sande.mythictrpg.gameplay.metric.MiningCredit.removed(player,pos,state,Boolean.TRUE.equals(result.getReturnValue()));
         ActionLedgerCapture.cropRemoved(level, player, pos, state, Boolean.TRUE.equals(result.getReturnValue()));
         ActionLedgerCapture.blockRemoved(player,pos,state,Boolean.TRUE.equals(result.getReturnValue()));

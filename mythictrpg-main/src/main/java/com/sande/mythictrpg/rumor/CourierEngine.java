@@ -25,8 +25,14 @@ public final class CourierEngine {
             if(allegation==null||allegation.isBlank()||allegation.length()>300||epithet==null||epithet.length()>60)throw new IllegalArgumentException("candidate budget"); }
     }
     private final RumorLedger ledger;private final CourierSettings settings;private final Probe probe;private final LongSupplier tick;
+    private final String memoryMode;
     private final Map<String,CourierSettings.Rule> rules=new HashMap<>();private int cursor,candidateCursor;
     public CourierEngine(RumorLedger ledger,CourierSettings settings,Probe probe,LongSupplier tick) {
+        this(ledger,settings,probe,tick,"RUMOR_TEST");
+    }
+    public CourierEngine(RumorLedger ledger,CourierSettings settings,Probe probe,LongSupplier tick,String memoryMode) {
+        if(!Set.of("PERSONAL","RUMOR_TEST").contains(memoryMode))throw new IllegalArgumentException("Invalid courier memory mode");
+        this.memoryMode=memoryMode;
         this.ledger=ledger;this.settings=settings;this.probe=probe;this.tick=tick;settings.rules().forEach(r->rules.put(r.id(),r));
     }
     public boolean bind(UUID subject,UUID courier){return settings.enabled()&&probe.available(courier,subject)&&ledger.bindCourier(subject,courier);}
@@ -48,12 +54,13 @@ public final class CourierEngine {
         for(var rule:settings.rules()) {
             if(previouslyWitnessedRules!=null&&!previouslyWitnessedRules.contains(rule.fingerprint()))continue;
             if(!rule.source().equals(event.source())||!rule.eventType().equals(event.eventType())||!rule.dimension().equals(event.dimension())||!probe.witnessed(courier.entity(),event,rule))continue;
-            UUID root=UUID.nameUUIDFromBytes((ledger.worldId()+"/"+event.subject()+"/"+event.sourceId()+"/"+rule.id()).getBytes(StandardCharsets.UTF_8));
+            String scope=memoryMode.equals("PERSONAL")?"/PERSONAL":"";
+            UUID root=UUID.nameUUIDFromBytes((ledger.worldId()+scope+"/"+event.subject()+"/"+event.sourceId()+"/"+rule.id()).getBytes(StandardCharsets.UTF_8));
             if(ledger.evidence(root)!=null)continue;
-            if(ledger.evidence().stream().anyMatch(e->e.subject().equals(event.subject())&&e.proof()!=null&&e.proof().ruleId().equals(rule.id())
+            if(ledger.evidence().stream().anyMatch(e->memoryMode.equals(e.memoryMode())&&e.subject().equals(event.subject())&&e.proof()!=null&&e.proof().ruleId().equals(rule.id())
                     &&(event.gameTick()<e.proof().gameTick()||event.gameTick()-e.proof().gameTick()<rule.cooldownTicks())))continue;
             var proof=new CourierProof(event.sourceId(),event.sourceRevision(),rule.id(),rule.fingerprint(),event.eventType(),event.source(),event.recordedAt(),event.gameTick(),event.dimension(),event.x(),event.y(),event.z(),CourierSettings.hash(event.excerpt()));
-            if(!ledger.observe(root,event.subject(),courier.entity(),event.mentionedSubjects(),event.excerpt(),rule.receivers().keySet(),event.audience(),proof))continue;
+            if(!ledger.observe(root,event.subject(),courier.entity(),event.mentionedSubjects(),event.excerpt(),rule.receivers().keySet(),event.audience(),proof,memoryMode))continue;
             var input=new CandidateInput(ledger.worldId(),root,courier.epoch(),rule.fingerprint(),event.excerpt());inputs.add(input);
             if(rule.publication()==CourierSettings.Publication.AUTHORED)ledger.publish(root,rule.authoredText(),rule.epithet());
         }
@@ -89,7 +96,7 @@ public final class CourierEngine {
         if(!settings.enabled())return 0;var pending=ledger.pending();if(pending.isEmpty())return 0;int delivered=0,examined=Math.min(settings.deliveriesPerTick(),pending.size());
         for(int i=0;i<examined;i++){
             var d=pending.get(Math.floorMod(cursor+i,pending.size()));var e=ledger.evidence(d.rootId());
-            if(e==null||e.proof()==null)continue; // Legacy pending work is not upgraded into a witnessed event.
+            if(e==null||!memoryMode.equals(e.memoryMode())||e.proof()==null)continue; // Preserve other-mode work and legacy observations.
             var rule=rule(e);if(rule==null||!fresh(e,rule)){ledger.discard(d);continue;}
             var courier=ledger.courier(e.subject());
             if(courier!=null&&probe.available(courier.entity(),e.subject())&&probe.receiverAvailable(d.godId())&&ledger.deliver(d))delivered++;
@@ -98,7 +105,7 @@ public final class CourierEngine {
     }
     public List<RumorLedger.HeardRumor> heard(UUID subject,String god,Set<UUID> audience) {
         var result=new ArrayList<RumorLedger.HeardRumor>();
-        for(var heard:ledger.heard(subject,god,audience)){
+        for(var heard:ledger.heard(subject,god,audience,memoryMode)){
             var evidence=ledger.evidence(heard.rootId());
             if(evidence.proof()==null){result.add(heard);continue;} // preserve the isolated legacy RUMOR_TEST contract
             if(!settings.enabled())continue;var rule=rule(evidence);if(rule==null||!probe.receiverAvailable(god))continue;
@@ -109,13 +116,14 @@ public final class CourierEngine {
     }
     Optional<RumorLedger.HeardRumor> heardOne(UUID subject,String god,UUID root,Set<UUID> audience) {
         return ledger.heardOne(subject,god,root,audience).flatMap(heard->{
-            var evidence=ledger.evidence(root);if(evidence.proof()==null)return Optional.of(heard);
+            var evidence=ledger.evidence(root);if(!memoryMode.equals(evidence.memoryMode()))return Optional.empty();
+            if(evidence.proof()==null)return Optional.of(heard);
             if(!settings.enabled()||!probe.receiverAvailable(god))return Optional.empty();
             var rule=rule(evidence);if(rule==null)return Optional.empty();var reception=rule.receivers().get(god);
             return reception==null||reception==CourierSettings.Reception.IGNORE?Optional.empty()
                     :Optional.of(new RumorLedger.HeardRumor(root,heard.revision(),heard.text(),heard.epithet(),reception.name()));
         });
     }
-    private CourierSettings.Rule rule(RumorLedger.Evidence e){if(e==null||e.proof()==null)return null;var r=rules.get(e.proof().ruleId());return r!=null&&r.fingerprint().equals(e.proof().ruleFingerprint())?r:null;}
+    private CourierSettings.Rule rule(RumorLedger.Evidence e){if(e==null||!memoryMode.equals(e.memoryMode())||e.proof()==null)return null;var r=rules.get(e.proof().ruleId());return r!=null&&r.fingerprint().equals(e.proof().ruleFingerprint())?r:null;}
     private boolean fresh(RumorLedger.Evidence e,CourierSettings.Rule r){long now=tick.getAsLong();return now>=e.proof().gameTick()&&now-e.proof().gameTick()<=r.maximumAgeTicks();}
 }

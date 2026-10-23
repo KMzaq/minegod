@@ -1,0 +1,164 @@
+{
+  "record_key": "RPG-S01-153",
+  "content_id": "RPG-S01-153:story-connection",
+  "name": "레르나의 히드라",
+  "document_kind": "AUTHORING_NOT_RUNTIME",
+  "connection_manuscript": {
+    "record_key": "RPG-S01-153",
+    "name": "레르나의 히드라",
+    "tier": "최상급",
+    "title": "늪을 태우려는 자",
+    "group": "괴수·위탁",
+    "content_status": "기존 정사·복구 원문 대조 + 2026-10-21 저술 초안. 신규 장면·조건은 승인 전 후보.",
+    "runtime_ready": false,
+    "source_status": {
+      "current_master": "baseline/rpg_authoring_master_active.json",
+      "current_record_key": "RPG-S01-153",
+      "original_persona_status": "기존 승인 페르소나 원문 복구. v17 변경 설정을 우선 적용하고 충돌 구간만 별도 조정한다.",
+      "original_provenance": {
+        "archive_name": "마크프로젝트_그리스괴수등19명_페르소나.zip",
+        "source_profile_archive_entry": "레르나의 히드라/profile/data/mythaiaicontent/mythai_ai/god_profiles/greek_unassigned_lernaean_hydra.json",
+        "source_profile_sha256": "b2a37758564ce471c9eeb75a4fc388c90f4ddc0265e82aa5ca5f61ed50f7d384",
+        "source_contract_archive_entry": "레르나의 히드라/authoring_contract.json",
+        "source_contract_sha256": "88ed3eda7e8494ce16e9a48b020feacb7b560dddd3a61097ee0b25c11d508490",
+        "library_file_id": "libfile_d0d6ebfd13548191a22be27ed36a2b86"
+      },
+      "prior_connection": "drafts/forest_beasts_input.json#prior_connections/RPG-S01-153",
+      "priority": "최신 사용자 지시 > 현행 v17 정사 > 복구한 2026-10-16 원문. v16 연결안은 기존 제안이며 신규 확정 정사가 아니다."
+    },
+    "source_reconciliation": {
+      "retain": [
+        "물·진흙·진동에 민감하고 둥지를 지키는 비언어 중심 원문. 여러 머리지만 한 존재.",
+        "현행 최상급. 오염 감소가 자동 우호·안전한 주민화를 뜻하지 않음."
+      ],
+      "adjust_or_do_not_restore": [
+        "복구 원문 상급은 현행 최상급으로 교체.",
+        "원문 감각어/몸짓은 표현 방향 참고이며 인간식 유창한 설명으로 확대하지 않는다.",
+        "이올라오스의 과거 소작 도구 관계를 현재 등장·도구 수령으로 만들지 않는다. 마더 히드라와 별개."
+      ],
+      "current_canon_verbatim": {
+        "value": null,
+        "status": "not_separately_authored",
+        "source": {
+          "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+          "record_key": "RPG-S01-153",
+          "field": "current_character_canon"
+        },
+        "use_scope": "author_reference_not_automatic_npc_knowledge_or_runtime_rule",
+        "runtime_binding": false
+      },
+      "current_access_verbatim": {
+        "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+        "status": "current_roster_classification_preserved",
+        "source": {
+          "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+          "record_key": "RPG-S01-153",
+          "field": "evidence_reason"
+        },
+        "use_scope": "authoring_access_guard_not_runtime_predicate",
+        "runtime_binding": false
+      },
+      "writing_boundary": "아래 장면과 추가 조건은 새 저술 초안이다. 과거의 실제 발생 사실, 확정 배치, 등록 퀘스트 또는 대화 테스트 결과로 해석하지 않는다."
+    },
+    "unlock_history": {
+      "status": "새 후보",
+      "general_observation": "실제 늪 외곽을 탐험하고 접근 흔적이나 물길 변화를 관찰한 개인 이력을 선택 조사 경로로 제안. 강한 적 처치·독 저항 물약 획득을 바깥 관찰의 필수조건으로 만들지 않는다.",
+      "discovery_not_raid": "첫 흔적 발견은 위험 존재가 가까이 있다는 인지다. 레이드 시작 자격·둥지 진입 허가·우호 이력은 별도.",
+      "recognition": "현재 본체가 눈앞에 나타났다면 그것을 볼 자격을 새 이력으로 숨기지 않는다. 과거 조사 여부는 접근 선택의 정보 차이로 반영.",
+      "not_added": "오염 정화 업적·히드라 처치 반복 횟수·물약 등급 컷은 미정."
+    },
+    "encounter_now": {
+      "status": "새 장면 후보",
+      "expression": "등장 후 또는 기존 배치 본체에 대한 직접 접촉 조건이다. 이 전체 조건을 첫 등장 이전에 요구하지 않는다. 실제 늪/물가의 접근 가능한 관찰점 AND 히드라 본체 또는 실제 남은 흔적이 있음. 흔적만 있으면 본체 조우 아님.",
+      "approach": "관찰과 둥지 접근을 분리. 불을 든 채 접근하거나 물길을 건드리는 현재 행동에는 우호 이력과 별개 위험.",
+      "clue": "물의 진동 쪽으로 여러 머리의 반응이 차례로 모인다. 이유는 관찰 전 확정하지 않는다.",
+      "not_required": "에키드나 가호/소개는 필수 최초 관찰 조건 아님 제안.",
+      "appearance_trigger": {
+        "stage": "appearance_candidate_before_body_presence",
+        "candidate_location": "실제 늪/물가의 접근 가능한 관찰점",
+        "candidate_time_items_state": "기존 항목에 없는 고정 시간·필수 소지품을 만들지 않는다. 후속 대화의 선택 소품이나 자료는 일반 등장 입장권이 아니다.",
+        "world_and_subject_rule": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+        "existing_body_path": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다.",
+        "adoption_and_mode_limit": "현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+      }
+    },
+    "seal_and_availability": "별도 신규 봉인을 만들지 않는다. 현행 개별 최초 조우 시점 미정은 무조건 출현 가능도, 장 번호에 의한 잠금도 아니다. 본체가 실제 부재·행동 불가·다른 접견 중이면 이력만으로 소환하지 않는다. 생존·현재 위치를 우선하며 토벌·재생·부활 정책을 이 초안에서 확정하지 않는다.",
+    "independent_persona": {
+      "core": "인간의 선의보다 실제 물·불·진동에 반응하는 영역의 포식자. 여러 머리가 따로 표결하거나 별도 기억을 갖지 않는다.",
+      "daily_life": "몸을 숨길 물과 먹이를 살핀다. 플레이어와 친해져야 할 목적은 없다.",
+      "player_motive": null,
+      "relationship": "환경을 건드리지 않고 물러난 사람에게 반응 강도가 달라질 수 있지만 사람의 계약을 이해한 우호 선언으로 번역하지 않는다."
+    },
+    "outline_beats": [
+      "늪 바깥에서 이상한 수면과 접근 흔적을 본다. 단순히 위험을 알아차리고 우회해도 완결.",
+      "관찰을 택했다면 오염 유입·불·움직임 중 무엇에 반응하는지 추정한다. 원인과 범인을 확정하기 전 거리 유지.",
+      "플레이어는 둥지 바깥만 조사하거나 에키드나에게 관찰 사실을 물어볼 수 있다. 소개받았다고 접근 안전이 보장되지 않는다.",
+      "실제 환경을 바꾸는 행동이 가능할 때만 그 결과에 반응한다. 말로 정화 성공을 생성하지 않으며 불로 태워 해결한 것을 모든 당사자의 선으로 해설하지 않는다.",
+      "관찰 종료·우회·위험을 감수한 별도 전투 경로를 남긴다. 친교는 메인 필수·키메라 위탁 필수·레이드 강제 조건이 아니다."
+    ],
+    "conversation_agency": "말을 거는 플레이어에게도 물소리·머리 움직임·무응답으로 응대 가능. 비언어 중심을 유지하며 예시에는 사람말을 쓰지 않는다. 히드라가 물러나지 않으면 플레이어의 설득 실패를 도덕 시험으로 만들지 않는다.",
+    "voice_and_rudeness": {
+      "baseline": "숨·물소리·몸 방향·짧은 경계 반응 중심. 기존 감각어의 실제 발화/표시 방식은 후속 검토.",
+      "rudeness": "욕설보다 화염·구속·둥지 침입 같은 현장 자극을 우선. 모체 가호가 경계를 무효화하지 않는다.",
+      "knowledge_guard": "행동 이유를 완전히 번역하거나 오염 범인을 길게 설명하는 대사 금지."
+    },
+    "knowledge": {
+      "known": "자기 늪의 실제 변화·침입·피해 감각.",
+      "unknown": "주민이 지목한 범인, 이올라오스의 현재 소재, 다른 플레이어의 비공개 행동.",
+      "guard": "재생·독·정화는 설정 참고와 실제 효과 구현을 분리. 여러 머리는 한 인지 범위."
+    },
+    "dialogue_examples": [
+      {
+        "player": "네 둥지에 들어가려는 게 아니야. 여기서만 볼게.",
+        "npc_or_observable_response": "수면 위의 머리들이 방문객 쪽에 잠시 머문다. 물속의 움직임은 멈추지 않는다.",
+        "guard": "경계가 사라졌거나 인간 말을 완전히 이해했다는 확정 아님."
+      },
+      {
+        "player": "에키드나의 가호가 있으니 이 불은 괜찮지?",
+        "npc_or_observable_response": "불빛 쪽으로 머리들이 돌아간다. 몸이 둥지 앞을 가로막고 물을 밀어낸다.",
+        "guard": "불 접근을 경계하는 예시. 가호로 안전을 보장하지 않음."
+      }
+    ],
+    "relationship_connections": [
+      {
+        "target_record_key": "RPG-S01-160",
+        "target_name": "에키드나",
+        "necessity": "선택",
+        "connection": "기존 자녀 관계의 맥락으로 관찰을 설명할 수 있음. 모체의 호의가 이 개체의 영역 양도는 아님."
+      },
+      {
+        "target_record_key": "RPG-S01-152",
+        "target_name": "키메라",
+        "necessity": "병렬 선택",
+        "connection": "다른 자녀의 독립성 비교. 히드라 토벌·친교는 키메라 결속의 확정 선행조건 아님."
+      }
+    ],
+    "multiplayer_and_world": "개인 관계·발언 청중·수주권과 공용 세계 상태를 분리한다. 친구의 완료·소개·칭찬으로 자신의 호의·가호·MAIN을 복제하지 않는다. 실제 동일 본체만 사용하며 다른 장소에 개인용 복제본을 만들지 않는다. 물길·불·독 등의 실제 환경 상태는 공용이지만 누가 무엇을 했는지의 책임은 개별. 한 사람의 관찰·경고를 다른 사람의 안전 면책으로 전환하지 않는다.",
+    "capability_needs_unresolved": [
+      "장소 후보의 실제 생성·접근 가능성, 동일 본체의 현재 위치와 응답 가능 상태 확인.",
+      "행동 이력과 NPC가 그 행동을 아는 근거를 별도 연결. 대화 주장만으로 서버 자격·물품 지급을 확정하지 않음.",
+      "대화 청중별 습득 지식과 개인 관계 저장, 기존 수주·보상 기능과의 연결 여부 확인. 새 퀘스트 JSON·수치·등록 ID는 이번 범위 밖.",
+      "실제 늪·물길 상태를 판독할 수 있는지, 환경 반응·독·재생/전투 기능은 구현 여부 확인 전 가설.",
+      "고위험 내부 접근의 준비 기준과 레이드 접점은 후속 설계."
+    ],
+    "current_unlock_scope": {
+      "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+      "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+      "encounter_subject": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+      "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+      "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+      "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+      "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+    },
+    "source_text_use_boundary": {
+      "untouched_original_quote_pointers": [],
+      "rule": "위 원문 인용과 source_anchors·source_references·sha256은 출처 보존 영역이다. 과거 해금·동행 문구나 옛 설정이 있더라도 현재 유효 요약으로 자동 적용하지 않는다. 그 밖의 이야기·말투·취향은 유지하며, 현행 조건은 이 인물의 수정된 해금·조우 항목과 current_unlock_scope를 따른다. 원문 파일·명부·기존 전달본 자체는 수정하지 않았다.",
+      "original_quote_status": "archived_source_text_not_current_runtime_or_unlock_rule",
+      "current_effective_summary_pointers": [
+        "/unlock_history",
+        "/encounter_now",
+        "/current_unlock_scope"
+      ]
+    }
+  }
+}

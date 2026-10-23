@@ -1,0 +1,79 @@
+{
+  "content_id": "OLY-HEP-W01",
+  "record_key": "RPG-S01-012",
+  "definition_id": "mythictrpg:greek_olympus_hephaestus_measured_impact",
+  "name": "손맞춤 망치 · 짧은 울림",
+  "runtime_ready": false,
+  "policy_ref": "../../공통설계/전역기준.json",
+  "details": {
+    "management_key": "OLY-HEP-W01",
+    "name": "손맞춤 망치 · 짧은 울림",
+    "type": "weapon_package",
+    "content_status": "별도 비독점 SIDE 획득 연결 채택 완료; 기존 원문 개인 MAIN 보존; 실제 등록·구현 전",
+    "proposed_definition_id": "mythictrpg:greek_olympus_hephaestus_measured_impact",
+    "registered_definition_id": null,
+    "acquisition": "별도 비독점 SIDE 「짧게 치고 남기는 자리」(mythictrpg:hephaestus_measured_impact_commission). 기존 공방 Q3 개인 완료 뒤 NPC 재고4철+2구리+2막대+1숯으로 같은 실물1개 제작, 공방 대여 실습의 평타2·동일 짧은 울림2체 적중 후 반납, 수락 후 기존 수호체의 같은 승리 시도에서 개인 회피후반격2+압력선회피1 및 원래 참가자격 충족, 실제 기록 검수·인수 후 개인 최초1개. 플레이어 골드/필수재료0. 원래 MAIN·Q1/Q3 장비·보스·보상 불변, C24 사용0. 상세: ../../공방/후속제작과훈련.json#/quests/0. 같은 canonical 최초권리이며 개정 추가지급0.",
+    "effect": "앞쪽 작은 부채꼴을 한 번 타격. 일반 적은 짧게 균형을 잃지만 보스 기믹을 끊는 도구는 아니다.",
+    "parameters": {
+      "mana": 30,
+      "cooldown_ticks": 200,
+      "damage": 7,
+      "range": 3,
+      "half_angle_degrees": 45,
+      "max_targets": 3,
+      "normal_stun_ticks": 10
+    },
+    "timing": "선딜[0,8), t=8 타격1회, 후딜[8,18). 승인 방향 고정, 선후딜 이동속도0.5배, 회전 자유.",
+    "targeting": "승인 방향90도·현재 시전자 위치 기준3블록·수직차1.5 이내·시야 통과 적 최대3. 가까운 순, 동거리 안정적 엔티티ID.",
+    "failure": "선딜 중 이동한 적을 추적 안 함. 무적/벽/사망 적 제외 후 실제 남은 적에만 피해; 최대 수를 늘려 재탐색 폭발 안 함. 비용 유지.",
+    "allies": "아군 피해·넉백·기절 없음. 구조 도구라는 이유로 주민 블록을 철거하지 않음.",
+    "terrain": "대상마다 실제 시야 검사. 벽 너머/위아래층 타격 금지. 지형 파괴·불붙임·용암 생성 없음.",
+    "bosses": "보스는 피해만, 스턴 기본 면역. 일반 정예도 면역 태그 존중. 피해0이면 스턴 없음. 기믹 시전 취소·방어구 파괴 없음.",
+    "stacking": "스턴 중 재스턴은 지속 갱신/가산 없음. 종료 뒤 같은 대상10tick 재스턴 면역 신규 요구로 5인 교대 영구봉쇄 방지. 1회 시전 연계 최대1.",
+    "swap": "무기 교체/파괴는 t=8 전 효과 취소, 타격 후 되돌리지 않음. 후딜 유지. 교체취소·기절·사망·로그아웃·정상 후딜 종료 시 이 기술의 이동속도0.5 modifier만 제거하며 다른 속도 효과는 보존. 재접속에 감속이 남지 않도록 정리.",
+    "presentation": "손잡이에서 짧은 황동 파동과 단발 망치음. 큰 바닥 균열은 만들지 않아 범위를 오해하지 않게 함.",
+    "existing_support_vs_extension": "기존: 무기 우클릭·자원. 신규: 전방 부채꼴 물리 타격, 일반CC 분류/짧은 재면역, E4. 현재 AREA_DAMAGE 마법 원형과 같다고 처리하지 않음.",
+    "power_proposal": {
+      "weapon_skill_K": 20,
+      "equipment_E": 12,
+      "weapon_W": 7
+    },
+    "runtime_ready": false,
+    "weapon_package": {
+      "grade": "희귀",
+      "base_item_candidate": "minecraft:iron_axe",
+      "actual_attack_contribution": 7,
+      "total_attack_with_player_base_1": 8,
+      "target_attack_speed": 1.25,
+      "durability_candidate": "무한내구",
+      "sharpness": 0,
+      "normal_attack": "사거리2.6, 시선 원뿔 총각30도, 목표1개. 승인 방향 고정, t[0,4) 준비, t4 타격, [4,16) 후딜. 전체16tick=속도1.25의 완전충전 주기. 이동 배율0.8, 시점 회전 가능하나 공격방향 고정. 실제 타격 시 현재 위치 기준 유효 목표 중 시선에 가장 가까운1개, 동률은 거리→엔티티ID. 좁은 정면 타격 통로 반경0.2의 충돌 검사. 판정은 이 한 번뿐.",
+      "variant_components": "공격속도 modifier -2.75. 기본 공격 modifier 중복 가산 금지.",
+      "reward_binding": "item+rightClickSkill. 실제 공격 속성 변경과 전투력 항목을 함께 검증"
+    },
+    "current_normal_attack": "사거리2.6, 시선 원뿔 총각30도, 목표1개. 승인 방향 고정, t[0,4) 준비, t4 타격, [4,16) 후딜. 전체16tick=속도1.25의 완전충전 주기. 이동 배율0.8, 시점 회전 가능하나 공격방향 고정. 실제 타격 시 현재 위치 기준 유효 목표 중 시선에 가장 가까운1개, 동률은 거리→엔티티ID. 좁은 정면 타격 통로 반경0.2의 충돌 검사. 판정은 이 한 번뿐.",
+    "current_weapon_boundaries": {
+      "무기 정체": "생활 망치가 아니라 짧은 전투 망치. 가까이 붙어 작은 머리로 정확히 한 곳을 친다. 토르 철퇴보다 빠르지만 길이와 타격 수가 부족하다.",
+      "우클릭 보존": "기존 짧은 울림 그대로: 마나30/쿨200tick, 물리피해7, 범위3·90도·최대3, 일반 스턴10tick·종료 후 재면역10tick. 선딜[0,8), t8타격, 후딜[8,18), 이동0.5배. 평타와 공통 잠금이라 동시에 두 사건이 나가지 않는다. 평타 타격 자체에 스턴을 복사하지 않는다.",
+      "좁은 곳·보스·아군": "좁은 통로에서도 정면 반경0.2 공간이 확보되면 타격 가능. 벽이나 아군을 뚫고 뒤의 적을 때리지 않는다. 보스 평타는 피해만, 우클릭 스턴은 기존 기본 면역. 아군 보호 공통 적용.",
+      "실패·중첩": "타격 순간 목표가 떠나거나 통로가 막히면 헛침, 남은16tick 종료시각 유지. 새 타격마다 자동 주변 재조준/폭발 없음. 평타 바닐라 쓸어내리기0. 실제 적중·헛침·우클릭 모두 실물 손상·내구 소모0. ",
+      "획득과 보존": "별도 SIDE 「짧게 치고 남기는 자리」에서 기존 이 콘텐츠의 개인 최초권리1개로 획득한다. ../../공방/후속제작과훈련.json#/quests/0 참조. 개정에 따른 두 번째 실물/최초권리0. 충격 흘리기와 원래 무강화 손질은 별개이며 기존 공방 Q3 다짐 망치와 교환/통합하지 않는다."
+    }
+  },
+  "durability_policy": {
+    "unbreakable": true,
+    "physical_damage_consumption": 0,
+    "new_rights_from_revision": 0
+  },
+  "common_execution_ref": "../공통실행.json",
+  "acquisition_ref": {
+    "relative_file": "../../공방/후속제작과훈련.json",
+    "json_pointer": "/quests/0"
+  },
+  "authoring_presentation_contract": {
+    "relative_file": "../../스킬연출/효과별/OLY-HEP-W01.json",
+    "status": "채택된 연출·판정 상세 저술. 런타임 필드가 아님.",
+    "precedence": "외형·시각 피드백과 명시된 기하 상세는 이 참조를 적용한다. 원시 피해·마나·쿨·장비값·권리·획득 조건은 기존 카드 유지. prototype 검기 개정은 별도 시험 시편이며 이 콘텐츠에 자동 적용하지 않는다.",
+    "actual_game_validation": "NOT_RUN"
+  }
+}

@@ -18,6 +18,12 @@ public final class AiActionCapabilityService {
 
     public static List<AiActionCapability> capabilitiesFor(ResourceLocation godId) {
         List<AiActionCapability> result = new ArrayList<>();
+        if (AiActionRegistry.INSTANCE.find(AiActionTypes.NPC_DIRECTIVE).isPresent())
+            result.add(new AiActionCapability(AiActionTypes.NPC_DIRECTIVE, Optional.empty(),
+                    "type=npc_directive, parameters={choice_id: exact UUID from current NPC_DIRECTIVE_CONTEXT}. "
+                    + "Choose a real movement, combat or protection action when it fits your own motives and the scene. "
+                    + "Only current supplied choices can execute. Acceptance means an order started, not arrival or a kill. "
+                    + "No choice means no physical action is currently available; do not invent a target or promise success."));
         if (AiActionRegistry.INSTANCE.find(AiActionTypes.QUEST_ROSTER_REQUEST).isPresent())
             result.add(new AiActionCapability(AiActionTypes.QUEST_ROSTER_REQUEST, Optional.empty(),
                     "type=quest_roster_request, parameters={quest_id: exact quest from QUEST_PARTICIPATION_SERVER_STATE with roster_management=AVAILABLE}. "
@@ -61,7 +67,7 @@ public final class AiActionCapabilityService {
                             .find(binding.structureEvaluationPolicyId().orElseThrow())
                             .map(policy -> policy.godId().equals(godId)).orElse(false))
                     .forEach(binding -> result.add(new AiActionCapability(
-                            AiActionTypes.STRUCTURE_EVALUATION_REQUEST, Optional.empty(),
+                            AiActionTypes.STRUCTURE_EVALUATION_REQUEST, Optional.of(binding.questId()),
                             "type=structure_evaluation_request, parameters={quest_id: "
                                     + binding.questId() + "}; use only when the player clearly requests submission "
                                     + "of the finished build; never provide score, evidence, pass/fail, or reward fields")));
@@ -119,7 +125,8 @@ public final class AiActionCapabilityService {
                     + ", damage_type=" + damage.damageTypeId() + ", allow_death=" + damage.allowDeath()
                     + ", max_uses_per_session=" + damage.maxUsesPerSession()
                     + ", cooldown_ticks=" + damage.cooldownTicks()
-                    + "; immediate server action; select only when the live scene, this NPC's established personality, "
+                    + (damage.allowDeath()?"; danger warning and explicit player confirmation required before execution; ":"; immediate non-lethal server action; ")
+                    + "select only when the live scene, this NPC's established personality, "
                     + "relationship, and motive clearly justify an in-character hit; never use merely because it is available";
         };
     }

@@ -132,8 +132,8 @@ public final class PlayerUnderstandingTest {
             }
         }
         var view=project(start(2),rows,List.of(),false);
-        check(card(view,"RAID_MECHANIC").assessment().contains("반복 선택"),"independent runs and opportunities");
-        check(card(view,"RAID_MECHANIC").explanation().contains("선택 6 / 유효 기회 9"),"choices distinct from outcomes");
+        check(card(view,"RAID_MECHANIC").assessment().contains("제한적 선택"),"six positive choices remain limited; missing choices do not amplify evidence");
+        check(card(view,"RAID_MECHANIC").explanation().contains("실제 선택 6건"),"positive choices, never missed-choice penalty or denominator");
         check(card(view,"RAID_SUPPORT").assessment().contains("근거 부족"),"absent support opportunity not uncooperative");
         var test=new RaidChoiceEvidence(UUID.randomUUID(),RaidChoiceEvidence.Kind.MECHANIC,RaidChoiceEvidence.Result.CHOSEN,"seal","v1",true);
         var trial=new ActionRecord(1,W,seq,draft(seq++,ActionRecord.Type.RAID_CHOICE,P,test.payload(),UUID.randomUUID(),Set.of(P)));
@@ -142,6 +142,6 @@ public final class PlayerUnderstandingTest {
         var lost=new ActionRecord(1,W,seq,draft(seq++,ActionRecord.Type.RAID_CHOICE,P,unavailable.payload(),UUID.randomUUID(),Set.of(P)));
         check(card(project(start(2),List.of(lost),List.of(),false),"RAID_MECHANIC").evidence().isEmpty(),"unavailable not denominator");
         var repeated=project(start(2),List.of(rows.getFirst(),rows.getFirst()),List.of(),false);
-        check(card(repeated,"RAID_MECHANIC").explanation().contains("유효 기회 1"),"duplicate choice not repeated evidence");
+        check(card(repeated,"RAID_MECHANIC").explanation().contains("실제 선택 1건"),"duplicate choice not repeated evidence");
     }
 }

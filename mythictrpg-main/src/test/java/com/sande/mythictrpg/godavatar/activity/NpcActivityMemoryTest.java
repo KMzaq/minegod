@@ -34,7 +34,9 @@ public final class NpcActivityMemoryTest {
         require(bank.project(A, speech.eventId(), Set.of(A, C), Set.of()).isEmpty(), "outside God received private speech");
         require(bank.project(A, speech.eventId(), Set.of(A), Set.of(OUTSIDE)).isEmpty(), "outside player received private speech");
         var failure = lifecycle(A, 2, "FAILED", "secret book was partially edited at 100,70,200 with Fortuna"); bank.record(failure);
-        String projection = bank.project(A, failure.eventId(), Set.of(C), Set.of(OUTSIDE)).orElseThrow().toString();
+        var safe = bank.project(A, failure.eventId(), Set.of(C), Set.of(OUTSIDE)).orElseThrow();
+        // Random event UUIDs may contain "100"; inspect the disclosed fields, not the record's debug toString.
+        String projection = String.join("|",safe.kind(),safe.mode(),safe.phase(),safe.speakerGodId(),safe.speech());
         require(!projection.contains("secret") && !projection.contains("100") && !projection.contains("Fortuna"), "lifecycle detail disclosed");
         require(projection.contains("FAILED") && !projection.contains("no effect"), "failure rewritten into fictitious side-effect certainty");
         expectFailure(() -> speech(A, 3, Set.of(B), Set.of(), "unheard"));

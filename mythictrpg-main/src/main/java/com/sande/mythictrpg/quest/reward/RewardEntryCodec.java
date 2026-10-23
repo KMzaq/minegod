@@ -7,6 +7,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
+import java.util.Optional;
+import com.sande.mythictrpg.quest.reward.blessing.GodRank;
+import com.sande.mythictrpg.quest.reward.blessing.ResolvedBlessing;
 
 /** Strict shared JSON/NBT codec for table, direct and persisted choice rewards. */
 public final class RewardEntryCodec {
@@ -16,6 +19,23 @@ public final class RewardEntryCodec {
     public static RewardEntry parse(JsonObject json, String location) {
         String type = string(json, "type", location);
         return switch (type) {
+            case "equipment" -> {
+                rejectUnknown(json, Set.of("type", "definitionId"), location);
+                yield new EquipmentRewardEntry(id(string(json,"definitionId",location),location+".definitionId"));
+            }
+            case "learn_skill", "accessory", "special_skill" -> {
+                rejectUnknown(json, Set.of("type", "definitionId"), location);
+                var kind = java.util.Arrays.stream(ProgressionRewardEntry.Kind.values()).filter(k -> k.type().equals(type)).findFirst().orElseThrow();
+                yield new ProgressionRewardEntry(kind,id(string(json,"definitionId",location),location+".definitionId"));
+            }
+            case "lucky_item" -> {
+                rejectUnknown(json, Set.of("type", "poolId"), location);
+                yield new LuckyRewardEntry(id(string(json, "poolId", location), location + ".poolId"));
+            }
+            case "adaptive_blessing" -> {
+                rejectUnknown(json, Set.of("type", "definitionId"), location);
+                yield new AdaptiveBlessingRewardEntry(id(string(json, "definitionId", location), location + ".definitionId"));
+            }
             case "item" -> {
                 rejectUnknown(json, Set.of("type", "itemId", "count", "components"), location);
                 ResourceLocation itemId = id(string(json, "itemId", location), location + ".itemId");
@@ -76,6 +96,38 @@ public final class RewardEntryCodec {
     public static CompoundTag save(RewardEntry reward) {
         CompoundTag tag = new CompoundTag();
         switch (reward) {
+            case EquipmentRewardEntry equipment -> {
+                tag.putString("type","equipment"); tag.putString("definitionId",equipment.definitionId().toString());
+            }
+            case ProgressionRewardEntry progression -> {
+                tag.putString("type",progression.kind().type()); tag.putString("definitionId",progression.definitionId().toString());
+            }
+            case ResolvedCurrencyRewardEntry currency -> {
+                tag.putString("type","resolved_currency"); tag.putLong("baseAmount",currency.baseAmount()); tag.putLong("bonusAmount",currency.bonusAmount());
+            }
+            case LuckyRewardEntry lucky -> {
+                tag.putString("type", "lucky_item"); tag.putString("poolId", lucky.poolId().toString());
+            }
+            case ResolvedLuckyRewardEntry lucky -> {
+                tag.putString("type", "resolved_lucky_item"); tag.putString("poolId", lucky.poolId().toString());
+                tag.put("item", save(lucky.selection().reward())); tag.putInt("luckLevel", lucky.selection().level());
+                tag.putString("candidateId", lucky.selection().candidateId());
+            }
+            case AdaptiveBlessingRewardEntry adaptive -> {
+                tag.putString("type", "adaptive_blessing");
+                tag.putString("definitionId", adaptive.definitionId().toString());
+            }
+            case ResolvedBlessingRewardEntry resolved -> {
+                var value = resolved.blessing();
+                tag.putString("type", "resolved_blessing");
+                tag.putString("definitionId", value.definitionId().toString());
+                tag.putString("godId", value.godId().toString());
+                tag.putString("godRank", value.godRank().name());
+                tag.putString("candidateId", value.candidateId());
+                value.effectId().ifPresent(effect -> tag.putString("effectId", effect.toString()));
+                tag.putInt("level", value.level());
+                tag.putDouble("intrinsicScore", value.intrinsicScore());
+            }
             case NpcRewardEntry item -> {
                 tag.putString("type", "item");
                 tag.putString("itemId", item.itemId().toString());
@@ -118,6 +170,30 @@ public final class RewardEntryCodec {
     public static RewardEntry load(CompoundTag tag) {
         String type = tag.getString("type");
         return switch (type) {
+            case "equipment" -> new EquipmentRewardEntry(id(tag.getString("definitionId"),"definitionId"));
+            case "learn_skill", "accessory", "special_skill" -> new ProgressionRewardEntry(
+                    java.util.Arrays.stream(ProgressionRewardEntry.Kind.values()).filter(k -> k.type().equals(type)).findFirst().orElseThrow(),
+                    id(tag.getString("definitionId"),"definitionId"));
+            case "resolved_currency" -> new ResolvedCurrencyRewardEntry(requireLong(tag,"baseAmount"),requireLong(tag,"bonusAmount"));
+            case "lucky_item" -> new LuckyRewardEntry(id(tag.getString("poolId"), "poolId"));
+            case "resolved_lucky_item" -> {
+                if (!tag.contains("item", Tag.TAG_COMPOUND) || !tag.getCompound("item").getString("type").equals("item"))
+                    throw new IllegalArgumentException("Luck result must be a concrete item");
+                yield new ResolvedLuckyRewardEntry(id(tag.getString("poolId"), "poolId"),
+                        new com.sande.mythictrpg.quest.reward.luck.LuckyRewardSelection((NpcRewardEntry) load(tag.getCompound("item")),
+                                requireInt(tag, "luckLevel"), tag.getString("candidateId")));
+            }
+            case "adaptive_blessing" -> new AdaptiveBlessingRewardEntry(id(tag.getString("definitionId"), "definitionId"));
+            case "resolved_blessing" -> {
+                if (!tag.contains("intrinsicScore", Tag.TAG_DOUBLE)
+                        || tag.contains("effectId") && !tag.contains("effectId", Tag.TAG_STRING))
+                    throw new IllegalArgumentException("Invalid stored resolved blessing");
+                yield new ResolvedBlessingRewardEntry(new ResolvedBlessing(
+                        id(tag.getString("definitionId"), "definitionId"), id(tag.getString("godId"), "godId"),
+                        GodRank.valueOf(tag.getString("godRank")), tag.getString("candidateId"),
+                        tag.contains("effectId") ? Optional.of(id(tag.getString("effectId"), "effectId")) : Optional.empty(),
+                        requireInt(tag, "level"), tag.getDouble("intrinsicScore")));
+            }
             case "item" -> {
                 if (tag.contains("components") && !tag.contains("components", Tag.TAG_COMPOUND))
                     throw new IllegalArgumentException("Invalid persisted item components");
@@ -125,7 +201,7 @@ public final class RewardEntryCodec {
                         requireInt(tag, "count"), tag.getCompound("components"));
             }
             case "affinity" -> new AffinityRewardEntry(requireInt(tag, "amount"));
-            case "blessing" -> new BlessingRewardEntry(id(tag.getString("effectId"), "effectId"),
+            case "blessing" -> restoreBlessing(id(tag.getString("effectId"), "effectId"),
                     requireInt(tag, "durationTicks"), requireInt(tag, "amplifier"));
             case "title" -> new TitleRewardEntry(id(tag.getString("titleId"), "titleId"),
                     tag.getString("displayName"));
@@ -135,6 +211,12 @@ public final class RewardEntryCodec {
                     id(tag.getString("shopId"), "shopId"), id(tag.getString("productId"), "productId"));
             default -> throw new IllegalArgumentException("Unknown persisted reward type '" + type + "'");
         };
+    }
+
+    /** Previously valid Resistance V is migrated to IV; authored JSON remains strict. */
+    static BlessingRewardEntry restoreBlessing(ResourceLocation effectId, int durationTicks, int amplifier) {
+        int migrated = effectId.equals(ResourceLocation.withDefaultNamespace("resistance")) && amplifier == 4 ? 3 : amplifier;
+        return new BlessingRewardEntry(effectId, durationTicks, migrated);
     }
 
     private static void rejectUnknown(JsonObject json, Set<String> allowed, String location) {

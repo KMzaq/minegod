@@ -60,6 +60,11 @@ public final class MythicTrpg {
     public MythicTrpg(IEventBus modEventBus) {
         ModItems.register(modEventBus);
         com.sande.mythictrpg.godavatar.GodAvatarEntities.register(modEventBus);
+        com.sande.mythictrpg.specialskill.SpecialSupportEntities.register(modEventBus);
+        com.sande.mythictrpg.accessory.RewardAccessoryItems.register(modEventBus);
+        com.sande.mythictrpg.accessory.AccessoryCreativeTab.register(modEventBus);
+        com.sande.mythictrpg.equipment.EquipmentItems.register(modEventBus);
+        com.sande.mythictrpg.equipment.EquipmentCreativeTab.register(modEventBus);
         com.sande.mythictrpg.raid.trial.TrialRaidEntities.register(modEventBus);
         ModAttachments.register(modEventBus);
         modEventBus.addListener(DialogueNetwork::register);

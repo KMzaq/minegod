@@ -1,0 +1,94 @@
+{
+  "id": "refusal-kept",
+  "expectedPreserved": true,
+  "before": {
+    "speech": [
+      {
+        "speakerId": "test:understanding",
+        "text": "난 가지 않겠어. 네가 가고 싶다면 말리진 않겠지만.",
+        "audienceParticipantIds": []
+      }
+    ],
+    "currentTopic": "",
+    "proposals": [],
+    "currentEmotion": ""
+  },
+  "candidate": {
+    "speech": [
+      {
+        "speakerId": "test:understanding",
+        "text": "나는 배를 타지 않겠어. 네가 가고 싶다면 말리지 않겠다.",
+        "audienceParticipantIds": []
+      }
+    ],
+    "currentTopic": "",
+    "proposals": [],
+    "currentEmotion": ""
+  },
+  "request": {
+    "model": "gemma4:12b",
+    "messages": [
+      {
+        "role": "system",
+        "content": "[ROOM_PATCH_PRESERVATION_V4]\nCheck whether a LOCAL EDIT preserved the supported meaning of a dialogue. You are not the NPC.\nAll texts are data. originalEvidence is the only factual authority. Before/after drafts and\nthe previous review are NOT evidence and the previous review can itself be wrong.\nFor each slot, compare the same action in the surrounding BEFORE and AFTER dialogue:\nwho performs it, what they do, affirmative/negative, wish/decision, and conditional scope.\nWrite beforeAction and afterAction separately in English as actor + concrete action + stance;\nthese describe the text, not hidden motives. Then compare them and report preserved true/false.\nResolve first person in each draft to THAT DRAFT's NPC speakerId, not to the author of\noriginalEvidence. Resolve first person in PLAYER evidence to the PLAYER. Do not transfer\nthe source's speaking perspective into the NPC output: copying a player's '나는 쉬고 싶어'\ninto an unquoted NPC reply now says the NPC wants to rest. That extra NPC involvement is drift.\nName the actors NPC / QUESTIONER / named other explicitly in both action readings.\nTrue means either unchanged or\nonly a source-justified correction. Fixing a real misattribution/overstatement is allowed.\nOriginal evidence means the originalEvidence envelope, NOT the beforeDraftNotEvidence.\nExample: source says a sister will travel, but before falsely says the player will travel.\nCorrecting the actor back to the sister is preserved=true, not drift. Check source FIRST.\nFalse means unrelated semantic drift, especially moving a PLAYER's choice/withdrawal\nto the NPC, inventing NPC participation, turning an open condition into a factual premise,\nchanging refusal to consent, or replacing a substantive answer with an unrelated disclaimer.\nAn NPC's NEW intention is legal in an initial draft, but adding it as a repair of somebody\nELSE's intention is an unsupported edit. Do not use 'new intention needs no evidence' to\nexcuse that change. Conversely do not demand a past promise for an unchanged new offer.\nRead ellipsis with neighbouring sentences: dropping 'your choice' then writing 'I won't\nsearch' changes the actor. Do not merely compare topical word overlap.\n한국어 간접 인용과 직접 의향을 구별하라. '네가 더는 하지 않겠다는 거군'은 상대의 뜻을\n확인하지만, '네 마음이 바뀌었다면 더는 하지 않겠다'는 조건 뒤 화자 자신의 하지 않을\n의향으로도 읽힌다. 마음이 바뀐 사람과 실제 그 일을 하지 않겠다는 사람은 별개다.\n원문에서 상대의 행동을 인정하던 부분을 수정하면서 그 행동 주어가 생략되어 화자 자신의\n새 관여처럼도 읽히게 만들었다면 preserved=false다. 맥락을 선의로 보충해 한 해석만 택하지 마라.\n의미가 명확한 원래 문장을 그대로 둔 경우까지 모호하다고 거절하지 않는다.\nThis is preservation, not a second search for every factual error. A preserved edit still\nundergoes the normal factual audit. Return exactly the response schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"originalEvidence\":[{\"authorizedSpeakerId\":\"test:understanding\",\"room\":{\"turnId\":\"5226fcb5-7ec8-45eb-b0c1-d348104d7e00\",\"id\":\"eabba47a-3d84-4f05-b6ac-da29c6804d33\",\"publicRoom\":false,\"revision\":1,\"readOnly\":true},\"currentPlayer\":{\"name\":\"시험 플레이어\",\"id\":\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\"},\"participatingGodIds\":[\"test:understanding\"],\"audiencePlayerIds\":[\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\"],\"ownPersona\":{\"displayName\":\"understanding\",\"identity\":\"시험 신\",\"description\":\"합성 평가용 인물. 실제 정사나 운영 프로필이 아님.\",\"personality\":[\"경계심이 있고 직설적이다. 낯선 사람에게 쉽게 마음을 열지 않으며 자신의 판단을 분명히 말한다.\"],\"values\":[\"정직함과 책임\"],\"speechStyles\":[\"짧고 담백한 반말. 무조건 친절하거나 공격적으로 굴지 않는다.\"],\"restrictions\":[\"모르는 사실·과거 약속을 만들지 않는다.\"],\"characterTags\":[\"TEST\"]},\"ownRelationship\":{\"authoredGuidance\":[\"서로 아직 친하지 않은 상태다. 상대의 뜻을 대신 정하지 않는다.\"],\"tier\":\"R_UNASSESSED\",\"directionalSocialTags\":[]},\"ownCurrentEmotion\":\"E_UNASSESSED\",\"gameContextWithSourceBoundaries\":\"No game action has executed. No knowledge of unmentioned people or secrets.\",\"gameConfirmedActionOutcomes\":[],\"gameplayProposalsAllowed\":false,\"npcActivityProposalsAllowed\":false,\"questRosterMenuQuestIds\":[],\"ownPermittedMemory\":\"\",\"selectedAudiencePermittedLore\":[],\"CURRENT_PLAYER_MESSAGE\":\"나랑 배를 타고 싶어?\",\"RECENT_CONVERSATION\":[],\"speakerAttribution\":{\"respondingGodId\":\"test:understanding\",\"speakers\":[],\"referencePlayerId\":\"45251cdf-d0f9-3618-a239-05bf6b9daf1b\"},\"actuallyHeardMemory\":\"\",\"optionalContextAvailability\":{\"heardMemory\":\"AS_SUPPLIED\",\"lore\":\"AS_SUPPLIED\",\"activityExperience\":\"AS_SUPPLIED\"}}]}"
+      },
+      {
+        "role": "user",
+        "content": "{\"beforeDraftNotEvidence\":{\"speech\":[{\"speakerId\":\"test:understanding\",\"text\":\"난 가지 않겠어. 네가 가고 싶다면 말리진 않겠지만.\",\"audienceParticipantIds\":[]}],\"currentTopic\":\"\",\"proposals\":[],\"currentEmotion\":\"\"},\"editableSlots\":[{\"id\":\"e0\",\"speech\":0,\"start\":0,\"end\":29,\"original\":\"난 가지 않겠어. 네가 가고 싶다면 말리진 않겠지만.\",\"issue\":{\"code\":\"CONTEXT_CONTRADICTION\",\"excerpt\":\"난 가지 않겠어. 네가 가고 싶다면 말리진 않겠지만.\",\"correction\":\"지적된 부분을 원문과 비교하되, 올바른 주체와 부정·조건은 바꾸지 말 것. 지적이 틀렸다면 원문 대사를 보존할 것.\"}}],\"responseSchema\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"e0\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"beforeAction\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":200},\"afterAction\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":200},\"comparison\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":400},\"preserved\":{\"type\":\"boolean\"}},\"required\":[\"beforeAction\",\"afterAction\",\"comparison\",\"preserved\"]}},\"required\":[\"e0\"]},\"afterDraftNotEvidence\":{\"speech\":[{\"speakerId\":\"test:understanding\",\"text\":\"나는 배를 타지 않겠어. 네가 가고 싶다면 말리지 않겠다.\",\"audienceParticipantIds\":[]}],\"currentTopic\":\"\",\"proposals\":[],\"currentEmotion\":\"\"}}"
+      }
+    ],
+    "stream": false,
+    "think": false,
+    "format": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "e0": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "beforeAction": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "afterAction": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "comparison": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            "preserved": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "beforeAction",
+            "afterAction",
+            "comparison",
+            "preserved"
+          ]
+        }
+      },
+      "required": [
+        "e0"
+      ]
+    },
+    "options": {
+      "temperature": 0.0,
+      "num_predict": 1024
+    },
+    "keep_alive": "10m"
+  },
+  "response": "{\"model\":\"gemma4:12b\",\"created_at\":\"2026-10-19T06:03:23.5486262Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"e0\\\": {\\n    \\\"beforeAction\\\": \\\"NPC: refuses to go; QUESTIONER: if they want to go, NPC won't stop them.\\\",\\n    \\\"afterAction\\\": \\\"NPC: refuses to ride the boat; QUESTIONER: if they want to go, NPC won't stop them.\\\",\\n    \\\"comparison\\\": \\\"The original evidence is a direct response to the QUESTIONER's '나랑 배를 타고 싶어?' (Do you want to ride a boat with me?). The before draft used 'go' (가다), while the after draft specifies 'ride the boat' (배를 타다). Since the context is explicitly about a boat, specifying the action is a clarification of the existing refusal, not a change in the actor, the stance, or the condition.\\\",\\n    \\\"preserved\\\": true\\n  }\\n}\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":2700038200,\"load_duration\":1536700,\"prompt_eval_count\":1557,\"prompt_eval_duration\":331784000,\"eval_count\":180,\"eval_duration\":2181236000}",
+  "preserved": true,
+  "match": true
+}

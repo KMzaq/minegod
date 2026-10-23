@@ -1,0 +1,2310 @@
+{
+  "packet_id": "P2_NONQUEST-064",
+  "category": "지식",
+  "status": "저술 채택 완료; 실제 구현·모델·게임·LLM·API 시험 미실행",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. 실행 스키마, 구현완료, 실제 API/게임/LLM 시험 결과가 아니다.",
+    "원문과보강": "source_contract와 retained_profile은 선택한 원문값 그대로다. 과거 미채택 표기·미정은 역사 원문에만 보존하며 현재 정책은 adopted_detail만 적용한다. 기존 정체·등급·관계·본편 권리·봉인을 바꾸지 않는다.",
+    "조우운영": {
+      "정책참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#general_encounter 및 #atomic_contract",
+      "적용": "현재 채택한 일반 무작위 경로만 공통 정책에 등록한다. 기존 실제 배치 본체는 재추첨 없이 직접 접촉. 제한 봉인석 접촉은 일반풀 제외.",
+      "확률과주기": "일반풀의 300 활동초 창·서버25%·실제 등장 뒤 인물1800 가동초 쿨 및 현재 전투등급 가중치는 참조 정책을 재사용한다. 인물마다 별도25% 추첨하지 않는다.",
+      "공통상태": "world_uuid+canonical_actor 세계 해금. 누구 한 명의 유효 사건으로 전역 개방. 조우조건 맞춘 실제 한 사람만 주체, 해금자와 다를 수 있다.",
+      "단일본체": "전역 canonical_actor CAS와 journal/실제 entity 대조, 재시작 후 동일 결과 복구. 이미 활동중이면 새 본체0.",
+      "권리분리": "동행자는 세계 해금을 반복하지 않고 같은 본체를 목격할 수 있다. 일반 인사·응답은 해당 인물에게 허용된 발화·접촉 모드 안에서만 가능하다. 비언어 생물에게 사람말·인간식 승낙을 만들지 않는다. 개인 관계·사적 허가·수신·MAIN·보상은 별도이며 현재 안전과 의사를 확인한다.",
+      "소급": "기존 유효한 조우·초기접근을 새 해금으로 잠그지 않는다. 기존 해금 확인 receipt가 있으면 유지. 과거 이력 증거가 없으면 허위 과거를 생성하지 않고 현재 새 유효 사건을 기다린다."
+    },
+    "현재대화": {
+      "판정순서": [
+        "실제 동일본체·현재 접촉모드",
+        "현재 안전·의사·실제 청중",
+        "본인이 관측/허용전언으로 아는 플레이어 행위",
+        "그 상대와의 실제 관계 기억",
+        "이번 발언의 내용과 말투"
+      ],
+      "독립축": "친밀·존중·불쾌함·두려움·관측한 전투력은 서로 다르다. 강함을 보아도 자동 경외·존댓말·가호 지급 없음. 관계별 기존 profile의 9단계 지침을 유지하되 숨은 호감점수로 모든 반응을 대신하지 않는다.",
+      "강함예문사용": "각 예문에 명시한 행위를 이 인물이 실제 직접 보았을 때만 사용한다. 숨은 CP·친구 기억·장비 외형으로 대체하지 않는다. 비언어 생물은 감각 반응만.",
+      "대화거리": "사담 기본 8블록 및 실제 시야·음성 수신. 인수·집기만 2블록. 원거리 생물 관측은 현장 안전거리와 시야를 사용하며 접근·접촉을 강요하지 않는다.",
+      "중단": "대화 거절·반박·침묵·퇴장은 정상 선택. 실제 위험중이면 안전철수 필요. 사망/로그아웃은 수행중단, 실제완료·소비·대여·수신 기록만 보존. 재회는 현재 접근을 다시 확인하고 끝난 사건을 재연하지 않는다."
+    },
+    "기록과지식": {
+      "저자진실": "정체·관계 정사와 인물의 실제 앎을 분리한다. 개인 미공개 사건·미래 분기·원전 전체를 loreKnowledge에 자동 주입하지 않는다.",
+      "지식영수증": "event_id·speaker/source·receiver_uuid·실제청중·공개허락 범위·received_at를 별도 저장. NPC도 실제 목격/수신 이전에는 모른다.",
+      "정정": "거짓 주장을 수신한 사실과 그 주장 내용의 진위를 분리. 정정은 원청중의 실제 재수신이 있어야 하고 원래 수신을 삭제하지 않는다.",
+      "사적정보": "새 청중이 끼면 비공개 내용 발화 중단 또는 현재 허락된 일반 정보로 전환. 제목으로도 비공개 비밀을 암시하지 않는다."
+    },
+    "서비스와물건": {
+      "수주": "이 패킷의 신규 퀘스트/개인MAIN 0. 기존 event/service/dialogue_only 방식 유지. 현재 행동 동의는 퀘스트 수락이 아니다.",
+      "성장": "신규 장비·가호·주시·습득스킬·레벨·성장량0. 기존 허용된 생활지도/현물채집은 별도 보존.",
+      "정산": "실제 물품과 원장 unique receipt를 대조. 인도불확실이면 새 생성0. 미인도 실제 물건만 현재 소유·보관 합의에 따라 복구. 미차용 반환의무0.",
+      "반복": "현재 새 요청과 실재 현물을 분리한다. 기존 지도권은 실제 제공·수강·거절·미수령을 따로 기록한다. 같은 회차의 실물/지도는 중복 정산하지 않고 연습 반복은 성장 보상0."
+    },
+    "본체상태": "FIRST_UNPLACED는 유효 경로에서 최초 배치 가능, UNLOADED는 기존 UUID 재로드만, ACTIVE는 현 위치 직접 접촉, BUSY는 대기/거절, DEAD는 새 생성·부활0, SEALED는 원문 허용 접촉만. 불명 상태를 최초 미배치로 취급하지 않는다.",
+    "원문효력": "원문 보존 필드와 현행 상세가 충돌할 때 명시된 최신 정사·현재 보강을 적용한다. 원문 source_contract를 몰래 고치지 않는다. 특수 전투/지원/최종 MAIN은 해당 기존 문서가 단일 소유하며 일반풀 기본값으로 대체하지 않는다."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S01-154",
+      "name": "네메아의 사자",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-154/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-154/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-154/outline",
+        "episodes": [
+          "EP008A-RPG-S01-154"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_cards",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "굴과 사냥터에 반복해 온 추적자의 냄새를 직접 구별하는 기존 역할을 안다. 헤라클레스의 현재 과업 수행 여부는 자동 지식이 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "숨을 굴과 사냥터를 잃지 않고 자기 방식으로 먹이를 찾으려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "잠들기 전에 앞발로 바닥을 깊게 밀어 몸이 닿을 자리를 만든다. 볕이 옮겨 가는 경계에 발을 걸치고 쉬는 것을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "네메아의 사자의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "네메아의 사자의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "네메아의 사자에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "네메아의 사자의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-066",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "과업과 추적의 기존 관계를 보존하되 현재 토벌이나 과거 죽음의 재연을 확정하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "방목 무리를 실제로 멀리 옮기고 굴 입구에는 손대지 않았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "그 무리를 좇는 행동이 줄 수 있으나 가까이 오는 사람은 계속 살핀다. 출구를 막았던 냄새에는 먼저 몸을 세운다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "헤라클레스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-154-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 특정 한 개체. 죽음이면 새 사자·가죽·과업 재연0. 방목 이동은 헤라클레스 과업·토벌 보상 아님.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-156",
+      "name": "스텐노",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-156/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-156/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-156/outline",
+        "episodes": [
+          "EP008A-RPG-S01-156"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_cards",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "메두사의 방문 허가와 에우리알레의 탐색을 따로 다루며 자매의 경계를 지키는 기존 관계를 안다. 자매의 모든 사적 대화를 자동으로 듣지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "자매 곁으로 들어오는 위험을 놓치지 않고 경계를 자기 손으로 유지하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "찻잔의 손잡이를 상대가 잡기 좋은 방향으로 돌리며 손목 움직임을 본다. 자매가 편히 쉬는 조용한 자리의 사소한 배치를 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-ADOPTED-HABIT",
+            "claim": {
+              "text": "차분한 예절을 지키지만 숨긴 무기를 발견하면 손님 대접을 끝낸다",
+              "basis": "adopted_reference_trait",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "fact_ref": "T-ADOPTED",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "채택된 작은 일상 태도를 스스로 반복하며 아는 자기 취향",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "스텐노의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "스텐노의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "스텐노에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "스텐노의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-155",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "자매 본인의 방문 의사를 존중하며 위험을 경계하는 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "무기를 드러내고 메두사의 방문 범위를 먼저 따랐다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 자리와 말을 조금 더 편히 내준다. 감춘 무기를 발견하면 현재 대화뿐 아니라 다음 방문도 거절한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "메두사에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-157",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "탐색과 경계의 방식이 다른 자매 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "무기를 드러내고 메두사의 방문 범위를 먼저 따랐다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 자리와 말을 조금 더 편히 내준다. 감춘 무기를 발견하면 현재 대화뿐 아니라 다음 방문도 거절한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "에우리알레에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-156-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 메두사 실제 동의 별도. 무장 조정·친분·차 대접으로 내부 접견·MAIN을 선취하지 않는다.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-160",
+      "name": "에키드나",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-160/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-160/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-160/outline",
+        "episodes": [
+          "EP005A-RPG-S01-160"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_cards",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "케르베로스와 오르트로스 등 자녀가 서로 다른 일을 하고 선택한다는 기존 관계를 안다. 자녀 전체의 현재 위치와 사건을 아는 것은 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "자녀마다 다른 선택과 이름이 한 장의 토벌 목록에 눌리지 않게 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "뱀의 아래몸이 놓일 자리를 꼬리 끝으로 먼저 쓸어 본다. 햇볕에 데워진 돌과 그늘진 돌의 감촉 차이를 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "에키드나의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "에키드나의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "에키드나에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-REL-065",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 동일한 토벌 대상으로 취급하지 말고 직접 조건을 확인하도록 권함",
+              "acquisition_event": "자녀의 개별 의사와 실제 통행 문제 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "케르베로스가 실제로 보인 출입 판단을 듣거나 본 범위에서 기억한다. 다음 방문자에게 자신의 호의 대신 케르베로스가 정한 통과 범위를 직접 따르라고 말한다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-065"
+              ]
+            },
+            {
+              "id": "F-REL-066",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 자녀의 다른 선택을 듣게 하는 선택 소개",
+              "acquisition_event": "실제 접촉 의사와 보호 영역 확인 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "오르트로스가 실제로 받아들인 접촉 거리와 지킬 영역을 안다. 다음 소개에서도 자녀를 부르거나 동행시키겠다고 약속하지 않고 그 거리 바깥에서 기다린다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-066"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-151",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "자녀의 경계 역할과 선택을 자기 뜻에 합치지 않는 기존 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "겁을 먹었어도 실제 공격한 개체와 그렇지 않은 개체를 구별해 말했다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 먼저 위협하지 않고 이야기를 더 듣는다. 자녀 이름을 사냥감 수처럼 세면 협력 가능성을 닫는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "케르베로스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-162",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "가축을 지키는 자녀의 선택을 존중하는 기존 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "겁을 먹었어도 실제 공격한 개체와 그렇지 않은 개체를 구별해 말했다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 먼저 위협하지 않고 이야기를 더 듣는다. 자녀 이름을 사냥감 수처럼 세면 협력 가능성을 닫는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "오르트로스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-160-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. EP의 은신로 설명은 ECHIDNA-TRUST-01·최종 위탁·가호·결속 보상과 별개. 자녀의 현재 허락·생사 대리 결정0.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-162",
+      "name": "오르트로스",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-162/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-162/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-162/outline",
+        "episodes": [
+          "EP005B-RPG-S01-162"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "게리온의 소 떼와 목동의 실제 신호를 구별하며, 직접 맡아 본 침입 냄새를 기억하는 기존 역할을 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "소 떼의 익숙한 수와 냄새가 몰래 바뀌지 않게 지키려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "쉬기 직전 두 머리가 반대쪽을 향해 한 번씩 코를 든다. 풀잎 끝에 맺힌 물을 코로 건드리는 작은 감각을 즐긴다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "오르트로스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "오르트로스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "오르트로스에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-REL-066",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 자녀의 다른 선택을 듣게 하는 선택 소개",
+              "acquisition_event": "실제 접촉 의사와 보호 영역 확인 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "에키드나가 데려온 이를 자기 앞에서 실제로 맡고 그 손이 가축에 닿는지 본다. 다음 만남에서는 그 사람이 지켰던 거리를 기억해 확인 시간을 줄이거나 계속 무리에서 떼어 놓는다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-066"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": null,
+            "historical_name_if_not_current": "게리온",
+            "status": "historical_offstage_relation",
+            "baseline": {
+              "text": "소 떼를 지키는 오래된 소유·경계 관계이며 현재 게리온의 명령을 새로 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "목동의 신호를 따르고 가축을 건드리지 않은 채 물러섰다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음 순찰에서는 짧게 냄새만 확인하고 지나간다. 훔친 냄새를 기억하면 같은 사람을 무리에서 계속 떼어 놓는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "게리온에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 출연 제외 인물을 새 배우로 복구하지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-160",
+            "historical_name_if_not_current": null,
+            "status": "proposed_minor_interaction",
+            "baseline": {
+              "text": "기존 간선의 저술 범위: 자녀의 다른 선택을 듣게 하는 선택 소개 아직 성립하지 않은 현재 교섭이나 상대의 동의는 기본 사실이 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "REL-066"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "실제 접촉 의사와 보호 영역 확인",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "REL-066"
+                ]
+              },
+              "observable_consequence": {
+                "text": "에키드나가 데려온 이를 자기 앞에서 실제로 맡고 그 손이 가축에 닿는지 본다. 다음 만남에서는 그 사람이 지켰던 거리를 기억해 확인 시간을 줄이거나 계속 무리에서 떼어 놓는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "REL-066"
+                ]
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "한쪽의 호의·소개·책임 추궁이 반대쪽의 동의·지식·적대를 자동 생성하지 않음. 실제 양측 응답만 갱신. 현장 세계 변화와 개인 관계/MAIN 소유/청취 이력을 분리. 부재한 친구에 자동 적용하지 않음."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-162-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 게리온 새 출동·부활·소 떼 보상0. 두 머리 한 몸. 목동은 실제 현장 기존 인물만.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-164",
+      "name": "아엘로",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-164/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-164/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-164/outline",
+        "episodes": [
+          "EP008B-RPG-S01-164"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_cards",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "아엘로의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "아엘로의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "아엘로에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "아엘로의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": null,
+            "historical_name_if_not_current": "오키페테",
+            "status": "historical_offstage_relation",
+            "baseline": {
+              "text": "옛 정찰의 인연을 보존하며 현재 협업·기록 제공은 요구하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "정한 몫을 먼저 덜어 두고 하피가 달려들 것이라며 놀리지 않았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 짐이 바람을 타는 방향을 먼저 알려 준다. 몫을 줄여 놓고 호의라고 부르면 운반을 멈춘다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "오키페테에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 출연 제외 인물을 새 배우로 복구하지 않는다."
+          },
+          {
+            "target_record_key": null,
+            "historical_name_if_not_current": "피네우스",
+            "status": "historical_offstage_relation",
+            "baseline": {
+              "text": "식탁 분쟁의 과거 관계를 보존하며 현재 식사나 응답은 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "정한 몫을 먼저 덜어 두고 하피가 달려들 것이라며 놀리지 않았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 짐이 바람을 타는 방향을 먼저 알려 준다. 몫을 줄여 놓고 호의라고 부르면 운반을 멈춘다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "피네우스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 출연 제외 인물을 새 배우로 복구하지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-164-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 기존 반복 정찰 교환 보존. 사전 합의 품목·수량·대체재·행동 대가는 회차 원장에 그대로, 임의 고정 음식 수량·가격 추가0.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-166",
+      "name": "페이시노에",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-166/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-166/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-166/outline",
+        "episodes": [
+          "EP008B-RPG-S01-166"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "아글라오페·텔크시에페이아와 공연 시간을 다툰 과거 관계를 기억한다. 두 사람의 현재 합동 공연이나 응답은 새로 요구하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "오래 머물고 싶어지는 이야기를 모아 사람들이 자기 노래를 먼저 찾게 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "사람이 몸을 일으키면 노래의 끝음을 조금 더 길게 잡았다가 놓는다. 아주 짧은 이야기를 가장 궁금한 데서 끊는 방법을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "페이시노에의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "페이시노에의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "페이시노에에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "페이시노에의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": null,
+            "historical_name_if_not_current": "아글라오페",
+            "status": "historical_offstage_relation",
+            "baseline": {
+              "text": "공연 시간을 둘러싼 과거 관계를 보존하며 현재 출연은 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "마치기로 한 순간을 직접 짚고 떠나면서도 좋았던 대목을 구체적으로 말했다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 아쉽다는 말만 남기고 정한 끝에서 멈추며 다시 듣고 싶을 때 오라고 부른다. 가짜 환호로 시간을 끌면 더 집요하게 다음 곡을 권한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "아글라오페에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 출연 제외 인물을 새 배우로 복구하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          },
+          {
+            "target_record_key": null,
+            "historical_name_if_not_current": "텔크시에페이아",
+            "status": "historical_offstage_relation",
+            "baseline": {
+              "text": "옛 공연 경쟁을 보존하되 현재 협연을 전제하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "마치기로 한 순간을 직접 짚고 떠나면서도 좋았던 대목을 구체적으로 말했다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 아쉽다는 말만 남기고 정한 끝에서 멈추며 다시 듣고 싶을 때 오라고 부른다. 가짜 환호로 시간을 끌면 더 집요하게 다음 곡을 권한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "텔크시에페이아에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 출연 제외 인물을 새 배우로 복구하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-166-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 후기 B3는 실제 재방문 때만. 자동 재회·빚·강제 매혹·영구 청취권0.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-170",
+      "name": "스킬라",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-170/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-170/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-170/outline",
+        "episodes": [
+          "EP008B-RPG-S01-170"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "카리브디스가 만드는 흐름과 통항의 반복을 자기 감각으로 구별한다. 테티스의 현재 항로 계획은 실제로 보지 않으면 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "절벽 쪽으로 몰린 먹이를 놓치지 않고 반복되는 통항 속임수를 피하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "먹이가 없는 순간에도 바위에 닿는 파도 소리의 간격을 듣는다. 좁은 틈을 지나며 달라지는 물의 소리와 그림자에 반응한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "스킬라의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "스킬라의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "스킬라에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "스킬라의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-171",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "사냥터와 물의 흐름이 맞닿는 기존 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "같은 유인과 같은 통항 움직임이 반복되는 것을 직접 보았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 익숙한 미끼보다 그 뒤의 통로 쪽으로 몸을 옮겨 사냥 위치를 바꾼다. 관계 변화가 친밀함으로만 나타나지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "카리브디스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-042",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "항로 개척과 사냥 자리가 겹치는 기존 역할의 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "같은 유인과 같은 통항 움직임이 반복되는 것을 직접 보았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 익숙한 미끼보다 그 뒤의 통로 쪽으로 몸을 옮겨 사냥 위치를 바꾼다. 관계 변화가 친밀함으로만 나타나지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "테티스(네레이드)에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-170-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 비전투 통항·회피 EP. 다른 해저방어체 처치/C10 보상/전역 안전을 완료하지 않는다. 여러 머리 한 본체.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-171",
+      "name": "카리브디스",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-171/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-171/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-171/outline",
+        "episodes": [
+          "EP008B-RPG-S01-171"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "자기 몸에 닿는 막힘과 물의 압력 변화를 안다. 스킬라의 의도나 포세이돈의 현재 통제 계획은 신화적 관계만으로 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "목 안을 막는 장애와 억누르는 흐름을 밀어내 물이 돌게 하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "저항이 줄면 미세한 잔물결을 여러 번 내보내 흐름을 다시 받는다. 먹이와 무관한 작은 물결의 되돌아옴에도 감각적으로 반응한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "카리브디스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "카리브디스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "카리브디스에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "카리브디스의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-170",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "사냥과 흐름이 같은 해협에서 겹치는 기존 역할의 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "실제로 막힌 유로가 풀려 몸을 누르던 저항이 줄었다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "그 변화에 따라 흡입의 간격이 달라질 수 있으나 상대를 믿거나 안전 통행을 약속하는 관계로 바뀌지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "스킬라에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-003",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "해역 통제와 물의 저항이 얽힌 관계이며 현재 명령을 이해·수신했다고 정하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "실제로 막힌 유로가 풀려 몸을 누르던 저항이 줄었다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "그 변화에 따라 흡입의 간격이 달라질 수 있으나 상대를 믿거나 안전 통행을 약속하는 관계로 바뀌지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "포세이돈에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-171-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 막힘 일부 제거·우회 도착·통항은 각각 별도. 길들이기·포세이돈 통제 위임·C10 처치·보상0.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-172",
+      "name": "키르케",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-172/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-172/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-172/outline",
+        "episodes": [
+          "EP008B-RPG-S01-172"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "헤르메스의 보호 약초와 메데이아의 정화 요청을 비교하는 기존 관계를 안다. 현재 새 요청이나 약초 획득을 완료한 것으로 만들지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "안전한 거처를 지키면서도 혼자 잘 차린 식탁만 남지 않을 손님을 원한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "음식 접시를 내민 뒤 상대가 맛보기 전에는 다른 일을 하는 척한다. 낯선 재료보다 익숙한 음식의 향을 조금 다르게 내는 솜씨를 즐긴다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-ADOPTED-HABIT",
+            "claim": {
+              "text": "직접 만든 음식을 권하지만 거절하면 다른 자리를 내준다",
+              "basis": "adopted_reference_trait",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "fact_ref": "T-ADOPTED",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "채택된 작은 일상 태도를 스스로 반복하며 아는 자기 취향",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-HIDDEN-CONTROL",
+            "claim": {
+              "text": "손님을 자기 방식대로 움직이게 하고 싶은 마음이 있으며 그 마음을 환대의 이유와 함께 전부 드러내고 싶지는 않다는 자기 속내를 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "fact_ref": "T-HIDDEN-CONTROL",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "현행 개인 동기에 명시된 본인의 통제욕과 그것을 숨기는 의향",
+              "when_or_condition": "손님을 맞을 때의 자기 마음이며 특정 손님에게 벌인 미발생 시험이나 변신 사건은 포함하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "motive"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "withheld",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "키르케의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "키르케의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": null,
+          "items": [
+            {
+              "known_fact_id": "K-HIDDEN-CONTROL",
+              "withheld_scope": "손님이 자신의 방식대로 움직이길 바라는 마음의 강도와 그 마음이 환대에 섞이는 사적인 이유",
+              "reason": {
+                "text": "손님을 잘 돌보는 주인으로 보이고 싶고, 통제하려는 마음을 전부 드러내면 자리가 더 외로워질까 꺼린다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "response_when_asked": "내 집에서는 내 방식이 편해요. 그걸 바라는 이유까지 지금 전부 말하고 싶지는 않네요.",
+              "release_condition": "자기 거절과 맹세를 서로 지킨 실제 관계 안에서 본인이 속내를 설명하기로 선택할 때. 친분 수치만으로 자동 공개하지 않는다.",
+              "must_not_claim_ignorance": false
+            }
+          ]
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "키르케의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-013",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "보호 약초와 손님 대응이 얽힌 기존 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "거절을 분명히 하면서도 상호 맹세에서 자기 몫을 실제로 지켰다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 취향을 먼저 묻고 귀환의 길에 관해 아는 범위를 설명한다. 식탁을 무시하거나 약속을 속이면 집 안쪽으로 들이지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "헤르메스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-106",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "정화 요청과 상호 대가를 다루는 기존 인연이다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "거절을 분명히 하면서도 상호 맹세에서 자기 몫을 실제로 지켰다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 취향을 먼저 묻고 귀환의 길에 관해 아는 범위를 설명한다. 식탁을 무시하거나 약속을 속이면 집 안쪽으로 들이지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "메데이아에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-172-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 기존 향 조절 생활지도 보존. 식사·체류·수강·후기는 독립 선택, 변신·포션효과·독립스킬·가호 추가0.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S01-173",
+      "name": "칼립소",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S01-173/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S01-173/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S01-173/outline",
+        "episodes": [
+          "EP008B-RPG-S01-173"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": []
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오디세우스의 귀환과 페넬로페의 기다림을 자기 머무름의 관계와 구별한다. 두 사람의 현재 생활을 자동으로 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "누군가 머무는 즐거움을 누리면서 떠난 뒤의 자기 생활도 비어 버리지 않게 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "두 사람 몫을 놓으려다 혼자 있을 때는 자기 몫 하나만 천천히 놓는다. 사람이 없어도 계속 자라는 작은 덩굴과 그늘 모양을 살피는 것이 좋다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "칼립소의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "칼립소의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "칼립소에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "칼립소의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": null,
+        "items": [
+          {
+            "target_record_key": "RPG-S01-119",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "함께 머문 인연과 떠나는 선택을 보존하는 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "다시 올지 모른다는 말을 솔직히 하면서 함께한 시간을 가볍게 여기지 않았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 빈말을 재촉하지 않고 현재 머물 시간을 즐긴다. 확신 없는 재회를 반복 약속하면 그 말에는 웃어 주지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "오디세우스에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          },
+          {
+            "target_record_key": "RPG-S01-120",
+            "historical_name_if_not_current": null,
+            "status": "retained_design_relation",
+            "baseline": {
+              "text": "기다림이 서로의 마음을 대신하지 않는다는 기존 역할의 관계다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "change": {
+              "trigger": {
+                "text": "다시 올지 모른다는 말을 솔직히 하면서 함께한 시간을 가볍게 여기지 않았다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "observable_consequence": {
+                "text": "다음에는 빈말을 재촉하지 않고 현재 머물 시간을 즐긴다. 확신 없는 재회를 반복 약속하면 그 말에는 웃어 주지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "limits": [
+                "관계 변화는 실제 참여자와 목격 범위에 한한다.",
+                "자동 연애·충성·진영 가입·가호·주시·개인 MAIN 소유권 변경을 만들지 않는다."
+              ]
+            },
+            "knowledge_limit": "페넬로페에 대한 옛 친숙함과 현재 행방·의사·숨긴 사정은 별개다. 현재 교섭은 실제 상대 응답 이후에만 성립한다. 현재 명부의 이 인물과 동명이인·이명을 혼동하지 않는다.",
+            "current_contact_boundary": "기존 자기 인연은 CORE의 좁은 기억 범위만. 새 접촉·상대 현재 의사·전달·동석은 실제 증거가 필요하며 제외 인물을 현재 배우로 되살리지 않는다."
+          }
+        ]
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-RPG-S01-173-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 재회 보장·자동 연애·체류 강제·오프라인 외로움 벌금0. 기다림을 완치한 결말로 강제하지 않는다.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    },
+    {
+      "record_key": "USER-NAMED-NYX",
+      "name": "닉스",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/USER-NAMED-NYX/profile.json",
+        "contract": "기존페르소나_인물별/USER-NAMED-NYX/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#USER-NAMED-NYX/outline",
+        "episodes": [
+          "EP005A-USER-NAMED-NYX"
+        ],
+        "exact_existing_cards": {
+          "field": "exact_existing_card_contracts",
+          "verified_keys": [
+            "C21",
+            "C22"
+          ]
+        }
+      },
+      "runtime_ready": false,
+      "baseline_known": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "자신이 맡는 보호는 감시 밖 삶의 자리를 남기는 일이라는 역할을 안다. 그 역할은 천군 가입이나 특정 신 공격의 선언이 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "낱낱이 드러내야만 존재를 허락받는 삶에서 벗어나, 이름을 말하지 않고도 쉴 수 있는 밤의 틈을 남기려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "사람이 말을 시작하면 등불을 한 단계 낮춰 시선을 피할 여지를 준다. 완전한 고요보다 서로 다른 작은 밤소리가 함께 남는 시간을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-ADOPTED-HABIT",
+            "claim": {
+              "text": "방문자가 말할 때 등불을 낮춰 시선을 피할 여지를 준다",
+              "basis": "adopted_reference_trait",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "fact_ref": "T-ADOPTED",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "채택된 작은 일상 태도를 스스로 반복하며 아는 자기 취향",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": [
+                "adaptation"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-REFUGE-BOUNDARY",
+            "claim": {
+              "text": "보호를 위해 직접 맡은 피난 정보는 손님에게 함부로 풀어놓지 않겠다는 자기 방침이다. 현재 피난자의 실명과 정확한 위치는 이 코어에 새로 정하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "nyx-scene"
+              ]
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "현행 피난 은폐 역할에서 본인이 정하는 공개 범위",
+              "when_or_condition": "실제 피난 접촉에서 본인이 얻은 내용에만 적용한다. 아직 없던 피난 사건을 완료하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "nyx-scene"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "닉스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "닉스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "현재 코어에서 확인된 것은 피난 정보를 함부로 공개하지 않겠다는 자기 방침이다. 실제 피난자의 식별·거처 정보를 기본 지식으로 새로 주지 않았으므로 숨기는 사실 항목도 생성하지 않는다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-REL-035",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 감시 밖 삶을 보호할 범위와 공개하지 않을 정보를 정한다",
+              "acquisition_event": "실제 피난·감시 위험 전달 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "실제 피난 당사자가 말한 감시 위험과 공개해도 되는 범위를 기억한다. 다음 대화에서는 그 위험에 필요한 도움만 묻고 이름이나 거처의 공개를 넓히지 않는다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-035"
+              ]
+            },
+            {
+              "id": "F-REFUGE-DETAILS",
+              "fact_or_question": "실제로 보호를 청한 피난자가 공개한 식별·거처 정보와 공개하지 말아 달라는 범위",
+              "acquisition_event": "피난 당사자가 닉스에게 직접 말하거나 닉스가 실제로 보호 현장에서 확인하는 만남",
+              "required_evidence": "누구에게 어떤 범위가 전달되었는지와 실제 안전 요구. 이 코어 단계에서는 이름·좌표·새 사건을 발명하지 않는다.",
+              "eligible_audience": "실제 전달을 받은 닉스 및 당사자가 허락한 필요한 수신자",
+              "after_learning_change": "직접 들은 이름·거처와 당사자가 허락한 공개 범위를 기억한다. 그 뒤 필요한 수신자에게만 필요한 내용을 전하고 범위를 넘는 질문에는 모른다고 하지 않고 공개하지 않겠다고 말한다.",
+              "not_automatic_from": [
+                "피난 보호 역할을 맡음",
+                "관계 점수",
+                "C21 도달"
+              ],
+              "source_refs": [
+                "role",
+                "nyx-scene"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      },
+      "baseline_relationship_memory": {
+        "none_reason": "닉스의 현행 역할만으로 추가 현재 교섭 상대를 만들지 않았다. 플레이어에 대한 행동 변화는 behavior에 구체화했다.",
+        "items": []
+      },
+      "adopted_detail": {
+        "current_disclosure": {
+          "definition_id": "NQ-USER-NAMED-NYX-DISCLOSURE",
+          "content_scope": "해당 현장 실제 행동·발언·결과 중 공개가 허락된 부분만. 초반 조우 유지. 이름 없는 쉼으로 C21/C22 지원·피난 은폐·천마 사적 정보·가호·개인 MAIN을 예약하지 않는다.",
+          "who_learns": "직접 관찰자/실제 청취자/허락된 기록의 실제 열람자 각각. 늦게 온 친구는 현재 상태만.",
+          "npc_learning": "본인의 실제 감각·경험·허락 전언으로만 갱신. 생물에게 사람의 보고·계약·퀘스트 상태를 자동 주입하지 않는다.",
+          "receipt": "event/source/speaker/receiver/내용 범위/공개 허락/실제 수신시각을 저장. 사실 설정과 지식 지급은 별개."
+        },
+        "private_boundary": "출처가 있는 주장도 진위 확정과 다르다. 비공개 문장을 새 청중에게 반복하지 않고 공개 거절로 비밀 존재를 인증하지 않는다.",
+        "future_guard": "저자진실·미래 선택 결말을 기본 lore로 넣지 않는다. 기존 좁은 자기 기억은 삭제하지 않는다.",
+        "correction": "잘못 전한 내용은 실제 원청중에게 정정 수신을 남겨야 한다. 사과만으로 원래 전달을 지우지 않는다."
+      }
+    }
+  ]
+}

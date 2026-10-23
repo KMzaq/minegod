@@ -21,7 +21,8 @@ public record ConditionContext(
         StructureEvaluationView structures,
         GodRelationView relations,
         StoryStateView story,
-        Optional<StoryScopeKey> storyScope
+        Optional<StoryScopeKey> storyScope,
+        BlessingHistoryView blessingHistory
 ) {
     public ConditionContext {
         Objects.requireNonNull(world);
@@ -35,6 +36,16 @@ public record ConditionContext(
         Objects.requireNonNull(relations);
         Objects.requireNonNull(story);
         Objects.requireNonNull(storyScope);
+        Objects.requireNonNull(blessingHistory);
+    }
+
+    public ConditionContext(WorldStateView world, PlayerMythQueryService players, ServerStateView server,
+            GodDefinitionView gods, Optional<UUID> targetPlayerId,
+            Optional<ConditionEnvironment> environment, Optional<ConditionEventContext> event,
+            StructureEvaluationView structures, GodRelationView relations, StoryStateView story,
+            Optional<StoryScopeKey> storyScope) {
+        this(world, players, server, gods, targetPlayerId, environment, event, structures, relations,
+                story, storyScope, BlessingHistoryView.unavailable());
     }
 
     public ConditionContext(WorldStateView world, PlayerMythQueryService players, ServerStateView server,

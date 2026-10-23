@@ -15,6 +15,7 @@
 |---|---|---|
 | 공용 기준과 과거 작업 | [공용 인수인계](PROJECT_HANDOFF.md) §58 및 [절별 색인](HISTORY_INDEX.md) | §58은 2026-09-23 당시 게임 1.0.16 / AI 0.1.17 / 콘텐츠 0.1.1의 **파일 배포·미부팅** 기록이다. 현재 설치 상태를 대체하지 않는다. |
 | `HanesTest` 실험 브랜치 | [실험 전용 인수인계](브랜치실험/HanesTest/PROJECT_HANDOFF.md) | 공용 완료 상태로 자동 승격하지 않는다. 실험 변경·검증·배포 기록은 이 폴더에만 남긴다. |
+| `behaivior` 목적 상태 개발 | [브랜치 인수인계](브랜치실험/behaivior/PROJECT_HANDOFF.md) | 2026-10-20 누적 플레이 통계·인물 목표 기록·본인 화면·요청형 NPC 지원. 기록/권한 검사와 실제 대사 품질을 구분하며 전체 품질 gate 미통과, 미배포. |
 | 실제 설치·실행 | [서버 안내](../server/README.md), `server/mods`, `server/client-required-mods`, `server/logs/latest.log` | README도 작성 시점 기록이다. 파일 설치와 새 조합의 성공적인 서버 부팅·게임 대화는 다르다. |
 
 **2026-09-29 읽기 전용 점검 스냅샷:** 작업 브랜치는 `HanesTest`였다. `server/mods`에는 게임 `1.0.16`, AI `0.1.19`, 콘텐츠 `0.1.2`가 설치돼 있고, 클라이언트 필수 게임 JAR은 `1.0.16`이다. AI와 콘텐츠는 서버 전용이다. 확인된 마지막 `latest.log`는 2026-09-24의 이전 조합(게임 `1.0.16` / AI `0.1.17` / 콘텐츠 `0.1.1`) 부팅 로그다. 따라서 이 점검만으로 **현재 설치 조합의 서버 부팅·Ollama 대화·인게임 동작을 확인했다고 말할 수 없다.** 이후 다른 채팅이 서버를 실행·배포했을 수 있으므로 작업 직전에 다시 확인한다.
@@ -25,6 +26,7 @@
 |---|---|
 | 대화방·다중 신·채팅 공개 범위 | [대화방 계약](../docs/CONVERSATION_ROOMS.md) → [전체 방 통합 기록](../docs/FULL_ROOM_DIALOGUE_INTEGRATION_20260923.md) |
 | 기억·지식 공개·청취 이력 | [신별 청취 기억](../docs/ROOM_HEARD_MEMORY_20260923.md), [AI 기억/RAG 가이드](../mythai-ai-response/AI_MEMORY_RAG_GUIDE.md) |
+| 플레이어 행동·성향·목표·통계/진행 도움 | [누적 통계·지원 계약](../추가개발/플레이어이해/20-support-statistics.md) → 해당 브랜치 인수인계. 단일 행동 서술 교정과 구분 |
 | 게임 ↔ AI 제안·실행 경계 | [AI 행동 연동](../mythictrpg-main/docs/AI_ACTION_INTEGRATION_GUIDE.md)와 [루트 권한 경계](../AGENTS.md#모듈-간-권한-경계) |
 | 신 프로필·정적 로어·퀘스트 목록 | [콘텐츠 작성 가이드](../mythai-ai-content-registry/AI_CONTENT_REGISTRY_CONTENT_AUTHORING_GUIDE.md), [프로필](../mythai-ai-content-registry/NPC_PROFILE_AUTHORING_GUIDE.md), [퀘스트 목록](../mythai-ai-content-registry/QUEST_LIST_AUTHORING_GUIDE.md) |
 | 퀘스트·보상·FTB 연결 | [FTB 연동](../mythictrpg-main/docs/FTB_QUESTS_INTEGRATION_GUIDE.md), [보상](../mythictrpg-main/docs/REWARD_SYSTEM_GUIDE.md) |

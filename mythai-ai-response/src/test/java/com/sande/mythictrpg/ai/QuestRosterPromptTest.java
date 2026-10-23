@@ -46,8 +46,11 @@ public final class QuestRosterPromptTest {
         var intent = new com.sande.mythictrpg.ai.intent.ConversationIntent(Set.of(com.sande.mythictrpg.ai.example.DialogueExampleTag.S_INFORMATION_REQUEST),
                 Set.of(), 90, com.sande.mythictrpg.ai.intent.ConversationIntent.Source.LOCAL_LLM);
         var messages = prompt.generation(intent);
-        check(!prompt.gameplayProposalsAllowed(), "ordinary gameplay remains intent-gated");
-        check(prompt.admittedProposals(List.of(p, proposal("reward_proposal", Map.of(), List.of()))).equals(List.of(p)), "information query can open menu only");
+        check(prompt.gameplayProposalsAllowed(), "information intent does not block live gameplay decisions");
+        var reward = proposal("reward_proposal", Map.of(), List.of());
+        check(prompt.admittedProposals(List.of(p, reward)).equals(List.of(p, reward)), "live query keeps menu and sends other proposals to capability validation");
+        check(AiActionCapabilityBridge.normalizeAuthorized(reward, GOD, "", List.of(cap), id -> Optional.empty()) == null,
+                "removing the intent gate never grants an unavailable reward capability");
         check(messages.getLast().content().contains("questRosterMenuQuestIds") && messages.getLast().content().contains(QUEST), "actual primary prompt carries menu IDs");
         System.out.println("QuestRosterPromptTest: " + checks + " checks PASS");
     }

@@ -28,7 +28,7 @@ public final class JsonKnowledgeRepository implements KnowledgeRepository {
 
     public synchronized void load() {
         try {
-            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE);
+            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE, "{\"schemaVersion\":1,\"entries\":[]}\n");
             try (Reader reader = Files.newBufferedReader(file)) {
                 entries = parse(GSON.fromJson(reader, RawStore.class));
             }

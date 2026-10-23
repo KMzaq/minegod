@@ -10,6 +10,10 @@ import java.util.UUID;
  * OpenAI-compatible local endpoint can implement the same contract without entering conversation/game logic.
  */
 interface LocalLlmClient extends AutoCloseable {
+    default LocalLlmRequestScheduler.ScheduledRequest<java.util.Optional<com.sande.mythictrpg.understanding.PurposeEvidence>> submitPurpose(
+            UUID requestId, PurposeUtterance.Input input, AiDialogueConfig.Settings settings) {
+        throw new UnsupportedOperationException("Source-bound purpose extraction unsupported");
+    }
     LocalLlmRequestScheduler.ScheduledRequest<AiDialogueModels.StructuredAiResult> submit(UUID requestId,
             List<AiDialogueModels.OllamaMessage> messages, AiDialogueConfig.Settings settings);
 

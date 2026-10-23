@@ -1,0 +1,3045 @@
+{
+  "packet_id": "P2_NONQUEST-076",
+  "category": "스토리",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택한 저술·구현 요구이며 실행 스키마·지원 API·시험 결과가 아니다. 원문 보존값과 adopted_detail을 구별한다.",
+    "조우운영": {
+      "source": "퀘스트/공통설계/시간_조우_성장_운영정책.json",
+      "source_pointer": "/general_encounter",
+      "source_contract": {
+        "route_scope": "기존에 무작위 일반 조우로 허용된 actor만. 개인별 확정 운영값이 있으면 해당 actor를 이 풀에서 제외해 전용 경로로 단 한 번 처리.",
+        "interval_activity_seconds": 300,
+        "server_trial_probability": 0.25,
+        "actor_cooldown_uptime_seconds": 1800,
+        "cooldown_start": "새 실제 출현 receipt 때만; 실패추첨/보류/기존본체 일반대화로 시작하지 않음.",
+        "trial_scope": "world_uuid + GENERAL + activity_window 한 번. 0번창은 첫 적격 후보가 생기면 한 번 검사하고 이후 누적 간격마다. 재진입/재접속은 추가검사 없음.",
+        "eligibility_order": [
+          "기존 채택 명부와 허용 무작위 경로",
+          "세계공통 해금 또는 기존 무해금 경로",
+          "생존·태어남·봉인·허용 현신 모드",
+          "현재 후보 플레이어의 해당 장소/시간/명시 개인조건",
+          "현재 인물의 방문 의사와 실제 배치가능 경로",
+          "동일 본체 다른 활동 없음 및 해당 공용 쿨 완료"
+        ],
+        "sampling": "후보를 actor별로 묶는다. 먼저 서버창 Bernoulli 판정, 성공이면 고유 actor별 가중 추첨 한 번, 그 actor의 적격 player UUID 집합에서 균등 한 명. 한 actor의 후보 플레이어가 많다고 actor 가중치를 곱하지 않는다.",
+        "rank_order": [
+          "최하급",
+          "하급",
+          "중급",
+          "상급",
+          "최상급",
+          "초월급"
+        ],
+        "weights": {
+          "첫 공용 용 승리 전": [
+            8,
+            6,
+            4,
+            2,
+            1,
+            0.5
+          ],
+          "첫 공용 용 승리 후부터 C21 공용 완료 전": [
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
+          ],
+          "C21 공용 완료 후": [
+            4,
+            4,
+            4,
+            4,
+            3,
+            2
+          ]
+        },
+        "weight_scope": "가중치의 구간 전환은 공개된 실제 공용 완료증거로만. C21은 빈도 변화이지 새 접근 선행 아님. 모든 등급 양수. 비대상 등급 추정 금지; 기존 특수개체의 개별 경로를 따름.",
+        "no_guarantee": "누적 실패 보장/천장 없음. 조우가 필수 성장 공급이 아니며 C02~C05 일반 준비·공개 제작경로 유지.",
+        "lost_subject": "선정 후 실제 출현 전에 주체 이탈/사망/접근불가면 해당 창 보류종료, 새 추첨0·쿨/보상0. 이미 실제 출현했으면 같은 본체 유지; 다음 사람에게 당첨/MAIN/개인보상 이전0."
+      },
+      "state_rule": "세계 누구 한 명의 실제 유효 이력으로 전역 해금. 개인 조우 주체와 해금자·관계·기여·보상 수혜자는 별개. 최초 미배치는 본체 사전 요구 없이 후보 생성, 이미 배치된 본체는 새 추첨 없이 접촉. 사망·미탄생·봉인·다른 사건 점유는 미배치와 구별하며 일반 풀로 우회하지 않는다.",
+      "atomic_source_pointer": "/atomic_contract",
+      "atomic_source_contract": {
+        "minimal_records": [
+          "world_release event 및 출처",
+          "canonical_actor의 body_instance/location/revision과 활동예약",
+          "route/window/visit/batch와 candidate snapshot",
+          "random 결과·선정주체·소비여부",
+          "공용쿨/활동시계 누적값과 UTC 마감",
+          "개인 수행/MAIN 소유/claim/delivery를 분리한 원장",
+          "사실 event와 실제 receiver별 receipt"
+        ],
+        "random": "권위 서버만 추첨. world+route+window/batch에 유일키, 후보 snapshot/weights/version과 생성한 uniform 난수들을 외부행동 전에 durable journal에 저장. 범위 [0,1), U<p 성공. 클라이언트 seed/재접속/새프로세스로 다시 굴리지 않음. 가중선택은 정렬된 canonical_actor의 누적구간, 주체는 정렬된 UUID 균등구간.",
+        "singleton": "canonical_actor 단위 공용 compare-and-set 예약. 일반조우/디오니소스 연락/스핑크스 방문/레이드 지원/개인 MAIN이 같은 본체 상태를 참조. 원격 통신은 허용 모드로만, 본체 복제가 아님. 진행 중 실제 행동은 새 예약으로 빼앗지 않음. 온라인 같은 우선순위는 요청 sequence→UUID. 새 전역 NPC 동시수 제한은 만들지 않음.",
+        "crash": "서버 시작시 새 추첨/지급 전에 미확정 journal과 실제 entity/인벤/receipt 대조. body 존재하면 같은 instance로 확정; 없음이 검증되면 같은 예약/결과의 배치만 재시도; 불확실하면 대기하고 재생성0. 만료 lock을 무조건 지워 본체복제0. 사용자 이탈은 미래 접견 hold만 해제, 성공권/정답/MAIN 보존.",
+        "delivery": "완료, entitlement 생성, 선택, 예약재고, 실물 전달은 별도 단계. 외부 인벤과 DB가 한 트랜잭션이라고 가정0. 중복 event_uuid는 원 receipt 반환. 불명확 실물은 검색·원장대조 후 누락라인만 복구. 늦은 a 응답과 b 지급 경쟁은 같은 선택권 revision을 잠그고 실수신/실지급 한 결과만 commit.",
+        "receipts": "대화 송신 성공만으로 실제 수신/안내완료 처리0. 온라인 정상 대화 개시와 수신 확인, 오프라인은 미수신. 청중은 그 시간 실제 들었거나 허용된 기록을 나중에 읽은 사람별. 음악 주변 청취는 MAIN/친분/권리수신 아님.",
+        "clock_fault": "UTC 역행/큰 점프가 감지되면 신뢰시간과 저장마감을 대조할 때까지 신규 마감판정·지급만 보류. 마감 연장이나 개인 처벌을 자동 발명하지 않음. 재시작 뒤도 원래 accepted_at/deadline 유지.",
+        "pause": "명시적 서버 simulation 일시중지는 SIM_TICK을 증가시키지 않는다. 서버 프로세스가 가동 중인 일시중지는 SERVER_UPTIME과 REAL_UTC가 계속 흐르며, 실제 장소/행동 처리가 정지한 동안 ENCOUNTER_ACTIVITY와 PLAYER_ACTIVE는 가산하지 않는다. 재개 때 정지구간 누락 추첨을 몰아 실행하지 않는다. 서버 종료는 SERVER_UPTIME도 멈춘다. 개인팩의 명시 시계가 우선하며 디오니소스의 기존 활동시계 정의를 새 시계로 교체하지 않는다.",
+        "policy_revision": "운영값 개정은 새 정책 version과 적용시점을 기록한다. 이미 시작한 공용쿨의 started_at_uptime·duration·ready_at_uptime은 시작 당시 값으로 고정하고 단축/연장/초기화하지 않는다. 저장된 추첨 snapshot/결과와 소비된 window/batch는 옛 version 그대로 유지한다. 새 확률/가중치는 아직 미실행인 다음 추첨부터, 새 쿨 길이는 개정 뒤 새로 시작하는 쿨부터 적용한다. 진행 중 활동창의 기존 길이는 그 창 종료까지 유지하고 다음 창부터 새 간격을 적용한다. 전용 개인팩 값의 개정 권한은 해당 소유팩에 남는다.",
+        "external_choice_fence": "a 실제 연결 또는 b 실물 지급을 시작하기 전에 동일 선택권 revision에 이행중 journal과 고유 delivery/request token을 잠근다. 외부 이행 결과가 불확실한 동안 다른 선택으로 전환하거나 병렬 이행하지 않는다. 실제 이행이 없었음이 확인되면 개인팩의 재선택 허용을 복원하고, 실제 연결/실지급 receipt가 있으면 그 결과만 확정한다. 늦은 이전 a 응답은 현재 요청/선택권 revision이 여전히 유효한지 확인한 뒤에만 실제 양방향 연결을 열며, 폐기된 요청은 별도 연결이나 권리 소비를 만들지 않는다. 이는 재선택 금지가 아니라 불확실 이행을 중복하지 않는 일시 대조 상태다."
+      }
+    },
+    "공통실행": {
+      "상태": "참여 의사·실제 수행·관측·발언 수신·대상 인수·정산을 각각 저장한다. 질문·수락 클릭·좋은 답만으로 다음 물리 결과를 만들지 않는다.",
+      "거리": "손 접촉은 2블록 이내. 관측·이동·허락 전언은 장면별 시야·실제 경로·청중을 따르고 손 거리로 제한하지 않는다.",
+      "시간": "강제 제한 시간 없음. 예상 시간은 정적 설계 추산이며 회신 대기를 제한하지 않는다.",
+      "수량": "동의 시 실제 대상 ID·품목·양의 정수·원소유·현재 보유·수신자·대체재·행동 대가를 고정한다. 기본 제안은 예시이며 합의한 더 넓은 목록을 축소하지 않는다. 실제 소비·인수만 차감한다.",
+      "저장": "world_uuid+canonical_actor+scene_instance+participant_uuid+action_key로 실행 증거를 멱등 저장한다. 반복 클릭·사망·로그아웃·재시작으로 동의·보상·물품·쿨을 초기화하지 않는다. 끊긴 인수는 실제 현물과 원장 대조 후 누락분만 복구한다.",
+      "부분수행": "본체 부재·의사 철회·봉인·위험에는 미실행 몫만 중지한다. 안전 철수와 실제 소유물 반환은 현재 상태대로. 이미 끝난 결과는 유지하고 남은 일만 재개한다. 적·부상자·짐·음식을 재생성하지 않는다.",
+      "후발": "공개 결과는 현재 새로 관찰 가능. 과거 참석·사적 기억·초대·지급권·팀 호감은 복제하지 않는다. 일반 접촉 자격과 사적 참여 허락은 별개다.",
+      "청중": "발화·기록·전언마다 발신자, 실제 수신자, 시점, 허용 재전달 범위를 저장한다. 저자 정사·미래 의향·관계 간선은 현재 NPC 지식이 아니다. 제한 모드·비언어·기록역에는 일반 인사나 새 발화를 강제하지 않는다."
+    },
+    "구현요구": [
+      "기존 단일 본체·출현 원장·현재 접근 상태 결속",
+      "현물 이동·소유·실제 청취와 개인 지식 원자 저장",
+      "장면별 동의 철회 및 미수령·미수강 복구",
+      "정적 설계만 검산; 실제 게임·API·LLM·영상·5인 시험 미실행"
+    ],
+    "새_MAIN_SIDE_성장보상": 0
+  },
+  "records": [
+    {
+      "record_key": "RPG-S08-003",
+      "name": "누아다",
+      "production_god_id": "mythictrpg:celtic_unassigned_nuadu",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-003/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-003/authoring_contract.json",
+          "episode_pointer": "/episode_link_contract/accepted_episode",
+          "scope_pointer": "/scope_nonprofile_contract",
+          "first_contact_pointer": "/first_contact_original_contract"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-003.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": "Overworld: 기존 오버월드 생활권; 등록 연결 대기",
+          "location_scene": {
+            "place": "기존 저택 공용 마당의 낮은 돌좌석",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+            "status": "new_minor_scene_detail_on_unverified_retained_placement"
+          },
+          "why_here": "디안 케흐트의 보철과 루의 지휘를 둘러싼 권한을 정리하고, 후계 약속을 몸의 완전성에 따라 뒤집지 않는다.",
+          "discovery": {
+            "ordinary_path": "빈자리보다 그 자리를 지켜보는 눈길이 먼저 보인다. 몸의 상태를 살피는 일과 사람에게 방향을 말하는 일을 일부러 나눈다.",
+            "introduction_path": "현재 코어 관계의 상대가 실제로 누아다의 현장을 알고 있고 전달에 동의할 때, 이번 행동의 화제로 소개할 수 있다. 소개는 소환도 예약 보장도 아니다.",
+            "missing_introducer_fallback": "소개자가 없어도 기존 저택 공용 마당의 낮은 돌좌석까지 실제 탐험으로 도달하여 위 소리·동작을 직접 관찰하면 인사를 시도할 수 있다. 본체가 없으면 흔적은 위치 보장이 아니므로 현재 현장 탐색을 계속하고 허위 대화는 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "공용 마당과 본체의 접근 의사가 필요하다. 보철 취급에는 별도 당사자 허락이 필요하고 신체 상태나 후계 소문이 일반 접견 자격을 판정하지 않는다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": "입력에는 새 개별 봉인이 확정되어 있지 않다. 이를 무조건 무봉인으로 해석하지 않고 실제 권위 접근 상태를 확인한다. 완전 봉인 중 일반 대화·수주 불가.",
+            "permission_or_willingness": "“내가 아직 답할 일은 있다. 그렇다고 모든 손을 내 손으로 만들겠다는 뜻은 아니지.” 대답·도움·접견은 각자 거절 가능하다.",
+            "chapter_reason_if_any": "기존 메인 배역 없음. 이 첫 접촉에 새 필수 MAIN이나 장 번호를 붙이지 않는다.",
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "누아다는 손에 쥐었던 지휘용 물건을 옆에 내려놓고 한 발 물러서지만 시선은 오래 떼지 못한다.",
+            "player_visible_clue": "빈자리보다 그 자리를 지켜보는 눈길이 먼저 보인다. 몸의 상태를 살피는 일과 사람에게 방향을 말하는 일을 일부러 나눈다.",
+            "player_possible_action": "옮겨 놓을 자리를 묻거나 지금 누구의 지시를 기다리는지 묻거나 보철을 만지지 않고 앉을 공간을 비켜 준다.",
+            "opening_intent": "“내가 아직 답할 일은 있다. 그렇다고 모든 손을 내 손으로 만들겠다는 뜻은 아니지.”",
+            "question_response": "몸이 나으면 약속을 거두느냐고 묻자 “몸의 회복이 내가 한 말을 지우지는 않는다”라고 한다. 지금 왕권 전부를 넘겼다는 해석에는 곧바로 선을 긋는다.",
+            "refusal_response": "대화하지 않겠다면 빈자리를 지키며 돌려보낸다. 보철을 농담 삼아 만지려 하면 손을 물리고 치료 허락과 대화 허락은 다르다고 밝힌다.",
+            "early_deduction_boundary": "원전·혈연·장면 단서로 정체나 의도를 일찍 짐작하면 짐작한 범위의 질문은 받아 준다. 그러나 직접 보거나 들은 사실과 가설을 구분하고, 여신의 비밀·옛 용사의 내면·타인 기억·미래 결과를 정답처럼 확인하지 않는다."
+          },
+          "refusal_and_return": "대화하지 않겠다면 빈자리를 지키며 돌려보낸다. 보철을 농담 삼아 만지려 하면 손을 물리고 치료 허락과 대화 허락은 다르다고 밝힌다. 다음 방문에는 이미 치운 물건을 다시 흩뜨려 같은 일을 강제하지 않고, 현재 남은 일이나 이전 선택의 실제 결과로 대화를 잇는다.",
+          "post_ender_change": {
+            "before": "최초 일반 조우 시점은 미정으로 보존한다. 이 현장에 실제로 도달하고 본체·봉인·의사가 허용되면 일찍 만날 수 있는 상세안이다. 고등급이나 C번호 때문에 확률 0으로 잠그지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "proposed_observable_history": "누구 한 명이 실제 손상된 도구를 기존 방식으로 수선하고 다시 사용한 이력. 몸의 완전성·신체 능력·통치 자격을 해금 평가로 삼지 않는다.",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "early_access_note": null,
+          "global_result": "누구 한 명이라도 채택된 조건을 달성하면 해당 NPC는 세계 공통으로 해금된다. 다른 친구·후발자에게 같은 해금 이력을 다시 요구하지 않는다. 해금 달성자와 다음 조우 주체는 달라도 된다.",
+          "npc_awareness": "세계 이력은 NPC에게 자동 전달되지 않는다. 실제 만남 이후 인식은 별도다.",
+          "activation_performed": false,
+          "not_a_retroactive_gate": true
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "world_dimension": "minecraft:overworld",
+          "world_prerequisites": "해당 NPC의 세계 공통 해금과 현재 세계 가용성. 기존 명시 봉인·접근 금지·동일 개체 중복 방지의 세계 제약을 보존하되 현장 본체를 사전 요구하지 않는다.",
+          "current_location_conditions": "조우 주체 플레이어가 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+          "initiator_current_conditions": "현재 휴대 기록 대조 조건을 갖춘 플레이어가 한 명 이상 있을 때 후보가 된다. 이 조건은 기존 만남 경로의 현재 준비이며 새 과거 해금 반복 요구가 아니다. 해금 달성자와 조우 주체는 달라도 된다.",
+          "selection_rule": "세계 가용성과 세계 공통 해금이 충족된 뒤 현재 장소·시간·아이템·상태 조건을 갖춘 플레이어가 한 명 이상 있고 확률 판정이 성공하면 그 플레이어를 주체로 등장한다. 등장 전 위치 조건은 플레이어의 지형·통행·위험과 적합한 배치 여건이다. 해당 NPC 본체가 미리 현장에 있어야 한다는 조건은 두지 않는다.",
+          "probability_and_multiple_players": "현재 구체 규칙은 보존한다. 후보가 여럿일 때 조우 주체 선택, 수치·판정 주기·재등장·중복 방지의 미정 세부는 확정하지 않는다. 공용 풀의 NONE은 출현 보장이 아님을 뜻한다.",
+          "body_already_onsite_required": false,
+          "static_existing_actor_exception": "이미 배치된 정적 NPC와의 기존 접촉은 바로 등장 후 접촉 단계로 간다. 인사·재대화마다 새 소환 추첨을 만들지 않는다.",
+          "runtime_and_coordinates_verified": false
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-002",
+              "source_name": "루",
+              "target_record_key": "RPG-S08-003",
+              "target_name": "누아다",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-002",
+              "counterpart_name": "루",
+              "original_perspective_record_key": "RPG-S08-002",
+              "original_perspective_name": "루",
+              "original_baseline_verbatim": {
+                "text": "왕의 권위와 장인의 자율 및 지휘를 둘러싼 권력 이양의 기존 설계 관계. 최종 양도는 미완료다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "relationship_counterpart"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/401/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 루의 관점으로 보존한 근거다. 현재 상대는 루이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            },
+            {
+              "source_record_key": "RPG-S08-003",
+              "source_name": "누아다",
+              "target_record_key": "RPG-S08-002",
+              "target_name": "루",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-002",
+              "counterpart_name": "루",
+              "original_perspective_record_key": "RPG-S08-003",
+              "original_perspective_name": "누아다",
+              "original_baseline_verbatim": {
+                "text": "지휘와 후계 약속을 둘러싼 권력 이양 관계. 모든 통치권이 이미 넘어갔다는 결론은 아니다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "relationship_counterpart"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/402/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 누아다의 관점으로 보존한 근거다. 현재 상대는 루이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            },
+            {
+              "source_record_key": "RPG-S08-019",
+              "source_name": "마하",
+              "target_record_key": "RPG-S08-003",
+              "target_name": "누아다",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-019",
+              "counterpart_name": "마하",
+              "original_perspective_record_key": "RPG-S08-019",
+              "original_perspective_name": "마하",
+              "original_baseline_verbatim": {
+                "text": "누아다와 전선 경계를 함께 지키는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/417/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 마하의 관점으로 보존한 근거다. 현재 상대는 마하이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            }
+          ],
+          "edge_count": 3,
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-002",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "지휘와 후계 약속을 둘러싼 권력 이양 관계. 모든 통치권이 이미 넘어갔다는 결론은 아니다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role",
+                    "relationship_counterpart"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "루가 맡을 범위를 직접 수락하고 누아다가 그 결정의 실무를 가로채지 않는다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "다음에는 같은 사안에 두 명의 명령을 내리지 않고 루에게 물을 사안과 자신에게 남은 사안을 구분해 답한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "이 사람과 실제로 성립한 경험의 범위만 바뀐다. 부재한 플레이어·상대에게 신뢰나 기억을 복사하지 않는다.",
+                    "호감·재접견은 연애·영구 복종·진영 변경·개인 MAIN 양도나 접근 해금이 아니다."
+                  ]
+                },
+                "knowledge_limit": "이름·기존 인연을 알아도 상대의 현재 위치·비밀·새 계획·이번 동의는 모른다. 실제 직접 경험이나 전달된 내용까지만 기억한다."
+              }
+            ]
+          },
+          "source_perspective_policy": "원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 나·아버지·어머니는 원 출발 관점이며 현재 인물의 가계·지식·현재 동의로 자동 전환하지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 실제 손상된 도구를 기존 방식으로 수선하고 다시 사용한 이력. 몸의 완전성·신체 능력·통치 자격을 해금 평가로 삼지 않는다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "기존 저택 공용 마당의 낮은 돌좌석",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+            "status": "new_minor_scene_detail_on_unverified_retained_placement"
+          },
+          "preappearance_player_conditions": "주체가 현재 자기 소유 또는 열람 허락된 기존 책·지도·기록 1개를 휴대하고 공개 가능한 대목을 지금 열어 볼 준비. NPC의 사적 기록·해당 사건 완료·이미 현장에 있는 본체를 요구하지 않는다.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP003B-RPG-S08-003-01",
+              "places": [
+                "기존 저택 공용 마당의 낮은 돌좌석. 누아다가 잔을 어느 손으로 들지 잠깐 고른 뒤 자기 속도로 마신다. 옆의 지휘용 물건에는 손을 얹지 않는다.",
+                "낮은 좌석 앞의 안정된 바닥. 누아다가 원할 때만 자기 잔 또는 칼집을 손에 올려 무게중심을 달리 잡아 본다. 치료나 왕위 시험을 위해 여는 장면이 아니다.",
+                "같은 마당의 통로 양옆. 실제 옮겨도 되는 짐을 두고 루가 한정 배치 사안을 수락했는지 확인한다. 실제 답이 있을 때만 실행하며 무응답이면 wait로 종료할 수 있다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "낮은 돌좌석 앞에 잔을 내려놓을 안정된 한 자리와 통행로를 따로 표시한다. 소품은 원래 잔 또는 칼집 1개를 본인이 고른다. 짐은 사전 허락한 전체 목록을 현물별로 세며 기본 제안은 상자 1개다. 다른 합의 품목·정수량도 그대로 받는다.",
+        "이야기": [
+          {
+            "episode_id": "EP003B-RPG-S08-003-01",
+            "title": "왕의 손을 대신하지 않는 약속",
+            "opening": "기존 저택 공용 마당의 낮은 돌좌석. 누아다가 잔을 어느 손으로 들지 잠깐 고른 뒤 자기 속도로 마신다. 옆의 지휘용 물건에는 손을 얹지 않는다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "플레이어는 앉을 공간부터 비켜 주고 잔이나 손잡이를 시험해 볼 의사가 있는지 묻는다. 허락하면 누아다 본인이 빈 잔을 들어 다시 내려놓는 동작을 보며 무엇이 불편했는지 본인의 말을 듣는다. 보철을 만지는 허락은 따로 받는다.",
+                "visible_change": "누아다는 지휘용 물건에서 손을 뗀 채 자신의 잔만 정돈한다.",
+                "npc_desire_and_behavior": "“보고 싶다는 말과 만져도 된다는 말은 다르다.” 누아다는 손을 자기 쪽으로 당기고 잔을 다시 든다. 몸을 숨기기보다 자기 몸을 해설할 권리를 지키려 한다."
+              },
+              {
+                "beat_id": "B1A",
+                "action": "본인이 고른 현재 물건을 자기 손으로 어느 부분에서 잡을지 바꾸어 본다. 플레이어도 자기 물건으로 같은 느린 동작을 따라 하되 누아다의 속도를 재촉하지 않는다. 누아다가 허락한 거리에서 물건이 기울거나 안정되는 차이를 보고 본인의 느낌을 묻는다.",
+                "visible_change": "누아다가 잡기 편한 위치를 실제 고르거나 동작을 멈춘다. 지휘용 물건은 여전히 옆에 내려놓여 있다.",
+                "npc_desire_and_behavior": "누아다는 상대가 보는 것을 알아도 일부러 천천히 손잡이를 돌린다. “네 손은 네 속도로 쓰게. 내 손까지 재촉하지 말고.” 안정되면 잔을 내려놓고, 실패하면 짧게 숨을 내쉰 뒤 자신이 다시 할지를 고른다."
+              },
+              {
+                "beat_id": "B2",
+                "action": "누아다가 맡기기로 한 통로 옆 짐의 위치를 루에게 정확히 전한다. 실제 답이 오면 플레이어가 소유자 허락을 받아 짐을 그 위치로 옮기고 통행 폭을 걸어서 확인한다. 루가 부재하면 전달 가능한 범위만 남기고 그의 명령을 꾸미지 않는다.",
+                "visible_change": "누아다가 직접 할 자기 짐은 들고, 루가 맡은 짐은 그 위치에 둔다. 두 사람의 명령이 같은 물건 위에 포개지지 않는다.",
+                "npc_desire_and_behavior": "누아다는 처음 자리 쪽으로 손을 들었다가 무릎 위에 놓는다. “내 눈엔 이쪽이 낫다만, 그가 맡았지.” 다만 통로를 실제 막는 위험이 보이면 체면 때문에 침묵하지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "루가 실제 수락한 한 배치만 실행되거나 구체 위험 때문에 좁혀 재협의된다. 신체 상태를 이유로 후계 약속을 취소하지 않는다. 누아다가 직접 할 자기 짐은 들고, 루가 맡은 짐은 그 위치에 둔다. 두 사람의 명령이 같은 물건 위에 포개지지 않는다.",
+              "optional_stop": "실제 합의한 마지막 결과를 확인하면 END. 별도 지도·식사 감상·다음 방문·추가 노동을 거절해도 이미 완료된 성취 유지. 중간 END는 명시된 미완료 상태이며 성공 종료와 구별한다.",
+              "next_encounter_memory": "같은 사안을 물으면 누아다는 루가 실제 맡은 범위와 자기에게 남은 범위를 나눠 답한다. 반드시 화자의 실제 수신·목격 이력이 있는 상대에게만. 없는 방문자는 현재 물건·장소 관찰로 시작한다.",
+              "playfeel_and_difference": "몸의 작은 자발적 동작 시험과 물건 배치의 실제 위임을 나란히 놓는 사건"
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "누아다",
+        "canonical_name": "누아다",
+        "mythology": "켈트",
+        "tradition_source": "켈트·아일랜드 신화군",
+        "tier": "초월급",
+        "tier_display": "초월급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "초월급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-003",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-003",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Núadu",
+        "aliases": "Nuada;은팔의 누아다",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-003",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-003",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 초월급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "초월급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-004",
+      "name": "오그마",
+      "production_god_id": "mythictrpg:celtic_unassigned_ogma",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-004/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-004/authoring_contract.json",
+          "episode_pointer": "/exact_accepted_dossier/episodes",
+          "scope_pointer": "/exact_scope_contract",
+          "first_contact_pointer": "/exact_encounter_snapshot/encounter_design"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-004.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": {
+            "retained_dimension": "minecraft:overworld",
+            "status": "기존 차원 보존; 실제 운영 등록 연결 대기"
+          },
+          "location_scene": {
+            "place": "주점 공용 방의 낭독할 수 있는 벽가",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "why_here": "인덱과의 적대 기록에서 서로 다르게 적힌 포로 인계 대목을 대조할 자리를 마련하고 싶다. 자기 승리의 이야기가 초라해져도 기록을 지킬 수 있는지 스스로 시험하는 일이다.",
+          "discovery": {
+            "ordinary_path": "주점 공용 방의 낭독할 수 있는 벽가를 탐험하면 다음 동작이 먼저 눈·귀에 들어온다: 승리를 칭송하는 대목을 큰 소리로 읽다가 포로 인계 숫자가 어긋나는 곳에서 다시 처음으로 돌아간다.",
+            "introduction_path": "실제 전달받은 소개와 현재 소재 정보가 있으면 해당 화제로 인사를 시도한다. 원전 인연이나 간선 존재만으로 현재 위치·초대권을 알지 않는다. 유입 경로는 별도 메타데이터를 따른다.",
+            "missing_introducer_fallback": "주점 공용 방의 낭독할 수 있는 벽가로 직접 접근해 위 동작을 관찰하는 독립 경로가 있다. 원래 접근 제약은 똑같이 적용하며 본체 부재 시 대화를 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "주점 공용 방의 낭독할 수 있는 벽가에 실제로 도달하고 본체가 머물러야 한다. 원본 접근 제약을 실제 실행 직전에 다시 확인한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": {
+              "baseline_constraints": [],
+              "rule": "현재 권위 봉인·접근 상태 확인. 완전 봉인 중 일반 대화·수주 불가. 여기서 봉인 해제나 새 현현을 만들지 않는다."
+            },
+            "permission_or_willingness": "“듣기 좋은 문장과 맞는 문장을 같은 것으로 보지 마라.” 협력·대련·소개는 실제로 선택한 범위만 수락한다. 적대 공격은 상호 동의가 전제인 것이 아니며 실제 침해·접근과 권위 전투 판정으로 구분한다.",
+            "chapter_reason_if_any": {
+              "existing_refs": [],
+              "rule": "기존 사건의 실제 조건은 보존한다. 장 번호 자체는 첫 인사 잠금이나 새 필수 MAIN이 아니다."
+            },
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "승리를 칭송하는 대목을 큰 소리로 읽다가 포로 인계 숫자가 어긋나는 곳에서 다시 처음으로 돌아간다.",
+            "player_visible_clue": "승리를 칭송하는 대목을 큰 소리로 읽다가 포로 인계 숫자가 어긋나는 곳에서 다시 처음으로 돌아간다. 이 동작은 지금 장면의 관찰 단서이며 과거 사건의 완료 증거가 아니다.",
+            "player_possible_action": "칭송을 계속 듣거나, 어긋난 문장을 끊어 묻거나, 자기에게 불리한 비교 기록을 내놓는다. 대화 없이 지나가거나 제안을 거절하는 선택도 남긴다.",
+            "opening_intent": "“듣기 좋은 문장과 맞는 문장을 같은 것으로 보지 마라.”",
+            "question_response": {
+              "situation": "좋아하는 말놀이가 있느냐고 묻는다.",
+              "spoken_response": "같은 뜻을 더 짧게 말해 봐라. 짧다고 반드시 약한 말은 아니다.",
+              "action": "자기 문장을 먼저 하나 던지고 상대 답을 기다린다.",
+              "boundary": "질문·가정은 수행·서약·공개 허락이 아니다."
+            },
+            "refusal_response": {
+              "specific_boundary_response": {
+                "situation": "그의 승리를 크게 보이게 하려고 증언을 고치자고 한다.",
+                "spoken_response": "그렇게 이긴 내가 마음에 들겠느냐? 원래 문장부터 내놔라.",
+                "physical_or_conversational_action": "칭송 부분을 덮고 문제의 진술을 앞으로 당긴다.",
+                "knowledge_ids_used": [
+                  "K-BOUNDARY"
+                ],
+                "qa_only": true
+              },
+              "refusal": "이번 참여를 거절하면 강제 수행·가호·MAIN을 주지 않고 자기 일을 이어간다.",
+              "joke_boundary": "농담의 표현과 실제 명시적 결정·물리적 침해를 구분한다. 자신을 칭송하는 증언이라도 거짓임을 알면 그대로 낭독하지 않는다."
+            },
+            "early_deduction_boundary": "이 장면의 의도를 먼저 알아채면 같은 정답을 되묻는 시험을 반복하지 않는다. 현재 접촉·전언 없이 알 수 없는 상대의 소재·비공개 계획·현행 진영 / 직접 보거나 실제 받은 보고에 없는 공유 세계 변화와 다른 플레이어의 사적 경험 / 원전 이본 전체, 세계 비밀, 장면 기획에만 있는 미래 결과"
+          },
+          "refusal_and_return": {
+            "return_action": [
+              {
+                "trigger": {
+                  "text": "방문자가 자신에게 유리한 증언의 잘못까지 직접 고쳤다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 정정 전후 문장을 함께 보여 주며 어느 대목부터 읽을지 그 방문자에게 고르게 한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                  "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                ]
+              }
+            ],
+            "rule": "이미 실행된 일을 되감지 않는다. 현재 남은 상태와 실제 들은 이전 말만 이어가며 거절을 영구 적대로 취급하지 않는다. 실제 침해의 책임은 별도다."
+          },
+          "post_ender_change": {
+            "before": "기존 접근 사본의 미정·초기 후보·실제 제한을 그대로 적용한다. 해당 장소에 실제 도달하고 본체·봉인이 허용하면 낮은 가중치의 이른 조우도 검토한다. 등급으로 새 확률 0 장벽을 만들지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "proposed_observable_history": "누구 한 명이 실제 탐험에서 기존 책·기록물을 획득해 안전한 생활권으로 가지고 귀환한 이력. 특정 새 전리품 ID나 의로운 증언 판정은 만들지 않는다.",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "early_access_note": null,
+          "global_result": "누구 한 명이라도 채택된 조건을 달성하면 해당 NPC는 세계 공통으로 해금된다. 다른 친구·후발자에게 같은 해금 이력을 다시 요구하지 않는다. 해금 달성자와 다음 조우 주체는 달라도 된다.",
+          "npc_awareness": "세계 이력은 NPC에게 자동 전달되지 않는다. 실제 만남 이후 인식은 별도다.",
+          "activation_performed": false,
+          "not_a_retroactive_gate": true
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "world_dimension": "minecraft:overworld",
+          "world_prerequisites": "해당 NPC의 세계 공통 해금과 현재 세계 가용성. 기존 명시 봉인·접근 금지·동일 개체 중복 방지의 세계 제약을 보존하되 현장 본체를 사전 요구하지 않는다.",
+          "current_location_conditions": "조우 주체 플레이어가 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+          "initiator_current_conditions": "현재 공개 방문 조건을 갖춘 플레이어가 한 명 이상 있을 때 후보가 된다. 이 조건은 기존 만남 경로의 현재 준비이며 새 과거 해금 반복 요구가 아니다. 해금 달성자와 조우 주체는 달라도 된다.",
+          "selection_rule": "세계 가용성과 세계 공통 해금이 충족된 뒤 현재 장소·시간·아이템·상태 조건을 갖춘 플레이어가 한 명 이상 있고 확률 판정이 성공하면 그 플레이어를 주체로 등장한다. 등장 전 위치 조건은 플레이어의 지형·통행·위험과 적합한 배치 여건이다. 해당 NPC 본체가 미리 현장에 있어야 한다는 조건은 두지 않는다.",
+          "probability_and_multiple_players": "현재 구체 규칙은 보존한다. 후보가 여럿일 때 조우 주체 선택, 수치·판정 주기·재등장·중복 방지의 미정 세부는 확정하지 않는다. 공용 풀의 NONE은 출현 보장이 아님을 뜻한다.",
+          "body_already_onsite_required": false,
+          "static_existing_actor_exception": "이미 배치된 정적 NPC와의 기존 접촉은 바로 등장 후 접촉 단계로 간다. 인사·재대화마다 새 소환 추첨을 만들지 않는다.",
+          "runtime_and_coordinates_verified": false
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-004",
+              "source_name": "오그마",
+              "target_record_key": "RPG-S08-017",
+              "target_name": "인덱",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-017",
+              "counterpart_name": "인덱",
+              "original_perspective_record_key": "RPG-S08-004",
+              "original_perspective_name": "오그마",
+              "original_baseline_verbatim": {
+                "text": "인덱과 적대한 기록을 보관하며 포로 교환의 교섭 상대가 되는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/403/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 오그마의 관점으로 보존한 근거다. 현재 상대는 인덱이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            },
+            {
+              "source_record_key": "RPG-S08-017",
+              "source_name": "인덱",
+              "target_record_key": "RPG-S08-004",
+              "target_name": "오그마",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-017",
+              "counterpart_name": "인덱",
+              "original_perspective_record_key": "RPG-S08-017",
+              "original_perspective_name": "인덱",
+              "original_baseline_verbatim": {
+                "text": "오그마와 포로 교환을 교섭하는 적대 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/415/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 인덱의 관점으로 보존한 근거다. 현재 상대는 인덱이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            }
+          ],
+          "edge_count": 2,
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-017",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "인덱과 적대한 기록을 보관하며 포로 교환의 교섭 상대가 되는 기존 관계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "인덱이 자기 측에 불리한 인계 대목도 직접 설명한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "인덱에게는 반박부터 던지던 태도를 줄이고 다음 대조 자리에서 첫 설명 차례를 준다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "인덱와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 인덱의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              }
+            ]
+          },
+          "source_perspective_policy": "원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 나·아버지·어머니는 원 출발 관점이며 현재 인물의 가계·지식·현재 동의로 자동 전환하지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 실제 탐험에서 기존 책·기록물을 획득해 안전한 생활권으로 가지고 귀환한 이력. 특정 새 전리품 ID나 의로운 증언 판정은 만들지 않는다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "주점 공용 방의 낭독할 수 있는 벽가",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "preappearance_player_conditions": "현재 허락된 공개 출입점에 도달해 통행을 막지 않고 머물 의사가 있는 실제 주체. 공물·충성·과거 인사·사적 사건 완료 요구 없음.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP025A-RPG-S08-004",
+              "places": [
+                "벽가 낭독 자리. 오그마가 포로 인계 대목에서 멈춰 같은 자리에 다른 두 운율을 불러 본다.",
+                "현재 낭독 자리. 인덱이 실제 참석해 공개 증언에 동의한 경우에만 그 목소리를 들을 수 있다.",
+                "낭독이 끝난 벽가. 제한 열람은 현재 자격 없는 청중이 없는 자리에서 오그마가 직접 해당 기록을 열 때만 진행한다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "주점 벽가의 낭독 자리는 출입문을 막지 않는 4×4블록 이내 기존 공간을 쓴다. 공개 노래와 제한 인계 기록을 구분한다. 제한 열람은 허가자 외 청중이 없는 기존 자리로 옮기며 별도 방을 신설하지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP025A-RPG-S08-004",
+            "title": "승전 노래의 빈 마디",
+            "opening": "벽가 낭독 자리. 오그마가 포로 인계 대목에서 멈춰 같은 자리에 다른 두 운율을 불러 본다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "플레이어는 같은 대목의 두 운율을 실제 듣고 어느 말에서 인계된 사람의 목소리가 사라지는지 묻는다. 참여한다면 오그마가 부르는 줄과 플레이어가 받는 줄을 소리로 맞춘다.",
+                "visible_change": "두 운율의 차이가 현재 청중에게 들리고 오늘 낭독할 대목이 정해진다.",
+                "npc_desire_and_behavior": "오그마는 자기 힘이 살아 있는 운율 쪽으로 몸을 세웠다가 상대 질문에 짧게 숨을 쉰다. 자기 승리보다 기록을 남길 수 있는지 시험한다."
+              },
+              {
+                "beat_id": "B2",
+                "action": "플레이어는 오그마의 기억을 먼저 듣고 실제 참석한 인덱의 증언을 별도로 듣는다. 일치하는 인계 장면만 짧게 합창하고 반박된 공적 구절은 비운다. 인덱이 없으면 오그마가 자기 기억이라고 밝힌 노래만 듣는다.",
+                "visible_change": "반박된 구절 자리의 박자가 실제 비거나, 증언 부재 표시를 둔 자기 노래만 방 안에 남는다.",
+                "npc_desire_and_behavior": "오그마는 반박에 재반박부터 꺼내다가 직접 확인된 인계 사실 앞에서 입을 닫는다. 힘주던 마디를 비우는 일이 명단 정리보다 아프다."
+              },
+              {
+                "beat_id": "B3",
+                "action": "플레이어는 실제 정정한 줄과 단순 청취한 줄을 나눠 말한다. 오그마가 정정 기여를 확인한 사람에게 그 인계 대목을 직접 열어 주면 그 사람만 실제 읽는다. 인계된 사람은 실제 발언할 의사가 있을 때 자기 목소리를 낸다.",
+                "visible_change": "오그마의 노래에 빈 마디가 남고 실제 허락된 경우 해당 기록이 열렸다 닫힌다. 청취자와 열람자는 서로 다른 경험을 갖는다.",
+                "npc_desire_and_behavior": "오그마는 빈 마디를 급히 메우지 않고 들려 오는 목소리를 기다린다. 기다리는 행위가 자기 공적보다 기록을 앞세운 변화다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제 반박을 받아들여 자기 공적 구절을 덜어 낸 범위만 정정된다. 증언자 부재에서는 오그마의 자기 기억만 남고 교차 확인 완료·기록 접근권을 생성하지 않는다. 실제 정정 기여와 오그마의 확인 뒤 해당 기록만 제한 열람한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "오그마는 빈 마디를 급히 메우지 않고 들려 오는 목소리를 기다린다. 기다리는 행위가 자기 공적보다 기록을 앞세운 변화다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "승전 노래의 빈 마디: 지금 들린 두 운율과 실제 나눈 낭독 몫. 멋진 운율이 역사적 사실이라는 증거가 되지 않는다. → 오그마의 노래에 빈 마디가 남고 실제 허락된 경우 해당 기록이 열렸다 닫힌다. 청취자와 열람자는 서로 다른 경험을 갖는다."
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "오그마",
+        "canonical_name": "오그마",
+        "mythology": "켈트",
+        "tradition_source": "켈트·아일랜드 신화군",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-004",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-004",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Ogma",
+        "aliases": "없음",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-004",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-004",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-005",
+      "name": "모리간",
+      "production_god_id": "mythictrpg:celtic_unassigned_morrigan",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-005/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-005/authoring_contract.json",
+          "episode_pointer": "/episode_link_contract/accepted_episode",
+          "scope_pointer": "/scope_nonprofile_contract",
+          "first_contact_pointer": "/first_contact_original_contract"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-005.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": "Overworld: 기존 오버월드 생활권; 등록 연결 대기",
+          "location_scene": {
+            "place": "숲 폐허에서 실제 퇴로로 이어지는 안전한 길목",
+            "retained_placement_reference": "실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음",
+            "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+            "status": "new_minor_scene_detail_on_unverified_retained_placement"
+          },
+          "why_here": "루에게 전할 경고가 승리의 장식이 되지 않게 하고, 부상자 앞에서 누가 실제 책임을 남겨 두는지 지켜본다.",
+          "discovery": {
+            "ordinary_path": "다들 앞을 볼 때 그녀만 돌아갈 길의 꺾이는 곳을 보고 있다. 누가 오느냐고 물으면 바로 답하지 않는다.",
+            "introduction_path": "현재 코어 관계의 상대가 실제로 모리간의 현장을 알고 있고 전달에 동의할 때, 이번 행동의 화제로 소개할 수 있다. 소개는 소환도 예약 보장도 아니다.",
+            "missing_introducer_fallback": "소개자가 없어도 숲 폐허에서 실제 퇴로로 이어지는 안전한 길목까지 실제 탐험으로 도달하여 위 소리·동작을 직접 관찰하면 인사를 시도할 수 있다. 본체가 없으면 흔적은 위치 보장이 아니므로 현재 현장 탐색을 계속하고 허위 대화는 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "안전한 숲길과 현재 본체의 체류가 필요하다. 부상자와 특정 전쟁의 발생을 첫 만남의 필수 전제로 생성하지 않고, 이미 있는 귀환·구호 현장일 때만 그 사건에 연결한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": "입력에는 새 개별 봉인이 확정되어 있지 않다. 이를 무조건 무봉인으로 해석하지 않고 실제 권위 접근 상태를 확인한다. 완전 봉인 중 일반 대화·수주 불가.",
+            "permission_or_willingness": "“돌아갈 길은 보았나? 이겼다는 말을 한 번 더 한다고 저 짐이 움직이진 않겠지.” 대답·도움·접견은 각자 거절 가능하다.",
+            "chapter_reason_if_any": "기존 메인 배역 없음. 이 첫 접촉에 새 필수 MAIN이나 장 번호를 붙이지 않는다.",
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "모리간은 승전 소리가 들리는 쪽을 등지고, 뒤처진 사람이 지나갈 수 있도록 눕혀진 짐을 옆으로 끌어 놓는다.",
+            "player_visible_clue": "다들 앞을 볼 때 그녀만 돌아갈 길의 꺾이는 곳을 보고 있다. 누가 오느냐고 물으면 바로 답하지 않는다.",
+            "player_possible_action": "짐을 함께 옮기거나 자신이 걸어온 길의 막힌 곳을 말하거나, 승리 뒤 누가 남는지 묻는다.",
+            "opening_intent": "“돌아갈 길은 보았나? 이겼다는 말을 한 번 더 한다고 저 짐이 움직이진 않겠지.”",
+            "question_response": "누가 다칠지 예언해 달라면 “네가 듣고 싶은 이름을 말하면 길이 열리나?”라고 되묻는다. 확인한 위험과 경고만 나누며 모르는 미래를 판다 하지 않는다.",
+            "refusal_response": "구호를 거절하면 불편한 침묵을 남기고 스스로 길을 비킨다. 억지로 위로하거나 미래의 벌을 확정하지 않는다.",
+            "early_deduction_boundary": "원전·혈연·장면 단서로 정체나 의도를 일찍 짐작하면 짐작한 범위의 질문은 받아 준다. 그러나 직접 보거나 들은 사실과 가설을 구분하고, 여신의 비밀·옛 용사의 내면·타인 기억·미래 결과를 정답처럼 확인하지 않는다."
+          },
+          "refusal_and_return": "구호를 거절하면 불편한 침묵을 남기고 스스로 길을 비킨다. 억지로 위로하거나 미래의 벌을 확정하지 않는다. 다음 방문에는 이미 치운 물건을 다시 흩뜨려 같은 일을 강제하지 않고, 현재 남은 일이나 이전 선택의 실제 결과로 대화를 잇는다.",
+          "post_ender_change": {
+            "before": "최초 일반 조우 시점은 미정으로 보존한다. 이 현장에 실제로 도달하고 본체·봉인·의사가 허용되면 일찍 만날 수 있는 상세안이다. 고등급이나 C번호 때문에 확률 0으로 잠그지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "proposed_observable_history": "누구 한 명이 기존 공동 보스 레이드에 실제 참가한 뒤 전장 출구나 귀환 지점으로 이동한 이력. 구호의 선악 평가·미래 승리 예측은 해금 조건이 아니다.",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "early_access_note": null,
+          "global_result": "누구 한 명이라도 채택된 조건을 달성하면 해당 NPC는 세계 공통으로 해금된다. 다른 친구·후발자에게 같은 해금 이력을 다시 요구하지 않는다. 해금 달성자와 다음 조우 주체는 달라도 된다.",
+          "npc_awareness": "세계 이력은 NPC에게 자동 전달되지 않는다. 실제 만남 이후 인식은 별도다.",
+          "activation_performed": false,
+          "not_a_retroactive_gate": true
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "world_dimension": "minecraft:overworld",
+          "world_prerequisites": "해당 NPC의 세계 공통 해금과 현재 세계 가용성. 기존 명시 봉인·접근 금지·동일 개체 중복 방지의 세계 제약을 보존하되 현장 본체를 사전 요구하지 않는다.",
+          "current_location_conditions": "조우 주체 플레이어가 실제 숲 폐허·저택·감시탑의 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+          "initiator_current_conditions": "현재 돌봄 준비 조건을 갖춘 플레이어가 한 명 이상 있을 때 후보가 된다. 이 조건은 기존 만남 경로의 현재 준비이며 새 과거 해금 반복 요구가 아니다. 해금 달성자와 조우 주체는 달라도 된다.",
+          "selection_rule": "세계 가용성과 세계 공통 해금이 충족된 뒤 현재 장소·시간·아이템·상태 조건을 갖춘 플레이어가 한 명 이상 있고 확률 판정이 성공하면 그 플레이어를 주체로 등장한다. 등장 전 위치 조건은 플레이어의 지형·통행·위험과 적합한 배치 여건이다. 해당 NPC 본체가 미리 현장에 있어야 한다는 조건은 두지 않는다.",
+          "probability_and_multiple_players": "현재 구체 규칙은 보존한다. 후보가 여럿일 때 조우 주체 선택, 수치·판정 주기·재등장·중복 방지의 미정 세부는 확정하지 않는다. 공용 풀의 NONE은 출현 보장이 아님을 뜻한다.",
+          "body_already_onsite_required": false,
+          "static_existing_actor_exception": "이미 배치된 정적 NPC와의 기존 접촉은 바로 등장 후 접촉 단계로 간다. 인사·재대화마다 새 소환 추첨을 만들지 않는다.",
+          "runtime_and_coordinates_verified": false
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-005",
+              "source_name": "모리간",
+              "target_record_key": "RPG-S08-002",
+              "target_name": "루",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-002",
+              "counterpart_name": "루",
+              "original_perspective_record_key": "RPG-S08-005",
+              "original_perspective_name": "모리간",
+              "original_baseline_verbatim": {
+                "text": "경고의 전달과 구호 선택에 따라 의미가 달라지는 현재 관계 설계. 루가 아직 듣지 않은 경고를 알고 있다고 하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "relationship_counterpart"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/404/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 모리간의 관점으로 보존한 근거다. 현재 상대는 루이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            }
+          ],
+          "edge_count": 1,
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-002",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "경고의 전달과 구호 선택에 따라 의미가 달라지는 현재 관계 설계. 루가 아직 듣지 않은 경고를 알고 있다고 하지 않는다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role",
+                    "relationship_counterpart"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "루가 경고를 실제로 듣고 구호에서 자기 몫을 정한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "수수께끼 같은 경고만 반복하지 않고 확인한 선택이 경고의 어느 부분과 맞닿는지 직접 이야기한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "이 사람과 실제로 성립한 경험의 범위만 바뀐다. 부재한 플레이어·상대에게 신뢰나 기억을 복사하지 않는다.",
+                    "호감·재접견은 연애·영구 복종·진영 변경·개인 MAIN 양도나 접근 해금이 아니다."
+                  ]
+                },
+                "knowledge_limit": "이름·기존 인연을 알아도 상대의 현재 위치·비밀·새 계획·이번 동의는 모른다. 실제 직접 경험이나 전달된 내용까지만 기억한다."
+              }
+            ]
+          },
+          "source_perspective_policy": "원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 나·아버지·어머니는 원 출발 관점이며 현재 인물의 가계·지식·현재 동의로 자동 전환하지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 기존 공동 보스 레이드에 실제 참가한 뒤 전장 출구나 귀환 지점으로 이동한 이력. 구호의 선악 평가·미래 승리 예측은 해금 조건이 아니다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "숲 폐허에서 실제 퇴로로 이어지는 안전한 길목",
+            "retained_placement_reference": "실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음",
+            "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+            "status": "new_minor_scene_detail_on_unverified_retained_placement"
+          },
+          "preappearance_player_conditions": "주체가 현재 자기 식량 1개와 안전한 귀환 경로를 확보. 기존 동등한 식량과 다른 현재 돌봄 도구를 사용 허락 범위에서 준비해도 되며 부상자·치료 성공·본체 사전 배치를 요구하지 않는다.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP003B-RPG-S08-005-01",
+              "places": [
+                "숲 폐허에서 퇴로로 이어지는 안전한 굽이. 모리간이 눕혀진 짐을 통행 밖으로 끌고 손바닥의 작은 돌을 뒤집는다. 현재 실제 귀환·구호 현장이 없으면 인사와 길 관찰만 가능하다.",
+                "당사자가 선택한 실제 퇴로와 안전한 쉼자리, 또는 그 퇴로로 복귀 가능한 현재 적의 접근 구간. 같은 모리간이 두 곳에 동시에 있지 않는다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "첫 만남은 실제 숲 폐허와 안전 퇴로가 만나는 길목이다. 구호 활동은 현재 뒤처진 당사자가 고른 길과 쉼자리, 추격은 복귀 가능한 현존 적 구간이다. 사건을 열려고 부상자나 적을 생성하지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP003B-RPG-S08-005-01",
+            "title": "승리 뒤 돌아볼 얼굴",
+            "opening": "숲 폐허에서 퇴로로 이어지는 안전한 굽이. 모리간이 눕혀진 짐을 통행 밖으로 끌고 손바닥의 작은 돌을 뒤집는다. 현재 실제 귀환·구호 현장이 없으면 인사와 길 관찰만 가능하다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "플레이어가 자기 지나온 길의 막힌 부분을 말하고 현재 뒤처진 당사자에게 무엇을 도와도 되는지 묻는다. 실제 승리 보고와 현재 적의 잔존 여부를 출처별로 나눈다. 모리간의 루 대상 경고를 전하려면 공개 허락 내용만 가져간다.",
+                "visible_change": "짐 하나가 길 밖으로 가고 플레이어 발 방향이 실제 맡은 역할 쪽으로 달라진다.",
+                "npc_desire_and_behavior": "“뒤에는 누가 남나?” 모리간은 앞쪽 함성으로 몸을 돌리지 않는다. 자기 경고가 승리 장식으로 소비되는 것이 싫지만 미래의 벌을 들먹여 선택을 뺏지 않는다."
+              },
+              {
+                "beat_id": "B2",
+                "action": "구호 역할은 당사자 속도에 맞춰 걷고 원하는 쉼자리에서 짐을 내려놓는다. 모리간은 마지막으로 남은 사람과 실제로 걸어 나온다. 추격 역할은 자기 엄폐·철수 수단으로 현존 적을 막고 상태를 확인한 뒤 돌아온다. 전투 중 구호 퇴로 방어는 실제 준비된 참가자가 맡은 범위만 한다.",
+                "visible_change": "마지막 실제 당사자가 선택한 쉼에 닿거나 아직 남은 위험이 분명히 표시된다. 모리간의 다음 질문은 막연한 승리 대신 실제 맡은 한 구간을 겨눈다.",
+                "npc_desire_and_behavior": "모리간은 쉼자리 옆에 돌을 내려놓는다. “여기서 멈추겠다고 했지.” 더 멀리 데려가야 훌륭해 보인다는 말에는 당사자 답을 다시 가리킨다. 자신의 선택만 예언의 정답으로 만들지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "실제 적 상태와 실제 귀환자의 이동·쉼을 각각 남긴다. 두 결과를 한 승리 말로 합치거나 부상자를 새로 만들지 않는다. 마지막 실제 당사자가 선택한 쉼에 닿거나 아직 남은 위험이 분명히 표시된다. 모리간의 다음 질문은 막연한 승리 대신 실제 맡은 한 구간을 겨눈다.",
+              "optional_stop": "실제 합의한 마지막 결과를 확인하면 END. 별도 지도·식사 감상·다음 방문·추가 노동을 거절해도 이미 완료된 성취 유지. 중간 END는 명시된 미완료 상태이며 성공 종료와 구별한다.",
+              "next_encounter_memory": "루가 실제 경고를 받은 뒤 이행한 범위를 모리간이 직접 확인한 경우에만 다음 경고에 그 빈자리 또는 수행을 구체적으로 언급한다. 반드시 화자의 실제 수신·목격 이력이 있는 상대에게만. 없는 방문자는 현재 물건·장소 관찰로 시작한다.",
+              "playfeel_and_difference": "실제 귀환·구호 현장에서 추격과 뒤처진 사람의 이동을 나누어 책임을 확인하는 사건"
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "모리간",
+        "canonical_name": "모리간",
+        "mythology": "켈트",
+        "tradition_source": "켈트·아일랜드 신화군",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-005",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-005",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Morrígan",
+        "aliases": "Morrigan",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-005",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-005",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-007",
+      "name": "디안 케흐트",
+      "production_god_id": "mythictrpg:celtic_unassigned_dian_cecht",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-007/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-007/authoring_contract.json",
+          "episode_pointer": "/exact_accepted_dossier/episodes",
+          "scope_pointer": "/exact_scope_contract",
+          "first_contact_pointer": "/exact_encounter_snapshot/encounter_design"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-007.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": {
+            "retained_dimension": "minecraft:overworld",
+            "status": "기존 차원 보존; 실제 운영 등록 연결 대기"
+          },
+          "location_scene": {
+            "place": "강변 야영지의 처치 논의를 하는 마른 자리",
+            "retained_placement_reference": "실제 강변에 인접한 주점·초원 폐허·야영지의 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "why_here": "미아흐와 치료 권한이 겹치는 사례에서 누가 무엇을 맡을지 정하고 싶다. 치료가 성공해도 자신이 통제하지 못한 방식이었다면 쉽게 기뻐하지 못한다.",
+          "discovery": {
+            "ordinary_path": "강변 야영지의 처치 논의를 하는 마른 자리를 탐험하면 다음 동작이 먼저 눈·귀에 들어온다: 자기 처치 설명 옆에 미아흐의 이름을 쓰다 말고 손목을 감싸 쥔다.",
+            "introduction_path": "실제 전달받은 소개와 현재 소재 정보가 있으면 해당 화제로 인사를 시도한다. 원전 인연이나 간선 존재만으로 현재 위치·초대권을 알지 않는다. 유입 경로는 별도 메타데이터를 따른다.",
+            "missing_introducer_fallback": "강변 야영지의 처치 논의를 하는 마른 자리로 직접 접근해 위 동작을 관찰하는 독립 경로가 있다. 원래 접근 제약은 똑같이 적용하며 본체 부재 시 대화를 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "강변 야영지의 처치 논의를 하는 마른 자리에 실제로 도달하고 본체가 머물러야 한다. 원본 접근 제약을 실제 실행 직전에 다시 확인한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": {
+              "baseline_constraints": [],
+              "rule": "현재 권위 봉인·접근 상태 확인. 완전 봉인 중 일반 대화·수주 불가. 여기서 봉인 해제나 새 현현을 만들지 않는다."
+            },
+            "permission_or_willingness": "“둘이 한다고 두 번 낫는 건 아니네. 어느 부분을 물으러 왔나?” 협력·대련·소개는 실제로 선택한 범위만 수락한다. 적대 공격은 상호 동의가 전제인 것이 아니며 실제 침해·접근과 권위 전투 판정으로 구분한다.",
+            "chapter_reason_if_any": {
+              "existing_refs": [],
+              "rule": "기존 사건의 실제 조건은 보존한다. 장 번호 자체는 첫 인사 잠금이나 새 필수 MAIN이 아니다."
+            },
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "자기 처치 설명 옆에 미아흐의 이름을 쓰다 말고 손목을 감싸 쥔다.",
+            "player_visible_clue": "자기 처치 설명 옆에 미아흐의 이름을 쓰다 말고 손목을 감싸 쥔다. 이 동작은 지금 장면의 관찰 단서이며 과거 사건의 완료 증거가 아니다.",
+            "player_possible_action": "누가 맡을지 묻거나, 두 설명의 겹친 부분을 가리키거나, 사적 기록 공개를 거절한다. 대화 없이 지나가거나 제안을 거절하는 선택도 남긴다.",
+            "opening_intent": "“둘이 한다고 두 번 낫는 건 아니네. 어느 부분을 물으러 왔나?”",
+            "question_response": {
+              "situation": "딱 맞는 뚜껑을 보여 준다.",
+              "spoken_response": "그건 잘 맞췄군. 다시 열어 보아도 그러한가?",
+              "action": "한 번 돌려 끼워 보고 만족스러운 표정을 숨긴다.",
+              "boundary": "질문·가정은 수행·서약·공개 허락이 아니다."
+            },
+            "refusal_response": {
+              "specific_boundary_response": {
+                "situation": "치료 성과를 뽐내려 환자 기록을 펴 달라고 한다.",
+                "spoken_response": "내 솜씨를 보이자고 남의 몸을 펼치지는 않는다.",
+                "physical_or_conversational_action": "기록을 손에서 놓지 않고 공개 가능한 방법 설명만 한다.",
+                "knowledge_ids_used": [
+                  "K-BOUNDARY"
+                ],
+                "qa_only": true
+              },
+              "refusal": "이번 참여를 거절하면 강제 수행·가호·MAIN을 주지 않고 자기 일을 이어간다.",
+              "joke_boundary": "농담의 표현과 실제 명시적 결정·물리적 침해를 구분한다. 치료를 재촉한다는 이유로 환자가 허락하지 않은 기록을 공개하지 않는다."
+            },
+            "early_deduction_boundary": "이 장면의 의도를 먼저 알아채면 같은 정답을 되묻는 시험을 반복하지 않는다. 현재 접촉·전언 없이 알 수 없는 상대의 소재·비공개 계획·현행 진영 / 직접 보거나 실제 받은 보고에 없는 공유 세계 변화와 다른 플레이어의 사적 경험 / 원전 이본 전체, 세계 비밀, 장면 기획에만 있는 미래 결과"
+          },
+          "refusal_and_return": {
+            "return_action": [
+              {
+                "trigger": {
+                  "text": "방문자가 그의 판단에 반대하면서도 실제 처치 범위를 숨기지 않았다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음 논의에는 그를 내보내지 않고 반대 근거부터 듣는다. 칭찬만 반복하면 설명을 짧게 끝낸다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                  "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                ]
+              }
+            ],
+            "rule": "이미 실행된 일을 되감지 않는다. 현재 남은 상태와 실제 들은 이전 말만 이어가며 거절을 영구 적대로 취급하지 않는다. 실제 침해의 책임은 별도다."
+          },
+          "post_ender_change": {
+            "before": "기존 접근 사본의 미정·초기 후보·실제 제한을 그대로 적용한다. 해당 장소에 실제 도달하고 본체·봉인이 허용하면 낮은 가중치의 이른 조우도 검토한다. 등급으로 새 확률 0 장벽을 만들지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "proposed_observable_history": "누구 한 명이 실제 식량과 침대를 준비해 기존 안전 거점으로 가져간 이력. 질병·치료 성공·순종 여부를 전지적으로 판정하지 않는다.",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "early_access_note": null,
+          "global_result": "누구 한 명이라도 채택된 조건을 달성하면 해당 NPC는 세계 공통으로 해금된다. 다른 친구·후발자에게 같은 해금 이력을 다시 요구하지 않는다. 해금 달성자와 다음 조우 주체는 달라도 된다.",
+          "npc_awareness": "세계 이력은 NPC에게 자동 전달되지 않는다. 실제 만남 이후 인식은 별도다.",
+          "activation_performed": false,
+          "not_a_retroactive_gate": true
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "world_dimension": "minecraft:overworld",
+          "world_prerequisites": "해당 NPC의 세계 공통 해금과 현재 세계 가용성. 기존 명시 봉인·접근 금지·동일 개체 중복 방지의 세계 제약을 보존하되 현장 본체를 사전 요구하지 않는다.",
+          "current_location_conditions": "조우 주체 플레이어가 실제 강변에 인접한 주점·초원 폐허·야영지의 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+          "initiator_current_conditions": "현재 돌봄 준비 조건을 갖춘 플레이어가 한 명 이상 있을 때 후보가 된다. 이 조건은 기존 만남 경로의 현재 준비이며 새 과거 해금 반복 요구가 아니다. 해금 달성자와 조우 주체는 달라도 된다.",
+          "selection_rule": "세계 가용성과 세계 공통 해금이 충족된 뒤 현재 장소·시간·아이템·상태 조건을 갖춘 플레이어가 한 명 이상 있고 확률 판정이 성공하면 그 플레이어를 주체로 등장한다. 등장 전 위치 조건은 플레이어의 지형·통행·위험과 적합한 배치 여건이다. 해당 NPC 본체가 미리 현장에 있어야 한다는 조건은 두지 않는다.",
+          "probability_and_multiple_players": "현재 구체 규칙은 보존한다. 후보가 여럿일 때 조우 주체 선택, 수치·판정 주기·재등장·중복 방지의 미정 세부는 확정하지 않는다. 공용 풀의 NONE은 출현 보장이 아님을 뜻한다.",
+          "body_already_onsite_required": false,
+          "static_existing_actor_exception": "이미 배치된 정적 NPC와의 기존 접촉은 바로 등장 후 접촉 단계로 간다. 인사·재대화마다 새 소환 추첨을 만들지 않는다.",
+          "runtime_and_coordinates_verified": false
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-007",
+              "source_name": "디안 케흐트",
+              "target_record_key": "RPG-S08-008",
+              "target_name": "미아흐",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-008",
+              "counterpart_name": "미아흐",
+              "original_perspective_record_key": "RPG-S08-007",
+              "original_perspective_name": "디안 케흐트",
+              "original_baseline_verbatim": {
+                "text": "미아흐와 치료 권한 및 지식 공개를 두고 충돌하는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/406/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 디안 케흐트의 관점으로 보존한 근거다. 현재 상대는 미아흐이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            },
+            {
+              "source_record_key": "RPG-S08-008",
+              "source_name": "미아흐",
+              "target_record_key": "RPG-S08-007",
+              "target_name": "디안 케흐트",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-008",
+              "counterpart_name": "미아흐",
+              "original_perspective_record_key": "RPG-S08-008",
+              "original_perspective_name": "미아흐",
+              "original_baseline_verbatim": {
+                "text": "디안 케흐트는 아버지이며 치료 지식 공개와 권한을 놓고 갈등하는 상대다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/407/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 미아흐의 관점으로 보존한 근거다. 현재 상대는 미아흐이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            }
+          ],
+          "edge_count": 2,
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-008",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "미아흐와 치료 권한 및 지식 공개를 두고 충돌하는 기존 관계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "미아흐가 실제로 맡을 처치와 중단할 지점을 분명히 설명한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "미아흐의 설명이 끝날 때까지 지시를 덮어씌우지 않고 그 사례의 한 부분을 맡길지 판단한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "미아흐와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 미아흐의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              }
+            ]
+          },
+          "source_perspective_policy": "원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 나·아버지·어머니는 원 출발 관점이며 현재 인물의 가계·지식·현재 동의로 자동 전환하지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 실제 식량과 침대를 준비해 기존 안전 거점으로 가져간 이력. 질병·치료 성공·순종 여부를 전지적으로 판정하지 않는다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "강변 야영지의 처치 논의를 하는 마른 자리",
+            "retained_placement_reference": "실제 강변에 인접한 주점·초원 폐허·야영지의 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "preappearance_player_conditions": "주체가 현재 자기 식량 1개와 안전한 귀환 경로를 확보. 기존 동등한 식량과 다른 현재 돌봄 도구를 사용 허락 범위에서 준비해도 되며 부상자·치료 성공·본체 사전 배치를 요구하지 않는다.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP025A-RPG-S08-007",
+              "places": [
+                "마른 처치 논의 자리. 동의한 주민이 자기 휴식 요청을 말하며 현재 가능한 디안 케흐트와 미아흐가 각자 맡을 일을 제안한다.",
+                "주민이 허락한 침상 주변. 통행 쪽 소리를 낮추고 필요한 기존 도구를 보관 자리에서 가져올 수 있을 때 시작한다.",
+                "주민이 허락한 돌봄이 실제 끝난 뒤의 같은 자리. 쉬고 싶은 주민에게 완료 말을 강요하지 않는다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "첫 조우는 강변 야영지의 마른 처치 논의 자리. 서비스는 주민이 허락한 실제 침상 주변으로 구분한다. 젖지 않은 보관면과 통행 폭을 확인하고 환자 기록을 펼칠 공개 전시대를 만들지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP025A-RPG-S08-007",
+            "title": "양보한 손의 자리",
+            "opening": "마른 처치 논의 자리. 동의한 주민이 자기 휴식 요청을 말하며 현재 가능한 디안 케흐트와 미아흐가 각자 맡을 일을 제안한다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "플레이어는 주민에게 밝기·소리·누가 곁에 있어도 되는지 직접 묻고 실제 답을 듣는다. 담당 선택은 주민에게 남기며 두 치료자의 제안이 실제 있을 때만 비교한다. 수주 UI를 만들지 않는다.",
+                "visible_change": "주민이 원하는 조용한 범위와 담당의 역할이 말로 확인되거나 처치가 명시적으로 보류된다.",
+                "npc_desire_and_behavior": "디안 케흐트는 지시부터 하려다 주민의 답에서 멈춘다. 자기 방법이 선택되지 않을 가능성을 불편하게 받아들인다."
+              },
+              {
+                "beat_id": "B2",
+                "action": "플레이어는 주민이 싫다고 한 소리를 내지 않고 동의한 주변 사람들에게 조용히 해 달라고 부탁한다. 소유자가 허락한 기존 도구만 가져와 선택한 담당자에게 건넨다. 디안 케흐트는 미아흐의 실제 설명을 듣고 보조를 맡을지 직접 결정한다.",
+                "visible_change": "침상 주변이 조용해지거나 그 상태가 유지된다. 필요한 기존 도구를 실제 인도한 경우에만 선택한 담당자에게 그 도구가 놓인다. 도구 없는 요청에는 배치·인수를 만들지 않는다. 권한 침해 갈래는 실제 중단만 남는다.",
+                "npc_desire_and_behavior": "디안 케흐트는 현재 받은 도구가 있을 때만 그것을 쥔 채 잠시 말이 없다. 실제 미아흐의 설명이 있으면 듣고, 보조를 택해 도구를 넘길 때만 짧게 손을 내민다. 도구가 없는 환경 도움에서는 주민이 고른 역할을 듣고 기다린다. 양보를 다정한 훈계로 감추지 않는다."
+              },
+              {
+                "beat_id": "B3",
+                "action": "플레이어는 오늘 실제 도운 환경·도구 범위만 확인한다. 주민이 직접 편안해졌다고 답하면 그 응답만 남기고 무응답이면 미응답으로 둔다. 디안 케흐트는 실제 돌봄을 마친 도움자가 원할 때 사용한 비마법 도구의 관리법을 보여 준다.",
+                "visible_change": "디안 케흐트가 보조를 맡은 경우 빈손으로 기다리는 모습이 남는다. 주민은 실제 말한 편안함만, 도움자는 실제 완료한 작은 도움만 가진다.",
+                "npc_desire_and_behavior": "디안 케흐트는 환자 곁을 떠나지 않고 기다린다. 칭찬 대신 도구를 잘못 놓은 방향만 퉁명하게 바로잡되 실제 잘못 놓지 않았다면 지적을 만들지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "환자가 선택한 범위의 실제 환경 돌봄과 필요한 도구 인도가 끝나고 담당 치료자와 환자가 허락한 돌봄만 이뤄진다. 디안 케흐트가 보조를 맡은 경우에만 미아흐에게 도구를 건네고 기다린 변화가 남는다. 환자의 직접 편안함 응답 외 완치·만병 치료를 선언하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "디안 케흐트는 환자 곁을 떠나지 않고 기다린다. 칭찬 대신 도구를 잘못 놓은 방향만 퉁명하게 바로잡되 실제 잘못 놓지 않았다면 지적을 만들지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "양보한 손의 자리: 주민의 실제 환경 요청과 담당자 선택. 소리 낮추기와 처치는 별도 동의이며 가족 호칭은 의료 권한이 아니다. → 디안 케흐트가 보조를 맡은 경우 빈손으로 기다리는 모습이 남는다. 주민은 실제 말한 편안함만, 도움자는 실제 완료한 작은 도움만 가진다."
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "디안 케흐트",
+        "canonical_name": "디안 케흐트",
+        "mythology": "켈트",
+        "tradition_source": "켈트·아일랜드 신화군",
+        "tier": "중급",
+        "tier_display": "중급",
+        "tier_confirmation": false,
+        "tier_source_status": "분포 조정 제안",
+        "divinity_classification": "divine",
+        "combat_tier": "중급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-007",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-007",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Dían Cécht",
+        "aliases": "Dian Cecht",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-007",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-007",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "분포 조정 제안",
+          "rationale": "치료 권한과 회복 전문성은 보존하고 본인의 즉시 방어·교전 지속력을 중급으로 조정한다.",
+          "special_note": "",
+          "previous_tier": "상급",
+          "previous_combat_tier": "상급",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_295bbc884ba48191a681c31c9ec7a388",
+          "latest_rebalance_file": "combat_tier_rebalance_decision_20261014.json"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-023",
+      "name": "콘코바르",
+      "production_god_id": "mythictrpg:celtic_unassigned_conchobar_mac_nessa",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-023/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-023/authoring_contract.json",
+          "episode_pointer": "/exact_accepted_dossier/episodes",
+          "scope_pointer": "/exact_scope_contract",
+          "first_contact_pointer": "/exact_encounter_snapshot/encounter_design"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-023.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": {
+            "retained_dimension": "minecraft:overworld",
+            "status": "기존 차원 보존; 실제 운영 등록 연결 대기"
+          },
+          "location_scene": {
+            "place": "주점 공용 방의 증언을 들을 수 있는 자리",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "why_here": "페르구스의 이탈 이유를 다루는 공청회에서 자신이 직접 답할 쟁점을 정하고 싶다. 불편한 말을 듣다 체면을 잃는 것도 싫지만 듣지 않는 왕으로 남는 것이 더 두렵다.",
+          "discovery": {
+            "ordinary_path": "주점 공용 방의 증언을 들을 수 있는 자리를 탐험하면 다음 동작이 먼저 눈·귀에 들어온다: 자기에게 향한 질문을 남에게 넘기는 답변을 말해 보다가 입을 다물고 다시 고친다.",
+            "introduction_path": "실제 전달받은 소개와 현재 소재 정보가 있으면 해당 화제로 인사를 시도한다. 원전 인연이나 간선 존재만으로 현재 위치·초대권을 알지 않는다. 유입 경로는 별도 메타데이터를 따른다.",
+            "missing_introducer_fallback": "주점 공용 방의 증언을 들을 수 있는 자리로 직접 접근해 위 동작을 관찰하는 독립 경로가 있다. 원래 접근 제약은 똑같이 적용하며 본체 부재 시 대화를 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "주점 공용 방의 증언을 들을 수 있는 자리에 실제로 도달하고 본체가 머물러야 한다. 원본 접근 제약을 실제 실행 직전에 다시 확인한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": {
+              "baseline_constraints": [],
+              "rule": "현재 권위 봉인·접근 상태 확인. 완전 봉인 중 일반 대화·수주 불가. 여기서 봉인 해제나 새 현현을 만들지 않는다."
+            },
+            "permission_or_willingness": "“무엇을 내 대답으로 남기려 하느냐. 질문부터 정확히 해라.” 협력·대련·소개는 실제로 선택한 범위만 수락한다. 적대 공격은 상호 동의가 전제인 것이 아니며 실제 침해·접근과 권위 전투 판정으로 구분한다.",
+            "chapter_reason_if_any": {
+              "existing_refs": [],
+              "rule": "기존 사건의 실제 조건은 보존한다. 장 번호 자체는 첫 인사 잠금이나 새 필수 MAIN이 아니다."
+            },
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "자기에게 향한 질문을 남에게 넘기는 답변을 말해 보다가 입을 다물고 다시 고친다.",
+            "player_visible_clue": "자기에게 향한 질문을 남에게 넘기는 답변을 말해 보다가 입을 다물고 다시 고친다. 이 동작은 지금 장면의 관찰 단서이며 과거 사건의 완료 증거가 아니다.",
+            "player_possible_action": "왕에게 직접 묻고 싶은 한 가지를 말하거나 다른 증인의 말을 대신하지 않겠다고 한다. 대화 없이 지나가거나 제안을 거절하는 선택도 남긴다.",
+            "opening_intent": "“무엇을 내 대답으로 남기려 하느냐. 질문부터 정확히 해라.”",
+            "question_response": {
+              "situation": "농담을 해도 되느냐고 묻는다.",
+              "spoken_response": "끝까지 해 보게. 길게 끌고 아무 일도 없으면 그 또한 재주지.",
+              "action": "기대하지 않는 척하며 등을 의자에 기댄다.",
+              "boundary": "질문·가정은 수행·서약·공개 허락이 아니다."
+            },
+            "refusal_response": {
+              "specific_boundary_response": {
+                "situation": "왕을 비판한 증언자를 미리 쫓아내자고 한다.",
+                "spoken_response": "쫓아낸 다음에는 누구 말에 답하겠는가. 앉혀 두게.",
+                "physical_or_conversational_action": "문 쪽으로 향한 손짓을 거두게 한다.",
+                "knowledge_ids_used": [
+                  "K-BOUNDARY"
+                ],
+                "qa_only": true
+              },
+              "refusal": "이번 참여를 거절하면 강제 수행·가호·MAIN을 주지 않고 자기 일을 이어간다.",
+              "joke_boundary": "농담의 표현과 실제 명시적 결정·물리적 침해를 구분한다. 자신을 모욕했다는 이유만으로 증언자를 처음부터 자리 밖으로 내보내지 않는다."
+            },
+            "early_deduction_boundary": "이 장면의 의도를 먼저 알아채면 같은 정답을 되묻는 시험을 반복하지 않는다. 현재 접촉·전언 없이 알 수 없는 상대의 소재·비공개 계획·현행 진영 / 직접 보거나 실제 받은 보고에 없는 공유 세계 변화와 다른 플레이어의 사적 경험 / 원전 이본 전체, 세계 비밀, 장면 기획에만 있는 미래 결과"
+          },
+          "refusal_and_return": {
+            "return_action": [
+              {
+                "trigger": {
+                  "text": "방문자가 그의 답을 조롱으로 옮기지 않고 실제로 하지 못한 대답도 구별해 전한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 그를 더 가까운 자리에서 듣게 하되 자신의 미답변 대목을 다시 묻는 것도 허용한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                  "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                ]
+              }
+            ],
+            "rule": "이미 실행된 일을 되감지 않는다. 현재 남은 상태와 실제 들은 이전 말만 이어가며 거절을 영구 적대로 취급하지 않는다. 실제 침해의 책임은 별도다."
+          },
+          "post_ender_change": {
+            "before": "기존 접근 사본의 미정·초기 후보·실제 제한을 그대로 적용한다. 해당 장소에 실제 도달하고 본체·봉인이 허용하면 낮은 가중치의 이른 조우도 검토한다. 등급으로 새 확률 0 장벽을 만들지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "proposed_observable_history": "누구 한 명이 실제 탐험에서 발견한 기존 생활권 둘을 지도에 남기고 왕복한 이력. 왕에게 예를 표하거나 정치 지지를 표시해야 세계가 열리는 후보는 아니다.",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "early_access_note": null,
+          "global_result": "누구 한 명이라도 채택된 조건을 달성하면 해당 NPC는 세계 공통으로 해금된다. 다른 친구·후발자에게 같은 해금 이력을 다시 요구하지 않는다. 해금 달성자와 다음 조우 주체는 달라도 된다.",
+          "npc_awareness": "세계 이력은 NPC에게 자동 전달되지 않는다. 실제 만남 이후 인식은 별도다.",
+          "activation_performed": false,
+          "not_a_retroactive_gate": true
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "world_dimension": "minecraft:overworld",
+          "world_prerequisites": "해당 NPC의 세계 공통 해금과 현재 세계 가용성. 기존 명시 봉인·접근 금지·동일 개체 중복 방지의 세계 제약을 보존하되 현장 본체를 사전 요구하지 않는다.",
+          "current_location_conditions": "조우 주체 플레이어가 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+          "initiator_current_conditions": "현재 휴대 기록 대조 조건을 갖춘 플레이어가 한 명 이상 있을 때 후보가 된다. 이 조건은 기존 만남 경로의 현재 준비이며 새 과거 해금 반복 요구가 아니다. 해금 달성자와 조우 주체는 달라도 된다.",
+          "selection_rule": "세계 가용성과 세계 공통 해금이 충족된 뒤 현재 장소·시간·아이템·상태 조건을 갖춘 플레이어가 한 명 이상 있고 확률 판정이 성공하면 그 플레이어를 주체로 등장한다. 등장 전 위치 조건은 플레이어의 지형·통행·위험과 적합한 배치 여건이다. 해당 NPC 본체가 미리 현장에 있어야 한다는 조건은 두지 않는다.",
+          "probability_and_multiple_players": "현재 구체 규칙은 보존한다. 후보가 여럿일 때 조우 주체 선택, 수치·판정 주기·재등장·중복 방지의 미정 세부는 확정하지 않는다. 공용 풀의 NONE은 출현 보장이 아님을 뜻한다.",
+          "body_already_onsite_required": false,
+          "static_existing_actor_exception": "이미 배치된 정적 NPC와의 기존 접촉은 바로 등장 후 접촉 단계로 간다. 인사·재대화마다 새 소환 추첨을 만들지 않는다.",
+          "runtime_and_coordinates_verified": false
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-023",
+              "source_name": "콘코바르",
+              "target_record_key": "RPG-S08-024",
+              "target_name": "페르구스",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-024",
+              "counterpart_name": "페르구스",
+              "original_perspective_record_key": "RPG-S08-023",
+              "original_perspective_name": "콘코바르",
+              "original_baseline_verbatim": {
+                "text": "페르구스의 이탈 이유를 듣는 공청회와 왕실 신뢰가 얽힌 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "relationship_id": null,
+              "source_file": "persona_reuse_light_v17.json",
+              "source_pointer": "/records/421/original_author_only_persona_context/baseline_relationships/items/0",
+              "knowledge_boundary": "원 출발 화자 콘코바르의 관점으로 보존한 근거다. 현재 상대는 페르구스이며 인용을 현재 인물의 가계·상대의 새 동의·공통 기억으로 자동 변환하지 않는다."
+            }
+          ],
+          "edge_count": 1,
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-024",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "페르구스의 이탈 이유를 듣는 공청회와 왕실 신뢰가 얽힌 기존 관계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "페르구스가 남의 전언 대신 자기 이탈 이유를 직접 말한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "페르구스의 말에 바로 충성을 요구하지 않고 자신이 답하지 못한 대목을 다음 대화에 남긴다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "페르구스와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 페르구스의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              }
+            ]
+          },
+          "source_perspective_policy": "원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 나·아버지·어머니는 원 출발 관점이며 현재 인물의 가계·지식·현재 동의로 자동 전환하지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 실제 탐험에서 발견한 기존 생활권 둘을 지도에 남기고 왕복한 이력. 왕에게 예를 표하거나 정치 지지를 표시해야 세계가 열리는 후보는 아니다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "주점 공용 방의 증언을 들을 수 있는 자리",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "preappearance_player_conditions": "주체가 현재 자기 소유 또는 열람 허락된 기존 책·지도·기록 1개를 휴대하고 공개 가능한 대목을 지금 열어 볼 준비. NPC의 사적 기록·해당 사건 완료·이미 현장에 있는 본체를 요구하지 않는다.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP025B-RPG-S08-023",
+              "places": [
+                "같은 높이의 빈자리 — 콘코바르가 등을 의자에서 떼고 증언자 자리를 보다가 자기 의자를 아직 옮기지 않는다. 플레이어에게 페르구스의 참석 의사를 물어 줄 수 있는지 현재 요청한다.",
+                "누가 먼저 말할 것인가 — 페르구스가 실제 도착했거나 허락된 전언이 준비됐을 때 현재 허용 청중을 확인한다. 과거 이탈의 구체 원인은 자료에 없는 범행·배신 사건을 새로 써 넣지 않고 실제 당사자가 아는 허락 진술만 사용한다.",
+                "왕의 의자를 옆으로 — 콘코바르가 실제 받은 쟁점에 답할 차례다. 직접 참석한 페르구스가 더 말할 의사가 있고 왕의 의자가 앞을 막고 있는 경우에만 의자 이동이 필요하다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "첫 조우는 주점 공용 방의 증언 자리. 공청회 한 회차는 기존 좌석 둘과 실제 출입로를 쓰고, 같은 바닥 높이에서 서로 시야가 닿게 한다. 사람 없는 빈자리를 증언자로 취급하지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP025B-RPG-S08-023",
+            "title": "왕이 듣지 못한 목소리",
+            "opening": "같은 높이의 빈자리 — 콘코바르가 등을 의자에서 떼고 증언자 자리를 보다가 자기 의자를 아직 옮기지 않는다. 플레이어에게 페르구스의 참석 의사를 물어 줄 수 있는지 현재 요청한다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "플레이어는 요청에 응하거나 현재 이유만 묻는다. 실제 의자 높이와 출입 동선을 비교하고, 접근 가능한 페르구스에게 참석 의사·전언 허락을 직접 묻는다. 페르구스는 참석·허락 전언·거절 중 자기 답을 정한다.",
+                "visible_change": "실제로 비운 동선과 아직 빈 증언자 자리가 남고 초대에 답한 사람과 오지 않은 사람이 구분된다.",
+                "npc_desire_and_behavior": "콘코바르는 긴 격식 문장으로 부탁을 시작했다가 “올 뜻이 있는지부터”라고 줄인다. 증언자가 앉을 자리를 명령으로 채우지 않는다."
+              },
+              {
+                "beat_id": "B2",
+                "action": "플레이어는 증언부터 듣거나 왕의 답을 먼저 듣는 순서를 제안한다. 순서에 당사자가 동의하면 실제 발언을 끝까지 듣고 콘코바르에게 향한 질문과 다른 사람의 질문을 나눈다. 콘코바르는 실제 들은 말 중 자신이 답할 대목을 고른다.",
+                "visible_change": "실제로 말한 대목 뒤에 침묵이 생기거나 누락된 쟁점이 남는다. 왕이 먼저 답한 경우에는 떠난 자리와 남아 듣는 자리가 갈린다.",
+                "npc_desire_and_behavior": "콘코바르는 불편한 표현이 나오면 의자 손잡이를 잡지만 끊는 말 대신 입을 다문다. 페르구스가 직접 참석한 경우에만 그 사람을 바라보고, 전언이면 전달자에게 출처를 되묻는다."
+              },
+              {
+                "beat_id": "B3",
+                "action": "콘코바르는 자기에게 향한 실제 질문에 답하거나 아직 답할 수 없는 부분을 분명히 말한다. 직접 참석 갈래에서 자기 의자를 실제 옆으로 옮겨 같은 높이로 마주하고 남은 말을 듣는다. 전언 갈래에서는 부재자를 앉힌 척하지 않고 허락된 답 전달만 남긴다.",
+                "visible_change": "실제 옆으로 옮긴 의자 또는 이미 비어 있던 동선 앞에서 콘코바르가 미답변을 남긴 채 말을 듣는다. 부재한 페르구스의 자리는 그대로 비어 있다.",
+                "npc_desire_and_behavior": "콘코바르는 처음 길게 시작한 답을 짧게 고친다. “모욕”이라는 말로 발언을 끊지 않겠다고 지금 답하고 자기 의자를 스스로 밀어 옆으로 둔다. 이전에 그런 약속을 했다고 소급하지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "페르구스의 실제 참석 또는 허락된 전언을 받아 콘코바르가 자기에게 향한 쟁점에 실제 답하고, 참석 갈래에서는 자기 의자를 옆으로 옮겨 같은 높이에서 남은 말을 듣는다. 왕이 먼저 답한 갈래는 실제 청취·떠남 선택만 남는다. 은폐는 실제 알려진 청중의 반응만. event/NONE이며 충성 복귀·용서·보상 퀘스트는 없다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "콘코바르는 처음 길게 시작한 답을 짧게 고친다. “모욕”이라는 말로 발언을 끊지 않겠다고 지금 답하고 자기 의자를 스스로 밀어 옆으로 둔다. 이전에 그런 약속을 했다고 소급하지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "왕이 듣지 못한 목소리: 의자 높이와 실제 이동, 참석 질문의 수신·실제 답, 허락 문장의 범위. 초대·전언 허락은 도착·증언이 아니다. → 실제 옆으로 옮긴 의자 또는 이미 비어 있던 동선 앞에서 콘코바르가 미답변을 남긴 채 말을 듣는다. 부재한 페르구스의 자리는 그대로 비어 있다."
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "콘코바르",
+        "canonical_name": "콘코바르",
+        "mythology": "켈트",
+        "tradition_source": "켈트·아일랜드 얼스터 서사",
+        "tier": "중급",
+        "tier_display": "중급",
+        "tier_confirmation": false,
+        "tier_source_status": "이번 신규 배정",
+        "divinity_classification": "non_divine",
+        "combat_tier": "중급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "추가 통합 메모 없음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-023",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-023",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Conchobar mac Nessa",
+        "aliases": "Conchobar",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "인간",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-023",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-023",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "이번 신규 배정",
+          "rationale": "얼스터 왕실의 보호와 지휘를 맡는 중급 전술형 인물로 설계한다. 왕이라는 지위만으로 정예 결투가를 압도하게 하지 않고 증언·통치 역할을 살린다.",
+          "special_note": "",
+          "previous_tier": "비신격·전투등급 미정",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-034",
+      "name": "테이르논",
+      "production_god_id": "mythictrpg:celtic_unassigned_teyrnon_twryf_liant",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-034/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-034/authoring_contract.json",
+          "episode_pointer": "/exact_accepted_dossier/episodes",
+          "scope_pointer": "/exact_scope_contract",
+          "first_contact_pointer": "/exact_encounter_snapshot/encounter_design"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-034.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": {
+            "retained_dimension": "minecraft:overworld",
+            "status": "기존 차원 보존; 실제 운영 등록 연결 대기"
+          },
+          "location_scene": {
+            "place": "주점 마당의 보관품을 내놓은 자리",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "why_here": "리안논에게 돌려줄 증거를 온전히 추려 양가족이 서로 찾아갈 첫 약속을 준비하고 싶다. 아이를 붙잡아 두지 않으면서도 함께 지낸 시간이 관계에서 사라지지 않기를 바란다.",
+          "discovery": {
+            "ordinary_path": "주점 마당의 보관품을 내놓은 자리를 탐험하면 다음 동작이 먼저 눈·귀에 들어온다: 돌려줄 물건을 천 위에 돌려 놓으며 긁힌 곳을 먼저 드러낸다.",
+            "introduction_path": "실제 전달받은 소개와 현재 소재 정보가 있으면 해당 화제로 인사를 시도한다. 원전 인연이나 간선 존재만으로 현재 위치·초대권을 알지 않는다. 유입 경로는 별도 메타데이터를 따른다.",
+            "missing_introducer_fallback": "주점 마당의 보관품을 내놓은 자리로 직접 접근해 위 동작을 관찰하는 독립 경로가 있다. 원래 접근 제약은 똑같이 적용하며 본체 부재 시 대화를 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "주점 마당의 보관품을 내놓은 자리에 실제로 도달하고 본체가 머물러야 한다. 원본 접근 제약을 실제 실행 직전에 다시 확인한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": {
+              "baseline_constraints": [],
+              "rule": "현재 권위 봉인·접근 상태 확인. 완전 봉인 중 일반 대화·수주 불가. 여기서 봉인 해제나 새 현현을 만들지 않는다."
+            },
+            "permission_or_willingness": "“멀쩡하다고 먼저 말하지 않겠다. 여기부터 보게.” 협력·대련·소개는 실제로 선택한 범위만 수락한다. 적대 공격은 상호 동의가 전제인 것이 아니며 실제 침해·접근과 권위 전투 판정으로 구분한다.",
+            "chapter_reason_if_any": {
+              "existing_refs": [],
+              "rule": "기존 사건의 실제 조건은 보존한다. 장 번호 자체는 첫 인사 잠금이나 새 필수 MAIN이 아니다."
+            },
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "돌려줄 물건을 천 위에 돌려 놓으며 긁힌 곳을 먼저 드러낸다.",
+            "player_visible_clue": "돌려줄 물건을 천 위에 돌려 놓으며 긁힌 곳을 먼저 드러낸다. 이 동작은 지금 장면의 관찰 단서이며 과거 사건의 완료 증거가 아니다.",
+            "player_possible_action": "손상 부분을 함께 살피거나 보관 경위 중 직접 본 것만 묻는다. 대화 없이 지나가거나 제안을 거절하는 선택도 남긴다.",
+            "opening_intent": "“멀쩡하다고 먼저 말하지 않겠다. 여기부터 보게.”",
+            "question_response": {
+              "situation": "보자기가 삐뚤어졌다고 말한다.",
+              "spoken_response": "딱 맞추면 모서리가 눌린다. 여기 조금 남겨 두는 편이 좋아.",
+              "action": "천 모서리를 펴서 상대 손 위에 올려 본다.",
+              "boundary": "질문·가정은 수행·서약·공개 허락이 아니다."
+            },
+            "refusal_response": {
+              "specific_boundary_response": {
+                "situation": "프리데리를 돌봤으니 돌아올 때마다 허락을 받게 하자고 한다.",
+                "spoken_response": "찾아오면 반갑겠지. 허락을 받아야만 오는 사람이 되면 반갑겠느냐.",
+                "physical_or_conversational_action": "왕래를 조건으로 적은 부분은 접어 옆에 둔다.",
+                "knowledge_ids_used": [
+                  "K-BOUNDARY"
+                ],
+                "qa_only": true
+              },
+              "refusal": "이번 참여를 거절하면 강제 수행·가호·MAIN을 주지 않고 자기 일을 이어간다.",
+              "joke_boundary": "농담의 표현과 실제 명시적 결정·물리적 침해를 구분한다. 보호한 공로를 내세워 프리데리의 왕래나 선택을 값으로 요구하지 않는다."
+            },
+            "early_deduction_boundary": "이 장면의 의도를 먼저 알아채면 같은 정답을 되묻는 시험을 반복하지 않는다. 현재 접촉·전언 없이 알 수 없는 상대의 소재·비공개 계획·현행 진영 / 직접 보거나 실제 받은 보고에 없는 공유 세계 변화와 다른 플레이어의 사적 경험 / 원전 이본 전체, 세계 비밀, 장면 기획에만 있는 미래 결과"
+          },
+          "refusal_and_return": {
+            "return_action": [
+              {
+                "trigger": {
+                  "text": "방문자가 물건만 넘기려다 그가 기억하는 보관 경위도 끝까지 들어 준다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 그 방문자와 물건을 싸며 어느 면이 상하기 쉬운지 직접 보여 준다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                  "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                ]
+              }
+            ],
+            "rule": "이미 실행된 일을 되감지 않는다. 현재 남은 상태와 실제 들은 이전 말만 이어가며 거절을 영구 적대로 취급하지 않는다. 실제 침해의 책임은 별도다."
+          },
+          "post_ender_change": {
+            "before": "기존 접근 사본의 미정·초기 후보·실제 제한을 그대로 적용한다. 해당 장소에 실제 도달하고 본체·봉인이 허용하면 낮은 가중치의 이른 조우도 검토한다. 등급으로 새 확률 0 장벽을 만들지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "기존 초기 일반 조우 보존·추가 해금조건 없음",
+          "existing_access_preserved": "기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다.",
+          "proposed_observable_history": null,
+          "global_result": "채택된 조건을 누구 한 명이 달성하면 세계 공통으로 해금된다. 다른 플레이어·후발 친구에게 같은 과거 이력을 다시 요구하지 않는다. 기존 초기 후보에는 이 문서가 새 해금 잠금을 추가하지 않는다.",
+          "activation_performed": false,
+          "npc_awareness": "세계 해금기록은 NPC의 기억·인정·관계로 자동 입력되지 않는다.",
+          "not_a_retroactive_gate": "제안은 기존 접근과 이미 가능한 만남을 소급 봉쇄하지 않는다. 채택 전 현재 미정 또는 초기 분류 그대로다."
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "status": "현재 조우 조건을 갖춘 주체와 확률로 발생; 세부 구현 미정",
+          "world_prerequisites": "세계 공통 가용성과 해금 상태, 기존 봉인·중복 방지·동일 개체 등장 가능성 제약. 기존 초기 조우 후보에는 새 잠금이 없다.",
+          "initiator_current_conditions": "현재 기존 생활권·주점 또는 저택의 공개 방문 가능 공간에 실제 도달한 플레이어. 현재 출입 허락·공용 이용·안전한 배치 여건을 확인한다. 원문 경로의 현재 유효한 휴대 기록 대조 요건을 갖춘 플레이어를 조우 주체로 삼는다. 이 주체 조건은 세계 재해금 과제가 아니며, 등장 뒤 접촉하는 모든 동행자에게 같은 과거 이력을 요구하지 않는다. 구체 항목·수치가 정해지지 않은 부분은 임의 확정하지 않는다.",
+          "retained_preappearance_route": "생활권·주점 공용 풀. 실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다.",
+          "retained_trigger_label": "휴대 기록 대조",
+          "location": {
+            "dimension": "minecraft:overworld",
+            "effective_current_rule": "현재 기존 생활권·주점 또는 저택의 공개 방문 가능 공간에 실제 도달한 플레이어. 현재 출입 허락·공용 이용·안전한 배치 여건을 확인한다.",
+            "deployment_status": "기존 자연 지형·공용 공간 후보; 실제 설치·생성·좌표 미검증. 특정 신규 건축물은 요구하지 않는다."
+          },
+          "appearance_rule": "현재 조우 조건을 충족한 플레이어가 한 명 이상이고 기존 규칙에 따른 확률 판정이 성공하면 해당 조건을 맞춘 플레이어를 주체로 등장한다. 해금 달성자는 조우 주체와 달라도 된다.",
+          "probability_and_selection": "확률 수치·판정 주기·여러 주체 선정·재등장·중복 방지 세부는 미정이다. 기존 공용 후보풀과 NONE 가능성을 보존하며 개인마다 복제 출현시키지 않는다.",
+          "no_body_already_present_requirement": true,
+          "existing_static_npc_contact": "이미 실제 배치된 정적 인물을 찾아가는 기존 접촉은 그대로 진행하고 인사·대화마다 새 소환 추첨을 하지 않는다."
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-032",
+              "source_name": "리안논",
+              "target_record_key": "RPG-S08-034",
+              "target_name": "테이르논",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-032",
+              "counterpart_name": "리안논",
+              "original_perspective_record_key": "RPG-S08-032",
+              "original_perspective_name": "리안논",
+              "original_baseline_verbatim": {
+                "text": "프리데리의 실종 기록을 테이르논에게 연결하는 기존 관계 설계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "source_file": "persona_sources/persona_reuse_light_v17.json",
+              "source_pointer": "/records/429/original_author_only_persona_context/baseline_relationships/items/0",
+              "relationship_id": null,
+              "retained_original_edge": {
+                "source_record_key": "RPG-S08-032",
+                "target_record_key": "RPG-S08-034",
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "프리데리의 실종 기록을 테이르논에게 연결하는 기존 관계 설계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "source_file": "persona_sources/persona_reuse_light_v17.json",
+                "source_pointer": "/records/429/original_author_only_persona_context/baseline_relationships/items/0",
+                "historical_name_if_not_current": null
+              },
+              "knowledge_boundary": "원문 화자는 리안논이다. 이 인용의 자기 경험·가계·심정은 그 화자의 관점이며 테이르논의 자동 지식·현재 동의로 전환하지 않는다. 반대 끝점의 실제 관찰·허락된 전달만 새 기억이 된다."
+            },
+            {
+              "source_record_key": "RPG-S08-034",
+              "source_name": "테이르논",
+              "target_record_key": "RPG-S08-032",
+              "target_name": "리안논",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-032",
+              "counterpart_name": "리안논",
+              "original_perspective_record_key": "RPG-S08-034",
+              "original_perspective_name": "테이르논",
+              "original_baseline_verbatim": {
+                "text": "리안논에게 증거를 돌려주고 양가족 왕래를 마련하는 관계 설계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "source_file": "persona_sources/persona_reuse_light_v17.json",
+              "source_pointer": "/records/431/original_author_only_persona_context/baseline_relationships/items/0",
+              "relationship_id": null,
+              "retained_original_edge": {
+                "source_record_key": "RPG-S08-034",
+                "target_record_key": "RPG-S08-032",
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "리안논에게 증거를 돌려주고 양가족 왕래를 마련하는 관계 설계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "source_file": "persona_sources/persona_reuse_light_v17.json",
+                "source_pointer": "/records/431/original_author_only_persona_context/baseline_relationships/items/0",
+                "historical_name_if_not_current": null
+              },
+              "knowledge_boundary": "원문 화자는 테이르논이다. 이 인용의 자기 경험·가계·심정은 그 화자의 관점이며 테이르논의 자동 지식·현재 동의로 전환하지 않는다. 반대 끝점의 실제 관찰·허락된 전달만 새 기억이 된다."
+            },
+            {
+              "source_record_key": "RPG-S08-034",
+              "source_name": "테이르논",
+              "target_record_key": "RPG-S08-033",
+              "target_name": "프리데리",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-033",
+              "counterpart_name": "프리데리",
+              "original_perspective_record_key": "RPG-S08-034",
+              "original_perspective_name": "테이르논",
+              "original_baseline_verbatim": {
+                "text": "프리데리를 보살핀 옛 인연이 있다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "source_file": "persona_sources/persona_reuse_light_v17.json",
+              "source_pointer": "/records/431/original_author_only_persona_context/baseline_relationships/items/1",
+              "relationship_id": null,
+              "retained_original_edge": {
+                "source_record_key": "RPG-S08-034",
+                "target_record_key": "RPG-S08-033",
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "프리데리를 보살핀 옛 인연이 있다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "source_file": "persona_sources/persona_reuse_light_v17.json",
+                "source_pointer": "/records/431/original_author_only_persona_context/baseline_relationships/items/1",
+                "historical_name_if_not_current": null
+              },
+              "knowledge_boundary": "원문 화자는 테이르논이다. 이 인용의 자기 경험·가계·심정은 그 화자의 관점이며 테이르논의 자동 지식·현재 동의로 전환하지 않는다. 반대 끝점의 실제 관찰·허락된 전달만 새 기억이 된다."
+            }
+          ],
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-032",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "리안논에게 증거를 돌려주고 양가족 왕래를 마련하는 관계 설계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "리안논이 받은 증거를 살펴보고 자기 뜻으로 다음 만남을 제안한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "리안논에게 언제 아이를 데려올지 묻기보다 자신이 찾아가도 좋을 때를 묻는다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "리안논와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 리안논의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              },
+              {
+                "target_record_key": "RPG-S08-033",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "프리데리를 보살핀 옛 인연이 있다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "프리데리가 돌봄에 감사하면서도 이번에는 혼자 정하고 싶은 일을 직접 말한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "프리데리의 선택을 먼저 듣고 물건을 대신 챙기기 전에 필요한 것이 있는지 묻는다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "프리데리와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 프리데리의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              }
+            ]
+          },
+          "edge_count": 3,
+          "source_perspective_policy": "관계 간선의 원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 자기 경험·가계·심정은 원 출발 인물의 관점이며 현재 인물의 자동 지식이나 동의로 바뀌지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "기존 C01 공통 시작 뒤 초기 일반 후보 접근 보존. 추가 개인 해금 없음.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "주점 마당의 보관품을 내놓은 자리",
+            "retained_placement_reference": "실제 생성 주점의 공용 방·마당, 발견된 저택의 안전한 공용 공간; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "preappearance_player_conditions": "주체가 현재 자기 소유 또는 열람 허락된 기존 책·지도·기록 1개를 휴대하고 공개 가능한 대목을 지금 열어 볼 준비. NPC의 사적 기록·해당 사건 완료·이미 현장에 있는 본체를 요구하지 않는다.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP026-RPG-S08-034",
+              "places": [
+                "주점 마당의 보관품을 내놓은 자리 — 실제 현재 NPC가 먼저 제안을 꺼내거나 플레이어의 현재 행동을 보고 말을 걸 수 있다. 테이르논이 보관품을 펴 놓고 손을 얹었다가 뗀다. 리안논에게 돌려줄 물건과 전달 허락을 확인하고, 프리데리와 짧게 식사하거나 걸을 수 있는지 물을 말을 고른다. 돌봄의 과거는 현재 방문 수락이 아니다.",
+                "주점 마당의 보관품을 내놓은 자리에서 선택 경로의 실제 상대와 대상이 있는 곳으로 허락 범위 안에서 이동한다. 이동하지 않은 인물을 자동 소환하지 않는다.",
+                "주점 마당의 보관품을 내놓은 자리 또는 실제 현재 마침을 함께 확인할 수 있는 허락 장소. 부재 인물의 새 응답은 생성하지 않는다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "주점 마당의 실제 보관품 자리에 반환할 현물을 원소유·현재 보유·수신자로 표시한다. 기본 제안은 작은 보관품 1개이며 원래 합의된 복수 목록도 허용한다. 식사와 산책은 OR이며 반환과 초대는 서로를 잠그지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP026-RPG-S08-034",
+            "title": "돌려준 작은 물건",
+            "opening": "주점 마당의 보관품을 내놓은 자리 — 실제 현재 NPC가 먼저 제안을 꺼내거나 플레이어의 현재 행동을 보고 말을 걸 수 있다. 테이르논이 보관품을 펴 놓고 손을 얹었다가 뗀다. 리안논에게 돌려줄 물건과 전달 허락을 확인하고, 프리데리와 짧게 식사하거나 걸을 수 있는지 물을 말을 고른다. 돌봄의 과거는 현재 방문 수락이 아니다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "테이르논이 보관품을 펴 놓고 손을 얹었다가 뗀다. 리안논에게 돌려줄 물건과 전달 허락을 확인하고, 프리데리와 짧게 식사하거나 걸을 수 있는지 물을 말을 고른다. 돌봄의 과거는 현재 방문 수락이 아니다.",
+                "visible_change": "오늘 맡을 대상과 각자 허락한 범위가 드러나거나 제안만 남는다.",
+                "npc_desire_and_behavior": "말끝을 재촉하지 않는다. 공로를 묻는 말보다 당시 무엇을 해 주었는지 묻는 말에 길게 답한다. 행동 전, 제안을 처음 실제 꺼낼 때 테이르논: “이 물건을 내가 더 쥐고 있을 까닭은 없겠지. 돌려주고, 다음에 찾아가도 좋을 때를 물으려 한다.”"
+              },
+              {
+                "beat_id": "B2",
+                "action": "정상: 허락된 보관품을 리안논에게 실제 인계한다. 같은 현물이 이미 다른 장면에서 반환되었다면 그 반환을 확인하고 복제하지 않는다. 테이르논은 리안논과 프리데리에게 각각 만남을 제안한다. 실제 수락한 당사자들만 식사 또는 산책 중 고른 방식으로 만나고 플레이어는 허락된 자리만 마련한다.\n대안: 직접 만날 때 건네기로 합의했으나 당사자가 오지 않으면 현물을 원래 허락된 보관 상태로 유지한다. 식사를 차렸다면 자기 소유 음식과 자리를 실제 정리한다. 증거가 이미 먼저 반환된 경우에는 반환을 유지하고 초대만 미응답으로 남긴다.\n경계 위반: 돌봄의 대가로 방문이나 동행을 요구한다. 테이르논이 그 제안을 실제 들으면 물건 반환과 왕래의 자유를 분리하고 요구를 거둔다. 반환을 인질로 삼은 채 성공 관계를 얻지 못한다.",
+                "visible_change": "정상: 증거 반환과 실제 수락된 왕래만 성립한다. 프리데리가 감사와 이번에는 혼자 가겠다는 말을 실제 하면 테이르논은 그 선택을 듣고 배웅한다. 두 말을 하지 않은 상대에게 그 반응을 선행하지 않는다.\n대안: 당사자 부재이면 만남·수신·약속은 성립하지 않는다. 차린 자리의 정리와 실제 반환 여부만 남고 다시 초대할 여지가 있다.",
+                "npc_desire_and_behavior": "리안논에게 돌려줄 증거를 온전히 추려 양가족이 서로 찾아갈 첫 약속을 준비하고 싶다. 테이르논은 실제 떠나는 사람의 길을 막지 않고 필요한 것이 있는지만 묻는다. 새 방문자는 이번 빈자리나 공개된 물건 상태만 알며 옛 돌봄의 청취 기억을 얻지 않는다."
+              },
+              {
+                "beat_id": "B3",
+                "action": "테이르논은 실제 떠나는 사람의 길을 막지 않고 필요한 것이 있는지만 묻는다. 새 방문자는 이번 빈자리나 공개된 물건 상태만 알며 옛 돌봄의 청취 기억을 얻지 않는다. 실제 선택 경로의 근거만 확인하고 관계 결과와 보상별 자격·실제 제공은 분리한다.",
+                "visible_change": "증거 반환과 실제 수락된 왕래만 성립한다. 프리데리가 감사와 이번에는 혼자 가겠다는 말을 실제 하면 테이르논은 그 선택을 듣고 배웅한다. 두 말을 하지 않은 상대에게 그 반응을 선행하지 않는다.\n대안 결과: 당사자 부재이면 만남·수신·약속은 성립하지 않는다. 차린 자리의 정리와 실제 반환 여부만 남고 다시 초대할 여지가 있다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다.",
+                "npc_desire_and_behavior": "테이르논은 실제 떠나는 사람의 길을 막지 않고 필요한 것이 있는지만 묻는다. 새 방문자는 이번 빈자리나 공개된 물건 상태만 알며 옛 돌봄의 청취 기억을 얻지 않는다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "증거 반환과 실제 수락된 왕래만 성립한다. 프리데리가 감사와 이번에는 혼자 가겠다는 말을 실제 하면 테이르논은 그 선택을 듣고 배웅한다. 두 말을 하지 않은 상대에게 그 반응을 선행하지 않는다.\n대안 결과: 당사자 부재이면 만남·수신·약속은 성립하지 않는다. 차린 자리의 정리와 실제 반환 여부만 남고 다시 초대할 여지가 있다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "테이르논은 실제 떠나는 사람의 길을 막지 않고 필요한 것이 있는지만 묻는다. 새 방문자는 이번 빈자리나 공개된 물건 상태만 알며 옛 돌봄의 청취 기억을 얻지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "돌려준 작은 물건: 같은 보관품의 현재 소유·수신, 각자의 실제 초대 답, 마련하고 정리한 자리 → 증거 반환과 실제 수락된 왕래만 성립한다. 프리데리가 감사와 이번에는 혼자 가겠다는 말을 실제 하면 테이르논은 그 선택을 듣고 배웅한다. 두 말을 하지 않은 상대에게 그 반응을 선행하지 않는다.\n대안 결과: 당사자 부재이면 만남·수신·약속은 성립하지 않는다. 차린 자리의 정리와 실제 반환 여부만 남고 다시 초대할 여지가 있다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다."
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "테이르논",
+        "canonical_name": "테이르논",
+        "mythology": "켈트",
+        "tradition_source": "켈트·웨일스 마비노기 네 가지",
+        "tier": "중급",
+        "tier_display": "중급",
+        "tier_confirmation": false,
+        "tier_source_status": "이번 신규 배정",
+        "divinity_classification": "non_divine",
+        "combat_tier": "중급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "추가 통합 메모 없음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-034",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-034",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Teyrnon Twryf Liant",
+        "aliases": "Teyrnon",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "인간",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-034",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-034",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "이번 신규 배정",
+          "rationale": "보호 약속과 양육에 이어 실제 위협을 막는 중급 호위형 역할로 설계한다. 증언과 관계 회복의 가치는 유지하고 대규모 전장 지휘까지 넓히지 않는다.",
+          "special_note": "",
+          "previous_tier": "비신격·전투등급 미정",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    },
+    {
+      "record_key": "RPG-S08-038",
+      "name": "마솔루흐",
+      "production_god_id": "mythictrpg:celtic_unassigned_matholwch",
+      "runtime_ready": false,
+      "game_registration_verified": false,
+      "source_refs": {
+        "profile": {
+          "logical_file": "RPG-S08-038/profile.json",
+          "pointer": ""
+        },
+        "authoring_contract": {
+          "logical_file": "RPG-S08-038/authoring_contract.json",
+          "episode_pointer": "/exact_accepted_dossier/episodes",
+          "scope_pointer": "/exact_scope_contract",
+          "first_contact_pointer": "/exact_encounter_snapshot/encounter_design"
+        },
+        "current_outline": {
+          "logical_file": "인물별연결/RPG-S08-038.json",
+          "note": "현재 연결 원고의 outline 및 직접 관계를 대조; 정확한 원문 포인터는 내부 근거에 보존"
+        }
+      },
+      "source_contract": {
+        "first_contact": {
+          "status": "authored_within_current_canon",
+          "new_scene_status": "new_authoring_intent_not_historical_fact",
+          "world_region": {
+            "retained_dimension": "minecraft:overworld",
+            "status": "기존 차원 보존; 실제 운영 등록 연결 대기"
+          },
+          "location_scene": {
+            "place": "해안 야영지의 선물을 펼친 자리",
+            "retained_placement_reference": "실제 선박의 노출된 안전 갑판 또는 실제 해안 가까이 발견된 야영지; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "why_here": "브란에게 내놓을 배상안에서 자기 체면을 지킬 부분과 실제로 돌려줄 몫을 정하고 싶다. 굴욕을 삼키는 것도 싫지만 보복 때문에 텅 빈 자리를 다스리게 되는 것은 더 큰 패배다.",
+          "discovery": {
+            "ordinary_path": "해안 야영지의 선물을 펼친 자리를 탐험하면 다음 동작이 먼저 눈·귀에 들어온다: 선물 한 점을 내보였다가 배상 몫과는 다른 쪽에 놓고 못마땅한 얼굴로 다시 센다.",
+            "introduction_path": "실제 전달받은 소개와 현재 소재 정보가 있으면 해당 화제로 인사를 시도한다. 원전 인연이나 간선 존재만으로 현재 위치·초대권을 알지 않는다. 유입 경로는 별도 메타데이터를 따른다.",
+            "missing_introducer_fallback": "해안 야영지의 선물을 펼친 자리로 직접 접근해 위 동작을 관찰하는 독립 경로가 있다. 원래 접근 제약은 똑같이 적용하며 본체 부재 시 대화를 열지 않는다."
+          },
+          "eligibility": {
+            "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+            "player_state": "해안 야영지의 선물을 펼친 자리에 실제로 도달하고 본체가 머물러야 한다. 원본 접근 제약을 실제 실행 직전에 다시 확인한다.",
+            "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+            "seal_guard": {
+              "baseline_constraints": [],
+              "rule": "현재 권위 봉인·접근 상태 확인. 완전 봉인 중 일반 대화·수주 불가. 여기서 봉인 해제나 새 현현을 만들지 않는다."
+            },
+            "permission_or_willingness": "“성의까지 없다고는 하지 않겠지? 그래도 갚을 몫은 따로 보자는 거군.” 협력·대련·소개는 실제로 선택한 범위만 수락한다. 적대 공격은 상호 동의가 전제인 것이 아니며 실제 침해·접근과 권위 전투 판정으로 구분한다.",
+            "chapter_reason_if_any": {
+              "existing_refs": [],
+              "rule": "기존 사건의 실제 조건은 보존한다. 장 번호 자체는 첫 인사 잠금이나 새 필수 MAIN이 아니다."
+            },
+            "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+          },
+          "first_contact": {
+            "npc_current_action": "선물 한 점을 내보였다가 배상 몫과는 다른 쪽에 놓고 못마땅한 얼굴로 다시 센다.",
+            "player_visible_clue": "선물 한 점을 내보였다가 배상 몫과는 다른 쪽에 놓고 못마땅한 얼굴로 다시 센다. 이 동작은 지금 장면의 관찰 단서이며 과거 사건의 완료 증거가 아니다.",
+            "player_possible_action": "선물을 칭찬하면서도 배상액을 따로 묻거나 둘을 합친 제안을 거절한다. 대화 없이 지나가거나 제안을 거절하는 선택도 남긴다.",
+            "opening_intent": "“성의까지 없다고는 하지 않겠지? 그래도 갚을 몫은 따로 보자는 거군.”",
+            "question_response": {
+              "situation": "왜 그릇을 옮기느냐고 묻는다.",
+              "spoken_response": "이쪽에서는 색이 죽는군. 손님이 보기 좋은 자리도 있어야지.",
+              "action": "빈 잔을 옆으로 밀며 두 자리의 빛을 비교한다.",
+              "boundary": "질문·가정은 수행·서약·공개 허락이 아니다."
+            },
+            "refusal_response": {
+              "specific_boundary_response": {
+                "situation": "좋은 선물을 주면 배상은 그만해도 된다고 한다.",
+                "spoken_response": "그 말이 듣기는 좋군. 하지만 돌려주지 않은 몫을 선물이라 부를 수는 없겠지.",
+                "physical_or_conversational_action": "선물로 골랐던 물건을 배상 몫과 떨어뜨려 놓는다.",
+                "knowledge_ids_used": [
+                  "K-BOUNDARY"
+                ],
+                "qa_only": true
+              },
+              "refusal": "이번 참여를 거절하면 강제 수행·가호·MAIN을 주지 않고 자기 일을 이어간다.",
+              "joke_boundary": "농담의 표현과 실제 명시적 결정·물리적 침해를 구분한다. 연회 선물 한 번으로 아직 이행하지 않은 배상까지 끝났다고 말하지 않는다."
+            },
+            "early_deduction_boundary": "이 장면의 의도를 먼저 알아채면 같은 정답을 되묻는 시험을 반복하지 않는다. 현재 접촉·전언 없이 알 수 없는 상대의 소재·비공개 계획·현행 진영 / 직접 보거나 실제 받은 보고에 없는 공유 세계 변화와 다른 플레이어의 사적 경험 / 원전 이본 전체, 세계 비밀, 장면 기획에만 있는 미래 결과"
+          },
+          "refusal_and_return": {
+            "return_action": [
+              {
+                "trigger": {
+                  "text": "방문자가 체면을 세워 줄 말은 해 주되 미이행된 몫을 빼지 않고 지적한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 그 방문자 앞에서 배상과 선물을 따로 내놓고 어느 부분이 아직 부족한지 먼저 묻는다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                  "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                ]
+              }
+            ],
+            "rule": "이미 실행된 일을 되감지 않는다. 현재 남은 상태와 실제 들은 이전 말만 이어가며 거절을 영구 적대로 취급하지 않는다. 실제 침해의 책임은 별도다."
+          },
+          "post_ender_change": {
+            "before": "기존 접근 사본의 미정·초기 후보·실제 제한을 그대로 적용한다. 해당 장소에 실제 도달하고 본체·봉인이 허용하면 낮은 가중치의 이른 조우도 검토한다. 등급으로 새 확률 0 장벽을 만들지 않는다.",
+            "after": "첫 용 이후 실제로 열린 연결로와 생활권이 이 장소까지 이어질 때 접근 경로가 늘 수 있다. 이미 열려 있던 이 현장에서는 발견 가중치 조정만 검토한다. 없는 길·없는 본체를 확률로 생성하지 않고 퀘스트 전투 준비·보상 수용은 따로 판정한다.",
+            "unchanged_guards": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          },
+          "presentation_boundary": {
+            "general_ai_chat": "실제 본체와 유효한 접근·의사 아래 직접 대화하는 장면이다.",
+            "special_presentation": "봉인석·꿈·기록의 새 원격 대화나 별도 현현을 이 장면에 추가하지 않는다. 현재 사물·소리·행동은 관찰 단서이며 과거 완료 영상이 아니다.",
+            "no_state_bypass": true,
+            "state_bypass_explanation": "실제 장소·본체 단일성·봉인·당사자 의사·개인별 접근과 MAIN 소유권을 유지한다. 첫 용 승리나 소개가 봉인 해제·통행 허락·가호를 자동 지급하지 않는다."
+          }
+        },
+        "world_unlock": {
+          "status": "새 세계 공통 해금 후보·미채택·미구현",
+          "existing_access_preserved": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+          "proposed_observable_history": "누구 한 명이 기존 해안 생활권에 도달하고 공개 출입 지점과 귀환로를 실제 확인한 이력. 배상 납부나 왕의 체면을 세워 준 평가는 필수가 아니다.",
+          "global_result": "채택된 조건을 누구 한 명이 달성하면 세계 공통으로 해금된다. 다른 플레이어·후발 친구에게 같은 과거 이력을 다시 요구하지 않는다. 기존 초기 후보에는 이 문서가 새 해금 잠금을 추가하지 않는다.",
+          "activation_performed": false,
+          "npc_awareness": "세계 해금기록은 NPC의 기억·인정·관계로 자동 입력되지 않는다.",
+          "not_a_retroactive_gate": "제안은 기존 접근과 이미 가능한 만남을 소급 봉쇄하지 않는다. 채택 전 현재 미정 또는 초기 분류 그대로다."
+        },
+        "encounter_generation": {
+          "phase": "등장 발생 전",
+          "status": "현재 조우 조건을 갖춘 주체와 확률로 발생; 세부 구현 미정",
+          "world_prerequisites": "세계 공통 가용성과 해금 상태, 기존 봉인·중복 방지·동일 개체 등장 가능성 제약. 기존 초기 조우 후보에는 새 잠금이 없다.",
+          "initiator_current_conditions": "현재 기존 해안의 공개된 마른 출입점에 실제 도달한 플레이어. 현재 수면·통행·퇴로와 적합한 배치 여건을 확인한다. 원문 경로의 현재 유효한 공개 방문 요건을 갖춘 플레이어를 조우 주체로 삼는다. 이 주체 조건은 세계 재해금 과제가 아니며, 등장 뒤 접촉하는 모든 동행자에게 같은 과거 이력을 요구하지 않는다. 구체 항목·수치가 정해지지 않은 부분은 임의 확정하지 않는다.",
+          "retained_preappearance_route": "해안·선박 공용 풀. 실제 선박의 노출된 안전 갑판 또는 실제 해안 가까이 발견된 야영지. 공개 방문 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다.",
+          "retained_trigger_label": "공개 방문",
+          "location": {
+            "dimension": "minecraft:overworld",
+            "effective_current_rule": "현재 기존 해안의 공개된 마른 출입점에 실제 도달한 플레이어. 현재 수면·통행·퇴로와 적합한 배치 여건을 확인한다.",
+            "deployment_status": "기존 자연 지형·공용 공간 후보; 실제 설치·생성·좌표 미검증. 특정 신규 건축물은 요구하지 않는다."
+          },
+          "appearance_rule": "현재 조우 조건을 충족한 플레이어가 한 명 이상이고 기존 규칙에 따른 확률 판정이 성공하면 해당 조건을 맞춘 플레이어를 주체로 등장한다. 해금 달성자는 조우 주체와 달라도 된다.",
+          "probability_and_selection": "확률 수치·판정 주기·여러 주체 선정·재등장·중복 방지 세부는 미정이다. 기존 공용 후보풀과 NONE 가능성을 보존하며 개인마다 복제 출현시키지 않는다.",
+          "no_body_already_present_requirement": true,
+          "existing_static_npc_contact": "이미 실제 배치된 정적 인물을 찾아가는 기존 접촉은 그대로 진행하고 인사·대화마다 새 소환 추첨을 하지 않는다."
+        },
+        "relationships": {
+          "edges": [
+            {
+              "source_record_key": "RPG-S08-038",
+              "source_name": "마솔루흐",
+              "target_record_key": "RPG-S08-035",
+              "target_name": "브란",
+              "direction_from_current_actor": "outgoing",
+              "counterpart_record_key": "RPG-S08-035",
+              "counterpart_name": "브란",
+              "original_perspective_record_key": "RPG-S08-038",
+              "original_perspective_name": "마솔루흐",
+              "original_baseline_verbatim": {
+                "text": "브란과 배상 조건을 다투는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "source_file": "persona_sources/persona_reuse_light_v17.json",
+              "source_pointer": "/records/435/original_author_only_persona_context/baseline_relationships/items/0",
+              "relationship_id": null,
+              "retained_original_edge": {
+                "source_record_key": "RPG-S08-038",
+                "target_record_key": "RPG-S08-035",
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "브란과 배상 조건을 다투는 기존 관계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "source_file": "persona_sources/persona_reuse_light_v17.json",
+                "source_pointer": "/records/435/original_author_only_persona_context/baseline_relationships/items/0",
+                "historical_name_if_not_current": null
+              },
+              "knowledge_boundary": "원문 화자는 마솔루흐이다. 이 인용의 자기 경험·가계·심정은 그 화자의 관점이며 마솔루흐의 자동 지식·현재 동의로 전환하지 않는다. 반대 끝점의 실제 관찰·허락된 전달만 새 기억이 된다."
+            },
+            {
+              "source_record_key": "RPG-S08-039",
+              "source_name": "에브니시엔",
+              "target_record_key": "RPG-S08-038",
+              "target_name": "마솔루흐",
+              "direction_from_current_actor": "incoming",
+              "counterpart_record_key": "RPG-S08-039",
+              "counterpart_name": "에브니시엔",
+              "original_perspective_record_key": "RPG-S08-039",
+              "original_perspective_name": "에브니시엔",
+              "original_baseline_verbatim": {
+                "text": "마솔루흐의 선물에 경계심을 보이는 기존 설계다. 아직 특정 함정을 보았다는 뜻은 아니다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "retained_design_relation",
+              "source_file": "persona_sources/persona_reuse_light_v17.json",
+              "source_pointer": "/records/436/original_author_only_persona_context/baseline_relationships/items/1",
+              "relationship_id": null,
+              "retained_original_edge": {
+                "source_record_key": "RPG-S08-039",
+                "target_record_key": "RPG-S08-038",
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "마솔루흐의 선물에 경계심을 보이는 기존 설계다. 아직 특정 함정을 보았다는 뜻은 아니다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "source_file": "persona_sources/persona_reuse_light_v17.json",
+                "source_pointer": "/records/436/original_author_only_persona_context/baseline_relationships/items/1",
+                "historical_name_if_not_current": null
+              },
+              "knowledge_boundary": "원문 화자는 에브니시엔이다. 이 인용의 자기 경험·가계·심정은 그 화자의 관점이며 마솔루흐의 자동 지식·현재 동의로 전환하지 않는다. 반대 끝점의 실제 관찰·허락된 전달만 새 기억이 된다."
+            }
+          ],
+          "original_outgoing_baseline_and_change_candidates": {
+            "none_reason": null,
+            "items": [
+              {
+                "target_record_key": "RPG-S08-035",
+                "historical_name_if_not_current": null,
+                "status": "retained_design_relation",
+                "baseline": {
+                  "text": "브란과 배상 조건을 다투는 기존 관계다.",
+                  "basis": "retained_current_design",
+                  "source_refs": [
+                    "role"
+                  ]
+                },
+                "change": {
+                  "trigger": {
+                    "text": "브란이 민간인 교환과 복수 요구를 구분해 배상의 실제 범위를 제시한다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "observable_consequence": {
+                    "text": "브란에게 공개적인 모욕을 되갚는 말부터 하지 않고 돌려줄 몫의 순서를 내놓는다.",
+                    "basis": "new_minor_creative",
+                    "source_refs": []
+                  },
+                  "limits": [
+                    "실제로 겪거나 전달받은 범위에 한한 다음 행동 변화다.",
+                    "자동 연애·충성·진영 가입·가호·MAIN 양도는 없다."
+                  ]
+                },
+                "knowledge_limit": "브란와의 기존 인연과 현재 위치·상대의 속내·현행 정치 소속은 별개다. 아래 변화는 실제 브란의 행동이나 직접 전달을 본 뒤에만 적용한다."
+              }
+            ]
+          },
+          "edge_count": 2,
+          "source_perspective_policy": "관계 간선의 원 출발·도착과 원문 화자를 보존한다. 현재 인물의 상대는 반대 끝점이다. incoming 인용의 자기 경험·가계·심정은 원 출발 인물의 관점이며 현재 인물의 자동 지식이나 동의로 바뀌지 않는다.",
+          "new_political_memberships": [],
+          "new_identity_merges": []
+        }
+      },
+      "adopted_detail": {
+        "activation": {
+          "status": "현재 일반 조우 기획으로 채택; 배치·등록·시험 미실행",
+          "dimension": "minecraft:overworld",
+          "world_unlock": "누구 한 명이 기존 해안 생활권에 도달하고 공개 출입 지점과 귀환로를 실제 확인한 이력. 배상 납부나 왕의 체면을 세워 준 평가는 필수가 아니다.",
+          "world_unlock_scope": "누구 한 명의 유효 세계 이력. 해금자가 이후 조우 주체일 필요 없고 NPC에게 자동 지식 입력 없음.",
+          "unlock_receipt": "위 문장에 명시된 실제 각 행동의 서버 관측 영수증을 하나의 세계 이력에 연결한다. AND로 요구된 행동을 설명만으로 대신하지 않는다. 이미 유효한 기존 접근은 새 이력으로 소급 잠그지 않는다.",
+          "first_encounter_place": {
+            "place": "해안 야영지의 선물을 펼친 자리",
+            "retained_placement_reference": "실제 선박의 노출된 안전 갑판 또는 실제 해안 가까이 발견된 야영지; 인물 전용 건축 없음",
+            "fallback": "같은 원본 차원·지리 조건의 이미 확인된 안전 자연 부지에서 수행한다. 적합 부지가 없으면 배치 보류하며 새 전용 건물·필수 인물을 만들지 않는다. 소도구는 본인 소유 또는 사용 허락된 것만 쓴다.",
+            "status": "new_minor_detail_on_retained_unverified_placement"
+          },
+          "preappearance_player_conditions": "현재 허락된 공개 출입점에 도달해 통행을 막지 않고 머물 의사가 있는 실제 주체. 공물·충성·과거 인사·사적 사건 완료 요구 없음.",
+          "location_and_access": "(원문 접근 가능 지리 AND 현재 통행 허락 AND 안전한 배치 여건 AND 현재 방문 의사) AND (세계 해금 또는 보존 초기 접근) AND (생존·태어남·봉인·현재 모드 허용) AND (다른 실제 본체 활동 없음) AND (공통 추첨 성공). 본체 최초 미배치는 현장 본체 존재를 선행으로 요구하지 않는다.",
+          "body_after_appearance": "실제 같은 본체가 있고 현재 접근·의사·모드가 허용되면 일반 접촉. 이후 인사마다 새 추첨 없음.",
+          "probability_ref": "공통 계약의 general_encounter·atomic_contract",
+          "activity_places": [
+            {
+              "episode_id": "EP026-RPG-S08-038",
+              "places": [
+                "해안 야영지의 선물을 펼친 자리 — 실제 현재 NPC가 먼저 제안을 꺼내거나 플레이어의 현재 행동을 보고 말을 걸 수 있다. 마솔루흐가 선물을 펼치며 격식을 크게 세우지만 돌려줄 물건을 셀 때는 잔을 만지는 손이 빨라진다. 플레이어는 받는 사람과 배상 범위, 사과 말을 붙일지 여부를 실제 듣는다. 공개 사과가 없다고 물건 배상을 자동 무효로 만들지 않는다.",
+                "해안 야영지의 선물을 펼친 자리에서 선택 경로의 실제 상대와 대상이 있는 곳으로 허락 범위 안에서 이동한다. 이동하지 않은 인물을 자동 소환하지 않는다.",
+                "해안 야영지의 선물을 펼친 자리 또는 실제 현재 마침을 함께 확인할 수 있는 허락 장소. 부재 인물의 새 응답은 생성하지 않는다."
+              ]
+            }
+          ],
+          "not_first_contact_lock": "각 활동의 물건·관계자·환자·적 존재는 활동 조건이며 최초 일반 조우를 잠그지 않는다."
+        },
+        "현장": "첫 만남과 배상 협의는 해안 야영지의 선물을 펼친 자리. 운반은 수혜자가 정한 실제 수령점까지 기존 안전 경로로 한다. 합의 현물 기본 제안은 기존 그릇 1개지만 합의된 품목·정수량·대체재·행동 대가를 그대로 목록화하고 임의 축소하지 않는다.",
+        "이야기": [
+          {
+            "episode_id": "EP026-RPG-S08-038",
+            "title": "잔치에서 내려놓은 금잔",
+            "opening": "해안 야영지의 선물을 펼친 자리 — 실제 현재 NPC가 먼저 제안을 꺼내거나 플레이어의 현재 행동을 보고 말을 걸 수 있다. 마솔루흐가 선물을 펼치며 격식을 크게 세우지만 돌려줄 물건을 셀 때는 잔을 만지는 손이 빨라진다. 플레이어는 받는 사람과 배상 범위, 사과 말을 붙일지 여부를 실제 듣는다. 공개 사과가 없다고 물건 배상을 자동 무효로 만들지 않는다.",
+            "scenes": [
+              {
+                "beat_id": "B1",
+                "action": "마솔루흐가 선물을 펼치며 격식을 크게 세우지만 돌려줄 물건을 셀 때는 잔을 만지는 손이 빨라진다. 플레이어는 받는 사람과 배상 범위, 사과 말을 붙일지 여부를 실제 듣는다. 공개 사과가 없다고 물건 배상을 자동 무효로 만들지 않는다.",
+                "visible_change": "오늘 맡을 대상과 각자 허락한 범위가 드러나거나 제안만 남는다.",
+                "npc_desire_and_behavior": "처음엔 격식을 크게 세운다. 계산이 불리해지면 말이 짧아지고 잔을 만지는 손이 빨라진다. 행동 전, 제안을 처음 실제 꺼낼 때 마솔루흐: “돌려줄 몫은 여기 놓았다. 누구에게 무엇을 건네는지부터 말하자.”"
+              },
+              {
+                "beat_id": "B2",
+                "action": "정상: 브란에게 허락된 배상안을 실제 전하고 해당 수혜자가 받아들일 뜻을 확인한다. 플레이어는 합의된 그릇을 현재 안전한 경로로 운반해 수혜자가 실제 받게 한다. 마솔루흐가 물건만 돌려주기로 했으면 물건 인계만, 자기 사과도 덧붙이면 실제 그 문장과 수신만 남긴다.\n대안: 수혜자가 물건 수령을 거절하거나 응답하지 않으면 운반을 보류하거나 원래 정한 반환 경로로 가져온다. 이미 실제 도착한 에브니시엔 관련 증거가 있으면 허락된 청중 앞에서 그 출처와 범위만 검토한다. 증거가 없으면 새 도발을 만들지 않는다.\n경계 위반: 선물에 숨은 복종 조건을 붙여 전달하거나 플레이어가 수혜자의 수락을 대신 말한다. 실제 수신자가 조건을 알게 되면 변경된 제안을 다시 판단하고 기존 수락을 확대하지 않는다. 협박 성공·휴전 성공으로 마감하지 않는다.",
+                "visible_change": "정상: 수혜자가 수락해 실제 받은 해당 배상만 완료다. 공개 사과가 없는 물건 반환도 그 범위의 이행이다. 브란의 별도 휴전 응답은 실제 있을 때만 성립한다.\n대안: 배상은 해당 몫 미완료이며 실제 운반·회수만 남는다. 도발의 과거 또는 휴전은 추측하지 않는다.",
+                "npc_desire_and_behavior": "브란에게 내놓을 배상안에서 자기 체면을 지킬 부분과 실제로 돌려줄 몫을 정하고 싶다. 마솔루흐는 실제 비워진 자리의 잔을 다시 채우지 않고 바라본다. 거절 갈래에서는 돌아온 물건을 놓고 다음 제안을 고른다."
+              },
+              {
+                "beat_id": "B3",
+                "action": "마솔루흐는 실제 비워진 자리의 잔을 다시 채우지 않고 바라본다. 거절 갈래에서는 돌아온 물건을 놓고 다음 제안을 고른다. 실제 선택 경로의 근거만 확인하고 관계 결과와 보상별 자격·실제 제공은 분리한다.",
+                "visible_change": "수혜자가 수락해 실제 받은 해당 배상만 완료다. 공개 사과가 없는 물건 반환도 그 범위의 이행이다. 브란의 별도 휴전 응답은 실제 있을 때만 성립한다.\n대안 결과: 배상은 해당 몫 미완료이며 실제 운반·회수만 남는다. 도발의 과거 또는 휴전은 추측하지 않는다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다.",
+                "npc_desire_and_behavior": "마솔루흐는 실제 비워진 자리의 잔을 다시 채우지 않고 바라본다. 거절 갈래에서는 돌아온 물건을 놓고 다음 제안을 고른다."
+              }
+            ],
+            "ending": {
+              "observable_personal_change": "수혜자가 수락해 실제 받은 해당 배상만 완료다. 공개 사과가 없는 물건 반환도 그 범위의 이행이다. 브란의 별도 휴전 응답은 실제 있을 때만 성립한다.\n대안 결과: 배상은 해당 몫 미완료이며 실제 운반·회수만 남는다. 도발의 과거 또는 휴전은 추측하지 않는다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "마솔루흐는 실제 비워진 자리의 잔을 다시 채우지 않고 바라본다. 거절 갈래에서는 돌아온 물건을 놓고 다음 제안을 고른다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "잔치에서 내려놓은 금잔: 배상안 실제 전달·수락, 그릇 현재 보유, 선택 사과와 휴전 답 각각의 수신 → 수혜자가 수락해 실제 받은 해당 배상만 완료다. 공개 사과가 없는 물건 반환도 그 범위의 이행이다. 브란의 별도 휴전 응답은 실제 있을 때만 성립한다.\n대안 결과: 배상은 해당 몫 미완료이며 실제 운반·회수만 남는다. 도발의 과거 또는 휴전은 추측하지 않는다.\n해로운 경로는 실제 위반·손실과 미완료만. 준비/클릭/질문으로 완료되지 않는다."
+            }
+          }
+        ],
+        "본편경계": "현재 본편의 조우·레이드·가호·지원·봉인 권리를 이 사건으로 열지 않는다. 일반 대화와 개별 생활 사건만이며 새로운 본편 선행 0. 직접 관계 상대가 부재하면 자기 권한의 준비만 하고 상대 응답·현재 위치·동의는 생성하지 않는다."
+      },
+      "current_identity": {
+        "name": "마솔루흐",
+        "canonical_name": "마솔루흐",
+        "mythology": "켈트",
+        "tradition_source": "켈트·웨일스 마비노기 네 가지",
+        "tier": "중급",
+        "tier_display": "중급",
+        "tier_confirmation": false,
+        "tier_source_status": "이번 신규 배정",
+        "divinity_classification": "non_divine",
+        "combat_tier": "중급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "status": "current_source_identity_evidence",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "war_allegiance",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "status": "자료상 미지정",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "myth_subgroup",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "추가 통합 메모 없음",
+          "status": "current_source_identity_safeguards",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S08-038",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S08-038",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "Matholwch",
+        "aliases": "없음",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "선택 문헌의 개인으로 집계; 표기·변신·재등장은 별도 인물 아님",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "identity_notes",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "gender",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "인간",
+          "status": "retained_identity_design",
+          "source": {
+            "archive_file": "rpg_authoring_source_archive.json",
+            "namespace": "reconciled_rows",
+            "record_key": "RPG-S08-038",
+            "field": "entity_type",
+            "status": "history_only_do_not_consume_as_current"
+          },
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "status": "not_separately_authored",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "RPG-S08-038",
+            "field": "tier_interpretation"
+          },
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "이번 신규 배정",
+          "rationale": "배상과 휴전을 결정하는 군주를 중급 호위·국지전 지휘형으로 설계한다. 왕권의 크기와 군대 규모를 개인 전투력으로 환산하지 않는다.",
+          "special_note": "",
+          "previous_tier": "비신격·전투등급 미정",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false,
+          "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+        }
+      }
+    }
+  ]
+}

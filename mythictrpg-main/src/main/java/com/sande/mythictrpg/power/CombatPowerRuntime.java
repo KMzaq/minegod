@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.EventPriority;
@@ -48,7 +49,7 @@ public final class CombatPowerRuntime {
         Entry entry = ENTRIES.get(server); return entry != null && entry.ready && !entry.stopping;
     }
     @SubscribeEvent public static void reload(AddReloadListenerEvent event) {
-        event.addListener(CombatPowerPolicyManager.INSTANCE);
+        event.addListener(CombatPowerPolicyManager.INSTANCE.forRegistries(event.getRegistryAccess()));
         event.addListener(BlessingPowerPolicyManager.INSTANCE);
     }
     @SubscribeEvent public static void started(ServerStartedEvent event) {
@@ -117,6 +118,10 @@ public final class CombatPowerRuntime {
             Map<String, Integer> world = new HashMap<>(); progress.forEach((id, value) -> world.put(id.toString(), value));
             var claims = RewardClaimState.get(player.server);
             if (!claims.isWritable()) return CombatPowerAssessment.unavailable("BLESSING_OWNERSHIP_REJECTED");
+            if (loaded.policy().model() != null) {
+                var input = captureState(state, loaded.policy(), player);
+                return loaded.policy().evaluate(input.withEffects(activeEffectLevels(player)), world);
+            }
             Map<ResourceLocation, Integer> active = new HashMap<>();
             player.getActiveEffects().stream().filter(effect -> effect.isInfiniteDuration() || effect.getDuration() > 0)
                     .forEach(effect -> active.merge(ResourceLocation.parse(effect.getEffect().getRegisteredName()), effect.getAmplifier(), Math::max));
@@ -136,6 +141,11 @@ public final class CombatPowerRuntime {
         if (!player.server.isSameThread()) return new OwnedBlessingPower(false, 0, "WRONG_GAME_THREAD");
         var claims = RewardClaimState.get(player.server);
         if (!claims.isWritable()) return new OwnedBlessingPower(false, 0, "BLESSING_OWNERSHIP_REJECTED");
+        var selected = CombatPowerPolicyManager.INSTANCE.current().policy();
+        if (selected == null || selected.model() != null) {
+            double intrinsic = claims.blessingIntrinsicPower(player.getUUID());
+            return new OwnedBlessingPower(true, intrinsic, "named_acquired_blessing_intrinsic_only; active_effects_scored_separately; legacy_unnamed_intrinsic=0");
+        }
         var levels = claims.ownedPermanentBlessingLevels(player.getUUID());
         if (levels.isEmpty()) return new OwnedBlessingPower(true, 0, "NO_OWNED_PERMANENT_BLESSINGS");
         var table = BlessingPowerPolicyManager.INSTANCE.current();
@@ -147,6 +157,110 @@ public final class CombatPowerRuntime {
             return new OwnedBlessingPower(true, score, "owned_effects=" + levels.size() + "; scoreTable=" + table.policy().id()
                     + "; before_world_coefficient; independent_of_milk_or_death; worldOverrides=" + (world != null));
         } catch (RuntimeException invalid) { return new OwnedBlessingPower(false, 0, invalid.getMessage()); }
+    }
+    /** Effective v2 model; legacy policies keep their old total but previews use the declared initial proposal. */
+    public static CombatPowerEvaluator.Model publicModel() {
+        CombatPowerPolicy policy = CombatPowerPolicyManager.INSTANCE.current().policy();
+        if (policy == null) throw new IllegalStateException(CombatPowerPolicyManager.INSTANCE.current().reason());
+        return policy.model() == null ? CombatPowerPolicyManager.initialProposalModel() : policy.model();
+    }
+    /** Captures once on the server thread. The callback does no world reads or writes, so candidate evaluations are comparable. */
+    public static java.util.function.ToDoubleFunction<Map<ResourceLocation, Integer>> previewScorer(ServerPlayer player) {
+        return previewScorer(player,List.of());
+    }
+    /** Includes this frozen reward bundle's promised equipment without mutating the acquisition ledger. */
+    public static java.util.function.ToDoubleFunction<Map<ResourceLocation, Integer>> previewScorer(ServerPlayer player,
+            List<com.sande.mythictrpg.quest.reward.NpcRewardEntry> promisedItems) {
+        if (!player.server.isSameThread() || !captureReady(player.server)) throw new IllegalStateException("POWER_PREVIEW_NOT_READY");
+        var loaded = CombatPowerPolicyManager.INSTANCE.current();
+        if (loaded.policy() == null) throw new IllegalStateException(loaded.reason());
+        CombatPowerState baseline = captureState(RewardPowerState.get(player.server), loaded.policy(), player, List.copyOf(promisedItems));
+        CombatPowerEvaluator.Model model = publicModel();
+        return levels -> CombatPowerEvaluator.evaluate(baseline.withEffects(levels), model).total();
+    }
+    static CombatPowerState captureState(RewardPowerState state, CombatPowerPolicy policy, ServerPlayer player) {
+        return captureState(state,policy,player,List.of());
+    }
+    private static CombatPowerState captureState(RewardPowerState state, CombatPowerPolicy policy, ServerPlayer player,
+            List<com.sande.mythictrpg.quest.reward.NpcRewardEntry> promisedItems) {
+        if (!player.server.isSameThread() || !state.ready()) throw new IllegalStateException("POWER_SOURCE_REJECTED");
+        var history = state.history(player.getUUID()).orElseThrow(() -> new IllegalStateException("ACQUISITION_HISTORY_MISSING"));
+        if (!history.complete()) throw new IllegalStateException(history.reason());
+        var claims = RewardClaimState.get(player.server);
+        if (!claims.isWritable()) throw new IllegalStateException("BLESSING_OWNERSHIP_REJECTED");
+        if (policy.model() != null && policy.model().worldContributionCoefficient() != 0)
+            throw new IllegalStateException("WORLD_CONTRIBUTION_SOURCE_NOT_AUTHORED");
+        Map<String, Double> modifiers = permanentModifiers(player);
+        if (policy.model() != null && modifiers.keySet().stream().anyMatch(key -> !key.startsWith("minecraft:generic.max_health#")
+                && !key.startsWith("minecraft:generic.attack_damage#"))) throw new IllegalStateException("UNSCORED_PERMANENT_ATTRIBUTE");
+        double hp = baselineAttribute(player.getAttribute(Attributes.MAX_HEALTH).getBaseValue(), "minecraft:generic.max_health", modifiers);
+        double attack = baselineAttribute(player.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue(), "minecraft:generic.attack_damage", modifiers);
+        if (promisedItems.size() > 4096) throw new IllegalArgumentException("PROMISED_ITEM_LIMIT");
+        Set<CompoundTag> identities = new LinkedHashSet<>(history.items());
+        for (var item : promisedItems) identities.add(RewardPowerState.identity(item.createStack(player.registryAccess()),player.registryAccess()));
+        return new CombatPowerState(hp, attack, Map.of(), policy.stateGear(List.copyOf(identities), player.registryAccess()),
+                claims.blessingIntrinsicPower(player.getUUID()), 0,progressionSkillPower(player),
+                com.sande.mythictrpg.accessory.AccessoryRuntime.fixedPower(player));
+    }
+    private static Map<String,Double> progressionSkillPower(ServerPlayer player) {
+        var result=new LinkedHashMap<String,Double>();
+        for(var value:RewardClaimState.get(player.server).progressionFor(player.getUUID())) {
+            if(value.kind()==com.sande.mythictrpg.quest.reward.ProgressionRewardEntry.Kind.LEARNED) {
+                var skill=com.sande.mythictrpg.skills.LearnedSkillDefinitions.INSTANCE.find(value.definitionId())
+                        .orElseThrow(()->new IllegalStateException("Owned learned skill definition missing"));
+                result.merge(value.definitionId().toString(),skill.intrinsicPower(),Math::max);
+            } else if(value.kind()==com.sande.mythictrpg.quest.reward.ProgressionRewardEntry.Kind.SPECIAL) {
+                var skill=com.sande.mythictrpg.specialskill.SpecialSkillDefinitions.INSTANCE.find(value.definitionId())
+                        .orElseThrow(()->new IllegalStateException("Owned special skill definition missing"));
+                result.merge(value.definitionId().toString(),skill.intrinsicPower(),Math::max);
+            }
+        }
+        return Map.copyOf(result);
+    }
+    private static double baselineAttribute(double base, String attributeId, Map<String, Double> modifiers) {
+        var relevant = new TreeMap<>(modifiers).entrySet().stream().filter(e -> e.getKey().startsWith(attributeId + "#")).toList();
+        double added = base;
+        for (var entry : relevant) if (entry.getKey().endsWith("#ADD_VALUE")) added += entry.getValue();
+        double result = added;
+        for (var entry : relevant) if (entry.getKey().endsWith("#ADD_MULTIPLIED_BASE")) result += added * entry.getValue();
+        for (var entry : relevant) if (entry.getKey().endsWith("#ADD_MULTIPLIED_TOTAL")) result *= 1 + entry.getValue();
+        CombatPowerState.finite(result); return result;
+    }
+    static Map<ResourceLocation, Integer> activeEffectLevels(ServerPlayer player) {
+        Map<ResourceLocation, Integer> result = new HashMap<>();
+        player.getActiveEffects().stream().filter(effect -> effect.isInfiniteDuration() || effect.getDuration() > 0)
+                .forEach(effect -> result.merge(ResourceLocation.parse(effect.getEffect().getRegisteredName()), Math.addExact(effect.getAmplifier(),1), Math::max));
+        return Map.copyOf(result);
+    }
+    /** Authenticates an actual held/worn variant against this player's acquisition evidence and v2 bound-gear registration.
+     * Durability changes alone are neutral for this lookup; displayed power still evaluates the untouched acquisition record. */
+    public static Optional<CombatPowerPolicy.ItemRule> registeredAcquiredGear(ServerPlayer player, ItemStack stack) {
+        try { return registeredAcquiredGearChecked(player,stack); }
+        catch (RuntimeException invalidDefinition) {
+            // A broken datapack must not throw out of a live damage event. Assessment separately
+            // exposes the invalid-input reason; combat keeps its unmodified vanilla behavior.
+            return Optional.empty();
+        }
+    }
+    private static Optional<CombatPowerPolicy.ItemRule> registeredAcquiredGearChecked(ServerPlayer player, ItemStack stack) {
+        if (!player.server.isSameThread() || stack.isEmpty() || !captureReady(player.server)) return Optional.empty();
+        var policy = CombatPowerPolicyManager.INSTANCE.current().policy();
+        if (policy == null || policy.model() == null) return Optional.empty();
+        var history = RewardPowerState.get(player.server).history(player.getUUID()).orElse(null);
+        if (history == null || !history.complete()) return Optional.empty();
+        CompoundTag actual = withoutWear(RewardPowerState.identity(stack,player.registryAccess()));
+        if (history.items().stream().noneMatch(item -> withoutWear(item).equals(actual))) return Optional.empty();
+        var matching = policy.items().stream().filter(rule -> !rule.ignored()
+                && withoutWear(rule.identity(player.registryAccess())).equals(actual) && rule.enchantmentsMatch(player.registryAccess())).toList();
+        return matching.size() == 1 ? Optional.of(matching.getFirst()) : Optional.empty();
+    }
+    private static CompoundTag withoutWear(CompoundTag identity) {
+        CompoundTag copy = identity.copy();
+        if (copy.contains("components", Tag.TAG_COMPOUND)) {
+            var components = copy.getCompound("components"); components.remove("minecraft:damage");
+            if (components.isEmpty()) copy.remove("components");
+        }
+        return copy;
     }
     static Map<String, Double> permanentModifiers(ServerPlayer player) {
         // Vanilla effects also call addPermanentModifier despite expiring later. Exclude only exact actual effect templates.

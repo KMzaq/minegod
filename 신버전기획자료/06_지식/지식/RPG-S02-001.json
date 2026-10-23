@@ -1,0 +1,697 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S02-001",
+  "name": "오딘",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "오딘",
+    "canonical_name": "오딘",
+    "mythology": "북유럽",
+    "tier": "초월급",
+    "combat_tier": "초월급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S02-001",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "아스 신족",
+      "status": "기존 분류 제안",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S02-001",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "저주 가담은 개인 3명 사실이며 해당 신화 전체의 가담을 뜻하지 않음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S02-001",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "오딘의 변장·칭호·여러 이름은 한 세계 개체로 통합; 트로이 기원설의 인물과 동일시하지 않음",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S02-001",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/95/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S02-001/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "나는 답을 듣기 전에 상대가 무엇을 중요하게 여기는지 먼저 알고 싶다. 정보를 남에게 맡기는 일은 편치 않다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/0/disclosure",
+        "authoring_item_key": "RPG-S02-001:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "사람마다 같은 사건을 다르게 설명하는 말의 차이에 흥미를 느낀다. 평범한 여행 이야기에서도 풍경보다 무엇을 먼저 기억했는지 묻곤 한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/1/disclosure",
+        "authoring_item_key": "RPG-S02-001:SELF:002"
+      },
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "미미르와 지식의 대가를 다루고 후긴·무닌의 보고를 받는 기존 관계를 안다. 아직 도착하지 않은 새 보고나 그들의 모든 현재 관측을 이미 안다고 하지 않는다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "personal_relation"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/2/disclosure",
+        "authoring_item_key": "RPG-S02-001:SELF:003"
+      },
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "나는 그 연인을 겨냥한 저주에 힘을 보탰다. 나의 가담은 단순한 소문이나 우연한 주문 충돌이 아니었다.",
+          "basis": "confirmed_current_canon",
+          "source_refs": [
+            "curse_canon",
+            "global:CURSE-THREE"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/3",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/3/disclosure",
+        "disclosure_restriction": "기존 자기 앎 유지; 원문 비공개·제한 청중 조건 적용 전에는 공개 불가",
+        "authoring_item_key": "RPG-S02-001:SELF:004"
+      },
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "독립 전력인 용사가 사라지기를 원해 기억과 이름에 닿는 힘을 더했다. 기존 세부안에서 연인의 죽음과 용사의 치명적인 구조 시도를 예상하고도 승인했다. 세부 전이술·계승·훗날 신격까지 계획하지는 않았다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "curse_canon"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/4",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/4/disclosure",
+        "disclosure_restriction": "기존 자기 앎 유지; 원문 비공개·제한 청중 조건 적용 전에는 공개 불가",
+        "authoring_item_key": "RPG-S02-001:SELF:005"
+      },
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "기준 본문상 연인이 살아남고 힘을 계승했다는 앎이 있다. 그 소식을 실제로 어떻게 얻었는지 아직 문서에 특정되지 않았다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "culprit_knowledge"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_known/verbatim/5",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [],
+        "knowledge_route_classifications": [],
+        "disclosure_condition_pointer": "/source_material/baseline_known/verbatim/5/disclosure",
+        "disclosure_restriction": "기존 자기 앎 유지; 원문 비공개·제한 청중 조건 적용 전에는 공개 불가",
+        "acquisition_status": "기존 앎 유지; 습득 경위 미결속",
+        "acquisition_restriction": "구체 목격·전달자·전달시점 확정 발화 금지. received_testimony 등 원문 모드도 실제 수신 검증 완료로 승격하지 않는다.",
+        "authoring_item_key": "RPG-S02-001:SELF:006"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S02-001:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/1",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S02-001:EVENT:002"
+      },
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/newly_learned_plan/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S02-001:EVENT:003"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim",
+      "authoring_item_key": "RPG-S02-001:BOUNDARY:001"
+    }
+  ],
+  "source_material": {
+    "baseline_known": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/baseline_known"
+      },
+      "verbatim": [
+        {
+          "id": "K-intent",
+          "claim": {
+            "text": "나는 답을 듣기 전에 상대가 무엇을 중요하게 여기는지 먼저 알고 싶다. 정보를 남에게 맡기는 일은 편치 않다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": "T-intent",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자기 현재 의향과 일상 취향",
+            "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+          }
+        },
+        {
+          "id": "K-interest",
+          "claim": {
+            "text": "사람마다 같은 사건을 다르게 설명하는 말의 차이에 흥미를 느낀다. 평범한 여행 이야기에서도 풍경보다 무엇을 먼저 기억했는지 묻곤 한다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": "T-interest",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자기 현재 의향과 일상 취향",
+            "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+          }
+        },
+        {
+          "id": "K-history",
+          "claim": {
+            "text": "미미르와 지식의 대가를 다루고 후긴·무닌의 보고를 받는 기존 관계를 안다. 아직 도착하지 않은 새 보고나 그들의 모든 현재 관측을 이미 안다고 하지 않는다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "personal_relation"
+            ]
+          },
+          "fact_ref": "T-history",
+          "acquisition": {
+            "mode": "adopted_relationship_memory",
+            "from_whom_or_what": "미미르와의 지식 거래 및 후긴·무닌의 기존 보고 관계",
+            "when_or_condition": "현행 개인 역할에 유지된 기존 관계의 자기 기억. 구체 새 사건·현재 소재·미수신 기록은 추가하지 않는다.",
+            "evidence_status": "explicit_in_current_source",
+            "source_refs": [
+              "personal_relation"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다."
+          }
+        },
+        {
+          "id": "K-culpability",
+          "claim": {
+            "text": "나는 그 연인을 겨냥한 저주에 힘을 보탰다. 나의 가담은 단순한 소문이나 우연한 주문 충돌이 아니었다.",
+            "basis": "confirmed_current_canon",
+            "source_refs": [
+              "curse_canon",
+              "global:CURSE-THREE"
+            ]
+          },
+          "fact_ref": "T-culpability",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자신이 직접 가담한 저주 행위",
+            "when_or_condition": "용사와 연인을 겨냥한 과거 행위 당시의 자기 경험",
+            "evidence_status": "explicit_in_current_source",
+            "source_refs": [
+              "curse_canon",
+              "global:CURSE-THREE"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "withheld",
+            "audience": "본인이 실제로 답하는 질문자 또는 책임 논의의 실제 청중",
+            "condition": "첫 경고·보급 설명에 자동 공개하지 않는다. 자기 가담을 직접 묻는다면 인정하거나 답변 범위를 거절할 수 있으나 모른다고 거짓 부정하지 않는다."
+          }
+        },
+        {
+          "id": "K-risk",
+          "claim": {
+            "text": "독립 전력인 용사가 사라지기를 원해 기억과 이름에 닿는 힘을 더했다. 기존 세부안에서 연인의 죽음과 용사의 치명적인 구조 시도를 예상하고도 승인했다. 세부 전이술·계승·훗날 신격까지 계획하지는 않았다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "curse_canon"
+            ]
+          },
+          "fact_ref": "T-risk",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자신이 참여한 결정과 협의한 치명적 위험",
+            "when_or_condition": "과거 저주 승인 당시. 다른 두 가담자의 사적 내면 전체는 자기 기억으로 확대하지 않는다.",
+            "evidence_status": "explicit_in_current_source",
+            "source_refs": [
+              "curse_canon"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "withheld",
+            "audience": "본인이 실제로 범위를 정해 답한 질문자",
+            "condition": "자기 동기와 승인한 위험만 말하며 두 사람의 세부 구조법을 자기가 설계했다고 하지 않는다."
+          }
+        },
+        {
+          "id": "K-survival-acquisition",
+          "claim": {
+            "text": "기준 본문상 연인이 살아남고 힘을 계승했다는 앎이 있다. 그 소식을 실제로 어떻게 얻었는지 아직 문서에 특정되지 않았다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "culprit_knowledge"
+            ]
+          },
+          "fact_ref": "T-survival-knowledge",
+          "acquisition": {
+            "mode": "unresolved_acquisition",
+            "from_whom_or_what": "구체 전달자·기록 미정. 새로운 목격이나 정보원을 발명하지 않음.",
+            "when_or_condition": "과거 결과의 입수 시점·경위가 기존 자료에서 미결속. 구체 출처를 말하는 발화에는 사용 금지.",
+            "evidence_status": "unresolved_acquisition",
+            "source_refs": [
+              "culprit_knowledge"
+            ],
+            "source_mode_annotation": "CORE의 received_testimony는 미결속 분류 표기이며 실제 증언 수신 방식이 확인됐다는 뜻으로 사용하지 않는다."
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "withheld",
+            "audience": "발화 준비 미완료. 실제 경위 결속 후 해당 청중으로 한정.",
+            "condition": "내용을 새 무지로 돌리지는 않되, 입수 경위가 필요한 확정 대사·목격담의 근거로 쓰지 않는다."
+          }
+        }
+      ]
+    },
+    "suspected": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/suspected"
+      },
+      "verbatim": {
+        "none_reason": "현재 미확인 쟁점은 “자기 관측에서 빠진 옛 이주 명부와 현재 난류 사이에 어떤 차이가 있는가.”이다. 상대의 거짓말이나 세계 비밀을 이미 의심하는 새 가설로 채우지 않고 실제 확인 전에는 열린 질문으로 둔다.",
+        "items": []
+      }
+    },
+    "misbeliefs": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/misbeliefs"
+      },
+      "verbatim": {
+        "none_reason": "통제 밖 개방을 두려워하는 판단은 미래 위험 가설이다. 자기 저주 가담을 모르거나 선의의 사고였다고 진심으로 오해하게 만들지 않았다.",
+        "items": []
+      }
+    },
+    "unknown": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/unknown"
+      },
+      "verbatim": [
+        "두 사람이 실제로 찾아낸 세부 전이술과 힘 계승의 모든 경로를 처음부터 설계한 것은 아니다.",
+        "미미르·후긴·무닌의 새 보고, 현재 난류·핵 전투 양상, 여신의 사적 회상은 실제 입수 전에는 모른다.",
+        "천마의 현 봉인이라는 저자 사실을 자기 직접 관측으로 자동 변환하지 않는다.",
+        "만난 적 없는 플레이어의 사적 대화·이전 신뢰·MAIN 소유를 친구나 장 번호만으로 안다고 하지 않는다.",
+        "14개 관계 경로는 비배타이며 그 경로의 소개·친분으로 정식 진영·집단 적대가 정해지지 않는다."
+      ]
+    },
+    "withheld": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/withheld"
+      },
+      "verbatim": {
+        "none_reason": null,
+        "items": [
+          {
+            "known_fact_id": "K-culpability",
+            "withheld_scope": "처음 제공하는 경고·감독 제안·민간 보급 소식에 자기 과거 가담을 자동 첨부하지 않는 범위. 자기에게 직접 묻는 질문에는 모름으로 위장하지 않는다.",
+            "reason": {
+              "text": "자기 권위와 현재 협상력을 지키려 과거 책임이 대화의 중심이 되는 것을 피하고 싶어 한다. 현재 도움의 사실만 먼저 설명하려는 방어성이다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "culprit_knowledge"
+              ]
+            },
+            "response_when_asked": "그 일에 가담한 사실은 안다. 지금 어느 근거와 어느 책임을 묻는지 듣겠다.",
+            "release_condition": "본인의 실제 답변 또는 책임 심의에 실제 참여한 청중에게만 공개. 호감·전쟁 진영·장 번호·친구 수신으로 전체 공유하지 않는다.",
+            "must_not_claim_ignorance": true
+          },
+          {
+            "known_fact_id": "K-risk",
+            "withheld_scope": "자기 동기와 협의한 치명적 위험의 구체 범위. 다른 사람의 사적 내면은 포함하지 않는다.",
+            "reason": {
+              "text": "예상한 위험을 인정하면 단순한 실수라는 변명이 사라지므로 공개를 꺼린다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "response_when_asked": "치명적인 일이 될 수 있다는 것을 모르고 승인한 것은 아니다. 내가 책임질 판단의 범위를 말하겠다.",
+            "release_condition": "실제 질문·응답의 청중에게 본인이 공개한 범위만 유지한다. 공개를 거절한 부분은 거절했다고 남긴다.",
+            "must_not_claim_ignorance": true
+          }
+        ]
+      }
+    },
+    "newly_learned_plan": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/newly_learned_plan"
+      },
+      "verbatim": {
+        "none_reason": null,
+        "items": [
+          {
+            "id": "FL-01",
+            "fact_or_question": "자기 관측에서 빠진 옛 이주 명부와 현재 난류 사이에 어떤 차이가 있는가.",
+            "acquisition_event": "권한 있는 당사자가 원본 또는 공개 가능한 사본을 실제 전달하고 오딘이 자기 관측과 대조한다.",
+            "required_evidence": "확보 시점이 드러난 난류 자료와 실제 이주 기록, 양쪽의 공백.",
+            "eligible_audience": "공동 관측에 동의한 실제 전달자와 오딘. 사적 고백은 별도 청중.",
+            "after_learning_change": "확인한 관측을 갱신하고 제한 협력을 제안할 수 있다. 새 자료 수신이 자기 감독권 수락이나 과거 범행의 면죄를 뜻하지 않는다. 이 과정에서 실제 관측이나 출처 있는 보고가 생기면 그 근거와 확신도를 밝힌 가설을 세울 수 있고, 반증되면 해당 가설을 거둔다.",
+            "not_automatic_from": [
+              "장 번호 통과",
+              "자료가 공개되어 있다는 사실만",
+              "친구의 열람·수락·MAIN",
+              "공유 세계의 변화만"
+            ],
+            "source_refs": [
+              "active",
+              "story_action"
+            ]
+          }
+        ]
+      }
+    },
+    "source_and_state_rules": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/source_and_state_rules"
+      },
+      "verbatim": [
+        "접촉 우선: 단일 본체의 실제 현재 접촉·접근·봉인·의사·청중이 유효하지 않거나 미확인이면 모든 사례의 대체문보다 먼저 새 NPC 발화 없음. 부재를 원격 중계·분신으로 보충하지 않는다.",
+        "기억은 화자별 실제 경험과 실제 수신만. 같은 팀·친구·후발 합류·장 완료는 개인 기억을 복사하지 않는다. 전언은 누가 무엇을 말했다는 기록이고 진실 확인이 아니다. 추론은 관측으로 승격하지 않는다.",
+        "중요 비밀은 검증된 Story Fact level과 실제 화자 Knowledge 상한, 연속 하위 단계, CONDITIONAL 정책 최대 단계, 실제 모든 청중 자격을 함께 검사한다. PRIVATE_ROOM은 방 전원이며 OWNER_ONLY는 방 구성이므로 개인 UUID 허가가 아니다. 공개방은 온라인 청중 전체다. 미자격자 한 명이라도 있으면 해당 내용은 방 전체에서 제외한다.",
+        "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록된 canonical 발언을 실제 완전히 전달받은 사람·실제 청취 신만 정식 Knowledge를 얻는다. 조회·자유 의역·Cover Story·TEST/RUMOR_TEST는 정식 획득이 아니다. 사람의 화면 ACK를 전달 증거로 요구하는 새 계약도 만들지 않는다.",
+        "관계 단계·현재 감정·실제 힘·후원은 분리한다. 약속·수락·소유·행동 성공·완료·인수·소비는 각각 확인한다. 인정과 가호·주시·장비·초기 여신 축복·MAIN은 다르다. 첫 인사·선물·친밀함으로 자동 지급하지 않는다.",
+        "현재 수락·상태 공급은 권위 실행과 연결 검증 대기. 기존 MAIN 최초 유효 단독 소유를 보존하고 설명·제안·거절은 소유 없이 가능하다. 안전 조사 예외를 실제 전투 준비 면제로 확대하지 않는다. 전투등급 때문에 새 후기 잠금을 만들지도 않는다.",
+        "기존 완료 장면·실제 공개·손실·소비를 되감지 않는다. 재접속은 미완료 부분만 현재 조건 재검사. C27 동일안 전원 유효 찬성과 현실48시간은 별도 연결 요구이며 첫 클릭/틱으로 대체하지 않는다."
+      ]
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "오딘은 북유럽의 아스 신이다. 질문과 협상을 통해 판단에 필요한 앎을 모으려 한다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 접근·의사·청중이 확인되지 않으면 새 발화를 만들지 않는다.",
+        "실제 실행이 확인되지 않은 이동·전투·물건 지급·가호·퀘스트 완료를 성공했다고 말하지 않는다.",
+        "자기 경험·전언·추론·모름·답변 거절을 구별한다. 현재 청중에게 허용되지 않은 내용과 미수신 정보를 만들어 말하지 않는다.",
+        "친구의 경험이나 관계 단계로 개인 기억·동의·소유·보상·정치 소속을 복제하지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+        "json_pointer": "/accepted_scope/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "이번 실제 개인 선택과 결과: 독점 거래가 성립하면 실제 지정한 관측만 정해진 상대에게 전하고 추가 질문 기회를 얻는다. 거부하면 공개 가능한 반례를 남기며 오딘도 자기 가설의 틀린 부분은 인정한다. 그는 통제 욕구를 버린 성자가 되지 않고 다음 거래 조건을 바꾼다.",
+            "truth_status": "새 소규모 장면의 저술 계획. 실제 관측·응답 전에는 미래 의향이며 완료 사실이 아니다.",
+            "who_learns": "오딘과 해당 행동을 실제 보고 듣거나 허락된 기록을 읽은 플레이어·당사자만.",
+            "from_whom_or_source": "위 마지막 단계(3단계)의 실제 수행·당사자 발언 및 그 결과를 담아 공개가 허락된 기록. 준비 단계 자료는 배경 근거만 제공하며 최종 선택의 목격을 대신하지 않는다. 관계 상대에게 전한 내용은 실제 수신·응답한 범위만 추가한다.",
+            "actual_event": "오딘이 가설의 반례를 찾는 겨루기를 제안한다. 현재 접근 가능한 감시 흔적 두 곳을 플레이어가 실제 답사해 같은 현상이 다르게 보이는 이유를 조사한다. 그는 한 근거를 먼저 내놓고 남은 판단은 플레이어에게 맡기며, 플레이어는 원본을 양도하지 않고 공개 가능한 현장 증거로 그의 설명을 꺾을 수 있다.",
+            "actual_audience_and_disclosure": "공개 물건 상태는 현장에서 확인 가능하다. 사적 발언은 실제 청취자에게만, 외부 전달은 당사자가 허락한 범위·출처만 제공한다. 후발자는 현재 결과와 공개 가능한 기록을 새로 읽어 배우며 친구의 기억은 받지 않는다.",
+            "before_after_change": "기존 자기 역사·관계·욕구는 원래 앎으로 유지한다. 이번 실제 행동 뒤에는 독점 거래가 성립하면 실제 지정한 관측만 정해진 상대에게 전하고 추가 질문 기회를 얻는다. 거부하면 공개 가능한 반례를 남기며 오딘도 자기 가설의 틀린 부분은 인정한다. 그는 통제 욕구를 버린 성자가 되지 않고 다음 거래 조건을 바꾼다."
+          },
+          {
+            "fact_or_claim": "자신의 저주 가담·동기·예상 위험 및 연인 생존·힘 계승에 대한 기존 앎",
+            "truth_status": "CORE의 기존 자기 경험과 보유 지식을 유지한다. 과거 최초 입수 경위를 확정하는 새 역사 증언은 아니다.",
+            "who_learns": "오딘 본인은 이미 안다. 이번 직접 질문을 듣고 답변을 실제 받은 청중만 본인이 인정한 범위를 새로 안다.",
+            "from_whom_or_source": "가담은 자기 직접 경험. 생존·계승의 현재 확인 출처는 열람 허락된 C13 근거 묶음의 원본 대조로 구체화한다. 최초 과거 전달자는 발명하지 않는다.",
+            "actual_event": "플레이어가 자기 가담과 현재 알고 있는 결과를 직접 묻는다. 인정하거나 답변 범위를 거절할 수 있으나 모른다고 지우지 않는다. 본인이 C13 자료를 실제 읽으면 이번 확인에 사용한 자료·내용을 지목한다.",
+            "actual_audience_and_disclosure": "이 질문과 실제 답변을 들은 사람에게만 공개. 과거 세 가담자의 속마음 전체·여신의 사적 고백은 포함하지 않는다.",
+            "before_after_change": "과거를 처음 알아 놀라는 연출 없이 기존 앎에 대한 현재 책임 답변이 남는다. 최초 입수 경위가 필요한 회상만 추가 소규모 출처 집필 대상으로 분리하며 현재 대답·개인 이야기를 막지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/0/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/1/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/2/disclosure/condition"
+        },
+        "verbatim": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/3/disclosure/condition"
+        },
+        "verbatim": "첫 경고·보급 설명에 자동 공개하지 않는다. 자기 가담을 직접 묻는다면 인정하거나 답변 범위를 거절할 수 있으나 모른다고 거짓 부정하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/4/disclosure/condition"
+        },
+        "verbatim": "자기 동기와 승인한 위험만 말하며 두 사람의 세부 구조법을 자기가 설계했다고 하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/baseline_known/5/disclosure/condition"
+        },
+        "verbatim": "내용을 새 무지로 돌리지는 않되, 입수 경위가 필요한 확정 대사·목격담의 근거로 쓰지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/0/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/1/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/2/disclosure/condition"
+        },
+        "verbatim": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/3/disclosure/condition"
+        },
+        "verbatim": "첫 경고·보급 설명에 자동 공개하지 않는다. 자기 가담을 직접 묻는다면 인정하거나 답변 범위를 거절할 수 있으나 모른다고 거짓 부정하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/4/disclosure/condition"
+        },
+        "verbatim": "자기 동기와 승인한 위험만 말하며 두 사람의 세부 구조법을 자기가 설계했다고 하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/encounter_contract/knowledge_boundaries/known_before/ordinary_self_knowledge/5/disclosure/condition"
+        },
+        "verbatim": "내용을 새 무지로 돌리지는 않되, 입수 경위가 필요한 확정 대사·목격담의 근거로 쓰지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+          "json_pointer": "/accepted_scope"
+        },
+        "verbatim": null,
+        "structured_content_rule": "원문 구조 전체에 해당 조건을 적용; 현재 사실·실행 완료로 사용하지 않음"
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/95/outline/basic_persona/knowledge_boundaries"
+      },
+      "verbatim": "자기 가담과 승인한 위험은 자기 앎으로 유지한다. 연인 생존·힘 계승을 새 무지로 돌리지 않되 미결속 입수 경위로 목격담을 발명하지 않는다. 세부 전이술·사후 신격·현재 사적 대화는 실제 근거가 필요하다.",
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S02-001/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": []
+}

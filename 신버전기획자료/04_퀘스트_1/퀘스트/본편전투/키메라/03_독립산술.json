@@ -1,0 +1,1340 @@
+{
+  "status": "STATIC_ARITHMETIC_EXECUTED_NOT_SERVER_OR_PLAY_TEST",
+  "formula": "effectiveArmor=min(20,max(A/5,A-D/(2+T/4))); damage=D*(1-effectiveArmor/25)/(1+P/40)*(1-.2R)",
+  "source": "통합1챕터 모델검산.py의 보호 나눗셈 모델. 바닐라 EPF 곱셈으로 몰래 교체하지 않음",
+  "boss": "armor8,toughness4,protection0,resistance0",
+  "models": [
+    [
+      "약",
+      7,
+      1.6,
+      0.45,
+      0.8,
+      15,
+      0,
+      8,
+      20
+    ],
+    [
+      "보통",
+      8,
+      1.6,
+      0.65,
+      0.9,
+      20,
+      8,
+      12,
+      20
+    ],
+    [
+      "강",
+      11,
+      1.25,
+      0.75,
+      0.95,
+      20,
+      12,
+      16,
+      20
+    ]
+  ],
+  "offense": [
+    {
+      "model": "약",
+      "players": 1,
+      "strength_level": 0,
+      "weapon_attack": 7,
+      "raw_hit": 7.0,
+      "boss_hp": 3000.0,
+      "party_dps": 3.11808,
+      "ttk_seconds": 962.131,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 1,
+      "strength_level": 1,
+      "weapon_attack": 7,
+      "raw_hit": 10.28,
+      "boss_hp": 3000.0,
+      "party_dps": 4.838081,
+      "ttk_seconds": 620.081,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 1,
+      "strength_level": 3,
+      "weapon_attack": 7,
+      "raw_hit": 16.84,
+      "boss_hp": 3000.0,
+      "party_dps": 8.773829,
+      "ttk_seconds": 341.926,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 1,
+      "strength_level": 6,
+      "weapon_attack": 7,
+      "raw_hit": 26.68,
+      "boss_hp": 3000.0,
+      "party_dps": 14.384148,
+      "ttk_seconds": 208.563,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 2,
+      "strength_level": 0,
+      "weapon_attack": 7,
+      "raw_hit": 7.0,
+      "boss_hp": 4950.0,
+      "party_dps": 6.23616,
+      "ttk_seconds": 793.758,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 2,
+      "strength_level": 1,
+      "weapon_attack": 7,
+      "raw_hit": 10.28,
+      "boss_hp": 4950.0,
+      "party_dps": 9.676161,
+      "ttk_seconds": 511.567,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 2,
+      "strength_level": 3,
+      "weapon_attack": 7,
+      "raw_hit": 16.84,
+      "boss_hp": 4950.0,
+      "party_dps": 17.547657,
+      "ttk_seconds": 282.089,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 2,
+      "strength_level": 6,
+      "weapon_attack": 7,
+      "raw_hit": 26.68,
+      "boss_hp": 4950.0,
+      "party_dps": 28.768297,
+      "ttk_seconds": 172.064,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 3,
+      "strength_level": 0,
+      "weapon_attack": 7,
+      "raw_hit": 7.0,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 9.35424,
+      "ttk_seconds": 737.633,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 3,
+      "strength_level": 1,
+      "weapon_attack": 7,
+      "raw_hit": 10.28,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 14.514242,
+      "ttk_seconds": 475.395,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 3,
+      "strength_level": 3,
+      "weapon_attack": 7,
+      "raw_hit": 16.84,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 26.321486,
+      "ttk_seconds": 262.143,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 3,
+      "strength_level": 6,
+      "weapon_attack": 7,
+      "raw_hit": 26.68,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 43.152445,
+      "ttk_seconds": 159.898,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 4,
+      "strength_level": 0,
+      "weapon_attack": 7,
+      "raw_hit": 7.0,
+      "boss_hp": 8850.0,
+      "party_dps": 12.47232,
+      "ttk_seconds": 709.571,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 4,
+      "strength_level": 1,
+      "weapon_attack": 7,
+      "raw_hit": 10.28,
+      "boss_hp": 8850.0,
+      "party_dps": 19.352322,
+      "ttk_seconds": 457.309,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 4,
+      "strength_level": 3,
+      "weapon_attack": 7,
+      "raw_hit": 16.84,
+      "boss_hp": 8850.0,
+      "party_dps": 35.095314,
+      "ttk_seconds": 252.17,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 4,
+      "strength_level": 6,
+      "weapon_attack": 7,
+      "raw_hit": 26.68,
+      "boss_hp": 8850.0,
+      "party_dps": 57.536594,
+      "ttk_seconds": 153.815,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 5,
+      "strength_level": 0,
+      "weapon_attack": 7,
+      "raw_hit": 7.0,
+      "boss_hp": 10800.0,
+      "party_dps": 15.5904,
+      "ttk_seconds": 692.734,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 5,
+      "strength_level": 1,
+      "weapon_attack": 7,
+      "raw_hit": 10.28,
+      "boss_hp": 10800.0,
+      "party_dps": 24.190403,
+      "ttk_seconds": 446.458,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 5,
+      "strength_level": 3,
+      "weapon_attack": 7,
+      "raw_hit": 16.84,
+      "boss_hp": 10800.0,
+      "party_dps": 43.869143,
+      "ttk_seconds": 246.187,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "약",
+      "players": 5,
+      "strength_level": 6,
+      "weapon_attack": 7,
+      "raw_hit": 26.68,
+      "boss_hp": 10800.0,
+      "party_dps": 71.920742,
+      "ttk_seconds": 150.165,
+      "uptime": 0.45,
+      "accuracy": 0.8
+    },
+    {
+      "model": "보통",
+      "players": 1,
+      "strength_level": 0,
+      "weapon_attack": 8,
+      "raw_hit": 8.0,
+      "boss_hp": 3000.0,
+      "party_dps": 5.89056,
+      "ttk_seconds": 509.289,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 1,
+      "strength_level": 1,
+      "weapon_attack": 8,
+      "raw_hit": 11.32,
+      "boss_hp": 3000.0,
+      "party_dps": 8.804171,
+      "ttk_seconds": 340.748,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 1,
+      "strength_level": 3,
+      "weapon_attack": 8,
+      "raw_hit": 17.96,
+      "boss_hp": 3000.0,
+      "party_dps": 15.45675,
+      "ttk_seconds": 194.09,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 1,
+      "strength_level": 6,
+      "weapon_attack": 8,
+      "raw_hit": 27.92,
+      "boss_hp": 3000.0,
+      "party_dps": 24.4606,
+      "ttk_seconds": 122.646,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 2,
+      "strength_level": 0,
+      "weapon_attack": 8,
+      "raw_hit": 8.0,
+      "boss_hp": 4950.0,
+      "party_dps": 11.78112,
+      "ttk_seconds": 420.164,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 2,
+      "strength_level": 1,
+      "weapon_attack": 8,
+      "raw_hit": 11.32,
+      "boss_hp": 4950.0,
+      "party_dps": 17.608342,
+      "ttk_seconds": 281.117,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 2,
+      "strength_level": 3,
+      "weapon_attack": 8,
+      "raw_hit": 17.96,
+      "boss_hp": 4950.0,
+      "party_dps": 30.913499,
+      "ttk_seconds": 160.124,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 2,
+      "strength_level": 6,
+      "weapon_attack": 8,
+      "raw_hit": 27.92,
+      "boss_hp": 4950.0,
+      "party_dps": 48.921201,
+      "ttk_seconds": 101.183,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 3,
+      "strength_level": 0,
+      "weapon_attack": 8,
+      "raw_hit": 8.0,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 17.67168,
+      "ttk_seconds": 390.455,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 3,
+      "strength_level": 1,
+      "weapon_attack": 8,
+      "raw_hit": 11.32,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 26.412512,
+      "ttk_seconds": 261.24,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 3,
+      "strength_level": 3,
+      "weapon_attack": 8,
+      "raw_hit": 17.96,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 46.370249,
+      "ttk_seconds": 148.802,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 3,
+      "strength_level": 6,
+      "weapon_attack": 8,
+      "raw_hit": 27.92,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 73.381801,
+      "ttk_seconds": 94.029,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 4,
+      "strength_level": 0,
+      "weapon_attack": 8,
+      "raw_hit": 8.0,
+      "boss_hp": 8850.0,
+      "party_dps": 23.56224,
+      "ttk_seconds": 375.601,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 4,
+      "strength_level": 1,
+      "weapon_attack": 8,
+      "raw_hit": 11.32,
+      "boss_hp": 8850.0,
+      "party_dps": 35.216683,
+      "ttk_seconds": 251.301,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 4,
+      "strength_level": 3,
+      "weapon_attack": 8,
+      "raw_hit": 17.96,
+      "boss_hp": 8850.0,
+      "party_dps": 61.826998,
+      "ttk_seconds": 143.141,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 4,
+      "strength_level": 6,
+      "weapon_attack": 8,
+      "raw_hit": 27.92,
+      "boss_hp": 8850.0,
+      "party_dps": 97.842401,
+      "ttk_seconds": 90.452,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 5,
+      "strength_level": 0,
+      "weapon_attack": 8,
+      "raw_hit": 8.0,
+      "boss_hp": 10800.0,
+      "party_dps": 29.4528,
+      "ttk_seconds": 366.688,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 5,
+      "strength_level": 1,
+      "weapon_attack": 8,
+      "raw_hit": 11.32,
+      "boss_hp": 10800.0,
+      "party_dps": 44.020854,
+      "ttk_seconds": 245.338,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 5,
+      "strength_level": 3,
+      "weapon_attack": 8,
+      "raw_hit": 17.96,
+      "boss_hp": 10800.0,
+      "party_dps": 77.283748,
+      "ttk_seconds": 139.745,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "보통",
+      "players": 5,
+      "strength_level": 6,
+      "weapon_attack": 8,
+      "raw_hit": 27.92,
+      "boss_hp": 10800.0,
+      "party_dps": 122.303002,
+      "ttk_seconds": 88.305,
+      "uptime": 0.65,
+      "accuracy": 0.9
+    },
+    {
+      "model": "강",
+      "players": 1,
+      "strength_level": 0,
+      "weapon_attack": 11,
+      "raw_hit": 11.0,
+      "boss_hp": 3000.0,
+      "party_dps": 8.09875,
+      "ttk_seconds": 370.428,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 1,
+      "strength_level": 1,
+      "weapon_attack": 11,
+      "raw_hit": 14.44,
+      "boss_hp": 3000.0,
+      "party_dps": 11.221324,
+      "ttk_seconds": 267.348,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 1,
+      "strength_level": 3,
+      "weapon_attack": 11,
+      "raw_hit": 21.32,
+      "boss_hp": 3000.0,
+      "party_dps": 17.772885,
+      "ttk_seconds": 168.796,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 1,
+      "strength_level": 6,
+      "weapon_attack": 11,
+      "raw_hit": 31.64,
+      "boss_hp": 3000.0,
+      "party_dps": 26.375895,
+      "ttk_seconds": 113.74,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 2,
+      "strength_level": 0,
+      "weapon_attack": 11,
+      "raw_hit": 11.0,
+      "boss_hp": 4950.0,
+      "party_dps": 16.1975,
+      "ttk_seconds": 305.603,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 2,
+      "strength_level": 1,
+      "weapon_attack": 11,
+      "raw_hit": 14.44,
+      "boss_hp": 4950.0,
+      "party_dps": 22.442648,
+      "ttk_seconds": 220.562,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 2,
+      "strength_level": 3,
+      "weapon_attack": 11,
+      "raw_hit": 21.32,
+      "boss_hp": 4950.0,
+      "party_dps": 35.54577,
+      "ttk_seconds": 139.257,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 2,
+      "strength_level": 6,
+      "weapon_attack": 11,
+      "raw_hit": 31.64,
+      "boss_hp": 4950.0,
+      "party_dps": 52.75179,
+      "ttk_seconds": 93.836,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 3,
+      "strength_level": 0,
+      "weapon_attack": 11,
+      "raw_hit": 11.0,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 24.29625,
+      "ttk_seconds": 283.994,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 3,
+      "strength_level": 1,
+      "weapon_attack": 11,
+      "raw_hit": 14.44,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 33.663972,
+      "ttk_seconds": 204.967,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 3,
+      "strength_level": 3,
+      "weapon_attack": 11,
+      "raw_hit": 21.32,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 53.318655,
+      "ttk_seconds": 129.411,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 3,
+      "strength_level": 6,
+      "weapon_attack": 11,
+      "raw_hit": 31.64,
+      "boss_hp": 6899.999999999999,
+      "party_dps": 79.127685,
+      "ttk_seconds": 87.201,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 4,
+      "strength_level": 0,
+      "weapon_attack": 11,
+      "raw_hit": 11.0,
+      "boss_hp": 8850.0,
+      "party_dps": 32.395,
+      "ttk_seconds": 273.19,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 4,
+      "strength_level": 1,
+      "weapon_attack": 11,
+      "raw_hit": 14.44,
+      "boss_hp": 8850.0,
+      "party_dps": 44.885296,
+      "ttk_seconds": 197.169,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 4,
+      "strength_level": 3,
+      "weapon_attack": 11,
+      "raw_hit": 21.32,
+      "boss_hp": 8850.0,
+      "party_dps": 71.09154,
+      "ttk_seconds": 124.487,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 4,
+      "strength_level": 6,
+      "weapon_attack": 11,
+      "raw_hit": 31.64,
+      "boss_hp": 8850.0,
+      "party_dps": 105.50358,
+      "ttk_seconds": 83.883,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 5,
+      "strength_level": 0,
+      "weapon_attack": 11,
+      "raw_hit": 11.0,
+      "boss_hp": 10800.0,
+      "party_dps": 40.49375,
+      "ttk_seconds": 266.708,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 5,
+      "strength_level": 1,
+      "weapon_attack": 11,
+      "raw_hit": 14.44,
+      "boss_hp": 10800.0,
+      "party_dps": 56.10662,
+      "ttk_seconds": 192.491,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 5,
+      "strength_level": 3,
+      "weapon_attack": 11,
+      "raw_hit": 21.32,
+      "boss_hp": 10800.0,
+      "party_dps": 88.864425,
+      "ttk_seconds": 121.533,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    },
+    {
+      "model": "강",
+      "players": 5,
+      "strength_level": 6,
+      "weapon_attack": 11,
+      "raw_hit": 31.64,
+      "boss_hp": 10800.0,
+      "party_dps": 131.879475,
+      "ttk_seconds": 81.893,
+      "uptime": 0.75,
+      "accuracy": 0.95
+    }
+  ],
+  "incoming": [
+    {
+      "model": "약",
+      "raw": 8,
+      "resistance": 0,
+      "damage": 3.733333,
+      "hits_to_20hp": 6,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 16,
+      "resistance": 0,
+      "damage": 9.6,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": 6.72
+    },
+    {
+      "model": "약",
+      "raw": 18,
+      "resistance": 0,
+      "damage": 11.4,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": 7.98
+    },
+    {
+      "model": "약",
+      "raw": 24,
+      "resistance": 0,
+      "damage": 17.6,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 26,
+      "resistance": 0,
+      "damage": 19.066667,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 8,
+      "resistance": 1,
+      "damage": 2.986667,
+      "hits_to_20hp": 7,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 16,
+      "resistance": 1,
+      "damage": 7.68,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": 5.376
+    },
+    {
+      "model": "약",
+      "raw": 18,
+      "resistance": 1,
+      "damage": 9.12,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": 6.384
+    },
+    {
+      "model": "약",
+      "raw": 24,
+      "resistance": 1,
+      "damage": 14.08,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 26,
+      "resistance": 1,
+      "damage": 15.253333,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 8,
+      "resistance": 2,
+      "damage": 2.24,
+      "hits_to_20hp": 9,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 16,
+      "resistance": 2,
+      "damage": 5.76,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": 4.032
+    },
+    {
+      "model": "약",
+      "raw": 18,
+      "resistance": 2,
+      "damage": 6.84,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": 4.788
+    },
+    {
+      "model": "약",
+      "raw": 24,
+      "resistance": 2,
+      "damage": 10.56,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "약",
+      "raw": 26,
+      "resistance": 2,
+      "damage": 11.44,
+      "hits_to_20hp": 2,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 8,
+      "resistance": 0,
+      "damage": 1.723077,
+      "hits_to_20hp": 12,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 16,
+      "resistance": 0,
+      "damage": 4.430769,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": 3.101538
+    },
+    {
+      "model": "보통",
+      "raw": 18,
+      "resistance": 0,
+      "damage": 5.261538,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": 3.683077
+    },
+    {
+      "model": "보통",
+      "raw": 24,
+      "resistance": 0,
+      "damage": 8.123077,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 26,
+      "resistance": 0,
+      "damage": 9.2,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 8,
+      "resistance": 1,
+      "damage": 1.378462,
+      "hits_to_20hp": 15,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 16,
+      "resistance": 1,
+      "damage": 3.544615,
+      "hits_to_20hp": 6,
+      "h02_if_direct_melee": 2.481231
+    },
+    {
+      "model": "보통",
+      "raw": 18,
+      "resistance": 1,
+      "damage": 4.209231,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": 2.946462
+    },
+    {
+      "model": "보통",
+      "raw": 24,
+      "resistance": 1,
+      "damage": 6.498462,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 26,
+      "resistance": 1,
+      "damage": 7.36,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 8,
+      "resistance": 2,
+      "damage": 1.033846,
+      "hits_to_20hp": 20,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 16,
+      "resistance": 2,
+      "damage": 2.658462,
+      "hits_to_20hp": 8,
+      "h02_if_direct_melee": 1.860923
+    },
+    {
+      "model": "보통",
+      "raw": 18,
+      "resistance": 2,
+      "damage": 3.156923,
+      "hits_to_20hp": 7,
+      "h02_if_direct_melee": 2.209846
+    },
+    {
+      "model": "보통",
+      "raw": 24,
+      "resistance": 2,
+      "damage": 4.873846,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "보통",
+      "raw": 26,
+      "resistance": 2,
+      "damage": 5.52,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 8,
+      "resistance": 0,
+      "damage": 1.508571,
+      "hits_to_20hp": 14,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 16,
+      "resistance": 0,
+      "damage": 3.748571,
+      "hits_to_20hp": 6,
+      "h02_if_direct_melee": 2.624
+    },
+    {
+      "model": "강",
+      "raw": 18,
+      "resistance": 0,
+      "damage": 4.422857,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": 3.096
+    },
+    {
+      "model": "강",
+      "raw": 24,
+      "resistance": 0,
+      "damage": 6.72,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 26,
+      "resistance": 0,
+      "damage": 7.577143,
+      "hits_to_20hp": 3,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 8,
+      "resistance": 1,
+      "damage": 1.206857,
+      "hits_to_20hp": 17,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 16,
+      "resistance": 1,
+      "damage": 2.998857,
+      "hits_to_20hp": 7,
+      "h02_if_direct_melee": 2.0992
+    },
+    {
+      "model": "강",
+      "raw": 18,
+      "resistance": 1,
+      "damage": 3.538286,
+      "hits_to_20hp": 6,
+      "h02_if_direct_melee": 2.4768
+    },
+    {
+      "model": "강",
+      "raw": 24,
+      "resistance": 1,
+      "damage": 5.376,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 26,
+      "resistance": 1,
+      "damage": 6.061714,
+      "hits_to_20hp": 4,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 8,
+      "resistance": 2,
+      "damage": 0.905143,
+      "hits_to_20hp": 23,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 16,
+      "resistance": 2,
+      "damage": 2.249143,
+      "hits_to_20hp": 9,
+      "h02_if_direct_melee": 1.5744
+    },
+    {
+      "model": "강",
+      "raw": 18,
+      "resistance": 2,
+      "damage": 2.653714,
+      "hits_to_20hp": 8,
+      "h02_if_direct_melee": 1.8576
+    },
+    {
+      "model": "강",
+      "raw": 24,
+      "resistance": 2,
+      "damage": 4.032,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": null
+    },
+    {
+      "model": "강",
+      "raw": 26,
+      "resistance": 2,
+      "damage": 4.546286,
+      "hits_to_20hp": 5,
+      "h02_if_direct_melee": null
+    }
+  ],
+  "mana": [
+    {
+      "max_mana": 200,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ]
+      ],
+      "uses": {
+        "H03": 69
+      },
+      "first_rejected_seconds": {
+        "H03": 368.0
+      },
+      "remaining": 20.0
+    },
+    {
+      "max_mana": 200,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H02",
+          24,
+          12,
+          0
+        ]
+      ],
+      "uses": {
+        "H02": 50
+      },
+      "first_rejected_seconds": {
+        "H02": null
+      },
+      "remaining": 200.0
+    },
+    {
+      "max_mana": 200,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ],
+        [
+          "attack_reference",
+          30,
+          12,
+          40
+        ]
+      ],
+      "uses": {
+        "H03": 60,
+        "attack_reference": 6
+      },
+      "first_rejected_seconds": {
+        "H03": 64.0,
+        "attack_reference": 62.0
+      },
+      "remaining": 20.0
+    },
+    {
+      "max_mana": 240,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ]
+      ],
+      "uses": {
+        "H03": 75
+      },
+      "first_rejected_seconds": {
+        "H03": null
+      },
+      "remaining": 180.0
+    },
+    {
+      "max_mana": 240,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H02",
+          24,
+          12,
+          0
+        ]
+      ],
+      "uses": {
+        "H02": 50
+      },
+      "first_rejected_seconds": {
+        "H02": null
+      },
+      "remaining": 240
+    },
+    {
+      "max_mana": 240,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ],
+        [
+          "attack_reference",
+          30,
+          12,
+          40
+        ]
+      ],
+      "uses": {
+        "H03": 65,
+        "attack_reference": 12
+      },
+      "first_rejected_seconds": {
+        "H03": 104.0,
+        "attack_reference": 86.0
+      },
+      "remaining": 20.0
+    },
+    {
+      "max_mana": 280,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ]
+      ],
+      "uses": {
+        "H03": 75
+      },
+      "first_rejected_seconds": {
+        "H03": null
+      },
+      "remaining": 280
+    },
+    {
+      "max_mana": 280,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H02",
+          24,
+          12,
+          0
+        ]
+      ],
+      "uses": {
+        "H02": 50
+      },
+      "first_rejected_seconds": {
+        "H02": null
+      },
+      "remaining": 280
+    },
+    {
+      "max_mana": 280,
+      "duration_seconds": 600,
+      "skills": [
+        [
+          "H03",
+          20,
+          8,
+          0
+        ],
+        [
+          "attack_reference",
+          30,
+          12,
+          40
+        ]
+      ],
+      "uses": {
+        "H03": 59,
+        "attack_reference": 25
+      },
+      "first_rejected_seconds": {
+        "H03": 112.0,
+        "attack_reference": 122.0
+      },
+      "remaining": 30.0
+    }
+  ],
+  "separate_blessings": {
+    "health_boost": "20+4L, L0/3/6 ->20/32/44",
+    "absorption": "4L 일회보유층,0/12/24; 재적용충전0. 위 TTK에 더하지 않음",
+    "regeneration": "I 약0.4HP/s,II 약0.8HP/s의 감도 가정,구현주기검사 필요. 무피격시간 회복이 강하므로 강제피해로 상쇄하지 않음",
+    "fire_resistance": "CH-A3 피해0,다른물리패턴변화0",
+    "strength": "직접근접만 A+3L+A*.04L. 기술·지원80에는가산0",
+    "accessories": "M+20씩2개를 보유한다고 단정하지 않음. 최대마나240/280은 독립 감도입력. 실제정의·권리·착용2칸이우선. 공격고정보정0 가정",
+    "h02": "피해×0.7과1초창·30tick공격잠금,조건적격만",
+    "h03": "1타0·자동반격0,4tick창·14tick잠금. 무한DPS추가로계산0"
+  },
+  "limitations": [
+    "이동·보스패턴 AI·실전회복·사망·네트워크를 시뮬레이션하지 않음",
+    "uptime은 패턴과방어기술사용에따른공격기회 가정이며실측아님",
+    "마나표 공격기30/12초는정의추가가아닌비교부하",
+    "마나표 동시입력·후딜충돌은연속사용가능성상한이며실제승인시간은구현검사",
+    "지원80은초회1타만.수백초DPS를80으로증가시키지 않음",
+    "수신피해45행은고정감소0·흡수0의기준값이며실제착용감소와남은흡수층은그뒤에적용한다."
+  ]
+}

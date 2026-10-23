@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S09-004",
+  "name": "케찰코아틀",
+  "definition_id": "ACTIVATION-RPG-S09-004",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 산길 안전 A→공개 전망 B→A 왕복1회. 기존 안내 OR 자기 관찰 모두 허용.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "기존 산길 안전 공용점 도달+지형·귀환로 현재 관찰1회. 희귀 탑 건축/발견 강제0.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-042/RPG-S09-004.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "원문 정체·전투등급·소속·생사·봉인·기존 개인범위와 명시 전후시점을 보존. 최초조우 공란만 이번 계약으로 연결.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-042/RPG-S09-004.json",
+      "record_key": "RPG-S09-004",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "c8b71b6fa526efdad80730722d9c8d590a3b2569b16f80fb4dd1ce7fbbcc2e67"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-042/02_RPG-S09-004_케찰코아틀_완결기획.json",
+      "record_key": "RPG-S09-004",
+      "pointers": [
+        "/world_unlock_and_encounter"
+      ],
+      "sha256": "31a3eb360a2c0b9d7e0406a3f38f21cda7361c73b6c23eec0c8822591924130a"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

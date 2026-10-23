@@ -24,30 +24,36 @@ import java.util.concurrent.CompletableFuture;
 /** One OP-only test entry point into the authoritative public/private room pipeline. */
 final class AiCallCommands {
     static final String USAGE = "/ai_call <public|mobile|private> <on|off> <신 ID> [신 ID ...]";
+    static final String LIVE_USAGE = "/ai_call live <public|mobile|private> <on|off> <신 ID> [신 ID ...]";
 
     private AiCallCommands() {}
 
     static void onRegisterCommands(RegisterCommandsEvent event) {
         var root = Commands.literal("ai_call").requires(source -> source.hasPermission(2))
                 .executes(AiCallCommands::usage);
-        root.then(mode("public", RoomType.PUBLIC_FIXED));
-        root.then(mode("mobile", RoomType.PUBLIC_MOBILE));
-        root.then(mode("private", RoomType.PRIVATE));
+        root.then(mode("public", RoomType.PUBLIC_FIXED, false));
+        root.then(mode("mobile", RoomType.PUBLIC_MOBILE, false));
+        root.then(mode("private", RoomType.PRIVATE, false));
+        var live = Commands.literal("live").executes(AiCallCommands::usage);
+        live.then(mode("public", RoomType.PUBLIC_FIXED, true));
+        live.then(mode("mobile", RoomType.PUBLIC_MOBILE, true));
+        live.then(mode("private", RoomType.PRIVATE, true));
+        root.then(live);
         event.getDispatcher().register(root);
     }
 
-    private static LiteralArgumentBuilder<CommandSourceStack> mode(String name, RoomType type) {
+    private static LiteralArgumentBuilder<CommandSourceStack> mode(String name, RoomType type, boolean live) {
         var mode = Commands.literal(name).executes(AiCallCommands::usage);
         for (boolean recording : new boolean[]{true, false}) {
             mode.then(Commands.literal(recording ? "on" : "off").executes(AiCallCommands::usage)
                     .then(Commands.argument("gods", StringArgumentType.greedyString())
                             .suggests(AiCallCommands::suggestGods)
-                            .executes(context -> start(context, type, recording))));
+                            .executes(context -> start(context, type, recording, live))));
         }
         return mode;
     }
 
-    private static int start(CommandContext<CommandSourceStack> context, RoomType type, boolean recording)
+    private static int start(CommandContext<CommandSourceStack> context, RoomType type, boolean recording, boolean live)
             throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
         try {
@@ -57,10 +63,12 @@ final class AiCallCommands {
             var missing = gods.stream().filter(god -> GodDefinitionManager.INSTANCE.find(god).isEmpty()).toList();
             if (!missing.isEmpty()) return failure(context, "게임 God Definition이 없는 신 ID입니다: " + missing);
             // The game owns permission/recording checks, spatial membership and session isolation.
-            var room = ConversationRooms.INSTANCE.create(player, type, gods,
-                    recording ? RecordingScope.TEST_RECORDING : RecordingScope.TEST_EPHEMERAL);
+            var room = live ? ConversationRooms.INSTANCE.createLiveTest(player, type, gods, recording)
+                    : ConversationRooms.INSTANCE.create(player, type, gods,
+                            recording ? RecordingScope.TEST_RECORDING : RecordingScope.TEST_EPHEMERAL);
             context.getSource().sendSuccess(() -> Component.literal("[AI Call] 방 " + room.code()
                     + " / 기록=" + (recording ? "on" : "off") + ". "
+                    + (live ? "실제 행동 시험: 허용된 행동은 실제 게임에 반영됩니다. " : "대화 전용 시험: 게임 행동은 실행하지 않습니다. ")
                     + (type == RoomType.PRIVATE ? "/s <할말>로 입력하세요." : "일반 채팅으로 말하세요.")
                     + " 종료: /mythroom leave " + room.code()), false);
             return 1;
@@ -97,7 +105,8 @@ final class AiCallCommands {
 
     private static int usage(CommandContext<CommandSourceStack> context) {
         context.getSource().sendSuccess(() -> Component.literal(USAGE
-                + " — public: 공개 고정 / mobile: 공개 이동 / private: 비밀. on/off는 영속 기록 여부입니다."), false);
+                + " (대화 전용) / " + LIVE_USAGE + " (실제 행동). "
+                + "public: 공개 고정 / mobile: 공개 이동 / private: 비밀. on/off는 기록 여부이며 행동 권한을 바꾸지 않습니다."), false);
         return 1;
     }
 

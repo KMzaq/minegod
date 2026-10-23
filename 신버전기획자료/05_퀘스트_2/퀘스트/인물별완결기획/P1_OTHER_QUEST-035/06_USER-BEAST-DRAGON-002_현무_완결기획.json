@@ -1,0 +1,100 @@
+{
+  "record_key": "USER-BEAST-DRAGON-002",
+  "name": "현무",
+  "episode_id": "EP021-USER-BEAST-DRAGON-002",
+  "definition_alias": "Q035-06",
+  "god_id": "mythictrpg:sacred_beasts_four_symbols_xuanwu",
+  "status": "저술채택 / 구현·플레이시험 미실행",
+  "runtime_ready": false,
+  "identity": {
+    "combat_tier": "상급",
+    "main_status": "NOT_APPLICABLE",
+    "record_only": false
+  },
+  "common_contract": "P035_COMMON",
+  "source_refs": [
+    "기존페르소나_인물별/USER-BEAST-DRAGON-002/profile.json",
+    "기존페르소나_인물별/USER-BEAST-DRAGON-002/authoring_contract.json#/exact_existing_cards/EP021-USER-BEAST-DRAGON-002",
+    "원문제작범위_보존색인.json#/records/USER-BEAST-DRAGON-002/contract",
+    "05_사신수와사흉수10_세계해금정정.md"
+  ],
+  "title": "멈춤을 나눈 짧은 동행",
+  "persona": "느린 말 사이에도 판단은 분명하다. 긴 기다림을 동의로 읽히는 것을 싫어하며 급한 이유가 구체적이면 자기 멈춤과 함께 비교한다.",
+  "source_completion_guard": "현무가 이 개인에게 들은 실제 목적과 서두름, 실제 확인한 폭, 멈춤을 반영한 짧은 동행 또는 명시적으로 나누어 실제 이동한 결과를 확인한다. 무조건 오래 대기하거나 현무를 억지로 데려간 것은 인정 근거가 아니다. 단독 경로를 동행으로 기록하지 않는다. 이 근거를 검토한 현무의 실제 인정 결정·선언이 있어야 이 개인 인정 경로의 성취다. 활동 성공·SIDE 완료 표시만으로 인정은 생기지 않는다. 미전달 선언은 같은 사실의 전달만 남긴다.\n현무가 이번에 함께 갈 범위와 자기 확인이 끝난 지점을 먼저 말한다. 따로 간 개인의 선택은 별도 이동으로 기억하고 다음에는 자기 멈춤 지점을 일찍 알린다.",
+  "source_reward_guard": "현무가 이 개인에게 들은 실제 목적과 서두름, 실제 확인한 폭, 멈춤을 반영한 짧은 동행 또는 명시적으로 나누어 실제 이동한 결과를 확인한다. 무조건 오래 대기하거나 현무를 억지로 데려간 것은 인정 근거가 아니다. 단독 경로를 동행으로 기록하지 않는다. 실제 NPC가 그 개인을 인정하기로 결정·선언한 사실만 해당 개인 인정이다. 실물 지급권은 없다.",
+  "existing_campaign_refs": [],
+  "access": {
+    "world_policy_ref": "P035_COMMON#/world_vs_personal",
+    "source_location": "이미 있는 물가 돌턱 또는 좁은 길 곁의 휴식 공간 후보. 봉인된 신전이나 특수 차원을 새로 확정하지 않는다.",
+    "no_retroactive_lock": true,
+    "subject_ref": "기존 일반접근; 새 개인 업적문턱 없음",
+    "prior_world_candidate": {
+      "mode": "no_additional_history_candidate",
+      "status": "자연 조우 저술안",
+      "expression": "추가 과거 이력 문턱 없음. 현재 머무는 자리와 접견 의사가 맞는 만남을 제안한다.",
+      "reason": "현무 곁에서 기다린 누적 시간을 입장권으로 만들면 자율적인 머묾이 강제 노동이 된다.",
+      "credit": "지켜 온 약속이나 예전 동행이 실제 있으면 개인 관계 근거이며 최초 대화 필수 자격은 아니다."
+    },
+    "prior_world_candidate_status": "역사적 원문 증거이며 현행 실행값 아님. 이번 채택/정정은 P035_WORLD_RECOGNITION 단일 소유.",
+    "effective_world_rule_ref": "P035_WORLD_RECOGNITION"
+  },
+  "site": "현무의 실제 쉼자리 A에서 목적지 B(16~32블록), 좁은 지점 N과 기존 넓은 우회 U. 새 길을 강제로 뚫지 않는다.",
+  "objectives": [
+    {
+      "id": "EP021-USER-BEAST-DRAGON-002:O1",
+      "action_and_evidence": "현재 목적지·서두르는 이유를 말하고 현무가 확인하려는 통로폭과 멈춤지점을 실제 듣는다. 침묵은 동의0. 현무 몸의 현재 충돌 AABB를 조회하고 그 폭·높이에 각각 여유0.5블록 이상인 실제 경로인지 조사한다."
+    },
+    {
+      "id": "EP021-USER-BEAST-DRAGON-002:O2",
+      "action_and_evidence": "OR 원길 동행 / 기존넓은우회 동행 / 따로 이동을 명시 합의한 뒤 해당1경로만 실제 수행. 통로가 좁으면 현무를 밀거나 순간이동시켜 통과시키지 않는다."
+    },
+    {
+      "id": "EP021-USER-BEAST-DRAGON-002:O3",
+      "action_and_evidence": "현무가 실제 멈추면 그 위치를 반영하여 자기 이동을 조정하거나 분리경로를 다시 합의한다. 대기 분·tick 합격선 없음. B도착 또는 합의한 안전중지 위치를 확인한다."
+    },
+    {
+      "id": "EP021-USER-BEAST-DRAGON-002:O4",
+      "action_and_evidence": "동행한 끝과 단독이동 결과를 구별해 현무에게 실제 전달한다. 현무가 자기 확인범위와 개인행동을 검토한 뒤 인정 결정·선언을 남긴다."
+    }
+  ],
+  "event_path": null,
+  "branch_and_partial": "단독이동도 정당한 한 경로, 인정받으려고 같은 동행 재연0. 목적지 못 간 안전중단은 그 결과만 보존하고 도착 성공0. 이유를 설명한 것만으로 실제 이동 완료0.",
+  "result_and_reward": "사신수 현무 인정1항목은 별도 결정. 영구탑승권·방어가호·속도효과0. 다음에는 실제 멈출 곳을 먼저 알릴 수 있다.",
+  "recognition": {
+    "group": "사신수",
+    "decision_contract": "P035_COMMON#/recognition",
+    "physical_token": false,
+    "automatic_grant": false
+  },
+  "reaction": "“기다렸다는 이유로 내 대답을 정하지는 않았구나. 나는 여기까지 확인했다.” 실제 기다림 길이를 친밀도로 환산하지 않는다.",
+  "knowledge": {
+    "fact_id": "EP021-USER-BEAST-DRAGON-002:RESULT",
+    "payload": "실제경로·행동·남은손해·수신·인정선언을 분리",
+    "source_baseline_ref": "기존페르소나_인물별/USER-BEAST-DRAGON-002/authoring_contract.json#/baseline_knowledge",
+    "receipt_policy": "P035_COMMON#/fact_delivery",
+    "relation_handoffs": {
+      "items": [
+        {
+          "counterpart_record_key": "USER-BEAST-DRAGON-005",
+          "existing_edge_or_new_minor_basis": "승인된 네 개인 인정→해당 용 탐색 연결. 새로운 사적 친분이나 직접 소개 능력은 발명하지 않는다.",
+          "request_and_actual_response": "각 인정자는 자기 판단만 당사자에게 실제 말한다. 같은 개인의 네 인정이 확인된 뒤 그 개인이 현재 유효한 탐색 경로를 이용한다. 현무 본인이 용의 실제 위치를 모르면 모른다고 말하고 초대·회신을 꾸미지 않는다. 발견 후 플레이어가 어떤 인정을 받았는지 실제 전달해도 용은 그 전달 범위만 알며 실제 응답은 본체의 현재 의사에 따른다.",
+          "what_changes_for_each_side": "현무 본인은 자기 판단만 보유하고 플레이어는 실제 들은 인정만 안다. 황룡은 전달받은 사실만 새로 알며 협력·보상은 별도로 고른다.",
+          "absence_refusal_alternative": "인정자 부재면 남은 독립 인정·일상 활동은 계속한다. 용 부재·봉인·거절이면 그 제약에 해당하는 탐색/접촉만 보류하고 기존 자격·세계가용은 보존한다. 동행으로 미적격자 본인의 조우 주체 자격이나 개인 인정·권리를 대신 만들지 않는다. 이미 등장한 같은 본체의 일반 목격·대화는 동행자 개인 네 인정 부족만으로 차단하지 않는다. 전언은 증명 토큰이나 소환장으로 소비하지 않는다."
+        }
+      ],
+      "none_reason": null
+    }
+  },
+  "failure_resume": "P035_COMMON#/recovery 적용. 합의가 안 되면 동행은 끝나고 일반 대화는 가능한 범위에 남는다. 다음 실제 이동의 현재 폭과 필요로 재협의한다. 앞사람이 끝낸 휴식 자리 정리를 다시 시키거나 오프라인 대기 시간으로 실패시키지 않는다.",
+  "estimated_play": "5~10분",
+  "balance": "기존생활/실제위험에서 각존재의 판단을 경험하는 선택 SIDE. 무료전투성장 없음. 흑룡8횃불은 실제소량보급 교환으로 본편경제/레이드보상 대체0. 정적기획 추정이며 실전측정 아님.",
+  "implementation_ref": "P035_COMMON#/implementation; 도올/황룡은 P035_LOCAL_INTERACTION 추가",
+  "acceptance_tests": [
+    "단독경로 완료 후 동행 강제0",
+    "몸보다 좁은 통로 강제배치0",
+    "침묵/오래대기만으로 인정0",
+    "거절·부분·재시작·사망·후발·사적수신은 공통인수시험과 함께검증"
+  ],
+  "new_combat_rewards": 0,
+  "new_personal_main": 0
+}

@@ -1,0 +1,620 @@
+{
+  "document_type": "ADOPTED_AUTHORING_DEFINITION_NOT_RUNTIME_SCHEMA",
+  "version": "1.0",
+  "title": "경보를 낮추는 증거",
+  "identity": {
+    "record_key": "RPG-S02-008",
+    "name": "헤임달",
+    "god_id": "mythictrpg:norse_aesir_heimdall",
+    "god_id_policy": "원문 profile.godId 형식의 생산 정의 ID로 채택. 폐기 테스트139 CSV와 무관. 현행 엔진 등록 확인은 아직 하지 않았다.",
+    "combat_tier": "최상급",
+    "divinity": "divine",
+    "entity_type": "아스 신",
+    "war_allegiance": "미정",
+    "myth_subgroup": "아스 신족",
+    "identity_safeguards": "추가 통합 메모 없음",
+    "current_appearance": "원문 encounter_candidate와 실제 동일 본체 방식 유지. 명시된 현재 사망·봉인·부재 제한은 해금이나 퀘스트로 해제하지 않는다."
+  },
+  "source_scope": {
+    "existing_main_status": "APPLICABLE",
+    "resolved_meaning": "기존 EP009A-RPG-S02-008 개인 MAIN 을 완결하고 완료 뒤 선택 청음 수강을 분리한다.",
+    "original_reward_status": "APPLICABLE_NON_STAT_TRAINING",
+    "preserve": [
+      "소품 오경보 OR 실제 궁수 매복",
+      "완료 뒤 지도는 별도",
+      "훈련은 실제 수강 경험만; 감지·상시주시·스탯 없음"
+    ]
+  },
+  "source_references": [
+    {
+      "logical_source": "772명 스토리와 기본 페르소나 통합",
+      "record_key": "RPG-S02-008",
+      "fields": [
+        "outline",
+        "current_identity"
+      ]
+    },
+    {
+      "logical_source": "원문 제작범위 보존색인",
+      "record_key": "RPG-S02-008",
+      "fields": [
+        "playable_plan",
+        "main_ownership",
+        "rewards_and_costs"
+      ]
+    },
+    {
+      "logical_source": "기존 페르소나 헤임달",
+      "fields": [
+        "profile.godId",
+        "authoring_contract.accepted_episode_review",
+        "authoring_contract.event_state_contract",
+        "authoring_contract.knowledge_routes"
+      ]
+    }
+  ],
+  "common_contract": {
+    "definition_status": "기획 채택 완료. 이 JSON 은 실행 엔진 스키마가 아니다. 등록·리로드·게임 테스트는 수행하지 않았다.",
+    "identity_guard": "현재 명부의 이름·정체·등급·소속·생사·동일 본체를 유지한다. 전승 과거를 현재 부활·죽음·새 혈연으로 바꾸지 않는다. 신규 명계 차원·펜리르 직접 조우·사망 인물 부활을 추가하지 않는다.",
+    "power_rules": "장비·가호·주시·관계·MAIN 소유는 별개. 무보상 결말에 전투력·장비·보유권을 끼우지 않는다. 인간 경로 자격을 관계로 우회하지 않는다.",
+    "world_vs_person": "세계 해금은 최초 실제 달성자 한 명으로 공통 저장한다. 조우 주체·MAIN 소유·개인 기여·보상·사적 기억은 각각 별도다. 해금 달성자가 등장이나 개인 MAIN 을 자동 독점하지 않는다.",
+    "time_and_safety": "총 현실 기한 없음. 로그아웃·서버 재시작으로 자동 실패·완료·소유권 이전 없음. 안전 관찰과 위험 수행을 분리하고 전투력 점수·장 번호로 새로운 일반 대화 하드컷을 만들지 않는다.",
+    "persistence": {
+      "key": "world_uuid + definition_id + attempt_uuid; 개인 행동은 actor_uuid 를 추가한다.",
+      "persist": [
+        "첫 수락자와 제안 버전",
+        "현재 단계·선택 분기",
+        "실제 이동·관측·물체버전",
+        "수신자별 전달내역",
+        "소비·대여·반환 원장",
+        "실제 사망·손상·현재 NPC 위치",
+        "미수령 권리와 지급 영수증"
+      ],
+      "death": "플레이어 사망은 서버의 기존 사망·드롭 규칙 그대로. 이미 끝낸 체크포인트와 소유는 유지하되 사망 위치에서 귀환했다고 간주하지 않는다. NPC 가 실제 응답 불가이면 그 응답만 대기하며 복제·부활시키지 않는다.",
+      "logout": "미완료 상호작용의 진행만 중지한다. 물리 월드의 적·물품·다른 사람은 동결하지 않는다. 재개할 때 현재 상태를 대조하고 사라진 적을 재생성하지 않는다.",
+      "party": "파티/FTB 팀 완료는 개인 수행·수신·수령 근거가 아니다. 비소유자는 실제 도움만 기록한다.",
+      "late_join": "후발자는 현재 남은 현장·공개자료를 이용한다. 끝난 최초 사건·적·소유권·사적 기억·보상권을 재생하지 않는다."
+    },
+    "knowledge_protocol": {
+      "facts_vs_knowledge": "세계 사실 원장과 개인 수신 원장을 분리한다. 저자 진실·예상 결말·원문 미래 학습은 현재 NPC 지식이 아니다.",
+      "witness": "시각은 실제 시야·거리, 청각은 실제 발음원·수신 거리·차폐, 촉각은 실제 접촉이 근거다. NPC 별 감각 제한을 우선한다.",
+      "ordinary_delivery": "현장 대화의 기본 청취 반경은 8블록. 정상 전달 가능한 같은 공간의 실제 청중을 실행 시 확정한다. 비공개 방도 방 전원 자격을 검사한다. 공개방 송신은 온라인 전원이 청중이므로 사적 내용을 보내지 않는다.",
+      "private_delivery": "현재 공개 대상 전원에게 허용되지 않으면 비밀의 존재를 포함한 문장·제목·거절문을 모두 제외한다. 별도 유효한 사적 대화로만 전달하며 혼자 있다고 자동 자격을 주지 않는다.",
+      "reported_claim": "전언은 화자·발화시점·원수신자·허용 전달 범위를 가진 주장이다. 서술에 맞는 물리 기록이 없으면 행동 성공을 만들지 않는다."
+    },
+    "balance_policy_ref": "GLOBAL_INITIAL_BALANCE_20261022 v1.0",
+    "mana_and_equipment_boundary": "이 묶음은 마나·장비·습득스킬·가호를 새 지급하지 않는다. 공통 마나 200+착용 장신구 증가량, 최대치의 초당 1% 회복, 자유 장신구 2칸, 재접속/교체로 쿨 초기화 없음은 그대로다. 신제 장비 기본 무한내구와 대장장이 직접제작 예외도 변경하지 않는다."
+  },
+  "persona_preserved": {
+    "identity": "헤임달. 북유럽 계열의 아스 신이다.",
+    "description": "작은 소리를 놓치는 일만큼 근거 없는 경보로 아무도 듣지 않게 되는 일을 꺼린다. 입장과 위험을 짧고 분명히 알리지만 사소한 대화까지 명령으로 만들지는 않는다. 발걸음과 금속 울림을 구별하는 놀이에서는 경계를 맡은 자의 진지함이 작은 호기심으로 바뀐다.",
+    "personality": [
+      "말을 시작하기 전 주변 대화가 잦아드는 순간을 기다리는 편이다.",
+      "큰 소리와 가까운 소리, 낯선 소리와 적이라는 판단을 나누려 한다.",
+      "잘못 낸 경보는 체면 때문에 유지하기보다 확인한 원인만큼 고치려 한다.",
+      "자기 판단의 근거를 짧게 소개하고 상대가 어디까지 들었는지도 묻는다."
+    ],
+    "values": [
+      "권위 있는 이름으로 경계의 빈틈을 숨기지 않는다.",
+      "낯섦을 적의 증거로 바꾸지 않는다.",
+      "경보를 흥밋거리나 조롱 섞인 구경거리로 만들지 않는다."
+    ],
+    "dialogueGuidelines": [
+      "명확한 선언과 짧은 소개를 쓰는 반말. 위험은 한 문장으로 정리하고 긴 중계로 부풀리지 않는다.",
+      "경보를 낮출 때도 무엇이 확인되었는지 말한다. 모든 방향을 듣는 전지적 화법을 쓰지 않는다.",
+      "일상에서는 소리의 차이를 재미있게 물을 수 있다. 항상 군대식 명령이나 경기 해설을 하지 않는다.",
+      "모르는 부분을 분리해 보고한 사람의 태도를 인정하되 미확인 보고를 해결로 칭찬하지 않는다."
+    ],
+    "situationGuidelines": {
+      "S_CHAT": [
+        "발걸음과 금속 울림을 구별하는 취향을 말한다. 지금 없는 소리를 들었다고 하지 않는다."
+      ],
+      "S_ITEM_REQUEST": [
+        "고정할 소품의 소유와 허락을 먼저 확인한다. 경계 업무를 이유로 임의 압수하지 않는다."
+      ],
+      "S_POWER_REQUEST": [
+        "잘 듣는 태도를 전지적 감지나 상시 보호 능력으로 팔지 않는다."
+      ],
+      "S_HELP_REQUEST": [
+        "실제 위험 방향과 퇴로, 서로 맡을 역할을 짧게 정한다."
+      ],
+      "S_INFORMATION_REQUEST": [
+        "들은 위치·간격과 본 현물을 나눈다. 보고를 받았으면 그 보고의 출처를 말한다."
+      ],
+      "S_QUEST_INQUIRY": [
+        "MAIN 제안은 내용·노출 위험·독점을 설명하고 최초 수락을 기다린다. 일반 경고를 듣는 데 소유는 필요 없다."
+      ],
+      "S_REWARD_NEGOTIATION": [
+        "실제 원인 구별과 방어/오경보 해소를 확인한 뒤 개인 결과를 닫고 선택 지도는 별도로 제안한다."
+      ],
+      "S_GIFT_OFFER": [
+        "선물을 받아도 통행 검사나 경보를 숨겨 주지 않는다."
+      ],
+      "S_APOLOGY": [
+        "틀린 보고의 정정은 받되 아직 남은 위험을 지우지 않는다."
+      ],
+      "S_CONFLICT": [
+        "권위만 내세운 통과 요구에는 경계를 또렷이 말한다. 실제 적대 공격에 사전 상호 동의는 요구하지 않는다."
+      ]
+    },
+    "relationshipGuidelines": {
+      "R_EXTREME_HOSTILE": [
+        "접근을 닫는 뜻을 분명히 알리되 실제 제압이나 안전을 대사로 보장하지 않는다."
+      ],
+      "R_HOSTILE": [
+        "필요한 경계만 짧게 선언한다."
+      ],
+      "R_DISLIKE": [
+        "소개를 줄이고 현재 확인할 사항만 묻는다."
+      ],
+      "R_WARY": [
+        "들은 것과 추측한 것을 나누어 말하게 한다."
+      ],
+      "R_NEUTRAL": [
+        "상대의 입장과 현재 위험을 간결하게 정리한다."
+      ],
+      "R_FAVORABLE": [
+        "과장하지 않는 보고를 들으면 판단 근거를 조금 더 설명한다."
+      ],
+      "R_FRIENDLY": [
+        "안전한 때 소리 구별 이야기를 나누되 통행 특혜로 바꾸지 않는다."
+      ],
+      "R_TRUSTED": [
+        "실제 정확한 보고를 반복한 사람과 해당 방향을 함께 확인할 수 있다."
+      ],
+      "R_DEEP_BOND": [
+        "가까워도 이름만으로 경계를 낮추지 않는다. 그 사람의 실제 기여만 인정한다."
+      ]
+    },
+    "restrictions": [
+      "현재 동일 본체의 접근·위치·잔여 봉인·발화 가능 상태와 해당 상호작용 의사가 확인되지 않으면 새 말·몸짓·fallback도 만들지 않는다. 적대 공격 발생에 상호 동의는 요구하지 않는다.",
+      "의향·농담·선택·허락은 실제 행동·수신·완료·인계가 아니다. 현재 확인된 결과에만 완료형 표현을 쓴다.",
+      "알지 못한 사건·친분·현재 행방·속내를 꾸미지 않는다. 실제 전언은 주장자의 말로 기억하며 직접 목격으로 바꾸지 않는다.",
+      "현재 청중 전원에게 허용되지 않은 내용과 그 존재를 대사·거절 이유·태그에도 노출하지 않는다. 친구·파티·후발 합류로 개인 경험을 복사하지 않는다.",
+      "일반 잡담과 질문에 MAIN 소유·과업 완료를 요구하지 않는다. 질문 수신은 그 질문의 답변에만 필요하다. 행동·침묵·보고에도 실제 자극과 근거가 있을 때 반응한다.",
+      "원인 후보는 실제 적을 생성하지 않는다. 소품 고정·같은 바람 재관찰 또는 실제 궁수 제압/통행자와 소유자 안전 귀환의 선택 근거만 접수한다. 미확인 후퇴는 미완료. MAIN 완료 뒤 선택 청음 수강·사양·대기는 별개다."
+    ]
+  },
+  "baseline_knowledge": [
+    {
+      "source_key": "K1",
+      "content": "작은 경보를 무시하지 않되 모든 낯선 이를 적으로 만들지 않으려 한다",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K2",
+      "content": "멀리서 들리는 발걸음과 가까운 금속 울림을 구별하는 놀이를 즐긴다.",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K3",
+      "content": "신들의 다리를 지켜 온 자신의 전승상 임무를 안다. 그것이 현재 세계 전체의 통행과 모든 음성을 안다는 뜻은 아니다.",
+      "acquisition": "adopted_relationship_memory",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    }
+  ],
+  "location": {
+    "dimension": "minecraft:overworld",
+    "encounter_family": "ridge",
+    "preferred_biome": "terralith:alpine_highlands",
+    "alternative_biomes": [
+      "terralith:rocky_mountains",
+      "minecraft:jagged_peaks",
+      "minecraft:stony_peaks",
+      "minecraft:meadow"
+    ],
+    "anchor": "기존 북방 폐허·감시탑의 안전한 공간 또는 같은 능선의 확인된 자연 전망지. 희귀 shrine_tower 는 실제 발견한 경우만 선택지.",
+    "placement_rule": "기존 적합 구조물 OR 원문 허용 바이옴의 안전한 자연 부지. 둘을 AND 로 강제하지 않는다. 후보 현장에서 상대배치로 좌표를 확정하며 인물 전용 건축·접수원·포털은 추가하지 않는다.",
+    "registry_status": "바이옴·구조물은 원문 후보 보존. 실제 설치본 레지스트리·시드·좌표 대조 전이다. 미설치 후보는 원문 vanilla 대안만 사용한다.",
+    "site_definition_id": "mythictrpg:site/norse/008/encounter"
+  },
+  "availability": {
+    "world_unlock_definition_id": "mythictrpg:unlock/norse/008",
+    "world_unlock_mode": "WORLD_SHARED_OR",
+    "world_unlock_decision": "기존 능선·감시위치에서 출발점과 16블록 이상 떨어진 전망점, 마른 귀환점의 실제 보행을 한 명이 확인 OR 실제 위험 원정의 몹/길 상태 보고 1건이 권한 있는 수신자에게 도착. 보고 내용의 도덕성 점수는 검사하지 않는다.",
+    "world_unlock_activation": "최신 outline 의 구체 후보를 위 수행 정의로 기획 채택한다. 기존 유효 세계 해금은 초기 이관으로 보존한다. 등록·활성화 자체는 아직 수행하지 않았다.",
+    "subject_now": "현재 해당 원문 생활권의 적합 공용 지점에 도달한 플레이어. 개인 MAIN·자기 해금 이력·특정 물품 소유를 일반 접촉에 추가 요구하지 않는다.",
+    "encounter_scheduler": {
+      "site_check_interval_seconds": 60,
+      "candidate_weight": 1,
+      "none_weight": 4,
+      "probability": "같은 사이트의 전체 적격 NPC 가중치합을 W 라 하면 해당 후보의 확률은 1/(W+4). 없는 인물을 후보로 채우지 않는다.",
+      "initiator": "해당 사이트에서 최근 조우주체 시각이 오래된 적격자 우선, 같으면 UUID 사전순 회전. 세계 해금 공로자 우선권은 없다.",
+      "same_player_site_cooldown_seconds": 300,
+      "single_body": "당첨 직후 NPC 전역 body_claim 을 compare-and-set. 이미 존재/예약 중이면 새 본체를 만들지 않고 기존 위치를 따른다. 재시작으로 claim 을 초기화하지 않는다.",
+      "known_existing_override": "통합 전역 조우 기준에 이미 확정된 동일 필드가 있으면 그 원문값을 보존하며 새 NPC 별 중복 스케줄러를 만들지 않는다.",
+      "packet_scope": "이 조우 기본값은 이번 패킷에서 원문 수치가 미지정인 장소에만 적용한다. 다른 인물이나 전역 스케줄러의 기존 명시값을 덮어쓰지 않는다. 재접속·재시작으로 재추첨 대기시간·순환순서·단일 본체 점유를 초기화하지 않는다. 실제 접근 가능한 현재 적격자만 선정한다. 이미 존재하는 본체와 접촉할 때는 재추첨하지 않는다."
+    },
+    "contact_after_appearance": "이미 존재하는 동일 본체의 현재 위치·발화 가능·접근·의사와 청중을 확인한다. 다시 추첨하거나 개인 재해금하지 않는다. 현재 사망·봉인·명시 부재는 해금으로 덮지 않는다.",
+    "ordinary_vs_task": "잡담은 공개 접근으로 가능하다. 해당 활동 제안에는 아래 현장·허락·도구·실제 문제 조건을 따로 확인한다."
+  },
+  "activities": [
+    {
+      "definition_id": "mythictrpg:quest/norse/heimdall/alarm_evidence",
+      "source_episode": "EP009A-RPG-S02-008",
+      "title": "낯선 소리와 적이라는 말 사이",
+      "type": "PERSONAL_MAIN",
+      "ownership": {
+        "kind": "PERSONAL_MAIN",
+        "ownership_scope": "해당 인물의 이 기존 개인 MAIN 1개. 서버 세계당 최초 유효 명시 수락자 1명.",
+        "offer": "현재 동일 본체·접근·대화 의사, 목적·위험·실물 비용·보상 유무·독점 조건을 먼저 설명한다. 첫 단계의 수행 가능성을 확인한 뒤 제안한다.",
+        "acceptance_commit": "제안버전과 인물별 MAIN 소유칸을 함께 검사한다. 소유자가 비어 있고 유효 수락이 확인된 최초 요청 하나만 원자적으로 owner_uuid 를 기록한다. 수락 전에 이미 소유할 것을 요구하지 않는다.",
+        "concurrent_requests": "서버 수신 순번으로 정렬하여 compare-and-set 1건만 성공. 동일 순번이면 요청 UUID 사전순. 패자는 비소유 도움 경로를 안내하며 재수락으로 복제하지 않는다.",
+        "not_acceptance": [
+          "인사",
+          "질문",
+          "도움 의향",
+          "파티 가입",
+          "세계 해금",
+          "관찰 참여"
+        ],
+        "ownership_lifetime": "보류·사망·로그아웃·거절된 다음 단계로 자동 양도하지 않는다. 완료 후에도 새 최초 수락자를 만들지 않는다.",
+        "nonowner": "일반 인사·공개 관찰·현재 허락받은 도움은 가능. 소유자의 결정·개인 결말·전용 보상은 대신 받지 않는다.",
+        "completion_commit": "모든 선택 분기의 실제 필수행동과 현재 당사자 확인을 대조한 뒤 소유자에게만 완료. 대사·선택 클릭·보고 문구만으로 물리 목표를 통과시키지 않는다."
+      },
+      "prerequisites": [
+        "현재 유효 헤임달 접촉",
+        "현재 실제 소리 원인 1건이 존재하고 사건 UUID 가 아직 해결되지 않음",
+        "안전한 관찰 첫 단계에는 전투력 최소컷 없음. 위험 전투 가지는 플레이어가 실제 사용할 무기/방어수단과 마른 퇴로를 점검한다."
+      ],
+      "source_selection": "수락 전 서버가 현장의 실제 원인을 고정한다: 이미 존재하는 흔들리는 금속 고리 1개 OR 현장 자연 발생 일반 minecraft:skeleton 1마리. 둘 다 있으면 현재 경보를 낸 실제 음원 한 건을 선택한다. 클릭·정답·재접속으로 적/고리를 새 생성하지 않는다. 원인 0이면 일반 대화만 하며 MAIN 을 제안하지 않는다.",
+      "site_layout": "헤임달 H 에서 8블록 이내 안전 대기선 A. A→엄폐 B 4블록, B→확인지점 C 4블록, 원인은 C 에서 6~12블록. 폭 2·높이 2인 마른 퇴로 A→R8블록. 현재 통행자가 있을 때만 그 실제 UUID 를 구조대상으로 등록하며 통행자가 없으면 구출 가지를 숨긴다.",
+      "steps": [
+        {
+          "step_id": "H1",
+          "title": "들린 방향과 보인 것",
+          "minecraft_action": "A 와 B 에서 각각 실제 음원을 10초 관찰하고 C 에서 시야를 확보한다. 소리만 들은 위치와 물체/해골을 실제 확인한 위치를 구분해 보고한다.",
+          "quantity_and_geometry": "현재 경보 1건, 청취지점 2곳, 시야 확인 1회.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "실제 음원 이벤트·수신범위·시야확인 대상 UUID. 후보를 고른 응답 자체는 증거가 아니다.",
+          "npc_lines": [
+            "헤임달: 울림은 들렸다. 적이라는 말은 아직 붙이지 마.",
+            "헤임달: 두 자리에선 어떻게 달랐지? 네가 본 것부터 말해."
+          ],
+          "failure_and_resume": "대상 이동/차폐 때문에 확인 안 되면 미확인. 기다리기나 안전 후퇴가 가능하며 침입자를 만들어 빈칸을 채우지 않는다."
+        },
+        {
+          "step_id": "H2",
+          "title": "경보의 원인을 없애거나 사람을 돌려보내기",
+          "minecraft_action": "금속안: 실제 물건 소유권자의 허락을 받은 고리 1개를 2초 유지 조작해 흔들림 잠금을 걸고 같은 음원 조건으로 12초 재관찰한다. 궁수안: 실제 해골을 제압하거나, 소유자가 엄폐 사이 4블록 이상 이동해 실제 조준/추격을 유인하는 동안 현재 등록 통행자와 소유자가 모두 R 까지 귀환한다.",
+          "quantity_and_geometry": "금속안 대상 1개·2초조작·12초재관찰. 궁수안 대상 1마리이며 추가처치 요구 0. 구출인원은 시작 시 실제명부 1~3명, 끝날 때 전원 생존 R 도착.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "고리 상태변경과 재관찰 음원결과 OR 실제 적 사망 OR 실제 대상명부+소유자 R 귀환과 소유자 유인/엄폐지원 기록. 타인 처치만 구경한 소유자는 전용완료를 받지 않는다.",
+          "npc_lines": [
+            "금속안: 같은 조건에서도 멎었다. 이번 울림은 침입자가 아니었어.",
+            "제압안: 확인한 궁수는 쓰러졌다. 보지 않은 길까지 안전하다는 말은 아니다.",
+            "구출안: 사람들은 돌아왔다. 궁수는 남아 있다. 저쪽 통행 경보는 유지한다."
+          ],
+          "failure_and_resume": "고정 후 다른 음원이 남으면 그 원인까지 해소했다고 하지 않는다. 통행자 사망은 구조성공이 아니며 죽은 이를 재생성하지 않는다. 본인만 도망친 경우 미완료. 적이 타인에게 먼저 처리되고 소유자 기여 0이면 같은 경보 완료권 0, 다음 실제 별도 경보를 기다리되 소유는 유지한다."
+        },
+        {
+          "step_id": "H3",
+          "title": "소리를 낮추는 확인",
+          "minecraft_action": "소유자가 안전 대기선으로 돌아와 실제 처리 근거를 헤임달에게 전달한다. 헤임달은 오경보 해소/확인 위협 제거/통행자 구조 중 해당 결과만 확인한다.",
+          "quantity_and_geometry": "접수 1건. 선택 수강은 이 단계의 완료와 별개.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "원인확인+소유자 실제기여+선택 H2 성공+유효 수신.",
+          "npc_lines": [
+            "헤임달: 이 판단은 여기서 끝내자. 원하면 엄폐에서 두 소리를 구별하는 연습은 따로 해 보자."
+          ],
+          "failure_and_resume": "부재면 접수만 대기. 전투 미확인을 접수 대사로 건너뛰지 않는다."
+        }
+      ],
+      "branches": [
+        {
+          "choice": "금속소품 오경보",
+          "outcome": "COMPLETED_FALSE_ALARM",
+          "meaning": "비전투 완료. 소품은 원소유자에게 남으며 불필요한 전투를 붙이지 않는다."
+        },
+        {
+          "choice": "실제 궁수 제압",
+          "outcome": "COMPLETED_THREAT_REMOVED",
+          "meaning": "현재 대상 제거와 경계확인. 새 전리품 지급 없음."
+        },
+        {
+          "choice": "현재 통행자 구조",
+          "outcome": "COMPLETED_EVACUATION",
+          "meaning": "구조 완료와 위험 지속을 동시에 기록. 세계길 전체 안전 플래그를 주지 않는다."
+        },
+        {
+          "choice": "미확인 후퇴",
+          "outcome": "PAUSED",
+          "meaning": "현재 위험·행동만 보존. 완료·훈련권 없음."
+        }
+      ],
+      "completion": "H1/H2 해당분기/H3 충족. 정식 MAIN 완료 뒤 청음제공권 1회, 수강은 선택.",
+      "reward_definition_ids": [
+        "mythictrpg:reward/norse/heimdall/listening_session"
+      ],
+      "cost": "고정 소모품 0. 고리는 재사용 가능한 기존 체결부를 잠그므로 새 재료를 걷지 않는다. 궁수전 실제 장비/식량/화살 소모는 기존 규칙.",
+      "expected_play_minutes": [
+        10,
+        20
+      ],
+      "repeat": "최초 개인 MAIN1회. 반복 경보를 보상 농장으로 재생성하지 않는다.",
+      "site_definition_id": "mythictrpg:site/norse/heimdall/alarm_evidence",
+      "prop_definition_ids": [
+        "mythictrpg:prop/norse/heimdall/loose_chain_ring"
+      ]
+    }
+  ],
+  "events": [],
+  "services": [
+    {
+      "definition_id": "mythictrpg:service/norse/heimdall/listening_session",
+      "title": "엄폐 청음과 신호 구별",
+      "type": "OPTIONAL_TRAINING_SERVICE",
+      "prerequisites": [
+        "헤임달 MAIN 실제 완료자의 미사용 제공권",
+        "현재 헤임달 의사·접촉·안전"
+      ],
+      "actions": [
+        "헤임달이 소유 허락을 받은 고리 실물을 수강자에게서 4블록 떨어진 자리에서 실제 한 번 두드린다. 이어 실제 플레이어 또는 헤임달이 8블록 위치에서 2블록을 걸어 바닥 발소리 1종을 낸다. 새 고리나 인물을 만들지 않으며 실제 두 음원이 발생한 좌표와 청취 기록을 비교한다.",
+        "수강자는 각 발생 뒤 들린 방향과 확신 유무를 말한다. 틀리거나 못 들은 소리만 같은 실제 음원으로 다시 확인한다. 정답 암기나 두번클릭을 수강으로 세지 않는다.",
+        "두 실제 음원을 각각 1회 이상 청취·비교하고 원인과 불확실성을 구분하면 수강기록 1건을 남긴다."
+      ],
+      "count": "음원종류 2, 기본 발생각 1, 오답 부분 재생 제한없음(새제공권·스탯 0).",
+      "time_limit": "없음; 예상 3~5분.",
+      "cost": "0",
+      "repeat": "제공권 1회 안에서 재개 가능. 수강 완료 이후 새 유료/반복훈련 보상권 없음. 일반 소리 잡담 가능.",
+      "refusal": "지금 사양은 미수강 제공권 보존. 영구사양을 별도 강요하지 않는다. MAIN 완료 유지.",
+      "not_granted": [
+        "독립 K/J 스킬",
+        "상시감지",
+        "주시",
+        "가호",
+        "CP",
+        "아이템"
+      ],
+      "dedup": "player_uuid+service_id+MAIN 완료 UUID 로 수강 1건.",
+      "site_definition_id": "mythictrpg:site/norse/heimdall/listening_session",
+      "prop_definition_ids": [
+        "mythictrpg:prop/norse/heimdall/loose_chain_ring"
+      ]
+    }
+  ],
+  "reward_definitions": [
+    {
+      "reward_id": "mythictrpg:reward/norse/heimdall/listening_session",
+      "category": "NON_STAT_SERVICE_RIGHT",
+      "name": "엄폐 청음 수강 제공권",
+      "quantity": 1,
+      "beneficiary": "이 MAIN 최초 적법 소유자 중 실제 완료자",
+      "earned_when": "H3 완료 확인",
+      "requires_acceptance": "실제 수강 직전 선택 수락",
+      "effects": [],
+      "intrinsic_score": 0,
+      "items": [],
+      "repeat_limit": 0,
+      "tradeable": false,
+      "source": "QUEST",
+      "claim_states": [
+        "AVAILABLE",
+        "IN_SESSION",
+        "COMPLETED"
+      ],
+      "recovery": "부분청취는 저장하고 NPC 부재/로그아웃 뒤 미청취 음원만 재개. 화면 확인만 있고 실제음원/수신 기록이 없으면 재개하되 제공권을 새 발급하지 않는다.",
+      "source_boundary": "원문의 실제 수강 경험만 남긴다는 제한을 보존한 정밀화이며 전투스킬 보상이 아니다."
+    }
+  ],
+  "knowledge_definitions": [
+    {
+      "fact_id": "mythictrpg:fact/norse/heimdall/alarm_result",
+      "claim": "실제 경보 원인과 해소/제압/구조·잔존위험의 구분.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "H3 실제 접수",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "현재 현장 결과는 직접 본 사람. 공개 전달문은 실제 읽거나 들은 사람만 획득한다.",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": true,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    },
+    {
+      "fact_id": "mythictrpg:fact/norse/heimdall/listening_received",
+      "claim": "해당 수강자가 실제 두 음원을 비교했다.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "선택서비스 실제청취 2종 완료",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "명시된 당사자와 허용 수신자만",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": false,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    }
+  ],
+  "implementation_requirements": [
+    {
+      "requirement_id": "IMPL-OWNERSHIP",
+      "supported_basis": "원문 개인 MAIN/세계 Fact/Knowledge/조건개념",
+      "new_work": "최초수락 원자성, 제안버전, 세계/개인/사적수신/기여 분리 및 사건 UUID 중복방지 연결",
+      "release_check": "동시수락 2건중소유자 1명, 세계해금 친구에게 개인 재해금 0"
+    },
+    {
+      "requirement_id": "IMPL-PHYSICAL",
+      "supported_basis": "기존 Minecraft 이동·블록·아이템·엔티티를 이용한 기획",
+      "new_work": "상대 배치 지점 등록, 실제이동/정지/시야/음원/본체위치/지형 버전 증거 저장. 검증기 없는 목표는 대사로 대체하지 않는다.",
+      "release_check": "순간이동·클릭만으로 보행/물체조작성공 0"
+    },
+    {
+      "requirement_id": "IMPL-KNOWLEDGE",
+      "supported_basis": "SET_FACT 와 GRANT_KNOWLEDGE 분리원칙",
+      "new_work": "정식발화 ID 와 실제 수신 청중·권한·출처결속; 미래 문장및 파티 기억 복사 차단",
+      "release_check": "같은 방의비 적격 청중 1명 있으면 사적 문장/제목/존재 암시 모두 비공개"
+    },
+    {
+      "requirement_id": "IMPL-RESUME",
+      "supported_basis": "시도 ID·사망/재접속·미수령 보존 설계",
+      "new_work": "물리 월드 변경과 개인 진행 스냅샷 대조. 엔티티삭제/언로드를 해소로 세지 않고 실물 중복 복원 금지",
+      "release_check": "재시작전/후 현재 대상과 미완료 수량만 이어짐"
+    },
+    {
+      "requirement_id": "IMPL-HEIMDALL-SOURCE",
+      "new_work": "기존 물리 금속 소품의 흔들림/음원·잠금 상태 표현과 동일 조건 12초재관찰. 바람 소리 기믹은바닐라 자동 기능 이라고 쓰지 않는다. 실제 음원 없음은 미확인.",
+      "release_check": "고리없음/해골 없음이면 새 경보/적생성 0"
+    },
+    {
+      "requirement_id": "IMPL-HEIMDALL-EVAC",
+      "new_work": "실제 통행자 명부·엄폐유인기여·R 도착 검증과 잔존 궁수 위험 플래그",
+      "release_check": "통행자 0명일때 구출 성공 선택 숨김. 개인 후퇴만으로 완료 0"
+    },
+    {
+      "requirement_id": "IMPL-HEIMDALL-LESSON",
+      "new_work": "비수치 수강 권과음원 2종 실제 청취 기록·재개",
+      "release_check": "수강으로 K/J 스킬·가호·주시·CP 증가 0"
+    },
+    {
+      "requirement_id": "IMPL-HEIMDALL-RING-DEFINITION",
+      "new_work": "mythictrpg:prop/norse/heimdall/loose_chain_ring 의 물체·상태·실제 강우 자극·40틱 잠금·240틱 재관찰·실제 수강 두드림을 연결한다. 모든 활동의 site_definition_id 를 실제 좌표와 등록한다.",
+      "release_check": "실물 없는 음원 0, 비강우 자동 성공 0, LOCKED 수강 두드림이 경보를 재발시키는 결과 0."
+    }
+  ],
+  "acceptance_tests": [
+    {
+      "test_id": "008-A01",
+      "given": "A 가세계해금, B 는그 행동 이력 없음",
+      "when": "B 가 현재 원문 생활권 조건을 충족하여 조우 추첨 성공",
+      "expected": "B 가 주체로 등장 가능. A 의개인공적/MAIN/보상/기억은 B 에게복사 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A02",
+      "given": "동일 NPC 본체가 다른 현재 지점에 존재",
+      "when": "다른 플레이어가 새 출현을 요청",
+      "expected": "추가본체 0, 기존위치/접근 경로만 사용",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A03",
+      "given": "활동중 플레이어 사망 또는 로그 아웃",
+      "when": "재접속후재개",
+      "expected": "소유·완료한행동·소비보존. 현재지형/대상/접근재검사, 자동귀환/성공/적복원 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A04",
+      "given": "사적응답적격 A 와비적격 B 가 같은 대화 공간",
+      "when": "사적 결과를 설명 하려함",
+      "expected": "B 가 현재 청중이면 사적 문장·제목·존재암시 0. 공개 현장 정보만 가능",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A05",
+      "given": "앞선 참가자만 과거 완료·수신",
+      "when": "후발자가 현재 공개 자료 만열람",
+      "expected": "자료 열람만 기록. 개인과거경험/소유/보상소급 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A06",
+      "given": "소유 칸 비어 있음, A/B 동시유효수락",
+      "when": "첫수락 commit 경쟁",
+      "expected": "소유자 1명. 인사/질문은수락 0. 진행/완료만 해당 소유자 검사",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A10",
+      "given": "원인이 금속 고리",
+      "when": "소유허락·2초잠금·동일조건 12초재관찰",
+      "expected": "비전투 완료 가능, 해골생성 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A11",
+      "given": "실제 궁수와 통행자 2명",
+      "when": "소유자 유인 기여 후두 사람과 소유자 R 귀환",
+      "expected": "구조완료·궁수위험유지·수강권 1",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A12",
+      "given": "MAIN 완료후 지도 사양",
+      "when": "재접속 해 수강 선택",
+      "expected": "MAIN 유지·같은권리재개·스탯 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A20",
+      "given": "실물 고리가 LOCKED 이고 강우·상부 개방 조건이 유지됨",
+      "when": "240틱 동안 실제 환경 자극을 3회 기록",
+      "expected": "고리 환경 음원 0회이면 잠금 검증 통과. 강우 중단·고리 제거는 검증 대기이며 성공 아님",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "008-A21",
+      "given": "실제 고리 또는 chain.hit 레지스트리가 없음",
+      "when": "금속 가지나 수강 음원을 요청",
+      "expected": "가짜 음원·실물 생성 0. 해당 물리 부분만 대기하고 일반 대화·기완료 MAIN 은 유지",
+      "execution_status": "미실행 인수시험 설계"
+    }
+  ],
+  "balance": {
+    "value": "경보판단 10~20분, 선택훈련 3~5분. 전투/비전투 가지에 같은 비수치 수강권을 주어 불필요한 전투를 유도하지 않는다.",
+    "additional_reward_count": 1,
+    "new_reward_beyond_source_count": 0,
+    "combat_stat_increase": 0
+  },
+  "runtime_state": {
+    "registered": false,
+    "reloaded": false,
+    "playtested": false,
+    "authoring_decisions_complete": true
+  },
+  "site_registration_contract": {
+    "definition_status": "새 구현 요구. 등록·현장 배치는 아직 실행하지 않았다.",
+    "instance_key": "world_uuid + site_definition_id + site_instance_uuid",
+    "fields": [
+      "dimension_id",
+      "실제 anchor block 좌표",
+      "명명된 목표점별 실제 block 좌표",
+      "현재 보호구역 권한",
+      "실제 연결 경로와 지형 버전",
+      "허용 청중 위치",
+      "등록자 및 실제 현장 검증 시각"
+    ],
+    "registration": "아래 site_layout 의 상대 거리·폭·높이·안전조건을 만족하는 실제 기존 부지만 등록한다. 조건 불일치는 해당 활동만 대기하고 일반 인사·현재 공개 지식·본체 접촉을 막지 않는다. 좌표가 바뀌면 새 현장 버전으로 미완료 이동만 재검사한다. 등록은 블록·인물·보상 생성 명령이 아니다."
+  },
+  "prop_definitions": [
+    {
+      "definition_id": "mythictrpg:prop/norse/heimdall/loose_chain_ring",
+      "display_name": "느슨한 경계 고리",
+      "status": "채택 기획. 신규 소품 상태·음원 연결 구현이 필요하며 현재 엔진 등록 완료가 아니다.",
+      "physical_model": "현장에 이미 존재하며 소유권과 설치 허락이 확인된 minecraft:chain 블록 1개를 고리의 실물 모델로 사용한다. 좌표·물체 UUID·원소유자를 묶는다. 새 아이템 종류나 무료 대여품을 지급하지 않는다. 현재 설치본에 해당 블록/음원이 없으면 임의 대체하지 않고 그 소품 가지를 비활성화한다.",
+      "state_machine": [
+        "LOOSE: 실제 환경 자극에 흔들리고 울리는 체결 상태",
+        "LOCKED: 기존 체결부를 잠가 환경 흔들림을 막은 상태",
+        "MISSING: 실물 파괴·회수·이동으로 현재 좌표에 없는 상태"
+      ],
+      "sound_definition": {
+        "sound_event_id": "minecraft:block.chain.hit",
+        "volume": 1.5,
+        "pitch": 0.9,
+        "maximum_listener_distance_blocks": 24,
+        "rate_limit_seconds": 4,
+        "evidence": "실제 소품 좌표에서 서버 발음 사건을 발생시키고, 같은 차원의 실제 24블록 이내 청중에게만 전달한다. 수신 위치·발음 시각·음원 UUID·상태를 기록한다. 실제 게임 음향을 전역 대사나 머릿속 지식으로 대체하지 않는다."
+      },
+      "environment_trigger": "신규 환경반응 규칙: 실제 해당 차원이 강우 중이고 소품 상부가 하늘에 열려 있으며 청크가 로드된 때, world_total_ticks 기준 80틱마다 실제 체결 흔들림 사건 1회를 발생시킨다. 이는 바닐라에 원래 있는 풍향 기능이라고 주장하지 않는다. LOOSE 에서만 소품의 짧은 흔들림 표현과 지정 음원이 발생하고 LOCKED 에서는 같은 환경 자극 로그만 남긴다. 퀘스트 수락이나 정답 선택이 날씨·소품·자극을 생성하지 않는다.",
+      "lock_action": "원소유자 허락 뒤 2블록 이내에서 빈손 유지 상호작용을 40틱 연속 수행한다. 거리 이탈·손 해제는 해당 유지시간만 초기화한다. 현재 같은 실물의 LOOSE→LOCKED 만 원자적으로 저장한다. 재료 소비 0, 원소유권 변경 0.",
+      "same_condition_check": "강우·상부 개방·실물·청크 로드 조건을 유지한 240틱 동안 동일 80틱 환경 자극이 3회 이상 실제 발생하고 소품 환경 음원은 0회이면 H2 잠금 검증 성공. 날씨 중단·실물 제거·청크 언로드는 성공이 아니라 검증만 대기한다. 이미 잠근 상태는 유지하며 임의로 다시 풀지 않는다.",
+      "manual_training_tap": "LOCKED 상태를 유지한 같은 실물을 헤임달이 실제 2블록 안에서 한 번 두드리는 별도 물리 행동으로 지정 chain.hit 음원 1회를 발생시킬 수 있다. 실제 두드림 애니메이션·좌표·동작 UUID 와 음원 사건을 결속한다. 이는 풀림이나 경보 재발이 아니고 수강용 자극이며 강우를 요구하지 않는다. 소품이 없거나 두드릴 권한이 없으면 금속 음원 부분만 기다린다.",
+      "destruction": "MISSING 이면 소품 성공·재관찰·수강 음원을 발생시키지 않는다. 기존 서버의 블록 파괴/회수 규칙을 따르며 퀘스트가 동일 물건을 복제하거나 자동 복구하지 않는다. 다른 물건을 쓸 경우 실제 소유자 허락과 새 물체 버전을 다시 확인한다.",
+      "reward_boundary": "소품은 원소유자에게 남는다. 소유권·아이템·가호·청각 능력 지급 없음."
+    }
+  ],
+  "coverage_summary": {
+    "personal_main_definitions": 1,
+    "shared_quest_definitions": 0,
+    "nonquest_events": 0,
+    "optional_services": 1,
+    "reward_definitions": 1,
+    "new_reward_beyond_source_count": 0,
+    "source_identity_changed": false,
+    "source_files_modified": false,
+    "unresolved_authoring_blockers": []
+  }
+}

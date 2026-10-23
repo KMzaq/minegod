@@ -16,7 +16,8 @@ final class BaselineRoomClaimWitnessAudit {
         var projection=RoomPlayerClaimAudit.messages(general);if(projection.isEmpty())return List.of();
         var source=JsonParser.parseString(projection.get(1).content()).getAsJsonObject();
         source.add("sourceIndex",JSON.toJsonTree(sourceIndex(general)));
-        return List.of(new AiDialogueModels.OllamaMessage("system",POLICY),new AiDialogueModels.OllamaMessage("user",source.toString()),
+        boolean purpose=source.toString().contains("\""+PurposeDialogueContext.KEY+"\"");
+        return List.of(new AiDialogueModels.OllamaMessage("system",POLICY+(purpose?"\n"+PurposeDialogueContext.AUDIT_RULES:"")),new AiDialogueModels.OllamaMessage("user",source.toString()),
                 new AiDialogueModels.OllamaMessage("user",JSON.toJson(Map.of("responseSchema",schema(general)))),general.getLast());
     }
     static Map<String,Object> schema(List<AiDialogueModels.OllamaMessage> general) {
@@ -60,6 +61,11 @@ final class BaselineRoomClaimWitnessAudit {
         if(projected.isEmpty())return result;
         for(var raw:JsonParser.parseString(projected.get(1).content()).getAsJsonObject().getAsJsonArray("permittedSources")) {
             var context=raw.getAsJsonObject();
+            if(context.has(PurposeDialogueContext.KEY)) {
+                var purpose=context.getAsJsonObject(PurposeDialogueContext.KEY);
+                var indexed=purpose.deepCopy();indexed.addProperty("sourceKind","DERIVED_PURPOSE_WITH_ORIGINAL_EVIDENCE_NOT_UTTERANCE");
+                result.put("p"+result.size(),indexed);
+            }
             for(String key:List.of("currentQuestionerSpeech","respondingGodPastSpeech","otherParticipantsSpeech"))
                 for(var line:context.getAsJsonArray(key)) {
                     var indexed=line.getAsJsonObject().deepCopy();

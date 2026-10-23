@@ -1,0 +1,200 @@
+{
+  "record_key": "RPG-S04-046",
+  "name": "마르투",
+  "mythology": "메소포타미아",
+  "god_id": "mythictrpg:mesopotamian_unassigned_martu",
+  "identity_reference": "RPG-S04-046/current_record/current_identity",
+  "combat_tier": "상급",
+  "main_status": "NOT_APPLICABLE",
+  "source_reward_status": "APPLICABLE",
+  "definition_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046",
+  "canonical_episode_id": "EP015B-RPG-S04-046",
+  "aliases": [
+    "Q-P1_OTHER_QUEST-029-RPG-S04-046",
+    "EP015B-RPG-S04-046"
+  ],
+  "title": "함께 드는 물의 무게",
+  "quest_kind": "SIDE",
+  "runtime_ready": false,
+  "source_reference": {
+    "profile": "기존페르소나_인물별/RPG-S04-046/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S04-046/authoring_contract.json",
+    "episode_field": "exact_accepted_dossier/episodes",
+    "outline": "RPG-S04-046/current_record/outline"
+  },
+  "scope_guard": "패배도 실제 운반은 인정. 경쟁을 강요하지 않고 협동은 완전 대안. 실제 합의 불성립은 미합의 결말로 닫히지만 부재는 대기. 혼인·이주·문화 복종·가문 승인0.",
+  "site": "기존 공동 우물 O부터 거처 물받이 R까지 평탄한16블록. 물통 물병2개와 생활짐 막대4개를 사전 합의한다. 빈 흙바닥은 취향·안전 거리이며 PVP 경기장으로 만들지 않는다.",
+  "objectives": [
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-O1",
+      "title": "운반 방식 선택",
+      "action": "겨룸은 물통2개를 각자1개씩 들고 합의한16블록 경로로 이동한다. 물통 떨어뜨림 여부와 합의 끝점 도착만 비교하고 속도나 신격 승패를 판정하지 않는다. 협동은 플레이어 물2개·마르투 짐4 또는 반대로 나누어 실제 인도한다. 새 무게 스탯·감속 디버프 없음.",
+      "evidence": "양측 조건동의, 실제 소유/운반·도착·흘림, 경쟁 OR 협동 분기",
+      "previous_objective_id": null,
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS1"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-O2",
+      "title": "자기 노동과 실제 대답",
+      "action": "마르투가 맡은 물받이 채움 또는 짐 정리1건을 실제 끝낸다. 이미 본인이 같은 작업을 끝냈으면 재사용하고 타인 공로는 가져오지 않는다. 아드가르키두그에게 유지하고 싶은 이동 습관을 직접 말하고 그녀의 현재 분담 답을 실제 듣는다.",
+      "evidence": "마르투 action_event_id, 아드가르키두그 실제 응답; 부재이면 협의 대기",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-O1",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS2"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-O3",
+      "title": "작은 적용 또는 미합의",
+      "action": "둘이 합의하면 물통 보관점1개를2블록 옮기거나 짐 놓는 두 칸을 분리하고 실제 사용 가능성을 확인한다. 실제 불일치면 임시짐만 원래 허락된 자리에 돌려놓고 미합의 결말. 단순 부재는 미합의 아님.",
+      "evidence": "양측 합의+실제 적용 OR 실제 거절/불일치+안전정리",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-O2",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS3"
+    }
+  ],
+  "source_branch_contract": [
+    {
+      "source_beat_id": "B1",
+      "action": "물 주인·거처 사용자의 허락과 통로 안전을 확인한다. 짧은 합의 겨룸이면 실제 자기 힘으로 들 수 있는 물통과 넘어뜨리지 않기·합의 지점 도착의 기준을 먼저 함께 정한다. 협동이면 물과 짐을 나누어 실제 운반한다.",
+      "branches": [
+        {
+          "choice_id": "B1-1",
+          "player_intent": "합의한 조건의 작은 힘겨룸을 한다",
+          "actual_execution": "각자 합의한 물통과 짐을 실제 운반하고 도착·넘침·합의 조건을 함께 판정한다. 이기거나 져도 자기 실제 수행량을 남긴다.",
+          "observed_result": "실제 겨룸 결과만 성립. 패배도 실제 운반을 지우지 않으며 신격·MAIN·인정 없음."
+        },
+        {
+          "choice_id": "B1-2",
+          "player_intent": "경쟁 대신 서로 다른 방식으로 협동한다",
+          "actual_execution": "자기 방식으로 들 몫과 함께 들 몫을 나누어 실제 물받이·문턱에 옮기고 받은 양을 확인한다.",
+          "observed_result": "협동 운반만 성립. 겨룸 승리·전투 공로 없음."
+        },
+        {
+          "choice_id": "B1-3",
+          "player_intent": "다른 생활 방식을 비웃으며 기록을 재촉한다",
+          "actual_execution": "느리다는 말로 방식을 비웃고 더 무거운 짐을 강요하려 한다. 마르투가 그 요구를 거절하면 강제로 들리지 않는다.",
+          "observed_result": "강요된 물량·겨룸 성립 없음. 현재 부담을 다시 정하거나 떠날 수 있다."
+        }
+      ],
+      "source_consumption": "물과 짐은 실제 거처 사용자의 것. 흘린 물만 손실, 재접속으로 물통을 채우지 않는다. 대여 끈은 맡은 경우만 반환."
+    },
+    {
+      "source_beat_id": "B2",
+      "action": "마르투가 맡겠다고 한 물받이 채우기 또는 짐 정리를 실제 한다. 플레이어는 요청받은 남은 몫만 돕는다. 그가 길에 나서는 습관 중 유지하고 싶은 부분을 직접 말하도록 자리를 내고 아드가르키두그의 현재 답을 듣는다.",
+      "branches": [
+        {
+          "choice_id": "B2-1",
+          "player_intent": "실제 일을 마치고 두 사람의 답을 듣는다",
+          "actual_execution": "마르투가 실제 맡은 물받이 채우기 또는 짐 정리 중 남은 일만 처리한다. 같은 일이 이미 끝났다면 실제 수행자·기존 결과를 확인하고 반복 노동·소비를 만들지 않는다. 다른 사람이 한 일을 마르투가 했다고 바꾸지 않는다. 마르투가 유지할 습관을 직접 말하고 아드가르키두그가 현재 원하는 분담을 직접 답한 범위를 확인한다.",
+          "observed_result": "실제 노동과 양쪽 응답만 남는다. 합의한 일정의 적용은 다음 선택."
+        },
+        {
+          "choice_id": "B2-2",
+          "player_intent": "상대가 없으므로 자기 일만 마친다",
+          "actual_execution": "마르투와 요청받은 일만 실제 끝내고 이동 습관 제안은 실제 전달을 기다린다.",
+          "observed_result": "운반·생활 작업 유지. 상대 동의·협의·SIDE 최종 확인은 대기."
+        }
+      ],
+      "source_consumption": "생활 물자는 거처 주인 것. 플레이어 보상 식사를 물받이·공동 재고에서 무단 공제하지 않는다."
+    },
+    {
+      "source_beat_id": "B3",
+      "action": "합의한 작은 변경만 실제 적용한다. 정착에 맞춰 물통 위치를 바꾸거나 서로 다른 생활 시간이 겹치지 않게 짐 놓는 자리를 나눈다. 합의가 없으면 원래 사용 가능한 자리에 물건을 보존하고 미합의로 마친다.",
+      "branches": [
+        {
+          "choice_id": "B3-1",
+          "player_intent": "합의한 작은 생활 분담을 실제 적용한다",
+          "actual_execution": "허락된 물통·짐 자리만 실제 옮겨 두 사람이 쓸 수 있는지 확인한다. 플레이어는 자기 수행 확인 뒤 선택 식사·지도를 고르거나 사양한다.",
+          "observed_result": "합의한 분담과 SIDE 확인 완료. 선택 식사·지도 거절은 완료 유지, 연애·혼인 판정 없음."
+        },
+        {
+          "choice_id": "B3-2",
+          "player_intent": "맞지 않는 제안을 강제로 적용하지 않는다",
+          "actual_execution": "움직인 임시 짐만 주인 허락 아래 원래 자리로 정리하고 그 미합의를 확인한다. 새 합의는 다음 별도 대화로 남긴다.",
+          "observed_result": "실제 일과 응답에 근거한 미합의 결말로 현재 SIDE를 닫는다. 이주·관계 파기·강제 분담 없음."
+        }
+      ],
+      "source_consumption": "실제 참여자에게 사전 합의한 식사와 운반 자세 지도 기회를 제공한다. 식사는 승인 재고에서 실제 인수·먹은 몫만, 지도는 별도 실제 실습만."
+    }
+  ],
+  "ending_boundary": {
+    "observable_personal_change": "안전한 합의 겨룸 또는 협동 운반 중 선택한 방식으로 실제 물과 짐을 옮겨 결과를 확인한다. 마르투가 실제 맡을 일을 하고 유지하고 싶은 이동 습관을 아드가르키두그에게 직접 말해 현재 답을 들은 뒤, 두 사람이 실제 합의한 작은 분담만 적용하면 SIDE 완료. 합의 거절이면 맡은 물건을 정리하고 미합의로 닫으며 결혼·이주·복종을 대신 결정하지 않는다. 부재는 협의 대기. 선택 지도·식사 거절은 수행 취소 아님.",
+    "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+    "next_encounter_memory": "마르투는 상대에게 자기 방식을 증명하라 하기보다 먼저 자기 물통을 들어 옮긴다. 합의가 없으면 큰 웃음으로 끝난 척하지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+    "playfeel_and_difference": "함께 드는 물의 무게: 실제 나른 양·흘린 물·도착 위치·각자가 고른 방식. 신의 힘을 약화하거나 보이지 않는 봐주기를 넣지 않는다. → 두 사람이 실제 쓰기로 한 물건 자리 또는 유지한 원래 자리가 현재 선택을 보여 준다."
+  },
+  "reward": {
+    "definition_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-SETTLEMENT",
+    "description": "실제 겨룸/협동 운반 참여 수행자에게 별도 승인 식사재고 빵2개 개인1회, 선택 자세 지도1회. 원문 독립 운반정산으로 승리·아드가르키두그 협의/전체완료와 무관. 실제 인수량과 먹은량을 따로 기록하며 섭취는 강제0. 거처 물/공동 식량 무단공제0.",
+    "earned_condition": "선택 겨룸 또는 협동의 합의한 실제 운반 수행 확인",
+    "new_entitlement": false,
+    "ledger_canonical_episode_id": "EP015B-RPG-S04-046",
+    "repeat": "개인 동일 에피소드 최초1회; 원물반환은 미반환 원물량만",
+    "optional_training": "원하면 자기 가벼운 짐1개를 메고 내려놓기1회60초. 전투기술·승리칭호·스탯 없음"
+  },
+  "knowledge": [
+    {
+      "fact_definition_id": "Q-P1_OTHER_QUEST-029-RPG-S04-046-FACT-RESULT",
+      "text": "실제 물과 짐 수행자, 마르투 자기 노동, 아드가르키두그가 직접 말한 분담만 기록. 남라트에게 동의 없는 뒤처리 배정0.",
+      "source_events": [
+        "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS1",
+        "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS2",
+        "Q-P1_OTHER_QUEST-029-RPG-S04-046-OBS3"
+      ],
+      "learners": "실제 목격자 및 허락된 보고의 실제 수신자",
+      "receipt_key": "fact_definition_id + receiver_actor_id + source_event_id",
+      "disclosure": "공개 현물 결과와 당사자 허락 사적 발언 분리"
+    }
+  ],
+  "persona_in_scene": {
+    "description": "마르투는 낯선 생활을 무례라 단정하는 시선을 싫어하지만 몸으로 겨루는 친교는 즐기는 신. 어디를 골라도 외부인으로만 남는 일이 싫고, 받아들여지려 자기 방식을 모두 버리기도 싫다. 여행길마다 다른 빵의 단단함 비교하기. 쉬는 중에도 빈 손으로 씨름의 손잡기를 연습한다.",
+    "voice": [
+      "웃음이 크고 에둘러 비난하면 즉시 뜻을 묻는다.",
+      "현재 실제 현물과 사용 허락이 있을 때만 생활 습관의 몸짓을 연기한다.",
+      "자기 취향은 말할 수 있지만 방문자의 과거 행동·현재 속마음을 만들지 않는다.",
+      "보고는 보고받았다고 말하고 직접 목격은 실제 직접 감각이 있을 때만 쓴다."
+    ],
+    "neutral": [
+      "현재 원하는 말을 듣고 자기 취향부터 나눌 수 있다."
+    ],
+    "wary": [
+      "상대의 말과 실제 행동을 차분히 구별한다."
+    ],
+    "trusted": [
+      "실제 확인한 관계 변화 계기에만 다음 협의 태도를 바꾼다. 다음에는 방어부터 하지 않고 함께 감당할 물과 짐의 몫을 먼저 제안한다."
+    ],
+    "hostile": [
+      "필요한 경계만 짧게 말한다."
+    ],
+    "boundary": [
+      "자기 방식이 낯설다는 이유로 아드가르키두그의 선택을 대신 철회하지 않는다.",
+      "상대가 실제로 선택한 몫과 말하지 않은 뜻을 구별한다.",
+      "확인한 성과와 아직 받지 않은 것을 섞지 않는다."
+    ]
+  },
+  "expected_minutes": "8~15",
+  "balance": "짧은 실제 생활 노동에 소량 일반 재료/식량 또는 선택 지도만 대응. 전투 스탯·장비·가호·MAIN 추가0. 실물과 책임·인수의 차이를 이해하는 역할 가치가 주 보상이다. 예상시간과 수량은 정적 기획이며 실전 검증 아님.",
+  "required_new_implementation": [
+    "위 실제 목표의 서버 권위 관측·원물수불·개별 수신 연결",
+    "공통계약 alias/재고/복구 요구 적용"
+  ],
+  "acceptance_cases": [
+    {
+      "case": "정상 대안 각각",
+      "expected": "패배도 실제 운반은 인정. 경쟁을 강요하지 않고 협동은 완전 대안. 실제 합의 불성립은 미합의 결말로 닫히지만 부재는 대기. 혼인·이주·문화 복종·가문 승인0."
+    },
+    {
+      "case": "필수 마지막 실제 수행 누락",
+      "expected": "부분 결과만 저장, final_complete=false. 독립 실습정산이 명시된 경우에만 그 별도 조건으로 정산."
+    },
+    {
+      "case": "비공개 보고·상대 부재",
+      "expected": "실제 물과 짐 수행자, 마르투 자기 노동, 아드가르키두그가 직접 말한 분담만 기록. 남라트에게 동의 없는 뒤처리 배정0. 실제 수신 없는 상대 지식0."
+    },
+    {
+      "case": "선택 지도 거절",
+      "expected": "실제 끝낸 수행/정산권 유지, 수강경험0"
+    }
+  ]
+}

@@ -17,13 +17,19 @@ import net.neoforged.neoforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class RumorRecordingGameTests {
     private RumorRecordingGameTests() { }
-    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 600)
+    @GameTest(templateNamespace = "mythictrpg_recording", template = "empty", timeoutTicks = 40000)
     public static void rumorMetadataFollowsAtomicCommitAndFinalSave(GameTestHelper helper) {
         try {
             Fixture fixture = new Fixture(helper);
             helper.onEachTick(() -> {
                 if (fixture.finished) return;
-                try { fixture.tick(); }
+                try {
+                    // Unpaced GameTest ticks are not elapsed disk-I/O time. Keep all commit assertions.
+                    java.util.concurrent.locks.LockSupport.parkNanos(1_000_000);
+                    if (System.nanoTime() - fixture.deadlineNanos >= 0)
+                        throw new AssertionError("Actual rumor I/O exceeded 30 seconds at phase " + fixture.phase);
+                    fixture.tick();
+                }
                 catch (Exception | AssertionError failure) {
                     fixture.release.countDown(); fixture.finished = true;
                     helper.fail("Rumor durable metadata fixture: " + failure);
@@ -32,6 +38,7 @@ public final class RumorRecordingGameTests {
         } catch (Exception failure) { helper.fail("Rumor durable metadata setup: " + failure); }
     }
     private static final class Fixture {
+        final long deadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         final GameTestHelper helper;
         final Path world, file, failedFile;
         final WorldRecordingBudget budget;

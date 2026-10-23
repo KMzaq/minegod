@@ -60,15 +60,15 @@ public final class QuestRewardResolver {
         }
 
         if (!automatic.isEmpty()) {
-            RewardExecutionService.Validation validation = RewardExecutionService.validate(
-                    automatic, RewardGrantPurpose.QUEST);
+            RewardExecutionService.Validation validation = RewardExecutionService.validateForGod(
+                    godId, automatic, RewardGrantPurpose.QUEST);
             if (!validation.allowed()) {
                 return Resolution.reject(validation.reason());
             }
         }
         for (RewardChoiceOption choice : choices) {
-            RewardExecutionService.Validation validation = RewardExecutionService.validate(
-                    choice.rewards(), RewardGrantPurpose.QUEST);
+            RewardExecutionService.Validation validation = RewardExecutionService.validateForGod(
+                    godId, choice.rewards(), RewardGrantPurpose.QUEST);
             if (!validation.allowed()) {
                 return Resolution.reject("Invalid choice " + choice.optionId() + ": " + validation.reason());
             }

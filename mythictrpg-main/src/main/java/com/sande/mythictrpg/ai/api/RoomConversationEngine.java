@@ -8,6 +8,12 @@ import java.util.concurrent.CompletableFuture;
 /** Immutable room boundary. Every reply remains a proposal until the game revalidates its lease. */
 public interface RoomConversationEngine {
     CompletableFuture<Result> respond(Request request);
+    /** Opt-in: decisions with actions are not published until game results have been narrated. */
+    default boolean supportsActionResultDialogue() { return false; }
+    /** Same turn, refreshed game state. The returned result must contain no further actions. */
+    default CompletableFuture<Result> respondToActionResults(Request request, Result decision) {
+        return CompletableFuture.completedFuture(Result.failed(request, "ACTION_RESULT_DIALOGUE_UNAVAILABLE"));
+    }
     CompletableFuture<SplitResult> chooseSplit(SplitRequest request);
     default void invalidate(UUID roomId) { }
     /** Called only after game validation and actual delivery; commits optional NPC memory. */

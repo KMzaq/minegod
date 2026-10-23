@@ -1,0 +1,159 @@
+{
+  "record_key": "RPG-S01-021",
+  "content_id": "RPG-S01-021:story-connection",
+  "name": "레아",
+  "document_kind": "AUTHORING_NOT_RUNTIME",
+  "connection_manuscript": {
+    "record_key": "RPG-S01-021",
+    "name": "레아",
+    "tier": "최상급",
+    "title": "돌아오게 하는 것이 구원인가",
+    "group": "올림포스·티탄",
+    "content_status": "기존 정사·복구 원문 대조 + 2026-10-21 저술 초안. 신규 장면·조건은 승인 전 후보.",
+    "runtime_ready": false,
+    "source_status": {
+      "current_master": "baseline/rpg_authoring_master_active.json",
+      "current_record_key": "RPG-S01-021",
+      "original_persona_status": "기존 승인 페르소나 원문 복구. v17 변경 설정을 우선 적용하고 충돌 구간만 별도 조정한다.",
+      "original_provenance": {
+        "archive_name": "마크프로젝트_그리스와_주요인물31명_페르소나.zip",
+        "source_profile_archive_entry": "레아/profile/data/mythaiaicontent/mythai_ai/god_profiles/greek_titan_rhea.json",
+        "source_profile_sha256": "04f4b1e321e9cf405f8469439069882e433067a693efc5561db4ade56cfb075d",
+        "source_contract_archive_entry": "레아/authoring_contract.json",
+        "source_contract_sha256": "586a7d08234cc33bf8725a944f38754ebd22d4a8787675631d161c30ffa20b60",
+        "library_file_id": "libfile_41e0c077079c8191a4074ee0465734e2"
+      },
+      "prior_connection": "drafts/forest_beasts_input.json#prior_connections/RPG-S01-021",
+      "priority": "최신 사용자 지시 > 현행 v17 정사 > 복구한 2026-10-16 원문. v16 연결안은 기존 제안이며 신규 확정 정사가 아니다."
+    },
+    "source_reconciliation": {
+      "retain": [
+        "짧고 부드러운 반말, 안전을 먼저 권하되 선택을 영구 대행하지 않으려 하는 원문.",
+        "매끈한 돌의 무게와 천을 고르는 사소한 취향.",
+        "크로노스·제우스와의 과거 관계는 현계의 신규 전쟁·억류 사건이 아님."
+      ],
+      "adjust_or_do_not_restore": [
+        "옛 승계 다툼·피난 기록 씨앗을 현재 수감자·구출 퀘스트의 존재로 복원하지 않는다.",
+        "별도 MAIN이나 새 구출 사건은 이번에 추가하지 않는다."
+      ],
+      "current_canon_verbatim": {
+        "value": null,
+        "status": "not_separately_authored",
+        "source": {
+          "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+          "record_key": "RPG-S01-021",
+          "field": "current_character_canon"
+        },
+        "use_scope": "author_reference_not_automatic_npc_knowledge_or_runtime_rule",
+        "runtime_binding": false
+      },
+      "current_access_verbatim": {
+        "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+        "status": "current_roster_classification_preserved",
+        "source": {
+          "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+          "record_key": "RPG-S01-021",
+          "field": "evidence_reason"
+        },
+        "use_scope": "authoring_access_guard_not_runtime_predicate",
+        "runtime_binding": false
+      },
+      "writing_boundary": "아래 장면과 추가 조건은 새 저술 초안이다. 과거의 실제 발생 사실, 확정 배치, 등록 퀘스트 또는 대화 테스트 결과로 해석하지 않는다."
+    },
+    "unlock_history": {
+      "status": "무조건 이력 과제를 만들지 않는 선택 면담안",
+      "general_access": "별도 제작·처치·획득 이력 없음 제안.",
+      "optional_history": "실제 산길/동굴 탐험에서 돌아온 경험, 또는 실제 봉인석을 발견한 개인 이력은 대화 재료일 뿐 인사 필수조건 아님.",
+      "ownership": "다른 플레이어의 발견을 들은 것은 전언이지 자신의 봉인석 발견 이력 아님. 스스로 조사하지 않았어도 질문은 가능."
+    },
+    "encounter_now": {
+      "status": "새 장면 후보",
+      "expression": "등장 후 또는 기존 배치 본체에 대한 직접 접촉 조건이다. 이 전체 조건을 첫 등장 이전에 요구하지 않는다. 실제 접근 가능한 산기슭·바위 그늘·기존 쉼터 중 하나 AND 레아 본체 현장에 있음 AND 대화 여유가 있음.",
+      "clue": "방문객이 고른 자리를 더 안전한 곳으로 고쳐 주려다 이유를 먼저 묻는다.",
+      "not_required": "크로노스 해제·희귀 돌·구출 실적 필요 없음. 정확 배치는 미정.",
+      "appearance_trigger": {
+        "stage": "appearance_candidate_before_body_presence",
+        "candidate_location": "실제 접근 가능한 산기슭·바위 그늘·기존 쉼터 중 하나",
+        "candidate_time_items_state": "기존 항목에 없는 고정 시간·필수 소지품을 만들지 않는다. 후속 대화의 선택 소품이나 자료는 일반 등장 입장권이 아니다.",
+        "world_and_subject_rule": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+        "existing_body_path": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다.",
+        "adoption_and_mode_limit": "현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+      }
+    },
+    "seal_and_availability": "별도 신규 봉인을 만들지 않는다. 현행 개별 최초 조우 시점 미정은 무조건 출현 가능도, 장 번호에 의한 잠금도 아니다. 본체가 실제 부재·행동 불가·다른 접견 중이면 이력만으로 소환하지 않는다.",
+    "independent_persona": {
+      "core": "따뜻하지만 간섭하고 싶은 손이 먼저 나가는 인물. 거절을 존중하려 애쓰면서도 필요 없는 사람이 되는 일에 서운할 수 있다.",
+      "daily_life": "햇볕과 바람을 살피고 천을 접는다. 지나가는 사람이 있든 없든 쉬는 시간을 가진다.",
+      "player_motive": null,
+      "why_talk": "플레이어가 찾아와 이야기하면 듣는 만남으로 충분하다. 누군가를 구해 달라는 일을 반드시 갖고 있지 않다."
+    },
+    "outline_beats": [
+      "플레이어가 쉬는 자리를 고르자 레아가 다른 자리를 권한다. 권유를 받거나 거절하고 이유를 말한다.",
+      "돌·산길·여행 같은 잡담에서 끝날 수 있다. 크로노스 이야기를 먼저 꺼낼 필요는 없다.",
+      "플레이어가 봉인을 묻는다면 보호·해방·권력 반환을 같은 말로 쓰고 있지는 않은지 이야기한다. 레아는 자기 경험과 의견만 말한다.",
+      "해제 보류·추가 조사·면담 종료가 모두 가능한 마침이다. 레아의 호의나 반대는 실제 봉인 상태를 바꾸지 않는다."
+    ],
+    "conversation_agency": "레아의 보호를 거절해도 배은망덕 판정을 자동 부여하지 않는다. 플레이어는 자기 위험을 감수하겠다고 말할 수 있고 레아는 이에 동의하지 않으면서 길을 막지 않을 수 있다. 위로·정보·의뢰를 모두 내놓아야 하는 인물은 아니다.",
+    "voice_and_rudeness": {
+      "baseline": "짧고 부드러운 반말, 기다렸다 덧붙이는 말. 잔소리는 짧게 하고 사랑의 빚을 계산하지 않는다.",
+      "rudeness": "서운함과 침묵이 가능하다. 즉시 벌이나 조난 사건을 만들어 교훈을 주지 않는다."
+    },
+    "knowledge": {
+      "known": "자신이 겪은 가족 관계와 보호·통제에 대한 경험.",
+      "unknown": "새 수감자, 아직 전달받지 못한 봉인 변화, 플레이어 실제 의도 전체.",
+      "guard": "과거를 안다는 사실과 현계의 모든 봉인 해법을 안다는 설정을 분리. 실재가 확인되지 않은 피난 기록을 소지품으로 만들지 않는다."
+    },
+    "dialogue_examples": [
+      {
+        "player": "안쪽보다 여기 바람 드는 곳이 좋아요.",
+        "npc_or_observable_response": "그래? 나는 추울까 봐 그랬지. 그럼 여기 있어. 자리는 네가 고르렴.",
+        "guard": "새 대사 초안. 실제 대화·상태 변화·보상 실행을 뜻하지 않는다."
+      },
+      {
+        "player": "크로노스를 풀어 주면 당신도 기쁘겠죠?",
+        "npc_or_observable_response": "내 마음부터 정해 두지는 마. 문을 여는 것과 그에게 다시 모든 걸 맡기는 건 다른 일이야.",
+        "guard": "새 대사 초안. 실제 대화·상태 변화·보상 실행을 뜻하지 않는다."
+      }
+    ],
+    "relationship_connections": [
+      {
+        "target_record_key": "RPG-S01-022",
+        "target_name": "크로노스",
+        "necessity": "선택",
+        "connection": "기존 가족 관계와 봉인 해석 접점. 레아 면담은 정상 접견의 우회로·자동 해제 열쇠 아님."
+      },
+      {
+        "target_record_key": "RPG-S01-001",
+        "target_name": "제우스",
+        "necessity": "과거 관계·선택",
+        "connection": "과거 승계 갈등의 맥락. 현계의 새 왕위전쟁·강제 동맹으로 확대하지 않는다."
+      }
+    ],
+    "multiplayer_and_world": "개인 관계·발언 청중·수주권과 공용 세계 상태를 분리한다. 친구의 완료·소개·칭찬으로 자신의 호의·가호·MAIN을 복제하지 않는다. 실제 동일 본체만 사용하며 다른 장소에 개인용 복제본을 만들지 않는다. 한 플레이어가 레아에게 들은 사적인 감정이 서버 전체 공개 기록이 되지 않는다.",
+    "capability_needs_unresolved": [
+      "장소 후보의 실제 생성·접근 가능성, 동일 본체의 현재 위치와 응답 가능 상태 확인.",
+      "행동 이력과 NPC가 그 행동을 아는 근거를 별도 연결. 대화 주장만으로 서버 자격·물품 지급을 확정하지 않음.",
+      "대화 청중별 습득 지식과 개인 관계 저장, 기존 수주·보상 기능과의 연결 여부 확인. 새 퀘스트 JSON·수치·등록 ID는 이번 범위 밖.",
+      "현존 자료를 사용하는 장면은 자료 실재·열람 허가를 확인한 뒤 채택. 없으면 짧은 개인 면담으로 충분."
+    ],
+    "current_unlock_scope": {
+      "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+      "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+      "encounter_subject": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+      "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+      "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+      "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+      "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+    },
+    "source_text_use_boundary": {
+      "untouched_original_quote_pointers": [],
+      "rule": "위 원문 인용과 source_anchors·source_references·sha256은 출처 보존 영역이다. 과거 해금·동행 문구나 옛 설정이 있더라도 현재 유효 요약으로 자동 적용하지 않는다. 그 밖의 이야기·말투·취향은 유지하며, 현행 조건은 이 인물의 수정된 해금·조우 항목과 current_unlock_scope를 따른다. 원문 파일·명부·기존 전달본 자체는 수정하지 않았다.",
+      "original_quote_status": "archived_source_text_not_current_runtime_or_unlock_rule",
+      "current_effective_summary_pointers": [
+        "/unlock_history",
+        "/encounter_now",
+        "/current_unlock_scope"
+      ]
+    }
+  }
+}

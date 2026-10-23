@@ -36,6 +36,36 @@ final class LocalOllamaClient implements LocalLlmClient {
     /** Package-local evaluation opt-in only; no prompt, game config or global property can enable this in production. */
     LocalOllamaClient(boolean independentFrameEvaluation) { this.independentFrameEvaluation=independentFrameEvaluation; }
 
+    /** Explicit experimental entry points; ordinary game submit/review routing is unchanged. */
+    LocalLlmRequestScheduler.ScheduledRequest<AiDialogueModels.StructuredAiResult> submitPlannedReply(UUID id,
+            List<AiDialogueModels.OllamaMessage> original, PurposeReplyPlan.Plan plan, AiDialogueConfig.Settings settings) {
+        return submitPlannedReply(id,original,plan,settings,false);
+    }
+    LocalLlmRequestScheduler.ScheduledRequest<AiDialogueModels.StructuredAiResult> submitPlannedReply(UUID id,
+            List<AiDialogueModels.OllamaMessage> original, PurposeReplyPlan.Plan plan, AiDialogueConfig.Settings settings,boolean bounded) {
+        return scheduler.submit(id,settings,()->{
+            try {
+                var wire=JsonParser.parseString(requestBody(id,PurposeReplyPlan.messages(original,plan,bounded),settings,0.60D,
+                        Math.max(512,settings.maxOutputTokens()),settings.requestTimeoutSeconds(),plan.schema(bounded))).getAsJsonObject();
+                return plan.realize(JsonParser.parseString(wire.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),bounded);
+            } finally { WIRE_OBSERVERS.remove(id); }
+        });
+    }
+
+    LocalLlmRequestScheduler.ScheduledRequest<ReplyMeaningAudit.Result> submitMeaningAudit(UUID id,
+            List<AiDialogueModels.OllamaMessage> original,AiDialogueModels.StructuredAiResult draft,AiDialogueConfig.Settings settings) {
+        return scheduler.submit(id,settings,()->{
+            try {
+                var readingWire=JsonParser.parseString(requestBody(id,ReplySurfaceReading.messages(draft),settings,0.0D,
+                        ReplySurfaceReading.tokens(draft),Math.min(settings.requestTimeoutSeconds(),60),ReplySurfaceReading.schema(draft))).getAsJsonObject();
+                var reading=ReplySurfaceReading.parse(JsonParser.parseString(readingWire.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),draft);
+                var wire=JsonParser.parseString(requestBody(id,ReplyMeaningAudit.messages(original,draft,reading),settings,0.0D,
+                        1400,Math.min(settings.requestTimeoutSeconds(),60),ReplyMeaningAudit.schema())).getAsJsonObject();
+                return ReplyMeaningAudit.parse(JsonParser.parseString(wire.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),draft);
+            } finally { WIRE_OBSERVERS.remove(id); }
+        });
+    }
+
     @Override
     public LocalLlmRequestScheduler.ScheduledRequest<AiDialogueModels.StructuredAiResult> submit(UUID requestId,
             List<AiDialogueModels.OllamaMessage> messages,
@@ -97,6 +127,17 @@ final class LocalOllamaClient implements LocalLlmClient {
     }
 
     /** Optional bounded interpretation over an already audience-projected scene. */
+    @Override public LocalLlmRequestScheduler.ScheduledRequest<java.util.Optional<com.sande.mythictrpg.understanding.PurposeEvidence>> submitPurpose(
+            UUID requestId,PurposeUtterance.Input input,AiDialogueConfig.Settings settings) {
+        return scheduler.submit(requestId,settings,()->{
+            try {
+                var envelope=JsonParser.parseString(requestBody(requestId,PurposeUtterance.messages(input),settings,0.0D,768,
+                        Math.min(settings.requestTimeoutSeconds(),45),PurposeUtterance.schema(input))).getAsJsonObject();
+                return PurposeUtterance.parse(JsonParser.parseString(envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject(),input);
+            } finally {WIRE_OBSERVERS.remove(requestId);}
+        });
+    }
+
     @Override public LocalLlmRequestScheduler.ScheduledRequest<PlayerIntentPlan.Plan> submitUnderstanding(UUID requestId,
             PlayerIntentPlan.Input input,AiDialogueConfig.Settings settings) {
         return scheduler.submit(requestId,settings,()->{
@@ -135,7 +176,7 @@ final class LocalOllamaClient implements LocalLlmClient {
                     settings.requestTimeoutSeconds(), RoomSpeechSchema.forMessages(messages, STRUCTURED_DIALOGUE_SCHEMA)));
         } catch (RuntimeException firstFailure) {
             try {
-                return parse(requestBody(requestId, messages, settings, 0.35D, settings.maxOutputTokens(),
+                return parse(requestBody(requestId, messages, settings, 0.35D, retryTokens(settings.maxOutputTokens(), firstFailure),
                         settings.requestTimeoutSeconds(), RoomSpeechSchema.forMessages(messages, STRUCTURED_DIALOGUE_SCHEMA)));
             } catch (RuntimeException retryFailure) {
                 retryFailure.addSuppressed(firstFailure);
@@ -148,6 +189,12 @@ final class LocalOllamaClient implements LocalLlmClient {
 
     private AiDialogueModels.StructuredAiResult requestPatch(UUID requestId, RoomDialoguePatch.Plan patch,
             AiDialogueConfig.Settings settings) {
+        if (ObservedSupportRepair.applies(patch)) {
+            var wire=JsonParser.parseString(requestBody(requestId,ObservedSupportRepair.messages(patch),settings,0.35D,
+                    Math.max(512,settings.maxOutputTokens()),settings.requestTimeoutSeconds(),ObservedSupportRepair.schema())).getAsJsonObject();
+            requireCompleteGeneration(wire);
+            return ObservedSupportRepair.apply(patch,JsonParser.parseString(wire.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject());
+        }
         var envelope = JsonParser.parseString(requestBody(requestId, patch.editMessages(), settings, 0.0D,
                 512 + 512 * patch.slots().size(), settings.requestTimeoutSeconds(), patch.schema())).getAsJsonObject();
         var edited = patch.apply(JsonParser.parseString(envelope.getAsJsonObject("message").get("content").getAsString()).getAsJsonObject());
@@ -164,6 +211,7 @@ final class LocalOllamaClient implements LocalLlmClient {
             // Old routing schemas remain small. The optional attribution result needs room to finish its JSON.
             int budget = messages.stream().anyMatch(m -> m.role().equals("system") && m.content().contains("TURN_INTERPRETATION_V1"))
                     ? Math.max(384, settings.intentRoutingMaxOutputTokens()) : settings.intentRoutingMaxOutputTokens();
+            if(messages.stream().anyMatch(m->m.role().equals("system")&&m.content().contains("OPTIONAL_CHARACTER_INTEREST_V1")))budget=Math.max(640,budget);
             return parseIntent(requestBody(requestId, messages, settings, 0.1D, budget,
                     Math.min(settings.requestTimeoutSeconds(), 45), "json"));
         } finally {
@@ -239,8 +287,23 @@ final class LocalOllamaClient implements LocalLlmClient {
                 "required", List.of("speech", "currentTopic", "proposals"));
     }
 
+    static int retryTokens(int original, RuntimeException failure) {
+        return failure instanceof TruncatedGeneration ? Math.max(original, Math.min(1024, Math.max(512, original * 2))) : original;
+    }
+
+    static final class TruncatedGeneration extends IllegalStateException {
+        TruncatedGeneration() { super("OLLAMA_OUTPUT_TOKEN_LIMIT"); }
+    }
+
+    static void requireCompleteGeneration(JsonObject envelope) {
+        // Valid JSON at a length stop can still be incomplete; never publish a partial response.
+        if (envelope.has("done_reason") && "length".equals(envelope.get("done_reason").getAsString()))
+            throw new TruncatedGeneration();
+    }
+
     private AiDialogueModels.StructuredAiResult parse(String body) {
         JsonObject root = JsonParser.parseString(body).getAsJsonObject();
+        requireCompleteGeneration(root);
         JsonObject message = root.has("message") && root.get("message").isJsonObject()
                 ? root.getAsJsonObject("message") : null;
         if (message == null || !message.has("content")) {
@@ -302,7 +365,9 @@ final class LocalOllamaClient implements LocalLlmClient {
         return new ConversationIntent(tags, knowledgeKeywords, playerToneTags,
                 ConversationAct.fromWire(text(result.get("conversationAct"))), confidence,
                 ConversationIntent.Source.LOCAL_LLM,
-                com.sande.mythictrpg.ai.intent.TurnInterpretation.fromJson(result.get("turnInterpretation")));
+                com.sande.mythictrpg.ai.intent.TurnInterpretation.fromJson(result.get("turnInterpretation")),
+                com.sande.mythictrpg.ai.intent.SupportConsultation.fromJson(result.get("supportConsultation")),
+                com.sande.mythictrpg.ai.intent.CharacterInterest.fromJson(result.get("characterInterest")));
     }
 
     private static void addIntentTag(EnumSet<DialogueExampleTag> tags, JsonElement raw, boolean situation) {

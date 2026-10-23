@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.sande.mythictrpg.MythicTrpg;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,8 +23,8 @@ public final class RaidCommands {
         event.getDispatcher().register(Commands.literal("mythraid")
                 .executes(context -> open(context.getSource()))
                 .then(Commands.literal("ui").executes(context -> open(context.getSource())))
-                .then(Commands.literal("create").then(Commands.argument("raid", StringArgumentType.word())
-                        .executes(context -> create(context.getSource(), StringArgumentType.getString(context, "raid")))))
+                .then(Commands.literal("create").then(Commands.argument("raid", ResourceLocationArgument.id())
+                        .executes(context -> create(context.getSource(), ResourceLocationArgument.getId(context, "raid")))))
                 .then(Commands.literal("join").then(Commands.argument("attempt", StringArgumentType.word())
                         .executes(context -> run(context.getSource(), StringArgumentType.getString(context, "attempt"), "join"))))
                 .then(Commands.literal("start").then(Commands.argument("attempt", StringArgumentType.word())
@@ -42,9 +43,7 @@ public final class RaidCommands {
                                                 StringArgumentType.getString(context, "attempt")))))));
     }
 
-    private static int create(CommandSourceStack source, String raw) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
-        ResourceLocation raid = ResourceLocation.tryParse(raw);
-        if (raid == null || !raw.contains(":")) return fail(source, "전체 namespaced 레이드 ID가 필요합니다.");
+    private static int create(CommandSourceStack source, ResourceLocation raid) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         return report(source, RaidRuntime.INSTANCE.create(source.getPlayerOrException(), raid));
     }
 

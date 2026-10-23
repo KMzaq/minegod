@@ -1,0 +1,194 @@
+{
+  "record_key": "RPG-S04-025",
+  "name": "하야",
+  "mythology": "메소포타미아",
+  "god_id": "mythictrpg:mesopotamian_unassigned_haya",
+  "identity_reference": "RPG-S04-025/current_record/current_identity",
+  "combat_tier": "하급",
+  "main_status": "NOT_APPLICABLE",
+  "source_reward_status": "APPLICABLE",
+  "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025",
+  "canonical_episode_id": "EP015B-RPG-S04-025",
+  "aliases": [
+    "Q-P1_OTHER_QUEST-028-RPG-S04-025",
+    "EP015B-RPG-S04-025"
+  ],
+  "title": "스승의 손을 치우다",
+  "quest_kind": "SIDE",
+  "runtime_ready": false,
+  "source_reference": {
+    "profile": "기존페르소나_인물별/RPG-S04-025/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S04-025/authoring_contract.json",
+    "episode_field": "exact_accepted_dossier/episodes",
+    "outline": "RPG-S04-025/current_record/outline"
+  },
+  "scope_guard": "축소한 범위는 그 범위만 유효 성취이며 미인도분 전체완료0. 첫 정답 존중. 플레이어가 대리 분류하면 수습생 판단 증거가 아니므로 해당 목표 진행0.",
+  "site": "학교와 장터 사이 기존 인수대 O, 대기묶음면 O+2, 검증면 O+4, 수령자면 O+6블록. 분류 판단자는 수습생1명.",
+  "objectives": [
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-O1",
+      "title": "요청한 운반",
+      "action": "오늘 납품3묶음: 종이4·점토4·막대4를 봉인별uuid로 고정하고 수습생이 목적지/물품/매듭을 직접 대조한다. 플레이어는 요청받은 묶음만 검증면으로 옮긴다. 처음부터 맞으면 오류를 추가하지 않는다.",
+      "evidence": "수습생 판단로그, 보조 운반uuid와 수행자",
+      "previous_objective_id": null,
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS1"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-O2",
+      "title": "검증한 몫 인수",
+      "action": "하야 마지막 대조 뒤 수습생이 본인 이름·해당 범위를 설명한다. 실제 오류만 그 묶음을 수정한다. 전부3 또는 합의 축소1~2묶음을 인수자가 실제 받는다. 남은 묶음은 보관자·미완료 상태로 분리한다.",
+      "evidence": "수습생 설명 수신, 인수된uuid, 축소범위와 잔류목록",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-O1",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS2"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-O3",
+      "title": "실제 보고",
+      "action": "하야가 니사바에게 맡긴 범위·판단자·남은 연습을 실제 전한다. 플레이어는 운반 공로만 받는다. 니사바 부재면 인수 유지·최종 보고 대기다.",
+      "evidence": "니사바 수신, 실제 인수량과 남은량 합3",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-O2",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS3"
+    }
+  ],
+  "source_branch_contract": [
+    {
+      "source_beat_id": "B1",
+      "action": "현재 납품 목록과 현물을 수습생에게 보여 주고 본인이 정한 분류 순서를 듣는다. 플레이어는 요청받은 묶음만 작업대 빈 면으로 옮긴다. 수습생이 매듭·물품·목적지를 직접 대조하도록 기다린다.",
+      "branches": [
+        {
+          "choice_id": "B1-1",
+          "player_intent": "수습생이 오류를 찾을 자리를 남긴다",
+          "actual_execution": "요청한 운반만 하고 분류 이유를 묻는다. 수습생이 실제 오류를 발견했다면 해당 묶음만 스스로 고쳐 옮기게 하고, 처음부터 정확했다면 그 판단과 현물 대응을 그대로 확인한다. 수정할 오류를 새로 만들지 않는다.",
+          "observed_result": "수습생의 실제 판단과 보조자의 운반이 각각 남는다."
+        },
+        {
+          "choice_id": "B1-2",
+          "player_intent": "대신 끝내겠다고 끼어든다",
+          "actual_execution": "빠른 대리 처리 제안을 말한다. 하야가 이번 맡길 몫을 설명하면 그 몫을 빼앗아 분류하지 않는다.",
+          "observed_result": "대리 처리 승인 없음. 제안만으로 수습생 실무 완료는 없다."
+        }
+      ],
+      "source_consumption": "납품 묶음은 원소유자 것. 실제 인수 전에는 분류·이동만이며 소유 이전 없음."
+    },
+    {
+      "source_beat_id": "B2",
+      "action": "수습생이 자기 이름과 실제 맡은 범위를 말하게 한다. 하야는 현물·목록 마지막 대조만 하고 오류가 있으면 공개 망신 없이 그 묶음만 고치게 하거나 수습생 동의 아래 이번 범위를 줄여 나머지는 보류한다. 플레이어는 승인된 묶음만 실제 인계한다.",
+      "branches": [
+        {
+          "choice_id": "B2-1",
+          "player_intent": "검증한 범위를 실제 인계한다",
+          "actual_execution": "수습생이 정확한 묶음과 분류 이유를 설명한다. 실제 오류가 있었다면 그 묶음만 먼저 고치고, 처음부터 정확했다면 그대로 실제 인계한다. 인수자가 받은 현물을 목록과 대조해 수령을 확인한다.",
+          "observed_result": "처음부터 정확했거나 실제 수정해 검증된 범위의 인수가 끝나며 수습생의 실제 판단 공로가 남는다."
+        },
+        {
+          "choice_id": "B2-2",
+          "player_intent": "이번 몫을 줄여 정확히 끝낸다",
+          "actual_execution": "확인된 묶음만 실제 인계하고 나머지를 보관자에게 명시해 맡긴다.",
+          "observed_result": "줄인 범위의 실제 성취와 남은 연습이 함께 남는다. 미인도분 전체 완료 없음."
+        }
+      ],
+      "source_consumption": "실제 접수한 현물만 인계. 남은 물건의 보관·소유를 분리하고 접속 종료로 묶음을 재생하지 않는다."
+    },
+    {
+      "source_beat_id": "B3",
+      "action": "하야가 직접 맡긴 업무와 실제 판단자를 니사바에게 전한다. 플레이어는 자기가 보조한 운반만 말하고 수습생의 남은 연습을 숨기지 않는다. 니사바의 실제 수신을 확인한다.",
+      "branches": [
+        {
+          "choice_id": "B3-1",
+          "player_intent": "성과와 남은 일을 함께 전한다",
+          "actual_execution": "실제 끝낸 범위와 미완료를 함께 전하고 니사바가 받은 범위를 확인한다.",
+          "observed_result": "이 SIDE 전달까지 마침. 수습생의 작은 책임과 플레이어 보조가 구분된다."
+        },
+        {
+          "choice_id": "B3-2",
+          "player_intent": "니사바 부재로 보고를 기다린다",
+          "actual_execution": "공개 허락된 업무 근거를 보존하고 완료한 인수는 다시 하지 않는다.",
+          "observed_result": "인수는 유지, 보고·최종 확인만 대기. 원격 답 없음."
+        }
+      ],
+      "source_consumption": "플레이어 보상은 실제 보조 뒤 선택하는 분류·인수 지도 경험만. 수습생 공로·납품 물자를 보상으로 떼어 주지 않는다."
+    }
+  ],
+  "ending_boundary": {
+    "observable_personal_change": "수습생이 실제 맡은 묶음을 자기 판단으로 분류하고 오류가 있으면 해당 부분을 고치거나 맡을 범위를 줄여 그 범위의 실제 인계를 끝낸다. 하야는 마지막 검증 뒤 니사바에게 맡긴 일과 남은 연습을 실제 전하여 수신을 확인한다. 니사바 부재는 인계 결과를 보존한 전달 대기이며 수습생 전체 자격 자동 수여 없음.",
+    "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+    "next_encounter_memory": "하야는 모든 일을 자기 이름으로 보고하지 않고 수습생이 끝낸 몫부터 부른다. 남은 연습을 패배처럼 낮추지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+    "playfeel_and_difference": "스승의 손을 치우다: 목록과 묶음의 실제 대응, 누가 지시하고 판단했는지. 빨리 옮긴 사람과 분류 판단자를 구별한다. → 다음 실무에서 하야가 해당 몫의 첫 답을 수습생에게 기다릴 근거가 생긴다."
+  },
+  "reward": {
+    "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-SETTLEMENT",
+    "description": "실제 보조를 끝낸 수행자가 원할 때 분류·인수 지도 기회1회만. 인수 보조 성취와 선택 학습의 실제 경험을 구별한다. 실물0, 수습생 자격0, 납품물 공제0.",
+    "earned_condition": "실제 맡은 보조 완료로 선택 지도 가능; final_complete는 니사바 보고 수신 별도",
+    "new_entitlement": false,
+    "ledger_canonical_episode_id": "EP015B-RPG-S04-025",
+    "repeat": "개인 동일 에피소드 최초1회; 원물반환은 미반환 원물량만",
+    "optional_training": "모의3묶음 중1개를 자신의 판단으로 분류·설명하는60초 선택 실습. 실제 납품의 공로를 바꾸지 않음"
+  },
+  "knowledge": [
+    {
+      "fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-FACT-RESULT",
+      "text": "분류 판단자는 수습생, 운반자는 실제 보조자. 니사바 수신 전에는 그녀의 새 평가·배치 변화0.",
+      "source_events": [
+        "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS1",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS2",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-025-OBS3"
+      ],
+      "learners": "실제 목격자 및 허락된 보고의 실제 수신자",
+      "receipt_key": "fact_definition_id + receiver_actor_id + source_event_id",
+      "disclosure": "공개 현물 결과와 당사자 허락 사적 발언 분리"
+    }
+  ],
+  "persona_in_scene": {
+    "description": "조용히 뒤를 받치지만 자기 손과 제자의 손이 지워지는 데는 예민하다. 빠르게 대신 끝낼 수 있어도 배우는 사람의 첫 판단을 기다린다. 잘 가르쳤는데 계속 자기만 필요해지는 일은 실패처럼 느낀다. 낡은 필기구의 손잡이를 매끈하게 다듬는 시간을 좋아하며 문서에서는 글자보다 서명할 빈자리를 먼저 보는 버릇이 있다.",
+    "voice": [
+      "조용한 반말로 누구의 몫인지 먼저 짚고 짧게 칭찬한다.",
+      "과장 대신 어느 묶음·어느 판단인지 현재 확인된 범위로 말한다.",
+      "문서·필기구는 실제 소유/사용 허락과 현물이 있을 때만 만진다.",
+      "남은 연습은 패배라는 말보다 다음에 확인할 부분으로 다룬다."
+    ],
+    "neutral": [
+      "현재 할 수 있는 일을 차분히 듣는다."
+    ],
+    "wary": [
+      "누가 판단하고 누가 옮겼는지 듣는다."
+    ],
+    "trusted": [
+      "실제 자기 판단과 모르는 부분을 설명한 수습생에게 다음 업무 범위를 넓힐 의향을 보인다."
+    ],
+    "hostile": [
+      "이름과 맡은 범위를 짧게 확인한다."
+    ],
+    "boundary": [
+      "제자가 해낸 일을 자기 이름만으로 올리지 않는다.",
+      "운반한 손과 분류를 판단한 손을 구별한다.",
+      "처음부터 정확한 일을 가르치기 위해 일부러 오류로 만들지 않는다."
+    ]
+  },
+  "expected_minutes": "8~12",
+  "balance": "짧은 실제 생활 노동에 소량 일반 재료/식량 또는 선택 지도만 대응. 전투 스탯·장비·가호·MAIN 추가0. 실물과 책임·인수의 차이를 이해하는 역할 가치가 주 보상이다. 예상시간과 수량은 정적 기획이며 실전 검증 아님.",
+  "required_new_implementation": [
+    "위 실제 목표의 서버 권위 관측·원물수불·개별 수신 연결",
+    "공통계약 alias/재고/복구 요구 적용"
+  ],
+  "acceptance_cases": [
+    {
+      "case": "정상 대안 각각",
+      "expected": "축소한 범위는 그 범위만 유효 성취이며 미인도분 전체완료0. 첫 정답 존중. 플레이어가 대리 분류하면 수습생 판단 증거가 아니므로 해당 목표 진행0."
+    },
+    {
+      "case": "필수 마지막 실제 수행 누락",
+      "expected": "부분 결과만 저장, final_complete=false. 독립 실습정산이 명시된 경우에만 그 별도 조건으로 정산."
+    },
+    {
+      "case": "비공개 보고·상대 부재",
+      "expected": "분류 판단자는 수습생, 운반자는 실제 보조자. 니사바 수신 전에는 그녀의 새 평가·배치 변화0. 실제 수신 없는 상대 지식0."
+    },
+    {
+      "case": "선택 지도 거절",
+      "expected": "실제 끝낸 수행/정산권 유지, 수강경험0"
+    }
+  ]
+}

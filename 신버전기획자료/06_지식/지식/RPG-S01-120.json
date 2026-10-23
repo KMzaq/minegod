@@ -1,0 +1,886 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S01-120",
+  "name": "페넬로페",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "페넬로페",
+    "canonical_name": "페넬로페",
+    "mythology": "그리스·로마",
+    "tier": "최하급",
+    "combat_tier": "최하급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-120",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-120",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-120",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "독립 개체; 이명·재출현은 한 명으로 집계",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-120",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/66/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S01-120/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "텔레마코스의 수색과 오디세우스의 소식을 집의 보급 판단과 구별하는 기존 관계를 안다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role",
+            "identity"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S01-120:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "귀환을 기다리는 동안에도 집의 일과 자신의 선택을 직접 운영하려 한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S01-120:SELF:002"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "생각할 때 천의 한 줄을 손끝으로 따라갔다가 제자리로 돌아온다. 색보다 오래 써도 흐트러지지 않는 직물의 짜임을 좋아한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S01-120:SELF:003"
+      },
+      {
+        "category": "원문이 지정한 자기 앎; 출처·조건·공개범위 동시 적용",
+        "text": {
+          "text": "자기가 출입을 판단하는 비밀 창고가 있다는 것과, 그 안에 들일 사람은 검증 가능한 귀환 소식의 근거를 보고 판단한다는 자기 업무를 안다. 구체 위치·재고의 지식 목록은 아직 작성되지 않았다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/3",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/3"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/3/disclosure",
+        "authoring_item_key": "RPG-S01-120:SELF:004"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S01-120:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-120:EVENT:002"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/1",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-120:EVENT:003"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/source_scope",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/0",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/1",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/2",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/3",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/uncertain/none_reason",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/false_beliefs_not_invented/none_reason",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:007"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/private_or_refusable/none_reason",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/0",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/1",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:010"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/2",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:011"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/3",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:012"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/id",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:013"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/fact_or_question",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:014"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/acquisition_event",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:015"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/required_evidence",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:016"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/eligible_audience",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:017"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/after_learning_change",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:018"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/not_automatic_from/0",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:019"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/not_automatic_from/1",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:020"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/not_automatic_from/2",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:021"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/items/0/source_refs/0",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:022"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/disclosure",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:023"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/acquisition",
+      "authoring_item_key": "RPG-S01-120:BOUNDARY:024"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-FAMILIAR",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "텔레마코스의 수색과 오디세우스의 소식을 집의 보급 판단과 구별하는 기존 관계를 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        },
+        {
+          "knowledge_id": "K-INTENT",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "귀환을 기다리는 동안에도 집의 일과 자신의 선택을 직접 운영하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        },
+        {
+          "knowledge_id": "K-TEXTURE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "생각할 때 천의 한 줄을 손끝으로 따라갔다가 제자리로 돌아온다. 색보다 오래 써도 흐트러지지 않는 직물의 짜임을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        },
+        {
+          "knowledge_id": "K-PRIVATE-STORAGE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-PRIVATE-STORAGE",
+            "claim": {
+              "text": "자기가 출입을 판단하는 비밀 창고가 있다는 것과, 그 안에 들일 사람은 검증 가능한 귀환 소식의 근거를 보고 판단한다는 자기 업무를 안다. 구체 위치·재고의 지식 목록은 아직 작성되지 않았다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "fact_ref": "T-PRIVATE-STORAGE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "현행 역할에 명시된 본인의 창고 출입 판단 업무",
+              "when_or_condition": "실제 자기 업무로 아는 창고 존재와 판단 범위만 보존한다. 아직 받지 않은 소식의 검증이나 방문자의 출입을 완료하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "텔레마코스의 수색과 오디세우스의 소식을 집의 보급 판단과 구별하는 기존 관계를 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "귀환을 기다리는 동안에도 집의 일과 자신의 선택을 직접 운영하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "생각할 때 천의 한 줄을 손끝으로 따라갔다가 제자리로 돌아온다. 색보다 오래 써도 흐트러지지 않는 직물의 짜임을 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-PRIVATE-STORAGE",
+            "claim": {
+              "text": "자기가 출입을 판단하는 비밀 창고가 있다는 것과, 그 안에 들일 사람은 검증 가능한 귀환 소식의 근거를 보고 판단한다는 자기 업무를 안다. 구체 위치·재고의 지식 목록은 아직 작성되지 않았다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "fact_ref": "T-PRIVATE-STORAGE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "현행 역할에 명시된 본인의 창고 출입 판단 업무",
+              "when_or_condition": "실제 자기 업무로 아는 창고 존재와 판단 범위만 보존한다. 아직 받지 않은 소식의 검증이나 방문자의 출입을 완료하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "페넬로페의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "페넬로페의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "비밀 창고가 없다는 뜻이 아니다. 창고의 존재와 자기 출입 판단은 K-PRIVATE-STORAGE에 보존했다. 구체 위치·재고·내부 정보는 아직 저술되지 않아 아는 특정 비밀로 생성하거나 공개 대사를 쓰지 않는다. 해당 세부가 정해지고 실제로 아는 범위가 확인되면 그 범위에만 공개 거절을 연결한다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정",
+          "현행 역할만으로 새로 만들 수 없는 비밀 창고의 정확한 위치·재고·구조. 세부 내용과 공개 범위는 후속 저술 대상이다."
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-RETURN-EVIDENCE",
+              "fact_or_question": "현재 방문자가 실제로 확보한 귀환 소식의 근거와 모르는 부분",
+              "acquisition_event": "방문자가 직접 본 내용 또는 출처가 확인되는 기존 자료를 페넬로페에게 실제 전달한다.",
+              "required_evidence": "보고자의 직접 경험과 전언을 구별하고 실제 비교할 수 있는 근거를 확인한다.",
+              "eligible_audience": "페넬로페와 그 전달에 실제 참여한 이들",
+              "after_learning_change": "믿을 수 있는 소식과 미확인 부분을 따로 기억하고 그 방문자를 비밀 창고에 들일지 직접 판단한다. 허용하더라도 다른 사람에게 위치와 내부 이야기를 전부 옮기라고 하지 않는다.",
+              "not_automatic_from": [
+                "오디세우스의 이름을 앎",
+                "다른 친구의 신뢰",
+                "공유 장면 완료"
+              ],
+              "source_refs": [
+                "role"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "author_truth는 NPC 지식이 아니다. 사실 상태, 직접 관측, 출처 있는 주장, 추측, 오해, 의도적 비공개, 미정, 미래 습득을 원 CORE대로 분리.",
+        "routing": "중요 비밀·개인 인정은 Story Fact/Actor/Policy/Event와 Knowledge의 검증된 연결 필요. 현재 sidecar는 그 문서 계획이며 실행 필드가 아니다.",
+        "audience": "PRIVATE_ROOM은 방 전원이고 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 중요한 비밀 제외. 공개방은 온라인 전체 청중. OWNER_ONLY도 특정 UUID 소유자를 자동 지정하지 않는다.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어·청취 신만 해당 Knowledge. 조회·자유 의역·정적 lore·Cover Story·TEST/RUMOR_TEST·미열람 메모는 정식 획득 아님.",
+        "layers": "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·청중별 자격 모두 확인. 이름/태그/거절문에도 비밀의 존재를 새로 유출하지 않음.",
+        "late_join": "친구·파티·세계 공용 완료·후발 참가로 개인 기억 복사 없음. 새 보고는 지금 받은 그 보고자의 주장으로 기록.",
+        "unbound_behavior": "검증된 공급이 없으면 상세 자기 기억도 발화하지 않으며 일반 공개 성격으로만 응답. 현재 접촉 없으면 그 일반 fallback도 발화 없음."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-120/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "페넬로페. 인간 왕비.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-120/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 같은 본체의 허용된 접촉이 없으면 새 대사·원격 응답을 하지 않는다.",
+        "확인되지 않은 실행·이동·수령·완료·지급을 이미 끝난 일로 말하지 않는다.",
+        "제공되지 않은 과거 친분·개인 경험·현재 타인의 의사·지식을 만들어 말하지 않는다.",
+        "화자의 실제 앎과 현재 청중 모두의 공개 자격을 각각 지킨다. 거절이나 제목으로 제한 정보의 존재도 흘리지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S01-120/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "좋은 소식 뒤의 일에서 실제 선택한 행동과 결과: 검증된 소식은 그녀가 직접 허용한 접근으로 이어지고 증거가 없으면 공개 작업만 계속한다. 호의나 가족 관계만으로 비밀 창고는 열리지 않는다.",
+            "truth_status": "저술 예정 사건. 실제 실행 전에는 미발생; 실행 후에도 직접 관측한 부분만 확인 사실이다.",
+            "who_learns": "페넬로페, 실제 참여한 플레이어 및 실제로 그 행동을 보거나 허용된 설명을 들은 청중",
+            "from_whom_or_source": "플레이어의 실제 행동, 현장 변화, 페넬로페의 현장 응답",
+            "actual_event": "텔레마코스가 실제 응답할 때 그가 전한 소식과 현재 가진 물자를 비교한다. 실제 증거·보유 창고·출입 허용이 모두 있을 때만 안쪽 접근을 청한다.",
+            "actual_audience_and_disclosure": "공개 행동은 실제 시야·청각에 들어온 청중만 습득한다. 사적 대화는 실제 수신자만 배우며 위치·사연·자료는 발화자/권한자의 공개 허용 범위와 수신자를 확인한다. 비공개 채널이 구현되지 않으면 공개로 누설하지 않고 전달을 보류한다.",
+            "before_after_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 검증된 소식은 그녀가 직접 허용한 접근으로 이어지고 증거가 없으면 공개 작업만 계속한다. 호의나 가족 관계만으로 비밀 창고는 열리지 않는다."
+          },
+          {
+            "fact_or_claim": "텔레마코스의 수색과 오디세우스의 소식을 집의 보급 판단과 구별하는 기존 관계를 안다.",
+            "truth_status": "현행 CORE의 좁은 자기 관계 기억이며 제삼자의 현재 의사·행방을 뜻하지 않는다.",
+            "who_learns": "페넬로페는 원래 알고 있는 자기 기억 범위, 플레이어는 실제 공개 허용된 발화를 들은 부분만 새로 습득",
+            "from_whom_or_source": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+            "actual_event": "「좋은 소식 뒤의 일」의 선택 이유를 설명할 때 페넬로페가 자기 경험 중 현재 논점에 필요한 부분을 직접 말한다. 말하지 않은 관계 기억은 저자 자료로만 남긴다.",
+            "actual_audience_and_disclosure": "직접 대화 상대 중 실제 들은 청중. 사적 현재 요청·비밀·위치는 별도 허락된 수신자에게만 전달하며 파티와 후발자에게 복사하지 않는다.",
+            "before_after_change": "플레이어는 소문으로 알던 관계와 당사자가 실제 설명한 이유를 구분해 다음 선택을 한다. 제외 역사 인물의 현재 활동은 얻지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/3/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/3/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/66/outline/stage2_proposal/basic_persona/knowledge"
+      },
+      "verbatim": {
+        "source_scope": "복구 baseline_knowledge의 좁은 자기 기억·현재 취향 근거만 재사용한다. 원전 source_fact나 저자 진실 전체는 NPC 현재 지식이 아니다.",
+        "known_self_and_received_baseline": [
+          "텔레마코스의 수색과 오디세우스의 소식을 집의 보급 판단과 구별하는 기존 관계를 안다.",
+          "귀환을 기다리는 동안에도 집의 일과 자신의 선택을 직접 운영하려 한다.",
+          "생각할 때 천의 한 줄을 손끝으로 따라갔다가 제자리로 돌아온다. 색보다 오래 써도 흐트러지지 않는 직물의 짜임을 좋아한다.",
+          "자기가 출입을 판단하는 비밀 창고가 있다는 것과, 그 안에 들일 사람은 검증 가능한 귀환 소식의 근거를 보고 판단한다는 자기 업무를 안다. 구체 위치·재고의 지식 목록은 아직 작성되지 않았다."
+        ],
+        "uncertain": {
+          "none_reason": "페넬로페의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "false_beliefs_not_invented": {
+          "none_reason": "페넬로페의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "private_or_refusable": {
+          "none_reason": "비밀 창고가 없다는 뜻이 아니다. 창고의 존재와 자기 출입 판단은 K-PRIVATE-STORAGE에 보존했다. 구체 위치·재고·내부 정보는 아직 저술되지 않아 아는 특정 비밀로 생성하거나 공개 대사를 쓰지 않는다. 해당 세부가 정해지고 실제로 아는 범위가 확인되면 그 범위에만 공개 거절을 연결한다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정",
+          "현행 역할만으로 새로 만들 수 없는 비밀 창고의 정확한 위치·재고·구조. 세부 내용과 공개 범위는 후속 저술 대상이다."
+        ],
+        "future_learning_source": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-RETURN-EVIDENCE",
+              "fact_or_question": "현재 방문자가 실제로 확보한 귀환 소식의 근거와 모르는 부분",
+              "acquisition_event": "방문자가 직접 본 내용 또는 출처가 확인되는 기존 자료를 페넬로페에게 실제 전달한다.",
+              "required_evidence": "보고자의 직접 경험과 전언을 구별하고 실제 비교할 수 있는 근거를 확인한다.",
+              "eligible_audience": "페넬로페와 그 전달에 실제 참여한 이들",
+              "after_learning_change": "믿을 수 있는 소식과 미확인 부분을 따로 기억하고 그 방문자를 비밀 창고에 들일지 직접 판단한다. 허용하더라도 다른 사람에게 위치와 내부 이야기를 전부 옮기라고 하지 않는다.",
+              "not_automatic_from": [
+                "오디세우스의 이름을 앎",
+                "다른 친구의 신뢰",
+                "공유 장면 완료"
+              ],
+              "source_refs": [
+                "role"
+              ]
+            }
+          ]
+        },
+        "disclosure": "직접 본 것·출처 있는 전언·추론을 나누고 현재 청중 전원의 공개 권한을 확인한다. 알려지지 않은 사적 사실의 존재까지 거절문으로 새로 암시하지 않는다.",
+        "acquisition": "해금·이행 기록을 NPC에게 자동 전송하지 않는다. 실제 관측 또는 허락된 전달 후 그 근거만 자기 기억에 추가할 수 있다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S01-120/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S01-120:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-120:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-120:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-120:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    }
+  ]
+}

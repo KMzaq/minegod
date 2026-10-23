@@ -31,6 +31,16 @@ public final class ReputationEngine {
         }
         return ledger.apply(decision);
     }
+    /** Removing a scoped prior assessment does not require its old rumor or old policy fingerprint.
+     * The current authored policy must still identify this god; no new assessment is created here. */
+    public ReputationLedger.Result recoverFromGameResult(ReputationLedger.Recovery request) {
+        return recoverFromGameResult(request,entry->true);
+    }
+    public ReputationLedger.Result recoverFromGameResult(ReputationLedger.Recovery request,java.util.function.Predicate<ReputationLedger.Entry> included) {
+        var rule=rules.get(request.policyId());
+        if(!settings.enabled()||rule==null||!rule.godId().equals(request.godId()))return ReputationLedger.Result.REJECTED;
+        return ledger.recover(request,included);
+    }
     private boolean current(ReputationLedger.Decision decision,ReputationSettings.Rule rule) {
         var e=probe.received(decision.subject(),decision.godId(),decision.rootId()).orElse(null);
         return e!=null&&e.worldId().equals(ledger.worldId())&&e.rootId().equals(decision.rootId())&&e.revision()==decision.rumorRevision()

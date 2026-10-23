@@ -50,15 +50,20 @@ public final class NativeRumorReadAccess {
         if (!server.isSameThread()) throw new IllegalStateException("Native rumor reads require game thread");
         if (request == null || rootId == null) return Optional.empty();
         try {
-            if (MemoryFoundationSettings.mode() != MemoryFoundationSettings.Mode.RUMOR_TEST
+            if (!MemoryFoundationSettings.supportsRumors()
                     || !ConversationRooms.INSTANCE.memoryReadCurrent(server, request)) return Optional.empty();
             var data = RumorSavedData.get(server);
-            if (!data.ready()) return Optional.empty();
+            String memoryMode = MemoryFoundationSettings.mode().name();
+            if (!data.ready() || !data.access(server, ledger -> {
+                var evidence = ledger.evidence(rootId);
+                return evidence != null && evidence.memoryMode().equals(memoryMode);
+            })) return Optional.empty();
             var scope = new Scope(data.worldId(), request.speakerGodId().toString(), request.audiencePlayerIds(),
                     request.godIds().stream().map(Object::toString).collect(java.util.stream.Collectors.toUnmodifiableSet()),
                     request.publicRoom());
             return read(scope, rootId, new Probe() {
-                public boolean current() { return data.ready() && MemoryFoundationSettings.mode() == MemoryFoundationSettings.Mode.RUMOR_TEST
+                public boolean current() { return data.ready() && MemoryFoundationSettings.supportsRumors()
+                        && MemoryFoundationSettings.mode().name().equals(memoryMode)
                         && ConversationRooms.INSTANCE.memoryReadCurrent(server, request); }
                 public Optional<UUID> lineage() { return data.recordingSnapshot().filter(v -> v.metadata().worldId().equals(scope.worldId()))
                         .map(v -> v.metadata().lineage()); }

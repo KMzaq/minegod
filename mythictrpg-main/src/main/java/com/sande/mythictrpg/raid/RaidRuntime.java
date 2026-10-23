@@ -11,6 +11,7 @@ import com.sande.mythictrpg.godavatar.GodAvatarRegistryState;
 import com.sande.mythictrpg.godavatar.GodAvatarService;
 import com.sande.mythictrpg.quest.reward.ResolvedQuestReward;
 import com.sande.mythictrpg.quest.reward.RewardClaimService;
+import com.sande.mythictrpg.quest.reward.RewardOrigin;
 import com.sande.mythictrpg.raid.trial.SealedGuardianEntity;
 import com.sande.mythictrpg.story.runtime.StoryEventService;
 import com.sande.mythictrpg.story.runtime.StoryTeamResolver;
@@ -71,6 +72,8 @@ public final class RaidRuntime {
         checkThread(server);
         RaidDefinition definition = RaidCatalog.INSTANCE.find(raidId).orElse(null);
         if (definition == null) return Result.no("작성된 레이드 정의가 없습니다.");
+        var rewardError = RaidRewardValidation.error(server, definition);
+        if (rewardError.isPresent()) return Result.no("레이드 보상 정의를 사용할 수 없습니다: " + rewardError.orElseThrow());
         if (SealedGuardianEncounter.RAID_ID.equals(raidId) && !TrialRaidArenaService.isReady(server))
             return Result.no("시험 전장을 먼저 준비하세요: 운영자 /mythraid trial prepare");
         RaidState state = RaidState.get(server);
@@ -170,6 +173,8 @@ public final class RaidRuntime {
         RaidState state = RaidState.get(leader.server);
         RaidState.Attempt attempt = state.find(attemptId).orElse(null);
         if (attempt == null || !attempt.leader.equals(leader.getUUID())) return Result.no("레이드 리더가 아닙니다.");
+        var rewardError = RaidRewardValidation.error(leader.server, attempt.definition);
+        if (rewardError.isPresent()) return Result.no("레이드 보상 정의를 사용할 수 없습니다: " + rewardError.orElseThrow());
         if (!state.queue(attemptId, leader.getUUID(), leader.server.overworld().getGameTime()))
             return Result.no("모집 상태 또는 최소 참가 인원을 확인하세요.");
         notifyRoster(leader.server, attempt, "대기열에 등록됐습니다. 전투 구역과 신 실체가 비면 시작됩니다.");
@@ -226,6 +231,7 @@ public final class RaidRuntime {
                     else tryStart(server, attempt, now);
                 }
                 case ACTIVE -> tickActive(server, attempt, now);
+                case STARTING -> continueStart(server, attempt, now);
                 case CLEANUP_PENDING -> {
                     if (server.getTickCount() % 20 == 0) finalizeCleanup(server, attempt);
                 }
@@ -289,33 +295,60 @@ public final class RaidRuntime {
                 attempt.arena = null; attempt.status = RaidState.Status.QUEUED; state.changed();
                 continue;
             }
-            try {
-                for (RaidState.Member member : attempt.members.values()) {
-                    ServerPlayer player = server.getPlayerList().getPlayer(member.playerId);
-                    if (player == null || !player.isAlive()) throw new IllegalStateException("Roster changed before teleport");
-                    member.returnPoint = RaidState.ReturnPoint.of(player);
-                    member.returned = false;
-                    state.changed();
-                    teleport(player, level, arena.entry(), player.getYRot(), player.getXRot());
-                    if (player.serverLevel() != level || !arena.bounds().contains(player.position()))
-                        throw new IllegalStateException("Entry teleport failed");
-                }
-                LivingEntity boss = spawnBoss(server, attempt, level, arena.bossSpawn());
-                if (boss == null) throw new IllegalStateException("Authored boss could not spawn");
-                attempt.bossId = boss.getUUID();
-                attempt.spawnedEntities.add(boss.getUUID());
-                attempt.startedAt = now;
-                attempt.status = RaidState.Status.ACTIVE;
-                if (boss instanceof SealedGuardianEntity guardian)
-                    SealedGuardianEncounter.begin(server, attempt, guardian, now);
-                state.changed();
-                notifyRoster(server, attempt, "전투가 시작됐습니다.");
-                return;
-            } catch (RuntimeException failure) {
-                MythicTrpg.LOGGER.error("Raid {} start failed", attempt.id, failure);
-                finish(server, attempt, RaidState.Status.FAILED, "START_FAILED");
-                return;
+            continueStart(server, attempt, now);
+            return;
+        }
+    }
+
+    /** Keep the acquired arena/God lease while Minecraft makes its entity sections visible. */
+    private void continueStart(MinecraftServer server, RaidState.Attempt attempt, long now) {
+        if (now - attempt.queuedAt >= attempt.definition.queueTimeoutTicks()) {
+            finish(server, attempt, RaidState.Status.FAILED, "START_TIMEOUT"); return;
+        }
+        if (attempt.arena == null || !tickets.isHeld(attempt.id)) {
+            finish(server, attempt, RaidState.Status.FAILED, "START_RESERVATION_MISSING"); return;
+        }
+        ServerLevel level = level(server, attempt.arena.dimension());
+        if (level == null) { finish(server, attempt, RaidState.Status.FAILED, "ARENA_UNAVAILABLE"); return; }
+        if (!tickets.readyForEntities(attempt.id)) return;
+        // This may run on a later tick than queue admission. Revalidate before any teleport or spawn.
+        var rewardError = RaidRewardValidation.error(server, attempt.definition);
+        if (rewardError.isPresent()) {
+            finish(server, attempt, RaidState.Status.FAILED, "REWARD_DEFINITION_UNAVAILABLE: " + rewardError.orElseThrow()); return;
+        }
+        for (RaidState.Member member : attempt.members.values()) {
+            ServerPlayer player = server.getPlayerList().getPlayer(member.playerId);
+            if (player == null || !player.isAlive()) return;
+            if (!conditionMatches(server, attempt.definition, member.playerId)) {
+                finish(server, attempt, RaidState.Status.FAILED, "ENTRY_CONDITION_CHANGED"); return;
             }
+        }
+        RaidState state = RaidState.get(server);
+        var arena = attempt.arena;
+        try {
+            for (RaidState.Member member : attempt.members.values()) {
+                ServerPlayer player = server.getPlayerList().getPlayer(member.playerId);
+                if (player == null || !player.isAlive()) throw new IllegalStateException("Roster changed before teleport");
+                member.returnPoint = RaidState.ReturnPoint.of(player);
+                member.returned = false;
+                state.changed();
+                teleport(player, level, arena.entry(), player.getYRot(), player.getXRot());
+                if (player.serverLevel() != level || !arena.bounds().contains(player.position()))
+                    throw new IllegalStateException("Entry teleport failed");
+            }
+            LivingEntity boss = spawnBoss(server, attempt, level, arena.bossSpawn());
+            if (boss == null) throw new IllegalStateException("Authored boss could not spawn");
+            attempt.bossId = boss.getUUID();
+            attempt.spawnedEntities.add(boss.getUUID());
+            attempt.startedAt = now;
+            attempt.status = RaidState.Status.ACTIVE;
+            if (boss instanceof SealedGuardianEntity guardian)
+                SealedGuardianEncounter.begin(server, attempt, guardian, now);
+            state.changed();
+            notifyRoster(server, attempt, "전투가 시작됐습니다.");
+        } catch (RuntimeException failure) {
+            MythicTrpg.LOGGER.error("Raid {} start failed", attempt.id, failure);
+            finish(server, attempt, RaidState.Status.FAILED, "START_FAILED");
         }
     }
 
@@ -558,7 +591,7 @@ public final class RaidRuntime {
             Map<UUID, ResolvedQuestReward> batch = new LinkedHashMap<>();
             for (UUID player : attempt.rewardRecipients) batch.put(player, payout);
             ResourceLocation source = ResourceLocation.fromNamespaceAndPath(MythicTrpg.MOD_ID, "raid/" + attempt.id);
-            var queued = RewardClaimService.INSTANCE.queueBatch(server, attempt.definition.rewardGodId(), source, batch);
+            var queued = RewardClaimService.INSTANCE.queueBatch(server, attempt.definition.rewardGodId(), source, batch, RewardOrigin.RAID_DIRECT);
             if (!queued.succeeded()) {
                 MythicTrpg.LOGGER.error("Raid {} won but reward receipts remain pending: {}", attempt.id, queued.reason());
                 return;
@@ -724,6 +757,9 @@ public final class RaidRuntime {
             throw new IllegalStateException("Expected an interrupted active raid");
         abortInterrupted(server, attempt);
     }
+
+    /** Read-only combat ownership check for other game executors; it grants no raid control. */
+    public static boolean controlsEntity(Entity entity) { return raidTag(entity) != null; }
 
     static UUID raidTag(Entity entity) {
         return entity.getPersistentData().hasUUID(RAID_TAG) ? entity.getPersistentData().getUUID(RAID_TAG) : null;

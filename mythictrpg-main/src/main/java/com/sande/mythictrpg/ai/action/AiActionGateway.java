@@ -119,7 +119,10 @@ public final class AiActionGateway {
         if (definition == null) {
             return terminal(player, pending, rejected(proposalId, pending.proposal().actionType(), "AI action type is no longer registered"));
         }
-        return terminal(player, pending, validateAndExecute(player, pending.proposal(), definition, pending.roomAction()));
+        return terminal(player,pending,PlayerDamageAiAction.requiresWarningResponse(pending.proposal())
+                ?com.sande.mythictrpg.ai.action.protection.AiDeathLossGuard.withConfirmedRisk(player,pending.proposal().actingGodId(),proposalId,
+                    () -> validateAndExecute(player,pending.proposal(),definition,pending.roomAction()))
+                :validateAndExecute(player,pending.proposal(),definition,pending.roomAction()));
     }
 
     public static boolean cancel(ServerPlayer player, UUID proposalId) {
@@ -168,7 +171,8 @@ public final class AiActionGateway {
             return rejected(proposal.proposalId(), proposal.actionType(), validation.reason());
         }
         if (definition.confirmationPolicy()
-                == AiActionDefinition.ConfirmationPolicy.PLAYER_CONFIRMATION_REQUIRED) {
+                == AiActionDefinition.ConfirmationPolicy.PLAYER_CONFIRMATION_REQUIRED
+                || PlayerDamageAiAction.requiresWarningResponse(proposal)) {
             long gameTime = player.server.overworld().getGameTime();
             expirePending(player.server);
             long pendingForPlayer = PENDING.values().stream()
@@ -354,6 +358,7 @@ public final class AiActionGateway {
         // A long-lived private room must not permanently disable visits after its first request.
         if (proposal.actionType().equals(AiActionTypes.NPC_VISIT_REQUEST)) return new ExecutionLimit(Integer.MAX_VALUE, 0);
         if (proposal.actionType().equals(AiActionTypes.NPC_ACTIVITY_REQUEST)) return new ExecutionLimit(Integer.MAX_VALUE, 0);
+        if (proposal.actionType().equals(AiActionTypes.NPC_DIRECTIVE)) return new ExecutionLimit(Integer.MAX_VALUE, 0);
         if (proposal.actionType().equals(AiActionTypes.QUEST_ROSTER_REQUEST)) return new ExecutionLimit(Integer.MAX_VALUE, 20);
         if (proposal.actionType().equals(AiActionTypes.PLAYER_DAMAGE)) {
             PlayerDamageTemplate template = AiActionParameters.template(proposal, PlayerDamageTemplate.class);

@@ -107,7 +107,7 @@ public final class RumorRecordingCaptureTest {
         roots.put(GOOD,new RumorRecordingState.RootStamp(GOOD,6,1,7));
         var stamps=new ArrayList<>(base.metadata().receipts());
         stamps.add(new RumorRecordingState.ReceiptStamp(BAD,G,1,8));stamps.add(new RumorRecordingState.ReceiptStamp(GOOD,G,1,8));
-        var json=JSON.toJsonTree(snapshot).getAsJsonObject();json.remove("version");
+        var json=legacySnapshot(snapshot);
         return new RumorRecordingState.DurableView(new RumorRecordingState.State(1,WORLD,LINEAGE,revokedBad?11:10,
                 RumorRecordingState.Status.ACTIVE,roots,stamps,RecordingRecords.sha256(canonical(json).toString())),snapshot);
     }
@@ -122,7 +122,7 @@ public final class RumorRecordingCaptureTest {
         var stamps=new ArrayList<RumorRecordingState.ReceiptStamp>();
         if(cursor>0)stamps.add(new RumorRecordingState.ReceiptStamp(ROOT,G,1,3));
         if(second)stamps.add(new RumorRecordingState.ReceiptStamp(ROOT,H,1,4));
-        var json=JSON.toJsonTree(snapshot).getAsJsonObject();json.remove("version");
+        var json=legacySnapshot(snapshot);
         var metadata=new RumorRecordingState.State(1,WORLD,lineage,cursor,RumorRecordingState.Status.ACTIVE,
                 cursor==0?Map.of():Map.of(ROOT,new RumorRecordingState.RootStamp(ROOT,1,revoked?2:1,revoked?5:2)),
                 stamps,RecordingRecords.sha256(canonical(json).toString()));
@@ -141,6 +141,15 @@ public final class RumorRecordingCaptureTest {
         if(input.isJsonObject()){var out=new JsonObject();new TreeSet<>(input.getAsJsonObject().keySet()).forEach(k->out.add(k,canonical(input.getAsJsonObject().get(k))));return out;}
         if(input.isJsonArray()){var list=new ArrayList<JsonElement>();input.getAsJsonArray().forEach(e->list.add(canonical(e)));list.sort(Comparator.comparing(JsonElement::toString));var out=new JsonArray();list.forEach(out::add);return out;}
         return input;
+    }
+    private static JsonObject legacySnapshot(RumorLedger.Snapshot snapshot) {
+        var json=JSON.toJsonTree(snapshot).getAsJsonObject();json.remove("version");
+        for(var entry:json.getAsJsonArray("evidence")) {
+            var evidence=entry.getAsJsonObject();
+            if(evidence.has("memoryMode")&&evidence.get("memoryMode").getAsString().equals("RUMOR_TEST"))
+                evidence.remove("memoryMode");
+        }
+        return json;
     }
     private static WorldRecordingService open(Path world)throws Exception{return await(WorldRecordingService.open(world,WORLD,
             new RecordingSettings(RecordingSettings.Mode.SHADOW,256_000_000,2_000_000,.9,.95),new WorldRecordingService.CutoverBoundary("rumor-adapter-fixture",Map.of())));}

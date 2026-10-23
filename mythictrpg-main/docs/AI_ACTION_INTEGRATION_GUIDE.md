@@ -1,5 +1,44 @@
 # MythicTRPG AI 액션 연동 가이드
 
+## 2026-10-23 `behaivior` — 실제 행동 결정과 결과 대사
+
+게임 **1.0.42 / AI 0.1.51** 개발 변경이다. 현재 검증·배포 상태는 [브랜치 AI GM 기록](../../인수인계/브랜치실험/behaivior/AI_GM_DIRECTION_20261023.md)을 따른다. 아래 날짜별 기록은 당시 계약이며 이번 변경으로 대체된 부분을 구분한다.
+
+- 기존 `/ai_call <public|mobile|private> <on|off> <GodIDs...>`는 읽기 전용 시험을 유지한다. `/ai_call live <public|mobile|private> <on|off> <GodIDs...>`는 OP2 전용 **실제 게임 상태 변경 시험**이다. 정확한 등록 God ID만 사용한다. `off`는 대화 저장만 끄며 실제 행동이나 필수 보호 상태 저장을 끄지 않는다. 자동 롤백은 없다. `RUMOR_TEST`에서는 live도 거절한다.
+- 생산 대화의 primary NPC는 인사/잡담/정보 질문이라는 이유만으로 행동 권한을 잃지 않는다. 분류는 문맥이며 권한이 아니다. 현재 Capability와 게임 조건은 그대로 필요하다. secondary의 일반 행동, 읽기 전용 시험, 타 방·타인 권한 확대는 허용하지 않는다.
+- `RoomConversationEngine.supportsActionResultDialogue()`에 동의하는 엔진의 행동 턴은 **초기 결정 → 게임 Gateway 실행/확인 대기/거절 → 갱신된 Request → 최종 대사**로 처리한다. 초기 대사는 공개하지 않는다. `respondToActionResults(request, decision)`의 결과는 `proposals=[]`여야 하며 이 단계는 액션을 다시 실행하지 않는다. 행동 없는 대화는 추가 생성 호출이 없다. 행동 턴은 결과 대사 생성의 LLM 비용/지연이 추가된다.
+- 결과 대사는 원래 room/revision/turn/player/speaker/audience에만 유효하다. 대기 중 방·근거·처리 결과가 변경되면 취소한다. 최종 대사 생성이 실패하더라도 이미 실행한 게임 상태를 되돌리거나 재실행하지 않는다. 게임 처리 메시지와 결과 피드백이 사실의 기준이다.
+- 최종 생성은 현재 관계의 콘텐츠 공개 범위를 다시 조회하며 이전에 선택됐어도 더 이상 허용되지 않는 로어를 제외한다. 이동/공격 명령의 `STARTED`는 도착/처치/구호 완료가 아니다.
+
+### 물리 NPC 행동
+
+```json
+{"type":"npc_directive","title":"","summary":"","parameters":{"choice_id":"게임이 이번 NPC_DIRECTIVE_CONTEXT에 발급한 UUID"}}
+```
+
+게임 ID는 `mythictrpg:npc_directive`다. 접근, 동행, 중지, 물러나기, 가시 범위의 적대 몹 공격, 실제 참가자 보호를 기존 NPC 이동·근접전 실행기에 연결한다. 임의 좌표/엔티티 UUID/명령어는 받지 않는다. 실체가 없으면 자동 소환하지 않는다. 신의 현재 이동/전투 정의와 범위, 관리자 접근 금지, 레이드·기존 명령 소유권을 따른다. 플레이어 공격은 기존 `player_damage`의 신별 작성 템플릿 경로이며 새로운 피해량을 임의로 만들지 않는다.
+
+토큰은 플레이어·신·방·revision·action session·실체 명령 revision에 귀속되며 형제 토큰도 첫 실행에 소모한다. 새 ID로 같은 선택을 재생할 수 없다. 목표 소멸·방 종료·외부 명령 인수 시 중단한다. `EXECUTED` 상세의 `directive`, `status`, `work_completed`, `target_entity_id`/`target_player_id`를 사용한다.
+
+### 피해·손실 경계
+
+- 사용자 확정: 일반 재산의 영구 손실은 **사전 경고와 대응 기회**가 있을 때 허용. 저주는 회복 가능해야 하며 귀속장비·중요물품은 보호하거나 회복 경로가 필요하다. 이번 구현은 보호 물품을 건드리지 않는 선택이다.
+- AI의 직접 피해/신 실체 피해로 사망한 피해자는 월드 SavedData에서 보호한다. 방·템플릿·신·재접속/재시작 변경만으로 초기화하지 않는다. 실제 플레이어의 자발적 재공격과 단순 대사/도발을 구분한다.
+- `player_damage.allowDeath=true`는 게임이 작성한 위험·피해 안내와 기존 플레이어 확인 UI를 거친다. 확인은 정확한 플레이어/신/Proposal의 동기 실행 한 번에만 적용된다. 일반 실체 전투의 소지품·XP 손실은 실제 경고 뒤 같은 실체·order·현재 교전에서 플레이어가 직접 다시 공격했을 때만 허용한다. 단순 시간 경과·휩쓸기·대사로 승인하지 않는다.
+- 중요·귀속 소지품은 자동 복구를 가정하지 않는다. 사망 드롭 우려가 있으면 해당 AI 치명타를 취소해 체력1로 보존한다. **이는 중요물품 소지 시 AI에게 죽지 않을 수 있는 임시 보호다.** 제작/모루 입력 누락을 막으려고 열린 메뉴는 공유 슬롯까지 보수적으로 검사한다. 중요 토템은 부활 소비 이전의 직접 AI 피해에서도 보존한다.
+- 작성형 레이드 엔티티는 기존 레이드 전투/생명주기가 관할하며 이번 반복 AI 징벌 보호와 분리한다. 일반 몹/낙사/불길·소환몹 등의 간접 AI 출처와 모든 외부 모드 손실까지 보호한 것은 아니다.
+- 기존 AI 공물·NPC 생활활동 소비도 `AiProtectedItems`를 통과해야 한다. 등록된 귀속 장비·장신구, `mythictrpg:ai_protected_items`, `mythictrpg:important_items`, `mythictrpg:soulbound_items` 태그 또는 `minecraft:custom_data`의 `"mythictrpg:ai_protection":{"important":true}`/`{"soulbound":true}`를 보호한다. 중첩 container/bundle도 검사한다. 이름이나 설명 문자열로 추측하지 않는다.
+- `AiConsequenceGate`는 게임이 전달한 경고와 사용 가능한 대응 경로, 실제 대응 결과, 정확한 손실 대상/상태를 확인하는 경계다. **이 기반만으로 블록·건축물 파괴나 강제 몰수 실행기가 생긴 것은 아니다.** 현재 해당 실행기는 추가하지 않았다. 모델의 경고 주장이나 단순 시간 경과로 실행을 승인하지 않는다.
+- 임시 효과 경로는 유해 효과의 실제 종료 가능성을 검사한다. 영구 저주와 별도 해제 퀘스트, 광역 파괴, 임의 관리자 명령은 이번 지원 범위가 아니다. 밴·킥·OP·서버 종료·파일/콘솔 실행 도구는 없다.
+
+아이템/가호/퀘스트의 기존 작성형 템플릿·보상 검증은 유지한다. 이 변경이 모든 동적 퀘스트/보상 생성, 모든 모드 행동, 대화 밖의 범용 세계 운영 AI를 완성했다는 뜻은 아니다.
+
+> 2026-10-20 후속(게임 **1.0.36** / AI **0.1.50**, 미배포): [누적 통계·진행 지원 계약](../../추가개발/플레이어이해/20-support-statistics.md). `PLAYER_SUPPORT_SIGNAL`은 실제 레이드/대화 표본, `PLAYER_CHARACTER_SIGNAL`은 게임이 승인한 본인 발화의 제한된 인물 목표 후보다. 모델이 원장 소유자·등록 ID·의향 승격·게임 실행을 결정하지 않는다. 본인 화면은 `understanding-2`; NPC 입력은 별도 명시적 공유 후 개인화 요청에만 유효한 `SupportSharing.Grant`를 거쳐 제한된 지원 후보를 받는다. 목격 회상은 별도이며 기존 대화 기억과 Proposal 권한은 유지한다. 아래 구버전의 전체 자동 추출 미연결 기록과 구분한다.
+
+> 2026-10-19 활동 지원 후속(게임 **1.0.33**, 미배포): [Minecraft 활동·AFK 중립 계약](../../추가개발/플레이어이해/17-minecraft-support-activities.md). 신규 `PLAYER_ACTIVITY_FACT`는 동의 후 실제 활동을 기존 원장에 압축 저장하는 **본인 분석 전용** 자료다. AFK/미참여로 감점하지 않고 NPC 지식·Proposal 권한을 늘리지 않는다. 대상 없는 활동 횟수를 목적 근거로 주석 처리할 수 없다. 원장 신규 enum의 구버전 롤백 호환은 보장하지 않는다.
+
+> 2026-10-19 `behaivior` 개발(미배포): 게임 **1.0.32** / AI **0.1.44**의 [근거 누적형 목적 계약](../../추가개발/플레이어이해/14-evidence-driven-purpose.md). 목적 해석은 실행/공개 권한이 아니다. `AsyncActionLedger.annotatePurpose`는 게임 원본에 묶인 파생 주석만 저장하며, `understandingSnapshot`은 본인 화면용이다. 현재 NPC 입력은 격리 평가까지 연결했고 실제 Native 대화·관찰자 어댑터와 자동 활성화는 미완료다. 자기 화면의 메모를 신이 들은 대사로 전달하지 않는다.
+
 > 2026-10-07 `HanesTest` 개발 후속(미배포): 게임 **1.0.27** / AI **0.1.30**. 다음 턴 결과를 `RoomConversationEngine.Request.actionOutcomes`로 구조화하고, 생성/검토 도중 결과가 변하면 공개 전에 재검증한다. 이전 Request 생성자는 빈 목록으로 호환된다. 기존 Gateway/게임 실행 소유권·Proposal 양식·네트워크/저장 스키마는 유지한다. [결과 IO·대화 검토·검증 범위](../../인수인계/브랜치실험/HanesTest/DIALOGUE_GROUNDING_20261007.md)를 참고한다.
 
 > 2026-10-02 개발 후속(미배포): 게임 **1.0.24**, AI **0.1.27**, protocol 10. `quest_roster_request`는 `quest_id` 하나만 받아 NPC 참가자 관리 메뉴를 연다. `EXECUTED/MENU_OPENED_AWAITING_PLAYER_SELECTION`은 명단 변경이 아니다. 실제 포기·제외·충원은 별도 플레이어 확인과 서버 재검증을 거치며 같은 방에 결과를 환류한다. [재편성 계약](QUEST_REORGANIZATION_GUIDE.md)을 따른다. 정보 질문에서도 메뉴 타입만 독립 허용하고 다른 행동 권한은 유지한다.
@@ -66,7 +105,7 @@ AiActionGateway
 | `relationship_change` | `mythictrpg:relationship_change` | 즉시 실행 | 행동 신에 대한 호감도만 1회 최대 ±50, 전체 -1000~1000 범위에서 변경 |
 | `blessing_offer` | `mythictrpg:blessing_offer` | 플레이어 확인 | 데이터팩에 등록된 임시 Minecraft 효과만 적용 |
 | `world_interaction` | `mythictrpg:world_interaction` | 플레이어 확인 | 플레이어 위치에 등록된 sound/simple-particle 이벤트만 실행 |
-| `player_damage` | `mythictrpg:player_damage` | 즉시 실행 | NPC별 등록 피해 템플릿에 따라 고정·체력 비례·치명 피해 적용 |
+| `player_damage` | `mythictrpg:player_damage` | 비살상 즉시 / 사망 허용 시 경고·확인 | NPC별 등록 피해 템플릿 및 현재 피해·손실 보호에 따라 실행 |
 | `generated_quest_offer` | `mythictrpg:generated_quest_offer` | 즉시 실행 | 등록된 SIDE 퀘스트 템플릿만 현재 진행도·쿨다운·보상표를 재검증해 생성 |
 | `structure_evaluation_request` | `mythictrpg:structure_evaluation_request` | 즉시 실행 | 등록된 퀘스트의 건축 평가를 요청. 서버가 점수·완료·보상을 판정 |
 | `story_event_hook` | `mythictrpg:story_event_hook` | 플레이어 확인 | 게임이 발급한 불투명 Hook token만 소비. 모델의 임의 Story ID는 불허 |

@@ -37,10 +37,12 @@ public final class RaidState extends SavedData {
         public UUID playerId() { return playerId; }
         public int deaths() { return deaths; }
         public boolean eliminated() { return eliminated; }
+        public boolean awaitingRespawn() { return awaitingRespawn; }
     }
     public static final class Attempt {
         final UUID id, leader, teamId;
         final RaidDefinition definition;
+        List<com.sande.mythictrpg.content.ContentDefinitions.Countermeasure> countermeasures;
         final long createdAt;
         final Set<UUID> invited;
         final Map<UUID, Member> members = new LinkedHashMap<>();
@@ -60,6 +62,9 @@ public final class RaidState extends SavedData {
         Attempt(UUID id, UUID leader, UUID team, RaidDefinition definition, Set<UUID> invited, long createdAt) {
             this.id = id; this.leader = leader; this.teamId = team; this.definition = definition;
             this.invited = Set.copyOf(invited); this.createdAt = createdAt;
+            this.countermeasures = com.sande.mythictrpg.content.ContentDefinitions.INSTANCE.snapshot().countermeasures().values().stream()
+                    .filter(rule -> rule.raid().equals(definition.id())).sorted(java.util.Comparator.comparing(
+                            com.sande.mythictrpg.content.ContentDefinitions.Countermeasure::id)).toList();
         }
         public UUID id() { return id; }
         public UUID leader() { return leader; }
@@ -67,6 +72,8 @@ public final class RaidState extends SavedData {
         public Status status() { return status; }
         public String reason() { return reason; }
         public List<UUID> playerIds() { return List.copyOf(members.keySet()); }
+        public boolean isLiveEntity(UUID entity) { return spawnedEntities.contains(entity) && !deadEntities.contains(entity) && !cleanedEntities.contains(entity); }
+        public Optional<Member> member(UUID player) { return Optional.ofNullable(members.get(player)); }
         public boolean terminal() { return status == Status.SUCCEEDED || status == Status.FAILED || status == Status.CANCELLED; }
         public boolean occupiesPlayerSlot() { return status == Status.FORMING || status == Status.QUEUED
                 || status == Status.STARTING || status == Status.ACTIVE || status == Status.CLEANUP_PENDING; }
@@ -155,7 +162,16 @@ public final class RaidState extends SavedData {
                 }
                 members.add(m);
             }
-            row.put("members", members); list.add(row);
+            row.put("members", members);
+            var counters = new ListTag();
+            for (var rule : a.countermeasures) {
+                var counter = new CompoundTag(); counter.putString("id", rule.id().toString());
+                counter.putString("raid", rule.raid().toString()); counter.putString("damageType", rule.damageType().toString());
+                counter.putString("item", rule.item().toString()); counter.putBoolean("consume", rule.consume());
+                counter.putDouble("multiplier", rule.multiplier()); counters.add(counter);
+                counter.put("components", rule.components());
+            }
+            row.put("countermeasures", counters); list.add(row);
         }
         tag.put("attempts", list); return tag;
     }
@@ -173,6 +189,23 @@ public final class RaidState extends SavedData {
                 var definition = RaidDefinition.parse(RaidDefinition.id(row.getString("raidId")), JsonParser.parseString(definitionText).getAsJsonObject());
                 var a = new Attempt(row.getUUID("id"), row.getUUID("leader"), row.getUUID("team"), definition,
                         readUuids(row, "invited", 256), row.getLong("createdAt"));
+                var counters = compoundList(row, "countermeasures", true);
+                if (counters.size() > 32) throw new IllegalArgumentException("Too many frozen countermeasures");
+                var frozenCounters = new java.util.ArrayList<com.sande.mythictrpg.content.ContentDefinitions.Countermeasure>();
+                var damageTypes = new java.util.HashSet<ResourceLocation>(); var counterIds = new java.util.HashSet<ResourceLocation>();
+                for (Tag counterRaw : counters) {
+                    var counter = (CompoundTag) counterRaw;
+                    if (!counter.contains("consume", Tag.TAG_BYTE) || (counter.getByte("consume") != 0 && counter.getByte("consume") != 1)
+                            || !counter.contains("multiplier", Tag.TAG_DOUBLE)) throw new IllegalArgumentException("Invalid frozen countermeasure types");
+                    if (counter.contains("components") && !counter.contains("components", Tag.TAG_COMPOUND)) throw new IllegalArgumentException("Frozen tool components type");
+                    var rule = new com.sande.mythictrpg.content.ContentDefinitions.Countermeasure(RaidDefinition.id(counter.getString("id")),
+                            RaidDefinition.id(counter.getString("raid")), RaidDefinition.id(counter.getString("damageType")),
+                            RaidDefinition.id(counter.getString("item")), counter.getBoolean("consume"), counter.getDouble("multiplier"), counter.getCompound("components"));
+                    if (!rule.raid().equals(definition.id()) || !damageTypes.add(rule.damageType()) || !counterIds.add(rule.id()))
+                        throw new IllegalArgumentException("Mismatched frozen countermeasure");
+                    frozenCounters.add(rule);
+                }
+                a.countermeasures = List.copyOf(frozenCounters); // Old runs never acquire newly configured tools after restart.
                 a.status = Status.valueOf(row.getString("status")); a.queuedAt = row.getLong("queuedAt"); a.startedAt = row.getLong("startedAt");
                 a.phaseMask = row.getInt("phaseMask"); a.reason = row.getString("reason"); a.storyPublished = row.getBoolean("storyPublished");
                 if (a.createdAt < 0 || a.queuedAt < 0 || a.startedAt < 0 || a.reason.length() > 256 || a.phaseMask < 0 || a.phaseMask > 255)

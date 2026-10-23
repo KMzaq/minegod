@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 2,
+  "status": "PROPOSED_INITIAL_BALANCE",
+  "aggregation": "SUM_SLOT_BEST",
+  "lowRatioExclusive": 0.5,
+  "model": {
+    "basePower": 0,
+    "healthCoefficient": 1,
+    "equipmentCoefficient": 1,
+    "ownedBlessingCoefficient": 1,
+    "skillCoefficient": 1,
+    "worldContributionCoefficient": 0,
+    "offenseCoefficient": 10,
+    "healthBoostPerLevel": 4,
+    "regenerationHealthFraction": 0.02,
+    "resistanceReductionPerLevel": 0.2,
+    "protectionHalfValue": 40,
+    "defenseExponent": 0.5,
+    "strengthFlatPerLevel": 3,
+    "strengthWeaponFractionPerLevel": 0.04,
+    "sharpnessPerLevel": 0.5,
+    "sharpnessBase": 0.5,
+    "hasteFractionPerLevel": 0.02,
+    "effectPointsPerLevel": {
+      "minecraft:speed": 5,
+      "minecraft:jump_boost": 1,
+      "minecraft:absorption": 6,
+      "minecraft:luck": 0,
+      "minecraft:unluck": 0,
+      "minecraft:night_vision": 0,
+      "minecraft:hero_of_the_village": 0,
+      "minecraft:slowness": 0,
+      "minecraft:mining_fatigue": 0,
+      "minecraft:nausea": 0,
+      "minecraft:blindness": 0,
+      "minecraft:weakness": 0,
+      "minecraft:poison": 0,
+      "minecraft:wither": 0,
+      "minecraft:hunger": 0,
+      "minecraft:glowing": 0,
+      "minecraft:levitation": 0,
+      "minecraft:darkness": 0,
+      "minecraft:bad_omen": 0,
+      "minecraft:raid_omen": 0,
+      "minecraft:trial_omen": 0,
+      "minecraft:wind_charged": 0,
+      "minecraft:weaving": 0,
+      "minecraft:oozing": 0,
+      "minecraft:infested": 0,
+      "minecraft:instant_health": 0,
+      "minecraft:instant_damage": 0
+    },
+    "booleanEffectPoints": {
+      "minecraft:fire_resistance": 8,
+      "minecraft:saturation": 4,
+      "minecraft:water_breathing": 1,
+      "minecraft:invisibility": 4,
+      "minecraft:slow_falling": 2,
+      "minecraft:dolphins_grace": 1,
+      "minecraft:conduit_power": 3
+    }
+  },
+  "items": [
+    {
+      "itemId": "minecraft:diamond_sword",
+      "components": {
+        "minecraft:custom_model_data": 2026102201,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:steady_blade"},
+        "minecraft:custom_name": "{\"text\":\"단련의 검\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:attribute_modifiers": {"modifiers": [
+          {"type":"minecraft:generic.attack_damage","id":"minecraft:base_attack_damage","amount":8,"operation":"add_value","slot":"mainhand"},
+          {"type":"minecraft:generic.attack_speed","id":"minecraft:base_attack_speed","amount":-2.4,"operation":"add_value","slot":"mainhand"}
+        ]}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "weapon",
+      "intrinsicPower": 10,
+      "attackDamage": 8,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:diamond_sword",
+      "components": {
+        "minecraft:custom_model_data": 2026102202,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:wave_blade"},
+        "minecraft:custom_name": "{\"text\":\"파문검\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:attribute_modifiers": {"modifiers": [
+          {"type":"minecraft:generic.attack_damage","id":"minecraft:base_attack_damage","amount":6,"operation":"add_value","slot":"mainhand"},
+          {"type":"minecraft:generic.attack_speed","id":"minecraft:base_attack_speed","amount":-2.4,"operation":"add_value","slot":"mainhand"}
+        ]}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "weapon",
+      "intrinsicPower": 10,
+      "attackDamage": 6,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {"proto_cbt:blade_wave":20},
+      "rightClickSkill": "proto_cbt:blade_wave"
+    },
+    {
+      "itemId": "minecraft:diamond_sword",
+      "components": {
+        "minecraft:custom_model_data": 2026102203,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:guard_blade"},
+        "minecraft:custom_name": "{\"text\":\"응수검\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:attribute_modifiers": {"modifiers": [
+          {"type":"minecraft:generic.attack_damage","id":"minecraft:base_attack_damage","amount":6,"operation":"add_value","slot":"mainhand"},
+          {"type":"minecraft:generic.attack_speed","id":"minecraft:base_attack_speed","amount":-2.4,"operation":"add_value","slot":"mainhand"}
+        ]}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "weapon",
+      "intrinsicPower": 10,
+      "attackDamage": 6,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {"proto_cbt:timed_parry":20},
+      "rightClickSkill": "proto_cbt:timed_parry"
+    },
+    {
+      "itemId": "minecraft:iron_helmet",
+      "components": {
+        "minecraft:custom_model_data": 2026102204,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:iron_guard_head"},
+        "minecraft:custom_name": "{\"text\":\"철제 수호 투구\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:enchantments": {"levels":{"minecraft:protection":2}}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "head",
+      "intrinsicPower": 4,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 2,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:iron_chestplate",
+      "components": {
+        "minecraft:custom_model_data": 2026102205,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:iron_guard_chest"},
+        "minecraft:custom_name": "{\"text\":\"철제 수호 흉갑\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:enchantments": {"levels":{"minecraft:protection":2}}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "chest",
+      "intrinsicPower": 4,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 2,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:iron_leggings",
+      "components": {
+        "minecraft:custom_model_data": 2026102206,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:iron_guard_legs"},
+        "minecraft:custom_name": "{\"text\":\"철제 수호 각반\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:enchantments": {"levels":{"minecraft:protection":2}}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "legs",
+      "intrinsicPower": 4,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 2,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:iron_boots",
+      "components": {
+        "minecraft:custom_model_data": 2026102207,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:iron_guard_feet"},
+        "minecraft:custom_name": "{\"text\":\"철제 수호 장화\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"],
+        "minecraft:enchantments": {"levels":{"minecraft:protection":2}}
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "feet",
+      "intrinsicPower": 4,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 2,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:diamond_helmet",
+      "components": {
+        "minecraft:custom_model_data": 2026102208,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:diamond_guard_head"},
+        "minecraft:custom_name": "{\"text\":\"금강 수호 투구\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"]
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "head",
+      "intrinsicPower": 7,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:diamond_chestplate",
+      "components": {
+        "minecraft:custom_model_data": 2026102209,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:diamond_guard_chest"},
+        "minecraft:custom_name": "{\"text\":\"금강 수호 흉갑\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"]
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "chest",
+      "intrinsicPower": 7,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:diamond_leggings",
+      "components": {
+        "minecraft:custom_model_data": 2026102210,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:diamond_guard_legs"},
+        "minecraft:custom_name": "{\"text\":\"금강 수호 각반\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"]
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "legs",
+      "intrinsicPower": 7,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {}
+    },
+    {
+      "itemId": "minecraft:diamond_boots",
+      "components": {
+        "minecraft:custom_model_data": 2026102211,
+        "minecraft:custom_data": {"prototype_id": "proto_cbt:diamond_guard_feet"},
+        "minecraft:custom_name": "{\"text\":\"금강 수호 장화\",\"italic\":false}",
+        "minecraft:lore": ["{\"text\":\"희귀 · 전투 1차 시제품\",\"color\":\"aqua\",\"italic\":false}"]
+      },
+      "classification": "BOUND_REWARD_GEAR",
+      "slot": "feet",
+      "intrinsicPower": 7,
+      "attackDamage": 0,
+      "sharpnessLevel": 0,
+      "protectionLevel": 0,
+      "skills": {}
+    }
+  ],
+  "recommendations": []
+}

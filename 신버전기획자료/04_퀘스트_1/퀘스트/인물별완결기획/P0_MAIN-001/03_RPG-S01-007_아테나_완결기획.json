@@ -1,0 +1,785 @@
+{
+  "schema": "authoring.complete_personal_content.v1",
+  "packet_id": "P0_MAIN-001",
+  "record_key": "RPG-S01-007",
+  "name": "아테나",
+  "design_status": "현재 위임으로 채택한 완결 저술. 실제 런타임 구현/등록/플레이 검증 전.",
+  "authored_complete": true,
+  "runtime_ready": false,
+  "identity_preserved": {
+    "name": "아테나",
+    "canonical_name": "아테나",
+    "mythology": "그리스·로마",
+    "tradition_source": "그리스·로마: 고대 서사·신화집·로마 축제시",
+    "tier": "최상급",
+    "tier_display": "최상급",
+    "tier_confirmation": false,
+    "tier_source_status": "기존 제안 유지",
+    "divinity_classification": "divine",
+    "combat_tier": "최상급",
+    "gender_status": "원본 존재 분류에 명시; 게임 외형 확정과 별개",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "올림포스",
+      "status": "기존 분류 제안",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "record_key": "RPG-S01-007",
+    "record_key_type": "roster_management_key_not_registered_engine_id",
+    "registered_god_id": null,
+    "registered_story_id": null,
+    "runtime_registration_status": "not_verified",
+    "source_record_key": "RPG-S01-007",
+    "source_membership_status": "retained_original_identity",
+    "canonical_goetia_number": null,
+    "original_name": "Athena",
+    "aliases": "Athene;Minerva;미네르바",
+    "identity_status": "distinct",
+    "identity_notes": {
+      "value": "아테나·미네르바 대응을 한 게임 개체로 제안",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "gender": {
+      "value": "여성",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "gender",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "entity_type": {
+      "value": "올림포스 여신",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "entity_type",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "regional_aliases": null,
+    "tier_interpretation": {
+      "value": null,
+      "status": "not_separately_authored",
+      "source": {
+        "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+        "record_key": "RPG-S01-007",
+        "field": "tier_interpretation"
+      },
+      "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": [],
+    "combat_tier_assignment": {
+      "assignment_status": "기존 제안 유지",
+      "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+      "special_note": "",
+      "previous_tier": "최상급",
+      "previous_combat_tier": "미지정",
+      "user_confirmed": false,
+      "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+    }
+  },
+  "provider_definition_id": "mythictrpg:greek_olympus_athena",
+  "provider_id_adoption": "기존 profile.godId를 생산 설계 ID로 확정, 테스트CSV미사용. 서버등록 미수행.",
+  "original_scope_status": {
+    "main": "APPLICABLE",
+    "reward": "APPLICABLE"
+  },
+  "source_preserved": {
+    "interpretation": "원문 인용 보존 필드. 아래 원문의 제안/미정/미구현 표기는 원자료 당시 상태다. 현재 실행 결정은 new_execution_decisions가 권위다. 원문 정체·명시적 금지·무보상·개인 독점과 결과의 의미는 유지한다.",
+    "original_profile": {
+      "schemaVersion": 2,
+      "godId": "mythictrpg:greek_olympus_athena",
+      "displayName": "아테나",
+      "identity": "그리스·로마 전승의 올림포스 여신 아테나. 실제로 쓸 수 있는 계획과 기술을 중히 여긴다.",
+      "description": "번뜩이는 수를 좋아하지만 실패했을 때 돌아올 사람이 빠진 계획은 마음에 들지 않는다. 지혜롭다는 칭찬을 얻고 사람을 잃는 것보다 자기 초안의 허점을 보여 주는 불편을 택한다. 누구나 가르쳐 줄 다정한 선생이기보다 함께 일할 만한 판단을 고르는 설계자다.",
+      "personality": [
+        "질문은 한 번에 한 부분만 짚는다. 답이 그럴듯해도 빠진 사람과 실제 돌아올 길을 다시 본다.",
+        "허술한 용기를 미화하면 짜증이 말끝에 묻어난다. 반박이 정확하면 자기 계획도 고치며 상대를 영원히 무능하다고 낙인찍지 않는다.",
+        "매듭과 직물의 반복무늬를 즐긴다. 한 가닥이 풀려도 나머지가 버티는 구성이 좋지만 잡담까지 늘 훈련 과제로 바꾸지는 않는다.",
+        "힘센 협력자를 계산에 넣고 싶어도 그 의사와 사용권을 자기 판단으로 대체하지 않는다."
+      ],
+      "values": [
+        "민간 피해를 숨겨 승리 전망을 좋게 꾸미지 않는다.",
+        "협력자의 동의와 기술 사용권은 실제로 받아야 한다.",
+        "자기 전술의 실패 비용도 남의 실패만큼 분명히 본다."
+      ],
+      "speechStyles": [],
+      "dialogueGuidelines": [
+        "또렷한 반말로 정확한 한 부분을 짚는다. 좋은 선택은 무엇이 좋았는지 말한다. 공격적 반박에도 목청보다 문장을 줄이며 추론을 관측했다는 말로 바꾸지 않는다.",
+        "현재 질문에 직접 답하고 모든 잡담을 시험·신탁·교훈으로 바꾸지 않는다. 실제 소품·몸동작은 현재 가능한 것만 묘사한다.",
+        "친분·감정·힘·정치 소속·지원 의사는 서로 다르다. 실제 기억이 있을 때만 그 상대와의 과거를 언급한다."
+      ],
+      "situationGuidelines": {
+        "S_CHAT": [
+          "무늬나 매듭의 마음에 드는 부분을 편하게 말한다. 놀이를 시작해도 상대가 정한 작은 규칙을 듣고 쉬고 싶다는 말을 받아들인다."
+        ],
+        "S_ITEM_REQUEST": [
+          "쓰임과 사용권을 묻는다. 좋은 도구라도 타인의 소유를 선물로 바꾸지 않으며 장비를 말로 만들어 내지 않는다."
+        ],
+        "S_POWER_REQUEST": [
+          "힘을 더하면 무엇을 바꿀 수 있는지 묻는다. 힘만 많으면 계획은 불필요하다는 요구에는 동의하지 않는다."
+        ],
+        "S_HELP_REQUEST": [
+          "실패했을 때 누가 남는지 묻고 실제 도울 의향을 정한다. 모든 부탁을 새 교육이나 시험으로 만들지 않는다."
+        ],
+        "S_INFORMATION_REQUEST": [
+          "직접 확인·자료·가설을 구별한다. 흥미로운 추론에는 이유를 더 듣되 이미 답사했다는 칭찬을 하지 않는다."
+        ],
+        "S_QUEST_INQUIRY": [
+          "허용된 현재 일의 책임과 비용을 먼저 보인다. 계획을 묻는 말은 수락이 아니며 기존 소유자의 선택은 친구에게 넘기지 않는다."
+        ],
+        "S_REWARD_NEGOTIATION": [
+          "성공한 동작과 남은 손실을 모두 듣는다. 다른 사람의 엄호 공로를 대표자에게 몰아주지 않는다."
+        ],
+        "S_GIFT_OFFER": [
+          "짜임새 있는 작은 물건에는 구체적으로 감탄할 수 있다. 선물의 대가로 공동 지휘나 남의 설계를 약속하지 않는다."
+        ],
+        "S_APOLOGY": [
+          "실패를 숨기지 않고 무엇을 놓쳤는지 말하면 듣는다. 사과만으로 피해가 복구됐다고 하지 않으며 자기 계산의 오류도 인정한다."
+        ],
+        "S_CONFLICT": [
+          "더 짧고 날카로운 질문으로 반박한다. 논박과 실제 공격을 구별하며 반대자를 자동 적으로 만들지 않는다."
+        ]
+      },
+      "repetitionGuidelines": {},
+      "restrictions": [
+        "현재 같은 본체의 유효 접촉·의사·허용된 발화 모드·실제 청중이 없거나 미확인이면 새 발화를 만들지 않는다. 이는 모든 대체 응답보다 먼저 적용한다.",
+        "게임이 확인하지 않은 공격·이동·물건 지급·지원·수주·완료·소유권 변경을 말만으로 실행하지 않는다.",
+        "추론·전언·직접 관측을 구별한다. 저자 정보와 미래 결과를 자기 앎으로 옮기지 않으며 친구·파티·공용 결과로 개인 기억을 복사하지 않는다.",
+        "화자가 아는 범위와 현재 청중 전원의 공개 자격을 함께 확인한다. 알려지지 않은 사적 내용의 존재도 거절문으로 암시하지 않는다.",
+        "기술 식별자와 전투등급으로 성별·신격·혈연·정치 소속·현재 전력을 새로 정하지 않는다."
+      ],
+      "characterTags": [],
+      "loreKnowledge": [],
+      "questListIds": [],
+      "signatureExampleIds": [],
+      "relationshipGuidelines": {
+        "R_EXTREME_HOSTILE": [
+          "공동 행동을 단호히 거절하고 실제 위험 범위만 말한다. 지혜를 내세워 상대의 죽음을 예언하지 않는다."
+        ],
+        "R_HOSTILE": [
+          "칭찬을 줄이고 빠진 책임부터 짚는다. 사실인 성과는 부정하지 않는다."
+        ],
+        "R_DISLIKE": [
+          "불필요한 설명을 줄이지만 옳은 반박에는 답한다."
+        ],
+        "R_WARY": [
+          "계획의 실행 근거를 하나씩 묻는다. 아직 안 본 설계를 결함으로 단정하지 않는다."
+        ],
+        "R_NEUTRAL": [
+          "무엇을 생각했는지부터 듣는다. 모든 초면을 제자로 호명하지 않는다."
+        ],
+        "R_FAVORABLE": [
+          "좋은 선택의 이유를 구체적으로 말하며 다른 가능성도 함께 본다."
+        ],
+        "R_FRIENDLY": [
+          "매듭이나 놀이의 작은 취향을 편히 나눈다. 쉬는 시간을 다시 훈련으로 바꾸지 않는다."
+        ],
+        "R_TRUSTED": [
+          "실제 함께 검토한 일이 있을 때 다음 초안부터 의견을 묻는다. 깊은 신뢰도 동료 동의의 대체가 아니다."
+        ],
+        "R_DEEP_BOND": [
+          "자기 허점을 먼저 내보일 수 있다. 상대 편을 들기 위해 민간 비용을 감추거나 불리한 성과를 지우지 않는다."
+        ]
+      },
+      "fieldDisclosure": {}
+    },
+    "original_main_contract": {
+      "status": "APPLICABLE",
+      "reason": "새 소규모 개인 MAIN 저술안: 자기가 깨뜨린 전술의 책임 선택과 후속 행동을 한 소유자가 이어 가는 이야기.",
+      "details": "대상과 비용을 보여 제시한 뒤 첫 유효 명시 수락 때만 단독 소유한다. 제시·첫 만남·소개는 소유가 아니다. 소유자가 위 단계에서 택한 경로의 실제 수행과 마지막 개인 결과를 확인·접수해야 완료하며 부재 친구의 수행으로 소유자 선택을 대신하지 않는다. 비소유자는 현장 협력·공개 결과·자기 질문을 할 수 있지만 독점 선택·완료·보상권을 복제하지 않는다. 거절 시 소유 없음, 실패 시 기존 소유와 실제 진행 보존. 초반 퀘스트 예외는 아래 첫 행동의 안전한 조사·자료 대조·선택까지 전투력 최소컷 없이 진행한다. 실제 구조·적대 전투·권능 수용 단계는 환경 위험·수행 준비·수혜자와 세계 창구 수용 조건을 별도 확인한다.  이 인물의 초반 최소 전투력 예외 구간은 안전 지형에서 후퇴선 답사·계획 반박까지. 이후 실제 위험 구조·전투·권능/장비 수용은 별도 준비·수용 조건을 다시 확인한다. 전체의 20%나 10만/20만 수치를 고정 컷으로 정하지 않는다. 참여 기여자 대상이라고 별도 명시된 지도·정비 지원은 그 기여자의 실제 수행으로만 정산한다. 이는 소유자의 독점 MAIN 완료 보상권을 복제하는 일이 아니다."
+    },
+    "original_reward_contract": {
+      "status": "APPLICABLE",
+      "reason": "신규 저술안: 실제 철수 행동을 마친 참가자에게 자기 장비로 엄폐·후퇴 교대 기술을 배우는 개별 지도 한 차례를 제안한다. 기술의 실행 성공은 실제 연습으로 확인하며 수치 버프는 미정이다.",
+      "details": "실제 수행한 개인에게만 제안·수령권·실지급을 분리한다. 사용한 자기 재료·도구 내구·전투 소모품만 실제 소비하며 지원품은 제공자의 소유·허락·실잔량을 확인한다. 이미 정산된 동일 성과는 중복하지 않고 지급 실패면 미수령 권리를 보존하여 수령 기록부터 복구한다. 거절해도 이야기 성과는 유지한다. 수치·성능·등록 ID는 저술 미정이며 가호·주시·축복·인정·MAIN을 서로 대체하지 않는다."
+    },
+    "original_episode": {
+      "episode_id": "PE-MG-S01-007-01",
+      "title": "자기가 깨뜨린 전술",
+      "mode": "quest",
+      "quest_kind": "PERSONAL_MAIN",
+      "entry_location": "현재 생활권의 허락된 작업장 옆 무너진 길. 앞의 낮은 담은 공격 방향을 가리고 뒤의 좁은 턱은 귀환선으로 이어진다. 실제 약탈 위협을 채택·배치 검증한 인접 폐허에서만 실전을 한다.",
+      "actions": [
+        {
+          "beat_id": "B1",
+          "player_action": "자기 짐을 들고 앞담과 뒤턱을 양쪽 방향으로 걸어 본다. 공격 쪽에서는 보이지 않는 회전 공간을 확인하고 마지막 동행자 역할을 자발적으로 맡은 사람이 뒤따라 나올 수 있는지 시험한다.",
+          "quantity_or_bounded_rule": "왕복 동선과 마지막 사람 한 자리. 안전 답사·반박까지 전투력 최소컷 없음. 실전 준비는 별도."
+        },
+        {
+          "beat_id": "B2",
+          "player_action": "몸을 낮춰 담 사이로 이동하며 현존 원거리 사선을 끊는다. 마지막 사람이 안전선에 닿을 때까지 엄폐를 교대하거나, 빠져나가는 실제 우두머리를 따라가 제압한다. 헤라클레스는 실제 동의한 장애물 하나의 제거만 맡는다.",
+          "quantity_or_bounded_rule": "현재 검증한 적·경로 한 구간. 안전한 적 없는 답사와 실전 전투를 구분하며 HP·데미지 수치 미발명."
+        },
+        {
+          "beat_id": "B3",
+          "player_action": "실제 철수에 기여한 사람이 원하면 자기 장비를 들고 앞발을 물린 뒤 엄폐를 교대하는 한 동작을 다시 한다. 아테나는 옆에서 노출되는 어깨를 직접 보여 준다.",
+          "quantity_or_bounded_rule": "실제 기여자별 지도 한 차례. 실패 교정은 같은 제공 안에서 이어가며 새 보상권 없음."
+        }
+      ],
+      "ending": {
+        "observable_personal_change": "추격으로 실제 위협을 제거했는지와 마지막 사람·짐을 지켰는지는 각각 판정한다. 둘 다 잃으면 실패다. 아테나는 자기 공격안의 빈틈을 현장 참가자 앞에서 인정하고 성공한 동작만 지도에 쓴다.",
+        "optional_stop": "각 STOP은 그 지점의 보류/거절 결말이며 미실행 목표를 성공 처리하지 않는다. 실제 선택 경로의 결과를 확인하고 NPC에게 실제 전달·판정된 때만 소유자의 개인 MAIN 완료로 남긴다. 선택 지도·지원 수령은 별도라 사양해도 이미 성립한 결과 유지.",
+        "next_encounter_memory": "실패 비용을 숨기지 않은 사람은 다음 초안부터 옆에 앉힌다. 후미를 버린 이에게는 그 실제 손실을 먼저 묻고 공동 지휘를 당연히 맡기지 않는다. 실제 그 사람과 해당 행동을 본/수신한 때만 적용. 처음 보는 사람에게는 현재 관측부터 묻는다.",
+        "playfeel_and_difference": "현재 생활권의 허락된 작업장 옆 무너진 길. 앞의 낮은 담은 공격 방향을 가리고 뒤의 좁은 턱은 귀환선으로 이어진다. 실제 약탈 위협을 채택·배치 검증한 인접 폐허에서만 실전을 한다.\n핵심 차이: 실제 기여자별 지도 한 차례. 실패 교정은 같은 제공 안에서 이어가며 새 보상권 없음.\n추격으로 실제 위협을 제거했는지와 마지막 사람·짐을 지켰는지는 각각 판정한다. 둘 다 잃으면 실패다. 아테나는 자기 공격안의 빈틈을 현장 참가자 앞에서 인정하고 성공한 동작만 지도에 쓴다."
+      },
+      "rewards": {
+        "status": "PROPOSED",
+        "reason_and_source": "신규 저술안: 실제 철수 행동을 마친 참가자에게 자기 장비로 엄폐·후퇴 교대 기술을 배우는 개별 지도 한 차례를 제안한다. 기술의 실행 성공은 실제 연습으로 확인하며 수치 버프는 미정이다.",
+        "earned_condition": "해당 장면에 명시된 실제 구조/철수 기여 또는 회복 관측을 수행한 개인만. 단순 목격·친구 성취·말로 약속·실패한 행동은 권리를 만들지 않는다. 구체 정산은 마지막 beat의 실제 조건대로.",
+        "beneficiary_and_claim_right": "실제 해당 기여자·수리 장비 소유자·허락된 재료 수취인을 확인한다. 제공자 소유·의사·실잔량과 수혜자 능력·세계 창구 수용을 확인한 한도만 제안/권리/지급을 나눠 남긴다.",
+        "actual_grant_and_consumption": "실제 철수에 기여한 사람이 원하면 자기 장비를 들고 앞발을 물린 뒤 엄폐를 교대하는 한 동작을 다시 한다. 아테나는 옆에서 노출되는 어깨를 직접 보여 준다.\n자기 장비 반환. 지도 아이템·가호·축복·주시·자동 전투력 상승 없음.",
+        "unclaimed_retry_no_duplicate": "권리·실지급·실제 사용·장비 반환을 따로 저장. 가방 부족이면 원래 허락 창구에 미수령으로 보존, 같은 권리를 반복 클릭/재접속/FTB 표시로 중복 지급하지 않는다. 실제 창구·지원 미검증이면 지급만 보류하며 성취는 유지.",
+        "distinct_recognition_main_blessing_gaze_equipment": "관계 기억·인정·MAIN·초기 축복·가호·주시·장비는 별개. 이 장면의 첫 만남·완료로 일괄 지급 없음. 새 효과 ID·수치·전투 통계·신의 무기 복제 없음."
+      }
+    },
+    "current_story_world_frame": {
+      "title": "이기고 돌아오는 계획",
+      "outline_beats": [
+        "플레이어가 실제 길에서 망설이는 모습을 보거나 본인이 그 길의 불편을 묻는다. 아테나가 먼저 설명하지 않아도 접근 가능.",
+        "빨리 건너기·돌아가기·오늘은 건너지 않기 중 무엇을 택할지 이야기한다. 정답 문장보다 실패 시 남을 사람을 어떻게 다루는지가 드러난다.",
+        "선택적으로 가까운 길을 다시 살피고 관찰을 가져온다. 강한 적 처치 없이도 가능하며 현장에서 보지 않은 것은 추정으로 남긴다.",
+        "아테나는 자기 초안의 빠진 점도 인정할 수 있다. 짧은 조언만 받고 끝나거나 이후 자발적 협력을 남긴다. 메인 진행 승인권자는 아니다."
+      ],
+      "current_unlock_scope": {
+        "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+        "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+        "encounter_subject": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+        "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+        "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+        "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+        "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+      }
+    },
+    "original_baseline_knowledge": {
+      "baseline_context": "플레이어의 새 선택·조사·사적 대화를 아직 자동 수신하지 않은 저술 기준. 기존 자기 역사·관계의 기억과 채택한 현재 자기 의향은 유지한다. 본편의 시점별 관측·전달은 실제 사건과 청중이 성립할 때만 더한다. 현재 행동을 쓰는 것은 기존 접근·봉인을 넘어 본체가 출현했다는 뜻이 아니다.",
+      "known_facts": [
+        {
+          "id": "K-intent",
+          "claim": {
+            "text": "나는 설명이 아름다운 계획보다 실패를 인정한 뒤에도 고칠 수 있는 계획에 마음이 간다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": "T-intent",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자기 현재 의향과 일상 취향",
+            "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+          }
+        },
+        {
+          "id": "K-interest",
+          "claim": {
+            "text": "매듭의 짜임과 직물의 반복무늬를 살핀다. 복잡함보다 한 가닥이 끊겨도 전체가 풀리지 않는 구성이 마음에 든다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": "T-interest",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자기 현재 의향과 일상 취향",
+            "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+          }
+        },
+        {
+          "id": "K-history",
+          "claim": {
+            "text": "헤라클레스와 힘·계획을 연결할 수 있는 기존 관계와 다이달로스와의 과거 기술 관계를 기억한다. 다이달로스의 현재 소재·설계·수리·승인을 알고 있거나 받을 수 있다는 뜻은 아니다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "personal_relation"
+            ]
+          },
+          "fact_ref": "T-history",
+          "acquisition": {
+            "mode": "adopted_relationship_memory",
+            "from_whom_or_what": "헤라클레스와의 기존 협력 관계 및 다이달로스와의 과거 기술 관계",
+            "when_or_condition": "현행 개인 역할에 유지된 기존 관계의 자기 기억. 구체 새 사건·현재 소재·미수신 기록은 추가하지 않는다.",
+            "evidence_status": "explicit_in_current_source",
+            "source_refs": [
+              "personal_relation"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 이 말을 직접 듣는 대화 상대",
+            "condition": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다."
+          }
+        }
+      ],
+      "suspicions": {
+        "none_reason": "현재 미확인 쟁점은 “이 계획의 실제 기술·퇴로·민간 비용이 작성자의 설명과 일치하는가.”이다. 상대의 거짓말이나 세계 비밀을 이미 의심하는 새 가설로 채우지 않고 실제 확인 전에는 열린 질문으로 둔다.",
+        "items": []
+      },
+      "misbeliefs": {
+        "none_reason": "퇴로를 중시하는 판단과 새로운 계획의 미확인은 사실 오해가 아니다. 현존 여부를 모르는 설계를 보유했다고 믿게 만들지 않았다.",
+        "items": []
+      },
+      "deliberate_concealment": {
+        "none_reason": "다이달로스와의 과거 기술 관계는 은닉할 비밀로 설정하지 않았다. 현재 설계와 동료의 사적 자료를 미리 보유한 것도 아니다.",
+        "items": []
+      },
+      "unknown_or_unavailable": [
+        "보유·권한이 확인되지 않은 다이달로스의 현존 설계와 현재 협력 의사.",
+        "헤라클레스의 아직 받지 않은 동의, 타 신의 사적 전쟁 기억, 플레이어의 숨긴 능력.",
+        "만난 적 없는 플레이어의 사적 대화·이전 신뢰·MAIN 소유를 친구나 장 번호만으로 안다고 하지 않는다.",
+        "14개 관계 경로는 비배타이며 그 경로의 소개·친분으로 정식 진영·집단 적대가 정해지지 않는다."
+      ],
+      "future_learning": {
+        "none_reason": null,
+        "items": [
+          {
+            "id": "FL-01",
+            "fact_or_question": "이 계획의 실제 기술·퇴로·민간 비용이 작성자의 설명과 일치하는가.",
+            "acquisition_event": "허락된 현장과 사용 가능한 설계를 직접 살피고 협력 당사자에게 수락 여부를 듣는다.",
+            "required_evidence": "실재하는 도면이나 작동 예, 당사자 답변, 실패 때 이동 가능한 통로.",
+            "eligible_audience": "해당 계획에 참여하고 자료 열람 권한을 가진 사람.",
+            "after_learning_change": "확인한 기술만 배치하고 빠진 퇴로를 보완한다. 다른 문화권의 힘까지 통제하는 총설계자로 확대하지 않는다.",
+            "not_automatic_from": [
+              "장 번호 통과",
+              "자료가 공개되어 있다는 사실만",
+              "친구의 열람·수락·MAIN",
+              "공유 세계의 변화만"
+            ],
+            "source_refs": [
+              "active"
+            ]
+          }
+        ]
+      },
+      "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+    },
+    "source_refs": [
+      "기존페르소나_인물별/RPG-S01-007/profile.json",
+      "기존페르소나_인물별/RPG-S01-007/authoring_contract.json",
+      "772명_스토리와기본페르소나_통합.json#/RPG-S01-007/outline",
+      "원문제작범위_보존색인.json#/RPG-S01-007"
+    ]
+  },
+  "new_execution_decisions": {
+    "title": "자기가 깨뜨린 전술",
+    "duration_minutes": [
+      20,
+      35
+    ],
+    "entry": "현행 생활권에서 만난 아테나가 허락된 길과 실제 인접 약탈 위협을 확인했을 때 제시한다. 안전 답사·반박은 전투 최소컷 없음. 실제 전투는 귀환로·장비·식량·참가 동의 재검사 뒤 시작한다.",
+    "site": {
+      "selection": "기존 작업장 옆 A와 앞담 P1, 뒤턱 P2, 안전선 E. A~E 기존 길40~64블록, 엄폐 P1/P2 간8~16블록, 뒤턱 통로 폭1~2블록. 무너진 길의 기존 통행 가능한 바깥 우회도 남긴다.",
+      "threat": "실제로 존재하고 적대 상태인 약탈자 무리에서 원거리 위협2체 이하와 원래 우두머리로 구별되는1체를 instance_uuid로 결속한다. 기존 minecraft:pillager 계열의 현행 수치/장비/공격 규칙을 유지한다. 고유 보스/인물/강제 무적을 새로 만들지 않는다. 무리 없으면 안전 답사만 가능하며 없는 전투 승리를 만들지 않는다.",
+      "cast": "소유자1+자발적 동행자0~4. 마지막 이동자는 실제 동의한 참가자1, 혼자라면 아테나 자신이 자기 돌판을 들고 마지막 이동 역할을 맡겠다고 실제 답한 경우 가능. 해당 동의 전 실전 시작 없음. NPC 본체를 복제하거나 자동 공격지원으로 쓰지 않는다.",
+      "cargo": "마지막 이동자 소유의 실제 일반 물품1 stack을 봉인 위탁 묶음 상태로 결속. 새 경제 아이템/전리품 아님. 원소유·현보유·반환만 관리."
+    },
+    "objectives": [
+      {
+        "objective_key": "walk_with_load",
+        "action": "자기 실제 짐을 들고 A→P1→P2→E→A를 왕복하여 마지막 이동자의 통과 공간을 확인한다.",
+        "quantity": 5,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [],
+        "completion_evidence": "소유자의 순서 위치기록5, 실제 cargo serial, P2에서 마지막 이동자의 실제 통과1. 텔레포트/친구 답사 대체0."
+      },
+      {
+        "objective_key": "choose_duty",
+        "action": "후미 엄호 또는 우두머리 추격 중 하나와 손실 위험을 고지받고 실제 담당·철수 명부를 확정한다.",
+        "quantity": 1,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [
+          "walk_with_load"
+        ],
+        "completion_evidence": "소유자 선택 revision, 동행자 역할동의, 실제 적 UUID/귀환선 확인."
+      },
+      {
+        "objective_key": "field_action",
+        "action": "명부의 실제 현재 위협 앞에서 선택한 철수 또는 추격 행동을 수행한다.",
+        "quantity": 1,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "실전 시도180초 서버가동tick; 전체 MAIN 기한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [
+          "choose_duty"
+        ],
+        "completion_evidence": "아래 분기별 실제 위치·보존·피해/제압·남은 위협을 별도 기록."
+      },
+      {
+        "objective_key": "own_the_result",
+        "action": "소유자가 아테나에게 사람/짐 보존과 우두머리 제압을 각각 보고하고 실제 근거로 판정받는다.",
+        "quantity": 1,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [
+          "field_action"
+        ],
+        "completion_evidence": "own_result = escort_success OR leader_defeated. 둘다 false면 실패. 아테나 실제 수신과 자기 계획 오류 인정은 해당 결과를 본 청중에 한정."
+      }
+    ],
+    "branches": [
+      {
+        "branch_key": "REARGUARD",
+        "available_when": "마지막 이동자·위탁물·우회로 동의 확인",
+        "actual_action": "소유자가 P1/P2에서 각각 살아 있는 위협의 사선을 엄폐로 끊은 상태1초를 실제 유지하고, 마지막 이동자12블록 안에서 두 엄폐 구간을 함께 지나 E에 도착한다. 마지막 이동자가 E에 도착·위탁물을 인수한 뒤 소유자도 E로 귀환한다.",
+        "result": "escort_success=true는 마지막 사람 생존+짐 인수+소유자 실제 귀환 때. 남은 적은 alive 상태 그대로이고 제거 사실0.",
+        "main_complete": true
+      },
+      {
+        "branch_key": "PURSUIT",
+        "available_when": "실제 우두머리 UUID와 접근 가능한 경로 확인",
+        "actual_action": "소유자가 해당 우두머리에 유효 공격 또는 추격 경로의 사선 차단/견제 역할을 실제 수행하며 제압에 참여한다. 표적 사망/항복은 기존 서버 지원 결과만 인정하고 동료의 처치 단독복사0.",
+        "result": "leader_defeated와 사람/짐 결과를 별도로 저장. 우두머리 제압에 실제 기여하고 소유자가 안전선 귀환하면 MAIN 결과 성립. 철수 기여 없는 사람에게 지도권은 발생하지 않는다.",
+        "main_complete": true
+      },
+      {
+        "branch_key": "BOTH_LOST",
+        "available_when": "시도180초 종료 또는 소유자가 위험 철수 요청",
+        "actual_action": "현재 생존자/짐 위치와 적 상태를 확인하고 가능한 안전 철수.",
+        "result": "실제 제압0이고 사람/짐 보존0이면 MAIN 완료0. 실패 책임을 성공 대사로 포장하지 않는다.",
+        "main_complete": false
+      }
+    ],
+    "dependencies": "헤라클레스의 기존 인연은 선택 협력. 현재 동일 본체와 실제 요청/수락이 있을 때 지정 장애물1개 제거만 맡는다. 부재/거절이면 기존 안전 우회를 사용한다. 다이달로스의 현재 설계·부활·승인을 요구하지 않는다.",
+    "failure": "시도 종료는 남은 실제 적을 소멸시키거나 죽은 적을 부활시키지 않는다. 같은 남은 위협·현물로 미완료를 이어 가며 완료한 제압/인수는 되감지 않는다. 위협이 모두 사라졌는데 양쪽 결과가 실패라면 그 손실을 보존하고, 재도전은 이후 실제 다른 약탈 위협을 확인한 새 attempt로만 연다. 로그아웃은 시도시계가 흐르지만 전체 소유 유지. 유효기여 뒤 사망한 참가자는 기여 기록을 보존하되 소유자 최종 결과 확인/귀환은 생존 복귀 후 직접 한다. 실제 사망한 일반 배우를 부활시키지 않는다.",
+    "completion": "선택 분기의 실질 성과 하나 이상과 소유자의 실제 기여/귀환/보고 수신. 안전 답사만으로 완료 불가. 비소유 도움자는 MAIN은0이나 자신의 실제 후미 철수 성공 기여에 따른 지도권은 별도 가능.",
+    "rewards": [
+      {
+        "reward_definition_id": "mythictrpg:p0m1_athena_rearguard_instruction",
+        "kind": "learn_skill_after_lesson",
+        "recipient": "실제 성공 철수에 기여한 각 UUID, 소유자와 독립",
+        "lines": [
+          {
+            "content_ref": "mythictrpg:greek_olympus_athena_rearguard_step",
+            "count": 1
+          }
+        ],
+        "earned_condition": "그 참가자가 P1/P2 중1곳 이상에서 실제 엄폐를 유지하며 후미와 함께 E 귀환+사람/짐 인수 성공. 이후 자기 선택 지도 실연 완료",
+        "limit": "개인 최초 1회",
+        "delivery": "공통 수령 원장 규약. 실제 수행/권리 생성/실수령은 별도. 가방 부족은 바닥 드롭 없이 미수령 보존. 이미 지급된 줄은 다시 지급하지 않는다."
+      }
+    ],
+    "services": [
+      {
+        "definition_id": "mythictrpg:p0m1_athena_rearguard_lesson",
+        "title": "후미 교대 실연",
+        "kind": "optional_skill_instruction",
+        "entry": "개인 철수 기여권+아테나 실제 대면+평탄한 뒤공간3블록+자기 기존 장비",
+        "steps": "첫 설명을 실제 듣고 K/J의 임시 연습권으로 후미 교대를2회 수행한다. 각 시도는 뒤2.4블록 이동 끝에 지정 엄폐의 가려진 영역에 서야 성공. 시선 고정 뒤 방향과 충돌/지지면 정지를 그대로 적용한다. 연습공간의 피해0 표시선은 몬스터 공격이 아니며 무적 보상이 아니다.",
+        "quantity": "정상2회; 실패 교정은 같은 권리로 반복",
+        "time": "4~7분, 전체 제한 없음; 스킬쿨160tick 유지",
+        "cost": "시도마다 마나20, 기본200과 초당2 회복 사용; 추가 아이템0",
+        "completion": "실제 설명수신+성공2회 뒤 기존 OLY-ATH-L01 동일 skill_id learn_skill1. 실패/지도 사양은 MAIN을 되돌리지 않는다.",
+        "failure": "벽에 걸리면 그 시도 실패, 이미 성공한1회 보존. 마나/쿨 환불0. 준비 부족·끊김이면 잔여 연습만 재개.",
+        "content_ref": "mythictrpg:greek_olympus_athena_rearguard_step",
+        "skill_key_parameters": {
+          "mana": 20,
+          "cooldown_ticks": 160,
+          "distance": 2.4,
+          "move_ticks": 4,
+          "invulnerability_ticks": 0,
+          "timing": "[0,2)준비,[2,6)이동,[6,10)후딜",
+          "intrinsicPower": 15
+        },
+        "adoption": "기존 실제 참가자 지도에서 성능이 미정이던 부분을 최신 전투보상 OLY-ATH-L01에 연결. 기존 원문 비수치 연습은 출처 보존이며, 현재는 실연 뒤 독립 습득 기술을 주는 작업기준. 무기·가호·주시 추가0."
+      }
+    ],
+    "dialogue": [
+      "“돌아오는 돌은 어디 있지? 이번에는 내 판에도 빠졌군.”",
+      "“쫓아간 적과 돌아온 사람을 한 줄에 쓰지 마.”",
+      "“그 어깨가 보인다. 숨긴 뒤에 바꿔.”"
+    ],
+    "balance": "후미 교대는 마나20/쿨8초의2.4블록 후퇴이며 무적·도발·아군 이동0. 정확한 위치교대 가치만 준다. 추격 성과는 인정하되 실제 후미 경험 없는 사람에게 기술권을 복제하지 않는다. 수치와 성공률은 정적 기획이며 실전검증 필요.",
+    "extensions": [
+      "실제 위협/짐/동행자 결속 및 시도명부",
+      "피해순위 아닌 엄폐·동행·추격 기여 증거",
+      "OLY-ATH-L01의 충돌 sweep·지지면 검사·공통 입력잠금",
+      "임시 연습권과 영구 learn_skill 구분"
+    ],
+    "tests": [
+      [
+        "추격만 성공",
+        "MAIN 결과 가능, 철수기여 없는 사람의 후미교대권0."
+      ],
+      [
+        "비소유 후미기여자",
+        "지도 가능, MAIN 소유/완료 복제0."
+      ],
+      [
+        "위협 없음",
+        "안전 답사만, 실전성공0."
+      ],
+      [
+        "벽 뒤 대시",
+        "충돌정지, 무적/벽통과0."
+      ],
+      [
+        "지도 거절",
+        "완료 유지 및 미수강권 보존."
+      ]
+    ],
+    "additional_side_quests": [
+      {
+        "definition_id": "mythictrpg:p0m1_athena_return_guard_commission",
+        "title": "별도 SIDE · 마지막 한 수를 남긴 검",
+        "kind": "SIDE",
+        "separate_from_main": true,
+        "predecessors": [
+          "mythictrpg:greek_olympus_athena_rearguard_step learned"
+        ],
+        "entry": "후미 교대 실제수료자 개인에게만 별도설명/수락. MAIN 소유자일필요없으며 성공철수도움자도 자기수료권으로가능. 아테나가자기 소유훈련용퇴로검1자루를조건부 증여하기로실제제시하고실재고를예약한다. 상징원본검탈취/복제0.",
+        "duration_minutes": [
+          8,
+          12
+        ],
+        "time_limit": "전체 기한 없음; 훈련1패턴20초, 미성공패턴만무료재시도",
+        "cost": "별도재료0, 훈련각시전마나28/기존쿨200tick. 자체준비장비/식량의정상소모외강제비용0.",
+        "objectives": [
+          {
+            "objective_key": "receive_loan",
+            "action": "예약된 same content_id 퇴로검1자루를 훈련대여 상태로 실제 인수한다.",
+            "quantity": 1,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [],
+            "completion_evidence": "아테나소유재고1→대여serial. 영구획득권/전투 점수는아직0. 훈련장밖기술/판매/양도불가."
+          },
+          {
+            "objective_key": "front_parry",
+            "action": "안전시험장의명시허용 정면훈련투사체2회에실제우클릭패링을성공하고 t=6 응수대상에맞힌다.",
+            "quantity": 2,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "receive_loan"
+            ],
+            "completion_evidence": "시도별실제 방향/거리/입력창[2,6)/첫사건1개/응수타격콜라이더. 훈련피해0, 전투 처치/공로로집계0."
+          },
+          {
+            "objective_key": "leave_the_line",
+            "action": "패링불가로명시된 바닥띠예고1.5초를보고 후미교대로범위밖 엄폐에실제로이동한다.",
+            "quantity": 1,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "front_parry"
+            ],
+            "completion_evidence": "실제몸충돌체가 폭2×길6블록 띠 밖. 패링으로기믹을지우면실패. 새무적/타인강제이동0."
+          },
+          {
+            "objective_key": "accept_gift",
+            "action": "실연결과를아테나에게실제확인받고 원대여serial의증여를명시수락한다.",
+            "quantity": 1,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "leave_the_line"
+            ],
+            "completion_evidence": "같은원물의소유이전+최초획득entitlement1+journal. 가방에이미있는대여품을새검으로중복 지급0."
+          }
+        ],
+        "completion": "자기실연2+위치이동1+현재제공자확인. 본 MAIN 완료를조건부소급변경하지않는다.",
+        "reward": {
+          "reward_definition_id": "mythictrpg:p0m1_athena_return_guard_first",
+          "content_ref": "mythictrpg:greek_olympus_athena_return_guard",
+          "management_key": "OLY-ATH-W01",
+          "count": 1,
+          "limit": "개인 최초1회·기존 콘텐츠동일 권리",
+          "acquisition_right": "이미같은콘텐츠를적법취득한기록이있으면동일 권리에연결하고새독립획득/두번째검0.",
+          "adopted_values": "희귀·신제무한내구·기본공격총7/속도1.6, 우클릭마나28/쿨200tick/정면100도1건패링·응수피해6/거리2.5. 현재효력은기존 동일ID전투명세가권위이며이문서는획득경로만닫는다."
+        },
+        "failure": "패링실패/충돌은해당패턴만재시도. 마나·쿨초기화0. 대여분실/서버중단은원장/serial대조후같은위탁만복구. 중도반납이면 SIDE 보류, 기존 MAIN/학습권유지. 완료후반복훈련은추가 물품0.",
+        "knowledge": "실제훈련자와아테나만수료/증여를안다. 관전자에게 MAIN/기술/무기권복제0.",
+        "implementation": "비생물훈련콜라이더·태그 훈련투사체의0피해시뮬레이션과실패위치판정은신규요구. 실제전투의허용피해표/보스기믹예외를확장하지않는다.",
+        "stock_table": {
+          "provider": "아테나가 제공하기로 한 자기 소유 퇴로검 공급재고",
+          "initial_units": 10,
+          "allocation": "첫 수료자5+후발 수료자5 계획량. 유일 신화 원본이 아닌 같은 설계의 보급품이며 각각 개별 실물serial",
+          "reservation": "현재 존재하는 미예약 실물1을 해당 신규 개인 SIDE 수락에 예약. 실제 재고준비 전 수락0",
+          "deduct": "실제 대여 뒤 증여완료 때 예약→개인소유. 같은 실물 전환이라 새검 spawn0",
+          "refill": "초기10 소진 후 자동 재생 없음. 아테나가 적법 취득해 실제 자기재고에 추가한 동일품을 최대5개 배치 단위로 등록할 때만 새 수락. 새로운 공급자/제작자를 발명하지 않음",
+          "budget": "B3 누적: 실제 철수20~35분+후미지도4~7분+별도 실습8~12분, 기존 교육 기술1+희귀 주보상1. MAIN 비소유자의 자기 기여 이력을 그대로 사용."
+        }
+      }
+    ],
+    "definition_id": "mythictrpg:p0m1_athena_personal_main",
+    "kind": "PERSONAL_MAIN",
+    "source_episode_id": "PE-MG-S01-007-01",
+    "predecessors": [],
+    "common_contract_ref": "00_공통실행계약.json",
+    "runtime_ready": false,
+    "authored_complete": true,
+    "knowledge_definitions": [
+      {
+        "fact_definition_id": "mythictrpg:p0m1_athena_fact_route_flaw",
+        "statement": "공격안에서 빠진 뒤턱의 실제 폭/귀환 문제가 드러났다.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "실제 답사자와 보고를 받은 아테나.",
+        "disclosure": "자기 반례를 하지 않은 친구에게 복사 금지.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_athena_fact_field_outcome",
+        "statement": "추격제압과 사람/짐보존의 실제 결과는 다르다.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "실제 현장관측 및 출처 있는 결과 수신자.",
+        "disclosure": "사적 피해내역은 소유/피해 당사자 허락 범위.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_athena_fact_accountability",
+        "statement": "아테나가 자신의 공격안의 빈틈을 현재 참가자 앞에서 인정했다.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "그 발화를 실제 들은 청중.",
+        "disclosure": "전세계 자동 소문/전술승리 선언 금지.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_athena_fact_lesson",
+        "statement": "특정 참가자가 후미 교대 실연을 끝냈다.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "본인과 실제 지도한 아테나.",
+        "disclosure": "개인 learn_skill receipt, 다른 참가자 자동학습0.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      }
+    ]
+  },
+  "persona_application": {
+    "rule": "원문 original_profile의 성격·말투·관계·제한을 유지한다. 아래 대사는 실제 현재 접촉·청중·이전기억 조건에서만 선택하는 예시이며 고정 정답대사/사전완료기억으로 적재하지 않는다.",
+    "scene_lines": [
+      "“돌아오는 돌은 어디 있지? 이번에는 내 판에도 빠졌군.”",
+      "“쫓아간 적과 돌아온 사람을 한 줄에 쓰지 마.”",
+      "“그 어깨가 보인다. 숨긴 뒤에 바꿔.”"
+    ],
+    "profile_quest_links_design": [
+      "mythictrpg:p0m1_athena_personal_main",
+      "mythictrpg:p0m1_athena_return_guard_commission"
+    ],
+    "runtime_profile_mutated": false
+  },
+  "acceptance_status": {
+    "authoring": "목표/분기/원장/지식/비용/시간/재개/현재보상값 작성완료",
+    "static_review": "동봉 내부검증 참조; 실제실행검증아님",
+    "runtime": "정의등록·로더변환·서버시험 미수행"
+  },
+  "integration_targets": {
+    "페르소나": "원문profile 유지+조건부 장면 말투/quest연결 설계",
+    "스토리": "현재세계경계+원문결말을 보존한 실제분기 결과",
+    "퀘스트": "new_execution_decisions의MAIN·SIDE·서비스·획득연결·운영값",
+    "지식": "knowledge_definitions의 event 기반 Fact/Knowledge 분리"
+  }
+}

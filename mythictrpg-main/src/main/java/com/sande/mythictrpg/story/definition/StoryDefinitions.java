@@ -32,7 +32,9 @@ public final class StoryDefinitions {
         GRANT_KNOWLEDGE,
         SCHEDULE_EVENT,
         RELATION_TRANSITION,
-        EMIT_PRESENTATION
+        EMIT_PRESENTATION,
+        GRANT_REWARDS,
+        RECOVER_REPUTATION
     }
     public enum ScopeSelector { EVENT_SCOPE, SERVER, TRIGGER_PLAYER, TRIGGER_TEAM }
     public enum HolderSelector {
@@ -222,7 +224,8 @@ public final class StoryDefinitions {
     }
 
     public sealed interface Effect permits Effect.SetFact, Effect.SetActorState, Effect.MoveActor,
-            Effect.GrantKnowledge, Effect.ScheduleEvent, Effect.RelationTransition, Effect.EmitPresentation {
+            Effect.GrantKnowledge, Effect.ScheduleEvent, Effect.RelationTransition, Effect.EmitPresentation,
+            Effect.GrantRewards, Effect.RecoverReputation {
         ResourceLocation effectId();
         EffectType type();
 
@@ -292,18 +295,45 @@ public final class StoryDefinitions {
             public EmitPresentation { requireEffect(effectId, presentationId, audience); }
             @Override public EffectType type() { return EffectType.EMIT_PRESENTATION; }
         }
+        /** Inline rewards are part of the event fingerprint; later table edits cannot change pending payouts. */
+        record GrantRewards(ResourceLocation effectId, ResourceLocation godId,
+                List<com.sande.mythictrpg.quest.reward.RewardEntry> rewards) implements Effect {
+            public GrantRewards {
+                requireEffect(effectId, godId); rewards = List.copyOf(rewards);
+                if (rewards.isEmpty() || rewards.size() > 16) throw new IllegalArgumentException("Story reward limit");
+                var check = com.sande.mythictrpg.quest.reward.RewardExecutionService.validateAuthored(rewards,
+                        com.sande.mythictrpg.quest.reward.RewardGrantPurpose.QUEST);
+                if (!check.allowed()) throw new IllegalArgumentException(check.reason());
+            }
+            @Override public EffectType type() { return EffectType.GRANT_REWARDS; }
+        }
+        record RecoverReputation(ResourceLocation effectId, ResourceLocation godId,
+                ResourceLocation policyId, ResourceLocation reasonId) implements Effect {
+            public RecoverReputation { requireEffect(effectId, godId, policyId, reasonId); }
+            @Override public EffectType type() { return EffectType.RECOVER_REPUTATION; }
+        }
     }
 
     public record OutcomeDefinition(ResourceLocation id, int weight,
             Optional<ConditionNode> additionalConditions, List<Effect> effects,
-            Optional<String> displayName, Optional<String> description) {
+            Optional<String> displayName, Optional<String> description, OptionalInt luckQuality) {
         public OutcomeDefinition(ResourceLocation id, int weight,
                 Optional<ConditionNode> additionalConditions, List<Effect> effects) {
-            this(id, weight, additionalConditions, effects, Optional.empty(), Optional.empty());
+            this(id, weight, additionalConditions, effects, Optional.empty(), Optional.empty(), OptionalInt.empty());
+        }
+
+        public OutcomeDefinition(ResourceLocation id, int weight,
+                Optional<ConditionNode> additionalConditions, List<Effect> effects,
+                Optional<String> displayName, Optional<String> description) {
+            this(id, weight, additionalConditions, effects, displayName, description, OptionalInt.empty());
         }
 
         public OutcomeDefinition {
             Objects.requireNonNull(id, "id");
+            Objects.requireNonNull(luckQuality, "luckQuality");
+            if (luckQuality.isPresent()) {
+                com.sande.mythictrpg.quest.reward.luck.LuckModel.quality(luckQuality.getAsInt());
+            }
             if (weight < 1 || weight > 1_000_000) {
                 throw new IllegalArgumentException("Story outcome weight must be within 1..1000000");
             }

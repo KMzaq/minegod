@@ -1,0 +1,74 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S03-062",
+  "name": "나네페르카프타",
+  "definition_id": "ACTIVATION-RPG-S03-062",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "direct_contact_A_adopted",
+    "world_unlock": {
+      "rule": "새 세계해금 행동 없음. 원문 마법 책을 가진 무덤의 동일 인물과 기존 묘실 현장에서 직접 접촉하는 A안을 현행 최초접근/조우 계약으로 채택. 책 반환·아후라 유해 확인·이장을 일반 인사의 선행으로 만들지 않음.",
+      "completion_count": 0,
+      "scope": "기존 접근 유지/별도 세계 행동과제 없음",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "기존 묘실/책대 접근로의 허용 안전점에 현재 도달한 실제 플레이어1명. 책·유해 소지/기존 MAIN/선행 본인응답0. 신규 첫 배치 경로는 같은 actor를 묘실의 기존 책대 옆 안전자리로 연결; 현재 본체가 실제 존재하면 확률 없이 직접 접촉. 사망/봉인/기존본체 미로드는 최초미배치가 아니며 생성으로 우회0.",
+      "site_source_ref": "인물입력/P0_MAIN-005/RPG-S03-062.json#/current_record/outline/stage2_proposal/separate_access_states/present_encounter",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "기존 묘실의 동일 존재 직접접촉 A; 기존 최초 발생 무작위 경로는 전역 운영 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "상급·비신격·문학 인물·마법책/무덤의 동일 정체 보존. 살아있는 육체·유령·영혼·부활·분신·원격투사·현신 능력·묘실 밖 이동권능 어느 것도 새로 결정하지 않는다. 사용자 직접 보류 근거는 확인되지 않았고 일반 위임으로 현장 접촉 연결을 해결함.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다.",
+    "direct_A": {
+      "identity_source": "기존페르소나_인물별/RPG-S03-062/authoring_contract.json#/exact_master_record/active_authoring/source_fact/value",
+      "identity_quote": "마법 책을 가진 무덤의 인물",
+      "site": "기존 061 부지의 허가된 복도/책대5×5와 062 기존 공동묘실을 참조. 동일 canonical actor의 책대 옆 충돌 없는 기존 바닥 접견자리1곳. 새로운 무덤·시신·생사 상태·외부투사 모델 생성0. 061/062 부지가 다른 구역이면 실제 기존 이동 가능 범위 안의 같은 존재만 만나며 동시에2곳에 생성0.",
+      "contact_evidence": "동일 actor/body UUID, 현재 묘실 site, 실제 청중 및 시야·유효 거리 확인. 일반 말걸기/응답은 본체와 4블록 이내·가림없음·수신가능, 손으로 물품조작은 기존2블록/운반3블록 규칙 그대로. 본인 자발적 유효 감각/비언어반응에 발화 의사 강제0.",
+      "061_response": "기존 MAIN 소유자·반환/보존 실증거를 확인하고 나네페르카프타 본인이 실제 허락/거절/보류. 허락은 PAGE-061-MARGIN-01 한쪽과 허가받은 UUID만, 실제열람 후 지식. 거절은 원문 무열람 결말 가능. 부재/미응답은 반환단계 완료+접견 PAUSED이며 전체MAIN 완료 아님.",
+      "062_response": "본인 실제 접견에서 아후라 원본유해 UUID·현재안치소·취급권한·목적지 확인과 실제허가를 접수한 뒤 물리이장. 안치 뒤 원본 출발부재/목적존재·봉합·당사자의 실제 확인 또는 실제 보고접수 모두 필요. 세트나 부재 때 동의한 운반자 대체 가능하나 허가자/최종응답자를 대체하지 않는다.",
+      "absence": "현재 실제 본체 부재·미로드·접근불가·응답보류이면 기존 허용 준비/보관만. 새 허가/거절/보고 접수/완료를 기록대역으로 만들지 않음. 이미 허가된 안전 작업의 지속여부는 기존 개인팩 단계에 따르며 부재를 새허가로 보지 않음.",
+      "precedence_patch": "P0_MAIN-005 /인물/6/추가특약/0 및 /인물/7/추가특약/0의 저술상 접촉모드 보류만 본 A안 채택으로 해소. 실제 현재 접근/허가/최종확인 요구는 유지. 원문과 기존 public값 자체는 수정하지 않음.",
+      "no_canon_change": "아후라 유해·기억 역할, 기존 관계·책권리·두 MAIN 소유·무보상/조건부 열람 결말 보존. 부활·영혼·유령·현신·원격·분신·새생사 결정0."
+    }
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P0_MAIN-005/RPG-S03-062.json",
+      "record_key": "RPG-S03-062",
+      "pointers": [
+        "/current_record/outline/stage2_proposal/separate_access_states/world_unlock_history",
+        "/current_record/outline/stage2_proposal/separate_access_states/present_encounter"
+      ],
+      "sha256": "7a36b01eca2fe6cfda006820df220a83c27dfad052da96b4ec7696f71d800f27"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P0_MAIN-005/P0_MAIN-005_통합기획.json",
+      "record_key": "RPG-S03-062",
+      "pointers": [
+        "/인물/7/개인MAIN",
+        "/인물/7/추가특약"
+      ],
+      "sha256": "b5a14403a878a6a1d185b91233b967de78fd1fef9d78b461863a0b6d4e7b6b9e"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P0_MAIN-005/P0_MAIN-005_통합기획.json",
+      "record_key": "RPG-S03-061",
+      "pointers": [
+        "/인물/6/개인MAIN/단계/2",
+        "/인물/6/개인MAIN/분기/2",
+        "/인물/6/추가특약/0"
+      ],
+      "sha256": "b5a14403a878a6a1d185b91233b967de78fd1fef9d78b461863a0b6d4e7b6b9e"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

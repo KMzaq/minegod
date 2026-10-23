@@ -1,0 +1,40 @@
+{
+  "status": "REVIEWED_DEFINITIONS_LINKED_NOT_RUNTIME",
+  "runtime_ready": false,
+  "canonical_editorial_key": "C03_FIRST_ROLE_CHOICE",
+  "references": [
+    {
+      "name": "C03-C 실제 전투와 회수 구분",
+      "file": "../본편전투/보조전투/보조전투_기획.json",
+      "pointer": "/scenes/1",
+      "definition_sha256": "b11a5f1aa68fd706312aa39939fb19e6b9876590cba9d88ca00726c0dd417f7d"
+    },
+    {
+      "name": "공통 실제 기여 판정",
+      "file": "../본편전투/보조전투/보조전투_기획.json",
+      "pointer": "/common/참가와기여",
+      "definition_sha256": "b11a5f1aa68fd706312aa39939fb19e6b9876590cba9d88ca00726c0dd417f7d"
+    },
+    {
+      "name": "최초 장비 선택권 단일 정의",
+      "file": "공용보상과성장_기획.json",
+      "pointer": "/C03_choice",
+      "definition_sha256": "a93a87616b6174018506f8d430c167e99b1944771f8d84739b362c2bdee7ebce"
+    },
+    {
+      "name": "회수만 성공한 기존 활동 보급",
+      "file": "공용보상과성장_기획.json",
+      "pointer": "/ordinary_supply/C03_C_recovery",
+      "definition_sha256": "a93a87616b6174018506f8d430c167e99b1944771f8d84739b362c2bdee7ebce"
+    },
+    {
+      "name": "권리 원장",
+      "file": "공용보상과성장_기획.json",
+      "pointer": "/ledger",
+      "definition_sha256": "a93a87616b6174018506f8d430c167e99b1944771f8d84739b362c2bdee7ebce"
+    }
+  ],
+  "binding": "보조전투 정의의 C03-C 지정9체 실제 전투승리와 최초 실제 검증기여가 장비 선택권 정의의 자격 근거다. 장비3개 중1개 수량1·반복0 및 원래 원장은 공용보상 정의만 소유한다. 이 연결문서는 새 보상/전리품/권리/등록ID를 발행하지 않는다.",
+  "recovery_only": "짐 회수만으로 전투승리·장비 선택권을 만들지 않는다. 회수 활동 보급은 지정 별도 참조만 적용한다. 두 경로의 영수증을 혼동하지 않는다.",
+  "implementation": "실제 사건UUID·개인기여·권리 및 재고의 어댑터/등록·서버시험은 미실행. 저술 정의의 포인터와 동일키 연결만 검증됐다."
+}

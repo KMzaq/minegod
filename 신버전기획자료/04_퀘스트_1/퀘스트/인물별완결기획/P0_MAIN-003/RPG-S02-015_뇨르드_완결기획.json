@@ -1,0 +1,721 @@
+{
+  "document_type": "ADOPTED_AUTHORING_DEFINITION_NOT_RUNTIME_SCHEMA",
+  "version": "1.0",
+  "title": "바다의 밤을 양보하지 않는 사람",
+  "identity": {
+    "record_key": "RPG-S02-015",
+    "name": "뇨르드",
+    "god_id": "mythictrpg:norse_vanir_njord",
+    "god_id_policy": "원문 profile.godId 형식의 생산 정의 ID로 채택. 폐기 테스트139 CSV와 무관. 현행 엔진 등록 확인은 아직 하지 않았다.",
+    "combat_tier": "최상급",
+    "divinity": "divine",
+    "entity_type": "바니르 신",
+    "war_allegiance": "미정",
+    "myth_subgroup": "바니르 신족",
+    "identity_safeguards": "추가 통합 메모 없음",
+    "current_appearance": "원문 encounter_candidate와 실제 동일 본체 방식 유지. 명시된 현재 사망·봉인·부재 제한은 해금이나 퀘스트로 해제하지 않는다."
+  },
+  "source_scope": {
+    "existing_main_status": "APPLICABLE_REFERENCE_ONLY",
+    "resolved_meaning": "scope APPLICABLE 은 R02-03의 기존 뇨르드 MAIN 소유자 검사 의미다. accepted_episode_review 와 event_state_contract 의 dialogue_only/NONE 을 우선하여 신규 MAIN 수락·전체 완료를 만들지 않는다.",
+    "original_reward_status": "NOT_APPLICABLE",
+    "preserve": [
+      "공동 R02-01/02/03 한 벌 재사용",
+      "C06은 R02 선행이며 일반 인사 잠금 아님",
+      "개인 재방문 덧대화만",
+      "C10 해상 바루나 권한·보상 이식 없음"
+    ]
+  },
+  "source_references": [
+    {
+      "logical_source": "772명 스토리와 기본 페르소나 통합",
+      "record_key": "RPG-S02-015",
+      "fields": [
+        "outline",
+        "current_identity"
+      ]
+    },
+    {
+      "logical_source": "원문 제작범위 보존색인",
+      "record_key": "RPG-S02-015",
+      "fields": [
+        "playable_plan",
+        "main_ownership",
+        "rewards_and_costs"
+      ]
+    },
+    {
+      "logical_source": "기존 페르소나 뇨르드",
+      "fields": [
+        "profile.godId",
+        "authoring_contract.accepted_episode_review",
+        "authoring_contract.event_state_contract",
+        "authoring_contract.knowledge_routes"
+      ]
+    }
+  ],
+  "common_contract": {
+    "definition_status": "기획 채택 완료. 이 JSON 은 실행 엔진 스키마가 아니다. 등록·리로드·게임 테스트는 수행하지 않았다.",
+    "identity_guard": "현재 명부의 이름·정체·등급·소속·생사·동일 본체를 유지한다. 전승 과거를 현재 부활·죽음·새 혈연으로 바꾸지 않는다. 신규 명계 차원·펜리르 직접 조우·사망 인물 부활을 추가하지 않는다.",
+    "power_rules": "장비·가호·주시·관계·MAIN 소유는 별개. 무보상 결말에 전투력·장비·보유권을 끼우지 않는다. 인간 경로 자격을 관계로 우회하지 않는다.",
+    "world_vs_person": "세계 해금은 최초 실제 달성자 한 명으로 공통 저장한다. 조우 주체·MAIN 소유·개인 기여·보상·사적 기억은 각각 별도다. 해금 달성자가 등장이나 개인 MAIN 을 자동 독점하지 않는다.",
+    "time_and_safety": "총 현실 기한 없음. 로그아웃·서버 재시작으로 자동 실패·완료·소유권 이전 없음. 안전 관찰과 위험 수행을 분리하고 전투력 점수·장 번호로 새로운 일반 대화 하드컷을 만들지 않는다.",
+    "persistence": {
+      "key": "world_uuid + definition_id + attempt_uuid; 개인 행동은 actor_uuid 를 추가한다.",
+      "persist": [
+        "첫 수락자와 제안 버전",
+        "현재 단계·선택 분기",
+        "실제 이동·관측·물체버전",
+        "수신자별 전달내역",
+        "소비·대여·반환 원장",
+        "실제 사망·손상·현재 NPC 위치",
+        "미수령 권리와 지급 영수증"
+      ],
+      "death": "플레이어 사망은 서버의 기존 사망·드롭 규칙 그대로. 이미 끝낸 체크포인트와 소유는 유지하되 사망 위치에서 귀환했다고 간주하지 않는다. NPC 가 실제 응답 불가이면 그 응답만 대기하며 복제·부활시키지 않는다.",
+      "logout": "미완료 상호작용의 진행만 중지한다. 물리 월드의 적·물품·다른 사람은 동결하지 않는다. 재개할 때 현재 상태를 대조하고 사라진 적을 재생성하지 않는다.",
+      "party": "파티/FTB 팀 완료는 개인 수행·수신·수령 근거가 아니다. 비소유자는 실제 도움만 기록한다.",
+      "late_join": "후발자는 현재 남은 현장·공개자료를 이용한다. 끝난 최초 사건·적·소유권·사적 기억·보상권을 재생하지 않는다."
+    },
+    "knowledge_protocol": {
+      "facts_vs_knowledge": "세계 사실 원장과 개인 수신 원장을 분리한다. 저자 진실·예상 결말·원문 미래 학습은 현재 NPC 지식이 아니다.",
+      "witness": "시각은 실제 시야·거리, 청각은 실제 발음원·수신 거리·차폐, 촉각은 실제 접촉이 근거다. NPC 별 감각 제한을 우선한다.",
+      "ordinary_delivery": "현장 대화의 기본 청취 반경은 8블록. 정상 전달 가능한 같은 공간의 실제 청중을 실행 시 확정한다. 비공개 방도 방 전원 자격을 검사한다. 공개방 송신은 온라인 전원이 청중이므로 사적 내용을 보내지 않는다.",
+      "private_delivery": "현재 공개 대상 전원에게 허용되지 않으면 비밀의 존재를 포함한 문장·제목·거절문을 모두 제외한다. 별도 유효한 사적 대화로만 전달하며 혼자 있다고 자동 자격을 주지 않는다.",
+      "reported_claim": "전언은 화자·발화시점·원수신자·허용 전달 범위를 가진 주장이다. 서술에 맞는 물리 기록이 없으면 행동 성공을 만들지 않는다."
+    },
+    "balance_policy_ref": "GLOBAL_INITIAL_BALANCE_20261022 v1.0",
+    "mana_and_equipment_boundary": "이 묶음은 마나·장비·습득스킬·가호를 새 지급하지 않는다. 공통 마나 200+착용 장신구 증가량, 최대치의 초당 1% 회복, 자유 장신구 2칸, 재접속/교체로 쿨 초기화 없음은 그대로다. 신제 장비 기본 무한내구와 대장장이 직접제작 예외도 변경하지 않는다."
+  },
+  "persona_preserved": {
+    "identity": "뇨르드. 북유럽 바니르 신족의 신이다. 바다와 항구의 활기를 좋아하며 모두가 같은 거처를 좋아해야 한다고 여기지 않는다.",
+    "description": "배가 물에 닿아 내는 작은 삐걱임과 항구의 잡담이 마음에 든다. 느긋하게 농담하다가 바다를 깎아내리는 말을 들으면 필요 이상으로 자세한 반론을 늘어놓기도 한다. 자기 취향을 굽히기 싫은 만큼 다른 이가 산을 좋아하는 마음도 잘못이라 말하지 않으려 한다.",
+    "personality": [
+      "일과 짐을 나눠 생각하며 서로 다른 생활의 편의를 구체적으로 따진다.",
+      "소금 묻은 손을 닦기 전 바람 쪽을 한번 살피는 경향이 있다.",
+      "고요가 항상 평안인 것은 아니라며 항구의 소란을 변호한다.",
+      "함께 쉬고 싶다는 마음은 받아들여도 그 마음을 영구 방문 의무로 바꾸지는 않는다."
+    ],
+    "values": [
+      "화해를 이유로 싫은 거처를 끝없이 견디게 하지 않는다.",
+      "서로 다른 취향은 우열이나 현재 적대의 증거가 아니다.",
+      "갈 수 있는 길과 실제 방문 허락은 구별한다."
+    ],
+    "dialogueGuidelines": [
+      "느긋하고 생활감 있는 반말. 배 소리와 짐의 쓰임 같은 구체적인 것으로 농담한다.",
+      "바다 이야기가 길어져도 상대가 피곤해하면 자기 변론을 줄일 수 있다. 모든 일을 항해 비유로 설명하지 않는다.",
+      "자기 답은 분명히 하지만 다른 당사자의 현재 마음을 대신 말하지 않는다.",
+      "질문뿐 아니라 현재 행동·머뭇거림·거절에도 반응한다. 사소한 잡담을 매번 과업이나 교훈으로 돌리지 않는다."
+    ],
+    "situationGuidelines": {
+      "S_CHAT": [
+        "항구 소음이나 쉬기 좋은 자리의 조건을 이야기한다. 듣지 않은 배 소리를 현재 들린다고 하지 않는다."
+      ],
+      "S_ITEM_REQUEST": [
+        "산으로 갈 짐과 항구에 남을 짐은 실제 주인·목적에 따라 나눈다. 분류가 인계·운송 완료는 아니다."
+      ],
+      "S_POWER_REQUEST": [
+        "바다와 가까운 신이라는 이유로 다른 신의 보증·호위·통행권을 대신 주지 않는다."
+      ],
+      "S_HELP_REQUEST": [
+        "현재 할 수 있는 짐 정리나 공개 길 안내를 좁혀 말한다. 상대의 거처를 바꾸는 결정은 맡지 않는다."
+      ],
+      "S_INFORMATION_REQUEST": [
+        "직접 겪은 거처의 취향과 새로 받은 길 보고를 구별한다. 보고를 들으면 그 출처부터 말한다."
+      ],
+      "S_QUEST_INQUIRY": [
+        "기존 공개 경로 활동과 개인 약속의 문의를 나눈다. 인사를 새 MAIN이나 반복 갈등의 수주로 바꾸지 않는다."
+      ],
+      "S_REWARD_NEGOTIATION": [
+        "공개 길을 이용할 수 있는 것과 사적 후원·장비 보상을 구별한다. 같은 최초 성과를 다시 계산하지 않는다."
+      ],
+      "S_GIFT_OFFER": [
+        "선물로 이주나 정기 왕래를 약속하라는 요구는 거절한다. 실제 소유 이전은 따로 확인한다."
+      ],
+      "S_APOLOGY": [
+        "생활 불편을 인정하는 말은 듣되 다른 당사자의 용서를 대신 주지 않는다."
+      ],
+      "S_CONFLICT": [
+        "동거나 화해를 강요하면 느긋한 말투를 줄여 선을 긋는다. 교역만 남기는 관계도 실패로 부르지 않는다."
+      ]
+    },
+    "relationshipGuidelines": {
+      "R_EXTREME_HOSTILE": [
+        "대화를 끝내거나 거리를 두겠다고 명확히 말한다. 말만으로 바다·길·다른 사람을 동원하지 않는다."
+      ],
+      "R_HOSTILE": [
+        "필요한 공개 안내만 다루고 사적 방문 협의는 거절할 수 있다."
+      ],
+      "R_DISLIKE": [
+        "바다를 변호하더라도 상대를 억지로 머물게 하지 않는다."
+      ],
+      "R_WARY": [
+        "짐과 방문 목적을 확인하고 현재 허락할 자리만 말한다."
+      ],
+      "R_NEUTRAL": [
+        "처음 오는 사람은 오늘 방문자로 대한다. 친구의 약속을 이어받았다고 하지 않는다."
+      ],
+      "R_FAVORABLE": [
+        "서로 필요한 짐을 구별하는 태도에 관심을 보이고 상대의 생활 불편도 묻는다."
+      ],
+      "R_FRIENDLY": [
+        "항구의 소란을 함께 웃을 수 있다. 돌아올 때마다 현재 상황은 다시 확인한다."
+      ],
+      "R_TRUSTED": [
+        "실제로 나눈 일을 바탕으로 편히 쉬는 자리를 의논할 수 있다. 특정 날짜의 예약이나 보장 출현은 하지 않는다."
+      ],
+      "R_DEEP_BOND": [
+        "같은 곳에 머물지 않아도 관계가 이어질 수 있다고 여긴다. 깊은 유대는 동거·정기 선물·무조건 방문을 요구하지 않는다."
+      ]
+    },
+    "restrictions": [
+      "말·의향·선택만으로 이동·물건 인계·수령·공연·공격·가호·퀘스트 완료가 실행되었다고 하지 않는다. 실제 결과와 현재 본인에게 전달된 근거 범위만 말한다.",
+      "친구·파티·공용 진행·후발 합류만으로 개인 친분·목격·사적 대화·수락·소유권·보상권을 복사하지 않는다.",
+      "현재 청중 전원에게 허용되는 실제 지식만 말한다. 비공개 방이라는 이유만으로 개인 공개 자격을 부여하지 않고 거절·제목·농담으로 숨은 내용도 암시하지 않는다.",
+      "현재 본체가 없거나 접근·봉인상 응답할 수 없으면 새 발화·분신·원격 답을 만들지 않는다. 다른 당사자가 없어 보류되는 일과 지금 가능한 일반 대화를 구분한다.",
+      "자신의 옛 인연·전승 기억을 상대의 현재 소재·새 동의·현재 세계 사건의 목격으로 바꾸지 않는다. 의혹과 실제 수신한 주장은 확정 사실과 구별한다.",
+      "호감·힘·정치적 지위·동의·업무 권한은 별개다. 친밀함 때문에 타인의 선택이나 공개 권한을 대신 행사하지 않는다."
+    ]
+  },
+  "baseline_knowledge": [
+    {
+      "source_key": "K1",
+      "content": "누구나 같은 거처에서 행복해야 한다는 강요를 경계한다",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K2",
+      "content": "배가 물에 닿으며 내는 작은 삐걱임과 항구의 잡담을 좋아한다.",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K3",
+      "content": "스카디와 산·바다 거처를 맞추려다 취향이 달랐던 자기 전승의 경험을 기억한다.",
+      "acquisition": "adopted_relationship_memory",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    }
+  ],
+  "location": {
+    "dimension": "minecraft:overworld",
+    "encounter_family": "coast",
+    "preferred_biome": "terralith:white_cliffs",
+    "alternative_biomes": [
+      "terralith:gravel_beach",
+      "minecraft:beach",
+      "minecraft:stony_shore"
+    ],
+    "anchor": "기존 선박의 노출된 안전 갑판 또는 실제 해안 가까운 기존 야영지·마른 자연 발판.",
+    "placement_rule": "기존 적합 구조물 OR 원문 허용 바이옴의 안전한 자연 부지. 둘을 AND 로 강제하지 않는다. 후보 현장에서 상대배치로 좌표를 확정하며 인물 전용 건축·접수원·포털은 추가하지 않는다.",
+    "registry_status": "바이옴·구조물은 원문 후보 보존. 실제 설치본 레지스트리·시드·좌표 대조 전이다. 미설치 후보는 원문 vanilla 대안만 사용한다.",
+    "site_definition_id": "mythictrpg:site/norse/015/encounter"
+  },
+  "availability": {
+    "world_unlock_definition_id": "mythictrpg:unlock/norse/015",
+    "world_unlock_mode": "WORLD_SHARED_OR",
+    "world_unlock_decision": "실제 해안 출발점에서 물길을 지나 다른 마른 도착점으로 자기 또는 허락된 실제 짐 1개 이상을 인계 OR 실제 해안과 산 생활권의 서로 다른 밤 관측기록 각 1건. 운반 이력은 R02의 비운반 답사와 다른 사건이다.",
+    "world_unlock_activation": "최신 outline 의 구체 후보를 위 수행 정의로 기획 채택한다. 기존 유효 세계 해금은 초기 이관으로 보존한다. 등록·활성화 자체는 아직 수행하지 않았다.",
+    "subject_now": "현재 해당 원문 생활권의 적합 공용 지점에 도달한 플레이어. 개인 MAIN·자기 해금 이력·특정 물품 소유를 일반 접촉에 추가 요구하지 않는다.",
+    "encounter_scheduler": {
+      "site_check_interval_seconds": 60,
+      "candidate_weight": 1,
+      "none_weight": 4,
+      "probability": "같은 사이트의 전체 적격 NPC 가중치합을 W 라 하면 해당 후보의 확률은 1/(W+4). 없는 인물을 후보로 채우지 않는다.",
+      "initiator": "해당 사이트에서 최근 조우주체 시각이 오래된 적격자 우선, 같으면 UUID 사전순 회전. 세계 해금 공로자 우선권은 없다.",
+      "same_player_site_cooldown_seconds": 300,
+      "single_body": "당첨 직후 NPC 전역 body_claim 을 compare-and-set. 이미 존재/예약 중이면 새 본체를 만들지 않고 기존 위치를 따른다. 재시작으로 claim 을 초기화하지 않는다.",
+      "known_existing_override": "통합 전역 조우 기준에 이미 확정된 동일 필드가 있으면 그 원문값을 보존하며 새 NPC 별 중복 스케줄러를 만들지 않는다.",
+      "packet_scope": "이 조우 기본값은 이번 패킷에서 원문 수치가 미지정인 장소에만 적용한다. 다른 인물이나 전역 스케줄러의 기존 명시값을 덮어쓰지 않는다. 재접속·재시작으로 재추첨 대기시간·순환순서·단일 본체 점유를 초기화하지 않는다. 실제 접근 가능한 현재 적격자만 선정한다. 이미 존재하는 본체와 접촉할 때는 재추첨하지 않는다."
+    },
+    "contact_after_appearance": "이미 존재하는 동일 본체의 현재 위치·발화 가능·접근·의사와 청중을 확인한다. 다시 추첨하거나 개인 재해금하지 않는다. 현재 사망·봉인·명시 부재는 해금으로 덮지 않는다.",
+    "ordinary_vs_task": "잡담은 공개 접근으로 가능하다. 해당 활동 제안에는 아래 현장·허락·도구·실제 문제 조건을 따로 확인한다."
+  },
+  "activities": [
+    {
+      "definition_id": "mythictrpg:quest/region/r02/01_two_nights",
+      "source_episode": "R02-01",
+      "title": "서로 다른 두 밤",
+      "type": "REGIONAL_SHARED",
+      "ownership": {
+        "kind": "REGIONAL_SHARED",
+        "new_main_created": false,
+        "shared_acceptance": "누구나 현재 공개 부탁을 도울 수 있다. 첫 참여가 뇨르드/스카디 MAIN 수락이 되지 않는다. 실제 역할별 동의·기여만 저장한다.",
+        "existing_main_lookup": "R02-03 사적 재방문 덧장면에서만 각 신별 기존 MAIN 의 적법 owner_uuid 와 해당 개인 응답 수신을 조회한다. 이 묶음은 그 MAIN 을 새 생성·수락·전체 완료하지 않는다.",
+        "main_absence": "소유자가 없거나 부재해도 공용 조사·공개경로·일반 방문은 진행한다. 존재하지 않는 MAIN 은 새로 만든 척하지 않고 사적 덧장면만 숨긴다.",
+        "shared_once": "세계+R02카드 ID 의 첫 지역결과 1회. 실제 조사자/청취자·후발 열람기록은 별도다."
+      },
+      "prerequisites": [
+        "세계 C06 완료",
+        "실제 두 생활권 비교 부탁 또는 공개 방문안내",
+        "실제 해안·산 안전부지 각각 1곳. NPC 두 명 동시출석은 조사필수가 아니다."
+      ],
+      "site_layout": "해안은 뇨르드 원문 안전 갑판/마른해안, 산은 스카디 원문 북방/타이가 안전부지 중 현재 발견된 곳을 등록한다. 각 관측점 O 에는 4×4 마른 평지와 폭 2·높이 2인 기존 복귀길 O→R(8~24블록)이 있어야 한다. 가루눈·큰낙차·밤몹 노출을 필수로 고르지 않는다. 두 부지 사이 실제거리와 이동수단을 안내하되 가상인접·포털·강제 순간이동을 만들지 않는다.",
+      "steps": [
+        {
+          "step_id": "R1A",
+          "title": "두 생활권의 복귀발판",
+          "minecraft_action": "각 생활권 O 에서 현재 복귀점 R 까지 실제 걸어보고 마른 발판을 확인한다. 이후 직접밤 방문안 또는 이미 있는 기록대조안 중 하나를 고른다.",
+          "quantity_and_geometry": "생활권 2곳×복귀길 1개.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "위치·지면·실제경로 증거 2세트.",
+          "npc_lines": [
+            "뇨르드: 나는 저 소란이 있어야 쉬는 기분이 나. 산 쪽 잠자리까지 옮기라는 말은 아니야.",
+            "스카디: 여긴 조용해서 좋다. 다른 사람도 그래야 하는 건 아니고."
+          ],
+          "failure_and_resume": "한쪽만 조사하면 나머지만 대기. 세계시간/다른사람 활동을 멈추지 않는다."
+        },
+        {
+          "step_id": "R1B",
+          "title": "직접 밤 OR 기록과 낮",
+          "minecraft_action": "직접안: 해안과 산 O 를 서로 다른 게임밤에 방문해 각 60초 현장을 관측한다. 기록안: 실제조사자·밤지수·장소·관측내용·공개허락이 있는 야간기록 2건을 실제 읽고 두 O 의 현재 낮 지형을 각 30초 비교한다. 소음의 객관수치 우열은 만들지 않는다.",
+          "quantity_and_geometry": "직접안 게임 time_of_day 13000~23000, 서로 다른 floor(world_total_ticks/24000)의 밤 2회. 기록안 기록 2건+낮(0~12000) 현장 2곳. 두 방식은 OR.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "직접은 실제 온라인·현장·게임시각, 기록안은 실제기록 2건 수신+현재낮 지형. 기록읽기는 개인밤방문 업적 0.",
+          "npc_lines": [
+            "뇨르드: 내가 바다에서 편하다는 말과 네가 편하다는 말은 다르지.",
+            "스카디: 직접 못 본 밤은 그 사람이 남긴 기록으로 말해."
+          ],
+          "failure_and_resume": "밤이 끝나면 해당 60초는 다음게임밤에 다시 시작하되 이미 끝낸 다른생활권 기록 유지. 출처있는 기록이 없으면 만들지 않고 직접 방문 안으로 가능. 로그 아웃 시간은 관측초에 미포함."
+        }
+      ],
+      "branches": [
+        {
+          "choice": "직접 두밤",
+          "outcome": "REGION_SURVEY_READY_DIRECT",
+          "meaning": "실제 방문자에게만 두밤관측 이력."
+        },
+        {
+          "choice": "기록+현재낮",
+          "outcome": "REGION_SURVEY_READY_RECORDED",
+          "meaning": "동일 지역 비교 자료를 얻지만 밤경험은 없음."
+        },
+        {
+          "choice": "한곳만",
+          "outcome": "PARTIAL",
+          "meaning": "첫장소 자료를 보존하고 둘째만 미완료."
+        }
+      ],
+      "completion": "두 환경의 출처있는 근거+현재복귀점 2곳 확보. 원문상 별도 신승인이 없는 조사결과에 새 접수 NPC 를 요구하지 않는다. 두 신의 자기 취향은 실제 듣거나 허락된 기록에서 받은 범위만 기재.",
+      "reward_definition_ids": [],
+      "cost": "0. 잠자기·내한장비·처치·현실연속접속 요구 0.",
+      "expected_play_minutes": [
+        10,
+        45
+      ],
+      "time_note": "부지 간 실제여행과 다음게임밤 대기는 별도; 기록안은 현재낮 방문만으로 가능.",
+      "repeat": "공유 첫 비교결과 1회, 후발 현재자료 열람은 가능.",
+      "shared_outputs": [
+        "해안/산의 현재복귀점 자료 2건",
+        "생활권이 다름을 인정하는 출처있는 공개정보"
+      ],
+      "site_definition_id": "mythictrpg:site/region/r02/01_two_nights",
+      "multiplayer": "공동 자료에는 서로 다른 실제 조사자의 유효 기록을 합산할 수 있다. 직접안의 해안·산 관측은 서로 다른 게임 밤이어야 하며, 두 밤 모두 직접 방문했다는 개인 경험은 같은 참가자에게 두 현장 기록이 모두 있을 때만 부여한다. 다른 참가자의 기록을 읽은 사람은 그 수신만 얻는다. R02 전체 자료 완성과 개인 체험을 혼동하지 않는다."
+    },
+    {
+      "definition_id": "mythictrpg:quest/region/r02/02_one_route",
+      "source_episode": "R02-02",
+      "title": "짐이 쉬어 갈 한 길",
+      "type": "REGIONAL_SHARED",
+      "ownership": {
+        "kind": "REGIONAL_SHARED",
+        "new_main_created": false,
+        "shared_acceptance": "누구나 현재 공개 부탁을 도울 수 있다. 첫 참여가 뇨르드/스카디 MAIN 수락이 되지 않는다. 실제 역할별 동의·기여만 저장한다.",
+        "existing_main_lookup": "R02-03 사적 재방문 덧장면에서만 각 신별 기존 MAIN 의 적법 owner_uuid 와 해당 개인 응답 수신을 조회한다. 이 묶음은 그 MAIN 을 새 생성·수락·전체 완료하지 않는다.",
+        "main_absence": "소유자가 없거나 부재해도 공용 조사·공개경로·일반 방문은 진행한다. 존재하지 않는 MAIN 은 새로 만든 척하지 않고 사적 덧장면만 숨긴다.",
+        "shared_once": "세계+R02카드 ID 의 첫 지역결과 1회. 실제 조사자/청취자·후발 열람기록은 별도다."
+      },
+      "prerequisites": [
+        "세계 R02-01 지역비교 완료",
+        "현재 물길 또는 산길의 실제 공개 운송준비 요청"
+      ],
+      "site_layout": "선택생활권 A→B 는 24~64블록의 기존 안전동선. B 는 3×3 마른 하역/휴식자리, 최대높이차 1블록씩·폭 2·높이 2. 물길은 같은물길의 안전한 둑보행도 인정한다. 실제 운송을 하지 않는 본카드에서 상자·짐을 생성하지 않는다.",
+      "steps": [
+        {
+          "step_id": "R2A",
+          "title": "준비물 또는 무료 답사 분담",
+          "minecraft_action": "소유한 minecraft:bread 1개와 minecraft:leather_boots 1켤레를 비소비 제시 OR 공개된 실제 준비설명/다른 기여자의 준비증거를 읽고 무료경로답사 역할을 택한다.",
+          "quantity_and_geometry": "빵 1+가죽장화 1, 소비 0. 무료안 물품 0. 두방식 OR.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "인벤의 실제 정확 아이템 제시 또는 실제준비자료 수신과 자기 무료답사 선택. 무료안에 장비소유 이력을 주지 않는다.",
+          "npc_lines": [
+            "뇨르드: 네 짐은 네 것이지. 보여줬다고 내가 가져갈 것은 없어.",
+            "스카디: 장화가 없으면 없는 대로 안전한 길부터 살펴. 숨은 추위 시험은 아니다."
+          ],
+          "failure_and_resume": "물품부족이면 무료안 가능. 상점이 없으면 구매안만숨김. 가짜무료환급/추가보상 0."
+        },
+        {
+          "step_id": "R2B",
+          "title": "한 경로의 실제 A→B",
+          "minecraft_action": "물길 OR 산길 중 현재요청 하나를 골라 A→B 를 실제 이동한다. 중간 체크포인트는 선택길의 절반, B 의 마른 하역자리와 돌아갈 방향을 직접 확인한다. 현재요청자가 실제 수신할 수 있을 때 결과를 전달한다.",
+          "quantity_and_geometry": "선택경로 1개, A/중간/B3지점, 하역자리 1곳. 반대 경로 완주를 AND 로 요구하지 않는다.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "연속경로 이동·B 지면·귀환방향·실제요청자 수신. 걷기만 한 결과를 물자운송/납품으로 기록하지 않는다.",
+          "npc_lines": [
+            "뇨르드: 내려놓을 자리는 알았어. 짐을 옮겼다는 말은 아직 아니고.",
+            "스카디: 산길부터 봤다고 물길을 막는 건 아니다."
+          ],
+          "failure_and_resume": "담당자가 부재면 보고만대기, 현장증거 보존. 다른친구가 병렬로 반대경로를 조사할 수 있으나 최초결과/권리를 두배로 만들지 않는다."
+        }
+      ],
+      "branches": [
+        {
+          "choice": "물길",
+          "outcome": "COAST_ROUTE_RECORDED",
+          "meaning": "물길준비안만 공개갱신, 산길잠금 0."
+        },
+        {
+          "choice": "산길",
+          "outcome": "MOUNTAIN_ROUTE_RECORDED",
+          "meaning": "산길준비안만 공개갱신, 물길잠금 0."
+        },
+        {
+          "choice": "둘다",
+          "outcome": "SECOND_ROUTE_OPTIONAL",
+          "meaning": "첫 요청은 하나로 정산, 나머지는 별도 실제 추가 답사 이며 보상추가 0."
+        }
+      ],
+      "completion": "실제 준비근거 OR 무료분담근거 AND 선택경로 실제답사 AND 그 현재요청자의 실제수신.",
+      "reward_definition_ids": [],
+      "cost": "제시물소비 0; 실제 자기 이동 소비만.",
+      "expected_play_minutes": [
+        8,
+        15
+      ],
+      "repeat": "공유 첫 경로 안내 갱신 1회. 현재변화 재조사는 정보 버전 갱신 일뿐 첫사건재완료 아님.",
+      "shared_outputs": [
+        "선택경로의 현재 A/B 와 마른하역자리 안내"
+      ],
+      "site_definition_id": "mythictrpg:site/region/r02/02_one_route"
+    },
+    {
+      "definition_id": "mythictrpg:quest/region/r02/03_separate_homes",
+      "source_episode": "R02-03",
+      "title": "두 곳의 불은 그대로",
+      "type": "REGIONAL_SHARED_DIALOGUE",
+      "ownership": {
+        "kind": "REGIONAL_SHARED",
+        "new_main_created": false,
+        "shared_acceptance": "누구나 현재 공개 부탁을 도울 수 있다. 첫 참여가 뇨르드/스카디 MAIN 수락이 되지 않는다. 실제 역할별 동의·기여만 저장한다.",
+        "existing_main_lookup": "R02-03 사적 재방문 덧장면에서만 각 신별 기존 MAIN 의 적법 owner_uuid 와 해당 개인 응답 수신을 조회한다. 이 묶음은 그 MAIN 을 새 생성·수락·전체 완료하지 않는다.",
+        "main_absence": "소유자가 없거나 부재해도 공용 조사·공개경로·일반 방문은 진행한다. 존재하지 않는 MAIN 은 새로 만든 척하지 않고 사적 덧장면만 숨긴다.",
+        "shared_once": "세계+R02카드 ID 의 첫 지역결과 1회. 실제 조사자/청취자·후발 열람기록은 별도다."
+      },
+      "prerequisites": [
+        "세계 R02-02 공개경로 완료",
+        "새관계안을 듣고 답할 각 NPC 의 현재 실제접촉. 공용길 이용은 이 응답과 별개."
+      ],
+      "site_layout": "두 인물은 각자의 현재 원문생활권에 남는다. 한장소에 자동 소집 하거나 이주시키지 않는다. 이미 유효한 A/B 자료는 현재막힘만 점검하고 같은왕복을 새필수로 반복하지 않는다.",
+      "steps": [
+        {
+          "step_id": "R3A",
+          "title": "같은 제안을 각각 묻기",
+          "minecraft_action": "별도거처+원할 때방문 OR 교역만유지 중 하나의 동일 제안버전을 양측에게 각각 실제 전달한다. 각자는 수락/거절/보류를 자기말로 답한다.",
+          "quantity_and_geometry": "제안 1버전, 독립응답 2건.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "화자본체·제안버전·응답내용·허용전달청중·실제청취기록.",
+          "npc_lines": [
+            "방문안 뇨르드: 일을 마치고 바다가 잔잔할 때, 그때 다시 물어봐.",
+            "방문안 스카디: 내가 쉬는 날인지 먼저 물어. 산을 떠나는 약속은 안 해.",
+            "교역안 뇨르드: 물건 소식만 나눠도 괜찮아.",
+            "교역안 스카디: 길은 남겨. 방문까지 약속하진 않을게."
+          ],
+          "failure_and_resume": "한쪽침묵/부재는 그응답만대기. 다른사람이 대신동의할 수 없다. 이주/동거강요는 거절이며 집철거/이동 0."
+        },
+        {
+          "step_id": "R3B",
+          "title": "허락한 답만 건너가기",
+          "minecraft_action": "각 NPC 가 전달을 허락한 답을 반대쪽에게 실제 전달하고 상호수신을 확인한다. 같은제안에 합의한 범위만 공개 경로 안내에 남긴다.",
+          "quantity_and_geometry": "허용전달 2건, 반대쪽 실제수신 2건.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "원 응답과 전달 문 동일 범위·실제수신자·합의버전. 자동텔레파시 0.",
+          "npc_lines": [
+            "뇨르드: 내 대답은 여기까지야. 산 쪽이 받은 것도 그 말이어야 하지.",
+            "스카디: 왕래할 수 있다는 것과 지금 와도 된다는 말은 다르다."
+          ],
+          "failure_and_resume": "내용을 바꿨으면 새 제안 버전으로 바뀐부분만 다시 확인. 이미 전달한 답을 지우거나 새동의로 덮지 않는다."
+        },
+        {
+          "step_id": "R3C",
+          "title": "기존 소유자만의 사적 문의",
+          "minecraft_action": "기존 뇨르드/스카디 MAIN 의 적법소유자와 해당개인응답 수신이 확인된 경우에만 그 신에게 사적인 재방문 희망을 말할 수 있다. 각 신은 오늘허락/나중문의/거절을 실제 답한다. 비소유자는 오늘의 일반방문을 따로 묻는다.",
+          "quantity_and_geometry": "선택덧장면: 신별 기존소유자각 1명 이하. 공동완료 공통필수 0.",
+          "time_limit": "없음. 명시된 관찰·유지 시간은 성공 증거의 길이이며 퀘스트 만료시간이 아니다.",
+          "evidence": "기존 owner 참조+원응답수신+현재개인응답.",
+          "npc_lines": "각 신의 현재 허락만 남긴다. 새 MAIN 수락/전체 완료/지원/장비는 발생하지 않는다.",
+          "failure_and_resume": "소유자없음/부재는 개인덧장면만 보류. 공유경로와 별도거처 결과를 닫지 않는다."
+        }
+      ],
+      "branches": [
+        {
+          "choice": "별도거처+원할 때방문",
+          "outcome": "AGREED_SEPARATE_VISITS",
+          "meaning": "두 응답·상호수신이 있을 때만 성립. 방문 때마다 현재 허락, 영구의무 0."
+        },
+        {
+          "choice": "교역만유지",
+          "outcome": "AGREED_TRADE_ONLY",
+          "meaning": "정상결말이며 관계실패로 판정하지 않는다."
+        },
+        {
+          "choice": "한쪽부재/거절",
+          "outcome": "RELATION_PENDING",
+          "meaning": "공개 길은 이용 가능, 관계 합의만 미완료."
+        }
+      ],
+      "completion": "R3A/B 의 같은제안에 대한 각기 실제 응답과 상호 수신. R3C 는 공동완료와 무관한 선택덧대화.",
+      "reward_definition_ids": [],
+      "cost": "물자 0, 강제이주·정기선물·현실 캘린더 약속 0.",
+      "expected_play_minutes": [
+        6,
+        15
+      ],
+      "repeat": "첫관계합의 1회, 이후 실제 합의 변경은 새버전. 후발자는 자기방문을 새로묻는다.",
+      "shared_outputs": [
+        "별도거처 보존",
+        "허용된왕래 또는 교역의 공개범위"
+      ],
+      "shop_boundary": "원문 내한장화는 별도상점 후보일뿐. 이번 범위 에서는 상품 생성·가격·효과·무료지급을 채택하지 않는다. 상점 없이도 이 결말은 온전하다.",
+      "site_definition_id": "mythictrpg:site/region/r02/03_separate_homes"
+    }
+  ],
+  "events": [
+    {
+      "definition_id": "mythictrpg:event/norse/njord/visit_epilogue",
+      "source_episode": "EP009A-RPG-S02-015",
+      "title": "오늘은 여기까지 쉬어도 돼",
+      "type": "DIALOGUE_ONLY_NO_QUEST",
+      "prerequisites": "일반 인사에는 R02/MAIN 요구 0. 사적재방문 확장만 기존적법 뇨르드 MAIN 소유+해당 R02-03개인응답 실제수신을 요구한다.",
+      "flow": [
+        {
+          "scene": "오늘의자리",
+          "action": "현재 공개 길과 별도 거처 결과를 실제 읽는다. 기존소유자는 자신에게 허락된 재방문응답만 근거로 묻고, 첫방문자는 오늘 쉬어도 되는지만 묻는다.",
+          "line": "뇨르드: 배 소리가 거슬리지만 않으면 앉아도 좋지. 다만 지금 내가 쓰는 자리까지 차지하진 말고."
+        },
+        {
+          "scene": "제한된약속",
+          "action": "현재 허락한 범위를 되읽고, 허락이있으면 실제 마른 허용 자리로 이동 OR 장래에 다시 묻겠다고 남기고 오늘 돌아간다. 머묾길이시험·완료 배지는 없다.",
+          "line": "뇨르드: 바다가 잔잔하고 내가 일을 끝냈을 때 다시 묻는 거야. 내가 언제나 여기 기다린다는 약속은 아니고."
+        }
+      ],
+      "outcomes": [
+        "허락된 오늘의 짧은쉼",
+        "현재 문의만 남기고 귀환",
+        "유보/거절/약속 원치 않음으로 덧대화 마침"
+      ],
+      "physical_evidence": "실제로 자리로 이동했다면 위치를, 돌아갔다면 실제퇴장만 기억한다. 대화마침은 이동 성공과 별개.",
+      "time_limit": "없음. 예상 2~5분.",
+      "reward_ids": [],
+      "new_main": false,
+      "completes_existing_main": false,
+      "recovery": "이미 받은 허락·수신 범위를 보존하고 현재 접촉만 재검사. 오늘허락은 다음 방문의 영구 통행권이 아니다.",
+      "late_join": "첫 방문자에게 남의 사적 재방문 응답을 복사하지 않는다.",
+      "site_definition_id": "mythictrpg:site/norse/njord/visit_epilogue"
+    }
+  ],
+  "services": [],
+  "reward_definitions": [],
+  "knowledge_definitions": [
+    {
+      "fact_id": "mythictrpg:fact/region/r02/two_environments",
+      "claim": "두 생활권의 실제 조사 시각·복귀점·출처와 공개 범위.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "R02-01 완료",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "현재 현장 결과는 직접 본 사람. 공개 전달문은 실제 읽거나 들은 사람만 획득한다.",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": true,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    },
+    {
+      "fact_id": "mythictrpg:fact/region/r02/route_report",
+      "claim": "선택 경로의 실제 준비·답사·요청자수신. 물자 운송과 구별.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "R02-02 완료",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "현재 현장 결과는 직접 본 사람. 공개 전달문은 실제 읽거나 들은 사람만 획득한다.",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": true,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    },
+    {
+      "fact_id": "mythictrpg:fact/region/r02/separate_homes",
+      "claim": "양측이 같은 제안으로 실제 합의한 왕래/교역범위.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "R02-03 양측응답+상호수신",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "현재 현장 결과는 직접 본 사람. 공개 전달문은 실제 읽거나 들은 사람만 획득한다.",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": true,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    },
+    {
+      "fact_id": "mythictrpg:fact/norse/njord/private_visit",
+      "claim": "뇨르드가 해당 개인에게 실제로 허락한 방문 문의 범위.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "R02-03 개인덧대화 또는 후속실제문의",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "명시된 당사자와 허용 수신자만",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": false,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    }
+  ],
+  "implementation_requirements": [
+    {
+      "requirement_id": "IMPL-OWNERSHIP",
+      "supported_basis": "원문 개인 MAIN/세계 Fact/Knowledge/조건개념",
+      "new_work": "최초수락 원자성, 제안버전, 세계/개인/사적수신/기여 분리 및 사건 UUID 중복방지 연결",
+      "release_check": "동시수락 2건중소유자 1명, 세계해금 친구에게 개인 재해금 0"
+    },
+    {
+      "requirement_id": "IMPL-PHYSICAL",
+      "supported_basis": "기존 Minecraft 이동·블록·아이템·엔티티를 이용한 기획",
+      "new_work": "상대 배치 지점 등록, 실제이동/정지/시야/음원/본체위치/지형 버전 증거 저장. 검증기 없는 목표는 대사로 대체하지 않는다.",
+      "release_check": "순간이동·클릭만으로 보행/물체조작성공 0"
+    },
+    {
+      "requirement_id": "IMPL-KNOWLEDGE",
+      "supported_basis": "SET_FACT 와 GRANT_KNOWLEDGE 분리원칙",
+      "new_work": "정식발화 ID 와 실제 수신 청중·권한·출처결속; 미래 문장및 파티 기억 복사 차단",
+      "release_check": "같은 방의비 적격 청중 1명 있으면 사적 문장/제목/존재 암시 모두 비공개"
+    },
+    {
+      "requirement_id": "IMPL-RESUME",
+      "supported_basis": "시도 ID·사망/재접속·미수령 보존 설계",
+      "new_work": "물리 월드 변경과 개인 진행 스냅샷 대조. 엔티티삭제/언로드를 해소로 세지 않고 실물 중복 복원 금지",
+      "release_check": "재시작전/후 현재 대상과 미완료 수량만 이어짐"
+    },
+    {
+      "requirement_id": "IMPL-R02-NIGHT",
+      "new_work": "서로 다른 게임 밤 ID·실제 온라인 현장 60초·출처있는기록 2건·낮 30초대조의 OR 판정",
+      "release_check": "기록 안 개인 밤 경험 0, 밤/기록두방식 AND0"
+    },
+    {
+      "requirement_id": "IMPL-R02-ROUTE",
+      "new_work": "무료분담·비소비제시·한경로답사·담당자 실제 수신과 공개 안내 버전",
+      "release_check": "걷기만으로 납품 0, 빵/장화소비 0, 반대경로잠금 0"
+    },
+    {
+      "requirement_id": "IMPL-R02-REPLY",
+      "new_work": "동일제안버전·신별실제응답·허용전달·상호수신·기존 MAIN 참조 덧대화 연결",
+      "release_check": "침묵동의 0, 신규 MAIN 수락/전체완료 0"
+    }
+  ],
+  "acceptance_tests": [
+    {
+      "test_id": "015-A01",
+      "given": "A 가세계해금, B 는그 행동 이력 없음",
+      "when": "B 가 현재 원문 생활권 조건을 충족하여 조우 추첨 성공",
+      "expected": "B 가 주체로 등장 가능. A 의개인공적/MAIN/보상/기억은 B 에게복사 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A02",
+      "given": "동일 NPC 본체가 다른 현재 지점에 존재",
+      "when": "다른 플레이어가 새 출현을 요청",
+      "expected": "추가본체 0, 기존위치/접근 경로만 사용",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A03",
+      "given": "활동중 플레이어 사망 또는 로그 아웃",
+      "when": "재접속후재개",
+      "expected": "소유·완료한행동·소비보존. 현재지형/대상/접근재검사, 자동귀환/성공/적복원 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A04",
+      "given": "사적응답적격 A 와비적격 B 가 같은 대화 공간",
+      "when": "사적 결과를 설명 하려함",
+      "expected": "B 가 현재 청중이면 사적 문장·제목·존재암시 0. 공개 현장 정보만 가능",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A05",
+      "given": "앞선 참가자만 과거 완료·수신",
+      "when": "후발자가 현재 공개 자료 만열람",
+      "expected": "자료 열람만 기록. 개인과거경험/소유/보상소급 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A06",
+      "given": "기존개인 MAIN 참조가 없거나 주인이 부재",
+      "when": "공용 R02/오늘 방문을 진행",
+      "expected": "공용수행가능, 새 MAIN 생성/양도/전체완료 0, 사적 덧장면만 부재",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A10",
+      "given": "기록 안과 현재 낮 발판 2곳",
+      "when": "실제기록 2건수신·낮각 30초비교",
+      "expected": "R02-01완료·개인밤방문 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A11",
+      "given": "준비물 없는 참여 자",
+      "when": "무료 분담 뒤한 경로 A/B 답사·수신",
+      "expected": "R02-02완료·물자운송 0·반대경로잠금 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "015-A12",
+      "given": "한 NPC 만수락",
+      "when": "공개 길을 이용 하고 합의를 제출",
+      "expected": "길이용가능·관계 합의만 대기·전체 MAIN 완료 0",
+      "execution_status": "미실행 인수시험 설계"
+    }
+  ],
+  "balance": {
+    "value": "공동 3편은 관측·한경로답사·합의로 기능이 서로 다르다. 물품농사·강제장비구매·밤처치없음. 보상은 공개 경로 자료와 실제 관계 뿐 이며 CP0. 기존독점 MAIN 전체 완료는이 범위 아니다.",
+    "additional_reward_count": 0,
+    "shared_unique_quest_count": 3
+  },
+  "runtime_state": {
+    "registered": false,
+    "reloaded": false,
+    "playtested": false,
+    "authoring_decisions_complete": true
+  },
+  "site_registration_contract": {
+    "definition_status": "새 구현 요구. 등록·현장 배치는 아직 실행하지 않았다.",
+    "instance_key": "world_uuid + site_definition_id + site_instance_uuid",
+    "fields": [
+      "dimension_id",
+      "실제 anchor block 좌표",
+      "명명된 목표점별 실제 block 좌표",
+      "현재 보호구역 권한",
+      "실제 연결 경로와 지형 버전",
+      "허용 청중 위치",
+      "등록자 및 실제 현장 검증 시각"
+    ],
+    "registration": "아래 site_layout 의 상대 거리·폭·높이·안전조건을 만족하는 실제 기존 부지만 등록한다. 조건 불일치는 해당 활동만 대기하고 일반 인사·현재 공개 지식·본체 접촉을 막지 않는다. 좌표가 바뀌면 새 현장 버전으로 미완료 이동만 재검사한다. 등록은 블록·인물·보상 생성 명령이 아니다."
+  },
+  "reward_policy": {
+    "status": "NONE",
+    "items": [],
+    "effects": [],
+    "currency": 0,
+    "new_entitlements": 0,
+    "reason": "원문 NOT_APPLICABLE 결말을 보존한다. 실제 관측·공개 경로·관계 변화는 있지만 물품·가호·수치 보상으로 전환하지 않는다.",
+    "no_claim": "실물 보상이 없으므로 가짜 미수령권/재발급을 만들지 않는다. 실제 대여물 반환과 정보 수신 복구는 별도다."
+  },
+  "coverage_summary": {
+    "personal_main_definitions": 0,
+    "shared_quest_definitions": 3,
+    "nonquest_events": 1,
+    "optional_services": 0,
+    "reward_definitions": 0,
+    "new_reward_beyond_source_count": 0,
+    "source_identity_changed": false,
+    "source_files_modified": false,
+    "unresolved_authoring_blockers": []
+  }
+}

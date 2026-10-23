@@ -1,0 +1,252 @@
+{
+  "record_key": "옛 용사(명부 밖 서사역)",
+  "content_id": "옛 용사(명부 밖 서사역):story-connection",
+  "name": "옛 용사 (사망·기록)",
+  "document_kind": "AUTHORING_NOT_RUNTIME",
+  "connection_manuscript": {
+    "record_key": "옛 용사(명부 밖 서사역)",
+    "name": "옛 용사 (사망·기록)",
+    "tier_unchanged": "초월급",
+    "group": "여신·용사·선택",
+    "working_title": "대답하지 않는 검의 주인",
+    "status": "stage2_authoring_skeleton_not_runtime",
+    "runtime_ready": false,
+    "source_anchors": [
+      {
+        "file": "rpg_authoring_master_active.json",
+        "record_key": "옛 용사(명부 밖 서사역)",
+        "fields": [
+          "identity",
+          "current_access",
+          "active_authoring"
+        ],
+        "meaning": "현행 정체·등급·접근·역할 보존 기준"
+      },
+      {
+        "file": "스토리/01_메인_스토리_개정안.md",
+        "heading": "### 전쟁과 용사와 여신",
+        "line": 47,
+        "sha256": "bf512d83653a4f5847cdf23d346fac2a59098ad07f124f100c5e5137765f9f6c",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      },
+      {
+        "file": "스토리/세부장면/01_C07_C14_중반_장면.md",
+        "heading": "## C12",
+        "line": 422,
+        "sha256": "376331a899d91a4c904b3d934f90d203fa7b3d5e8db19a302ec06871d035d7f7",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      },
+      {
+        "file": "스토리/세부장면/01_C07_C14_중반_장면.md",
+        "heading": "## C13",
+        "line": 305,
+        "sha256": "376331a899d91a4c904b3d934f90d203fa7b3d5e8db19a302ec06871d035d7f7",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      },
+      {
+        "file": "스토리/세부장면/03_C23_C28_최종_장면과_결말.md",
+        "heading": "## C24",
+        "line": 133,
+        "sha256": "9f40e8c9444b70e1d204a1dc97e7bb72379b8ac9ba35c6396cb4969f8a539901",
+        "meaning": "기존 사건·서비스 저술 근거. 해당 문서 내 확정/제안 구별 유지"
+      }
+    ],
+    "fixed_and_existing": {
+      "identity_guard": {
+        "value": "연인의 저주를 대신 받아 실제 사망. 신격·환생·부활·검 조각 속 인격 없음. 생전 정점의 전투등급은 초월급이며 현재 사망 상태는 유지함",
+        "status": "current_source_identity_safeguards",
+        "source": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "reconciled_rows",
+          "record_key": "옛 용사(명부 밖 서사역)",
+          "field": "notes",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "use_scope": "authoring_design_only",
+        "runtime_binding": false
+      },
+      "current_access_preserved": {
+        "encounter_group": "non_encounter",
+        "encounter_subgroup": "record_only_role",
+        "evidence_status": "record_only_current_role",
+        "evidence_reason": "실제로 사망한 과거 비신격 인물이다. 기록·생전 기억만 사용하며 부활·현재 본체 조우는 없다.",
+        "earliest_encounter_assigned": false,
+        "current_first_meeting_time": null,
+        "current_first_meeting_time_status": "classification_only_not_individual_time_assignment",
+        "active_generic_c06_c15_c21_gate": false,
+        "actual_access_rule": {
+          "value": "실제로 사망한 과거 비신격 인물이다. 기록·생전 기억만 사용하며 부활·현재 본체 조우는 없다.",
+          "status": "current_roster_classification_preserved",
+          "source": {
+            "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+            "record_key": "옛 용사(명부 밖 서사역)",
+            "field": "evidence_reason"
+          },
+          "use_scope": "authoring_access_guard_not_runtime_predicate",
+          "runtime_binding": false
+        },
+        "source_references": [
+          {
+            "source_file": "스토리/04_등장인물_변경_검토보고.md",
+            "line": 138,
+            "text": "| 옛 용사·첫 용·귀환룡·새 수호자 | 실제 사망, C05의 실제 죽음, C26의 별개 최종 상대, C27의 선택 탄생 | 만남 확률 완화의 대상이 아님. 부활·동일인화·C22 조기 탄생으로 출연량을 늘리지 않음 |",
+            "sha256": "ee0923a84b4fec01228340d5c039f77a4aa2804975c73446e147a2a1061d5eec",
+            "status": "current_source_line_verified",
+            "verification_status": "current_packaged_source_line_and_hash_verified"
+          }
+        ],
+        "runtime_prerequisite_bindings": null,
+        "runtime_prerequisite_status": "unwritten_not_an_empty_pass_condition",
+        "required_live_actor_keys": null,
+        "required_live_actor_keys_status": "not_extracted_or_runtime_validated",
+        "must_apply_global_guards": [
+          "access",
+          "gates",
+          "knowledge",
+          "consent_and_late_join"
+        ],
+        "original_gate_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "옛 용사(명부 밖 서사역)",
+          "field": "legacy_gate",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "original_route_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "옛 용사(명부 밖 서사역)",
+          "field": "original_meeting_route",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "original_world_availability_reference": {
+          "archive_file": "rpg_authoring_source_archive.json",
+          "namespace": "normalized_before_integration",
+          "record_key": "옛 용사(명부 밖 서사역)",
+          "field": "original_world_availability",
+          "status": "history_only_do_not_consume_as_current"
+        },
+        "coordinate": null,
+        "engine_location_id": null,
+        "individual_action_constraints": []
+      },
+      "existing_role": "어느 편에도 들지 않은 인간. 연인의 저주를 대신 받아 실제 사망, 힘과 여섯 검 조각의 기원",
+      "existing_personal_motive": "현행 스토리의 역할·선택 참고",
+      "existing_story_events": "C04; C09; C12; C13; C18; C20; C23; C24",
+      "existing_personal_scope_contract": [],
+      "approved_service_baseline": null,
+      "rule": "기존 확정 정체·등급·서비스를 고정한다. 기존 저술안은 기존 저술안 상태로 유지한다. 아래 새로운 해금 이력·구체 만남·전이 연출은 채택 검토 대상이며 과거 발생 사실이 아니다."
+    },
+    "basic_persona": {
+      "origin": "기존 페르소나 원문 유지·요약; 사망 기록역은 신규 현재 인격 없음",
+      "retained_original_description": null,
+      "retained_original_personality": [],
+      "retained_original_values": [],
+      "retained_original_dialogue_guidelines": [],
+      "life_and_independent_motive": "현재 생활·욕구·관계 변화 주체는 없다. 생전에는 어느 편의 무기도 되지 않으려 한 신격 없는 인간이었고, 연인을 살리려 저주를 대신 받아 실제로 죽었다. 죽음을 임시 봉인이나 승격으로 바꾸지 않는다. 새로운 일상 취향·말투는 자료 부족으로 보류한다.",
+      "voice_summary": "현재 발화·음성 페르소나 없음. 기존 기록에 실제 들어 있는 당시 표현만 재생 가능하며 새 말투를 원전처럼 확정하지 않는다.",
+      "rudeness_and_conflict": "현재 모욕에 반응하지 않는다. 살아 있는 인물이 자기 가치에 따라 반응할 수 있을 뿐 검이 분노하거나 복수하지 않는다.",
+      "refusal": "거절 주체 없음. 자료가 없으면 미확인, 읽기 싫으면 플레이어의 열람 거절. 이를 망자의 응답으로 쓰지 않는다.",
+      "knowledge_boundaries": "기록은 작성 시점 이후를 배우지 않는다. 사후 신격·현재 감금·현재 플레이어의 질문은 기록 속 용사의 앎이 아니다. 새로운 생전 세부 인격은 출처 없으면 미정.",
+      "two_sample_lines": [
+        "자료 안내 예시: “칼자국 뒤에도 손상 흔적은 이어진다. 이 자료만으로 당시의 모든 대화를 알 수는 없다.”",
+        "자료 안내 예시: “여기에 남은 것은 당시 기록이다. 지금 당신이 물은 말에 대한 새 답은 없다.”"
+      ],
+      "sample_status": "새 인격 발화가 아닌 자료 안내문 초안. 작성자/시점이 확인된 정적 기록과 저자용 설명을 구분하며 옛 용사의 새 대사·현재 지식으로 사용하지 않는다."
+    },
+    "unlock_history": {
+      "status": "이번 연결 설계 제안; 고정 기존 조건을 대체하지 않음",
+      "kind": "기록 접근만 해당",
+      "logical_rule": "NPC 해금 없음. C04·C09·C12·C13·C18·C20·C23·C24의 실제 접근·회수·열람이 자료 접근 이력이다. 각각의 기존 선행과 소유·공개 권한을 따른다.",
+      "tracking_and_attribution": "실제 조각/칼자국/기록을 본 사람과 출처 있는 요약을 들은 사람을 구분. 읽은 사람이 늘어도 망자에게 새 지식·관계가 생기지 않는다.",
+      "does_not_gate": "공개 사료를 보기 위해 옛 용사 호감·가호·MAIN·현신 자격을 만들지 않는다.",
+      "npc_awareness": "현재 NPC 인격·새 지식 습득 없음. 기록 내용은 작성 시점에 고정되고 실제 읽은 플레이어 또는 살아 있는 수신자만 출처 범위에서 배운다."
+    },
+    "present_encounter": {
+      "location": "실제 검 조각·칼자국·기록이 있는 기존 조사 현장과 허용 열람 자리. 본체 좌표 없음.",
+      "time_basis": "자료가 현재 존재하고 접근 가능한 때. 망자 등장 시간대 없음.",
+      "current_item": "실물 취급에는 기존 소유·인계 권한. 허용 사본/공개 요약 열람은 원본 소지와 별도.",
+      "current_state": "현재 인격 접촉 없음; 기록은 작성 당시 내용만.",
+      "and_or_logic": "기록 열람 조건이며 본체 등장 판정이 아님: 자료 접근=(현장 원본 접근 OR 허용 사본 열람 OR 출처 있는 요약 수신) AND 공개 자격. NPC 대화식은 언제나 해당 없음.",
+      "discoverable_clue": "끊긴 칼자국과 절단 이후에도 이어지는 손상, 그의 죽음 다음에도 남은 연인의 기록.",
+      "sealed_dream_record_restriction": "사망·기록 전용. 본체/영혼/대화형 기억체/의식 있는 검을 새로 만들지 않는다. 기록은 현재 질문에 새 답을 생성하지 않는다.",
+      "status": "실제 맵 배치·실행 연결 전 저술안. 좌표·스폰 확정 아님",
+      "appearance_trigger": {
+        "stage": "record_only_no_body_appearance",
+        "rule": "현재는 실제 기록의 발견·열람 경로만 유효하다. 세계 공통 해금 개념을 이유로 사망·기록 배역에게 새 본체·응답·원격 통신·부활·꿈을 만들지 않는다.",
+        "existing_body_path": "현재 해당 없음. 기록 원본·사본·열람권만 확인하며 역사상 본체 배치 후보를 활성화하지 않는다.",
+        "adoption_and_mode_limit": "현재 배역·접촉 경로 보존이다. 새 확률 조우·본체·봉인 해제·현신을 승인하지 않는다."
+      }
+    },
+    "narrative_beats": [
+      {
+        "title": "강함의 흔적",
+        "text": "칼자국과 조각에서 비신격 인간의 힘을 확인한다. 이것은 현재 대련이나 신격자의 부활 징조가 아니다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "강했어도 베지 못한 것",
+        "text": "C12·C13 실제 자료로 절단 이후에도 남은 저주와 연인의 생존 흔적을 읽는다. 자료의 빈칸을 망자의 현재 설명으로 메우지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "그의 선택과 우리의 선택",
+        "text": "기존 저주 인과에서 관계·자원한 의지·유한한 생명의 끝을 구분한다. 이를 모든 저주에 통하는 희생 공식이나 플레이어에게 요구하는 죽음으로 확대하지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      },
+      {
+        "title": "되돌릴 수 없는 검의 미래",
+        "text": "C24의 여섯 조각 합일/분산 선택은 실제 당사자 권한·동의로 한다. 합일 뒤 재분산 불가라는 기존 결과를 지키며 검의 호감도·유언 자동명령으로 결정을 강요하지 않는다.",
+        "status": "기존 사건 및 개인안의 연결 요약"
+      }
+    ],
+    "connections": {
+      "necessary": [
+        {
+          "target": "STORY-GODDESS",
+          "reason": "생전 연인·저주 대리 수용·실제 사망·힘의 계승을 잇는 고정 인과. 여신의 신격은 그녀 자신의 업."
+        },
+        {
+          "target": "여섯 조각·C24 소유/합의",
+          "reason": "현재 유산을 실제 사용할 때 필요한 권한. 망자의 새 허락을 만들어 처리하지 않는다."
+        }
+      ],
+      "optional": [
+        {
+          "target": "토트·길가메시·바리공주 등 살아 있는 증언/해석자",
+          "reason": "실제 본/읽은 부분만 말한다. 이들 없이도 기존 공개 근거 접근은 유지하며 누구도 용사의 모든 내면을 대변하지 않는다."
+        }
+      ],
+      "edge_rule": "필요는 적힌 장면/협력에 한정된다. 특정 NPC의 출석을 C 본편 전체 필수 선행으로 늘리지 않는다. 소개는 상대 의사·봉인·실제 위치를 우회하지 않는다."
+    },
+    "player_dialogue_agency": "기록을 읽지 않고 공개 가능한 요약만 듣거나, 서로 다른 해석을 토론하거나, 유산 사용을 거절할 수 있다. NPC 대화/감정 선택지는 만들지 않는다.",
+    "multiplayer_and_world_consequences": "기록 원본·조각 소유와 공용 사실, 각자의 열람·동의를 나눈다. 파티원의 기억을 복사하지 않으며 개인 MAIN·주시·가호·지원 상태가 없다.",
+    "required_capabilities_pending": [
+      "정적 기록/기존 기억 연출과 자유대화 화자 분리",
+      "원본·단일 조각·사본 인계 권한",
+      "합일 비가역성·명시 동의 검증"
+    ],
+    "new_proposal_boundary": "서술상 필요한 실제 행동을 설계했으나 신규 advancement ID, 거리·행동 카운터, 전용 구조물, 자동 소환·이동·지식 공유가 구현되었다고 보지 않는다. 숫자 밸런스·퀘스트 목표 JSON·자유대화 실테스트·배포는 범위 밖.",
+    "current_unlock_scope": {
+      "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+      "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+      "encounter_subject": "현재 기록 배역에는 본체 등장 주체 판정을 적용하지 않는다. 실제 조사·열람을 수행한 당사자와 실제 청중만 구분하며 기록이 새 답을 만들지 않는다.",
+      "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+      "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+      "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+      "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+    },
+    "source_text_use_boundary": {
+      "untouched_original_quote_pointers": [
+        "/fixed_and_existing/current_access_preserved/source_references/0/text"
+      ],
+      "rule": "위 원문 인용과 source_anchors·source_references·sha256은 출처 보존 영역이다. 과거 해금·동행 문구나 옛 설정이 있더라도 현재 유효 요약으로 자동 적용하지 않는다. 그 밖의 이야기·말투·취향은 유지하며, 현행 조건은 이 인물의 수정된 해금·조우 항목과 current_unlock_scope를 따른다. 원문 파일·명부·기존 전달본 자체는 수정하지 않았다.",
+      "original_quote_status": "archived_source_text_not_current_runtime_or_unlock_rule",
+      "current_effective_summary_pointers": [
+        "/unlock_history",
+        "/present_encounter",
+        "/current_unlock_scope"
+      ]
+    }
+  }
+}

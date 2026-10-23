@@ -16,6 +16,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,20 @@ import java.util.List;
 @EventBusSubscriber(modid = MythicTrpg.MOD_ID)
 public final class PermanentBlessingRuntime {
     private PermanentBlessingRuntime() { }
+
+    /** Ordinary potions also refresh hidden chains. Normalize before vanilla expires their upper layer.
+     * This reads active owned types only and never re-applies a missing or milk-suppressed blessing. */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void beforePlayerTick(PlayerTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !player.server.isSameThread()) return;
+        var state = RewardClaimState.get(player.server);
+        if (!state.isWritable()) return;
+        for (var id : state.ownedPermanentBlessingLevels(player.getUUID()).keySet()) {
+            if (state.isBlessingSuppressed(player.getUUID(),id)) continue;
+            var holder = BuiltInRegistries.MOB_EFFECT.getHolder(id).orElse(null);
+            if (holder != null && player.hasEffect(holder)) BlessingEffectApplication.normalizeHiddenEffects(player,holder);
+        }
+    }
 
     /** No login restoration: removal remains in force until death-respawn or the player's explicit command. */
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -47,13 +62,19 @@ public final class PermanentBlessingRuntime {
     @SubscribeEvent
     public static void commands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("mythblessing")
+                .executes(context -> {
+                    context.getSource().getPlayerOrException();
+                    context.getSource().sendSuccess(() -> Component.literal(
+                            "[영구가호] 우유 등으로 해제한 본인 가호는 /mythblessing reapply 로 복원할 수 있습니다. 보유권은 사라지지 않습니다."), false);
+                    return 1;
+                })
                 .then(Commands.literal("reapply").executes(context -> {
                     ServerPlayer player = context.getSource().getPlayerOrException();
                     ReapplyResult result = reapply(player);
                     if (!result.unavailable().isEmpty()) context.getSource().sendFailure(Component.literal(
                             "[영구가호] 적용 확인 " + result.applied() + "종, 적용 보류: " + String.join(", ", result.unavailable())));
                     else context.getSource().sendSuccess(() -> Component.literal(
-                            "[영구가호] 보유 가호 " + result.applied() + "종을 다시 적용했습니다."), false);
+                            "[영구가호] 보유 가호 " + result.applied() + "종의 복원을 확인했습니다. 더 강한 임시 효과가 있으면 종료 후 적용됩니다."), false);
                     return result.unavailable().isEmpty() ? 1 : 0;
                 })));
     }
@@ -88,10 +109,14 @@ public final class PermanentBlessingRuntime {
         var holder = BuiltInRegistries.MOB_EFFECT.getHolder(effectId).orElse(null);
         if (holder == null || holder.value().isInstantenous()) return false;
         // Repeating the command must not restart a present effect (e.g. replenish spent absorption hearts).
-        if (hasInfiniteBaseline(player, player.getEffect(holder), amplifier)) return true;
+        if (hasInfiniteBaseline(player, player.getEffect(holder), amplifier)) {
+            BlessingEffectApplication.normalizeHiddenEffects(player,holder);
+            return true;
+        }
         // Vanilla update preserves this weaker infinite baseline behind a stronger temporary potion.
         // addEffect can return false even when it successfully added a hidden baseline, so verify the result.
-        player.addEffect(new MobEffectInstance(holder, MobEffectInstance.INFINITE_DURATION, amplifier, false, true, true));
+        BlessingEffectApplication.apply(player, new MobEffectInstance(holder,
+                MobEffectInstance.INFINITE_DURATION, amplifier, false, true, true));
         return hasInfiniteBaseline(player, player.getEffect(holder), amplifier);
     }
 

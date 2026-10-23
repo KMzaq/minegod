@@ -1,0 +1,48 @@
+{
+  "content_id": "OLY-ART-L01",
+  "record_key": "RPG-S01-009",
+  "definition_id": "mythictrpg:greek_olympus_artemis_measured_shot",
+  "name": "멈춰 쏘는 숨",
+  "runtime_ready": false,
+  "policy_ref": "../../공통설계/전역기준.json",
+  "details": {
+    "management_key": "OLY-ART-L01",
+    "name": "멈춰 쏘는 숨",
+    "type": "learned_skill",
+    "content_status": "현행 획득 경로가 완결된 저술 기획; 실제 서버 등록·지급 전",
+    "proposed_definition_id": "mythictrpg:greek_olympus_artemis_measured_shot",
+    "registered_definition_id": null,
+    "acquisition": "개별 완결기획의 실제 MAIN 수행과 개인 지도·연습 조건을 만족하여 같은 습득 기술 최초권리를 얻는다. 대사·친구 완료·공용 완료만으로 자동 습득하지 않는다.",
+    "effect": "짧게 자세를 고른 뒤 다음 일반 활 화살 한 발에 고정 추가 물리피해3. 관통·유도·명중 보장 없음.",
+    "parameters": {
+      "mana": 24,
+      "cooldown_ticks": 240,
+      "ready_duration_ticks": 60,
+      "bonus_damage": 3,
+      "movement_multiplier_while_ready": 0.75,
+      "max_shots": 1
+    },
+    "timing": "선딜[0,6), t=6 준비상태 부여, 후딜[6,10). 준비상태는[6,66). t=10부터 활 일반 당기기 가능. 이동/회전 허용, 준비 중 이동속도 배율0.75.",
+    "targeting": "본인 발사 minecraft:bow 일반 화살의 실제 발사 사건 1개에만 연결. 석궁/삼지창/멀티샷/모드 투사체 미지원. 실제로 쏘는 시점의 주 손과 탄약 검증.",
+    "failure": "활이 없어도 시전 가능하나 준비 만료는 비용 유지. 다음 화살 실제 발사1회에 준비를 원자적으로 소비한다. 발사·만료·기절·사망·로그아웃 시 준비와 전용 이동속도0.75 modifier를 제거한다. 다른 이동속도 효과는 건드리지 않는다. 빗맞거나 막혀도 준비는 복원되지 않는다. 시전 조건 성공 뒤 탄약 부족이면 준비시간만 흐르고 마법 화살을 생성하지 않음.",
+    "allies": "아군/중립에 보너스 피해 안 붙음. 해당 화살 발사로 준비는 소모, 이후 일반 화살 처리는 기존 서버 보호정책.",
+    "terrain": "일반 화살 충돌·중력 유지; 벽 뒤 보너스 없음. 추가피해가 별도 관통 공격으로 발생하지 않음.",
+    "bosses": "기존 화살이 유효한 체력 피해를 줄 수 있는 대상만 같은 피해 사건에 +3을 방어 계산 전 합산. 보스 무적이면 보너스도0, 여러 부위 중복 없음.",
+    "stacking": "같은 준비 버프 중첩 불가. 다른 준비 효과와 충돌하면 이 스킬 재시전 승인 전 거절. 추가피해는 활 힘 인챈트와 별도 고정3이며 인챈트 배율로 재증폭 안 함. 이 습득 버프/일반 화살은 무기 우클릭 연계 이벤트가 아님.",
+    "swap": "준비 중 주 손 교체 허용, 시간 계속. 발사 때 준비1회 소비 기록을 화살에 고정하므로 발사 후 교체로 회수/재발급 안 됨.",
+    "presentation": "숨을 가다듬는 짧은 소리와 시전자 작은 활시위 표시. 적 위치/약점 UI 생성 안 함.",
+    "existing_support_vs_extension": "기존: K/J·습득권·마나. 신규: 일반 활 발사 이벤트의 1회 준비 소비, 화살 귀속 스냅샷·고정 추가 피해·이동 배율 상태. SELF_EFFECT의 기존 포션 조합으로 구현됐다고 주장하지 않음.",
+    "power_proposal": {
+      "intrinsicPower": 18
+    },
+    "runtime_ready": false,
+    "acquisition_contract_ref": "../../인물별완결기획/P0_MAIN-001/05_RPG-S01-009_아르테미스_완결기획.json#/new_execution_decisions/services/0"
+  },
+  "common_execution_ref": "../공통실행.json",
+  "authoring_presentation_contract": {
+    "relative_file": "../../스킬연출/효과별/OLY-ART-L01.json",
+    "status": "채택된 연출·판정 상세 저술. 런타임 필드가 아님.",
+    "precedence": "외형·시각 피드백과 명시된 기하 상세는 이 참조를 적용한다. 원시 피해·마나·쿨·장비값·권리·획득 조건은 기존 카드 유지. prototype 검기 개정은 별도 시험 시편이며 이 콘텐츠에 자동 적용하지 않는다.",
+    "actual_game_validation": "NOT_RUN"
+  }
+}

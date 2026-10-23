@@ -78,9 +78,23 @@ public final class RecordedNativeSpeechPromptTest {
     private static RecordedNativeSpeechPrompt.Sealed seal(RecordedNativeSpeechPrompt.Selection selection){return selection.seal(selection.scope(),action->{}).join().orElseThrow();}
     private static Issuer one(){var issuer=new Issuer();issuer.raw.add(page(List.of(raw(ATTACK),raw("아까 약속은 취소할게.")),false));return issuer;}
     public static void main(String[] args){
-        exactPagesAndFraming();selectionBudgetAndFiltering();knownCandidates();lifecycle();collectionIsolation();
+        exactPagesAndFraming();compactFraming();selectionBudgetAndFiltering();knownCandidates();lifecycle();collectionIsolation();
         System.out.println("RecordedNativeSpeechPromptTest: "+checks+" checks passed");
     }
+    private static void compactFraming(){
+        var issuer=one();var collected=collected(issuer,request());
+        var selection=RecordedNativeSpeechPrompt.render(collected,new RecordedNativeSpeechPrompt.Budget(8,8192,true));
+        var payload=seal(selection).payloadFor(selection.scope()).orElseThrow();
+        var json=JsonParser.parseString(payload.text()).getAsJsonObject();
+        var cards=json.getAsJsonArray("pages").get(0).getAsJsonObject().getAsJsonArray("cards");
+        check(issuer.sealedRaw.getFirst()==issuer.raw.getFirst(),"compact render seals same whole page");
+        check(cards.size()==2&&cards.get(0).getAsJsonObject().get("text").getAsString().equals(ATTACK),"compact keeps exact original text");
+        check(cards.get(0).getAsJsonObject().getAsJsonObject("speaker").get("id").getAsString().equals(PLAYER.toString()),"compact keeps actual actor");
+        check(cards.get(1).getAsJsonObject().get("text").getAsString().contains("취소"),"compact never drops correction within a page");
+        check(payload.text().contains("Wish/repetition is not decision"),"compact preserves modality boundary");
+        issuer.live=false;check(payload.evidence()!=null&&!sealCurrent(selection),"compact authority still revocable");
+    }
+    private static boolean sealCurrent(RecordedNativeSpeechPrompt.Selection selection){return selection.status()!=Status.STALE;}
     private static void exactPagesAndFraming(){
         var issuer=one();var request=request();var collected=collected(issuer,request);var selection=render(collected);
         check(issuer.sealCalls==0,"collection/render never issues a durable seal automatically");

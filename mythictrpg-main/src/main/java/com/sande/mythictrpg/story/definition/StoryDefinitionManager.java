@@ -240,7 +240,7 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
         List<OutcomeDefinition> outcomes = new ArrayList<>();
         for (JsonElement raw : array(json, "outcomes")) {
             JsonObject value = object(raw, "outcomes entry");
-            fields(value, "id", "weight", "additionalConditions", "effects", "displayName", "description");
+            fields(value, "id", "weight", "additionalConditions", "effects", "displayName", "description", "luckQuality");
             Optional<ConditionNode> extra = value.has("additionalConditions")
                     ? Optional.of(CONDITIONS.parse(value.get("additionalConditions"))) : Optional.empty();
             List<Effect> effects = new ArrayList<>();
@@ -250,7 +250,8 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
             outcomes.add(new OutcomeDefinition(id(value, "id"), value.has("weight")
                     ? integer(value, "weight") : 1, extra, effects,
                     value.has("displayName") ? Optional.of(string(value, "displayName")) : Optional.empty(),
-                    value.has("description") ? Optional.of(string(value, "description")) : Optional.empty()));
+                    value.has("description") ? Optional.of(string(value, "description")) : Optional.empty(),
+                    value.has("luckQuality") ? java.util.OptionalInt.of(integer(value, "luckQuality")) : java.util.OptionalInt.empty()));
         }
         Optional<ChoicePolicy> choice = Optional.empty();
         if (json.has("choicePolicy")) {
@@ -297,6 +298,17 @@ public final class StoryDefinitionManager extends SimplePreparableReloadListener
             case SCHEDULE_EVENT -> {
                 fields(json, "effectId", "type", "event", "delayTicks");
                 yield new Effect.ScheduleEvent(effectId, id(json, "event"), longInteger(json, "delayTicks"));
+            }
+            case GRANT_REWARDS -> {
+                fields(json, "effectId", "type", "god", "rewards");
+                List<com.sande.mythictrpg.quest.reward.RewardEntry> rewards = new ArrayList<>();
+                for (JsonElement entry : json.getAsJsonArray("rewards")) rewards.add(
+                        com.sande.mythictrpg.quest.reward.RewardEntryCodec.parse(entry.getAsJsonObject(), "Story reward " + effectId));
+                yield new Effect.GrantRewards(effectId, id(json, "god"), rewards);
+            }
+            case RECOVER_REPUTATION -> {
+                fields(json, "effectId", "type", "god", "policy", "reason");
+                yield new Effect.RecoverReputation(effectId, id(json, "god"), id(json, "policy"), id(json, "reason"));
             }
             case RELATION_TRANSITION -> {
                 fields(json, "effectId", "type", "transition");

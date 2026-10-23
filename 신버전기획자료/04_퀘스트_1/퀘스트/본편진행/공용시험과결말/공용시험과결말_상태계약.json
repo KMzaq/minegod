@@ -1,0 +1,488 @@
+{
+  "document_type": "채택 저술 기획·구현 계약, 런타임 API/데이터팩 아님",
+  "task_id": "CAMPAIGN-05",
+  "version": "1.0",
+  "runtime_verified": false,
+  "new_reward_definitions": 0,
+  "new_acquisition_rights": 0,
+  "scope": {
+    "quests": [
+      "C22",
+      "C27"
+    ],
+    "integration": [
+      "C21",
+      "C23",
+      "C24",
+      "C25",
+      "C26",
+      "C28"
+    ],
+    "new_story_endings": 0,
+    "records": [
+      "STORY-GODDESS",
+      "STORY-TIANMA",
+      "새 수호자(명부 밖 서사역)"
+    ],
+    "original_files_modified": false
+  },
+  "references": {
+    "story_early": "스토리/본편/세부장면/02_C15_C22_후반_장면.md#C21~C22",
+    "story_final": "스토리/본편/세부장면/03_C23_C28_최종_장면과_결말.md#C23~C28",
+    "combat": "퀘스트/본편전투/C26/C26_귀환룡_기획.json#/lifecycle; /ledger; /rewards",
+    "originals": "퀘스트/본편성장/원본과합일검_기획.json#/rights; /sequence; /sword",
+    "aux": "퀘스트/본편전투/보조전투/보조전투_기획.json#/scenes[scene_id=C22]"
+  },
+  "predecessors": {
+    "C22": "C21 실제 공개/응답·불참/지원·독립대안 확정",
+    "C23": "C22.completed_options 수 >= 1; 개인 실제 증명과 출전 수락 별도",
+    "C24": "C22.completed_options 수 >= 1 AND C09/C10/C11/C12/C17/C19 여섯 원본 실물·권한",
+    "C25": "C22 최소1 AND C24 현재 운용 AND 실제 출전자의 C23 준비",
+    "C26": "C25 동일 핵 실제 연결; 기존 전투 계약만",
+    "C27": "C26.lifecycle == STABLE_STORED AND 선택안 C22 증거 AND 같은 명부/조건 전원동의 AND 현물권한",
+    "C28": "C27.APPLIED_VERIFIED; 개인 현재 만남/행동은 별도"
+  },
+  "ledger": {
+    "world": "worldUUID + canonicalC26EventUUID + canonicalEndingUUID(각 세계 본편 결말1개)",
+    "world_fields": [
+      "C21EvidenceRefs",
+      "C22.optionEvidence[A,B,C]",
+      "connectionRegistryVersion",
+      "coreObjectUUID",
+      "goddessEntityUUID",
+      "goddessAccessLayer",
+      "goddessControlDetached",
+      "goddessBodyFree",
+      "originalMode",
+      "C26DefeatEvidence",
+      "C26StorageChecks",
+      "rosterVersion",
+      "rosterUUIDs",
+      "proposalVersion",
+      "proposalHash",
+      "decisionState",
+      "chosenEnding",
+      "applySteps",
+      "guardianEntityUUID",
+      "guardianServiceState",
+      "C28Available"
+    ],
+    "personal_fields": [
+      "playerUUID",
+      "participationEvidenceIds",
+      "readReceiptIds",
+      "privateAudienceIds",
+      "C23Readiness",
+      "C24OwnerConsentRefs",
+      "C27OwnResponse",
+      "C28CurrentScene",
+      "existingC26ClaimRef"
+    ],
+    "evidence": "eventId, actorUUID, targetUUID/connectionId, authorityVersion, beforeState, afterState, observedAt, observer/source, actualResult, audience; 단순 대사/클릭은 물리성공 증거 아님",
+    "step_receipt": "효과 유일키는 endingUUID+effectId+targetStableId로 고정하며 proposalHash/stepId는 승인·실행 이력 속성이다. 조건 버전이 바뀌어도 같은 효과의 기존 영수증을 잇는다. INTENT/OBSERVED_APPLIED/VERIFIED/UNCERTAIN을 구분하고 물리 실상과 원장 대조 전 재실행 금지. 여신 해방은 goddessEntityUUID+SHARED-GODDESS-FREEDOM의 결말 독립 효과키를 사용한다.",
+    "knowledge": "세계사실≠개인앎; 직접목격/공개열람/실제보고 수신을 각각 기록. 사적고백/MAIN 내용은 원 청중만."
+  },
+  "C22": {
+    "id": "SHARED-C22-PREPARATION",
+    "timeout_real_hours": null,
+    "minimum_completed_options": 1,
+    "common": {
+      "returnees": 2,
+      "welcomer": 1,
+      "roles_not_player_count": true,
+      "cargo": [
+        {
+          "item": "밀",
+          "count": 8
+        },
+        {
+          "item": "씨앗",
+          "count": 8
+        },
+        {
+          "item": "돌 도구",
+          "count": 2
+        }
+      ],
+      "reserve": {
+        "식량": 16,
+        "횃불": 16,
+        "일반 고체 보수블록": 32
+      },
+      "inventory_rule": "허락된 실재고만, 필요실사용 차감·잔량반환/보관. 완납/강제소모/시간리필0. 귀환거절자는 짐만 또는 잔류, 실제 인수자로 대조. 거절이 시험실패 아님.",
+      "route_check": "강가/해안/네더 기존 경로의 현재 이력 재사용; 변경점만 답사. 각안 고유시험1구간 이상, 아홉회 순회0."
+    },
+    "options": [
+      {
+        "id": "A",
+        "name": "열린 협약",
+        "target": "관리허락 받은 강가-해안 분기1",
+        "actions": [
+          "허락된 화물3묶음 배정",
+          "최대화물 대신 비상몫 유지 또는 실제 독점후원 거절·독립운송",
+          "서로 다른 생활권의 동의자 공동귀환 또는 실제 희망한 짐 인계",
+          "원수취인 인수",
+          "공용비축 용도/통행조건/이의/탈퇴 범위 당사자 명시확인"
+        ],
+        "evidence": [
+          "공동통행·인수 영수증",
+          "실제 제외화물 보관/후원포기 증거",
+          "비상몫 잔량",
+          "한정약속 당사자 수락"
+        ],
+        "not_granted": [
+          "전지역보증",
+          "NPC 자동서명",
+          "C27 투표"
+        ]
+      },
+      {
+        "id": "B",
+        "name": "새 수호자",
+        "target": "핵과 분리된 해안 대리장치1",
+        "actions": [
+          "큰 배/중화물 직행 차단 확인",
+          "작은 보트·육로 화물3묶음 실제이동",
+          "큰 접근방향 닫힘·작은길 확인",
+          "추가완충 제거 전 신규진입 중단",
+          "현재 동의한 시험행렬1회 유한철수",
+          "잔류소진·중간직항닫힘·저유입 생활길 확인"
+        ],
+        "evidence": [
+          "인수/작은귀환",
+          "대형닫힘",
+          "추가완충분리",
+          "신규접수0",
+          "철수명부 전원종결",
+          "잔류0",
+          "좁은길 실제통과"
+        ],
+        "not_granted": [
+          "핵가동",
+          "생명탄생",
+          "미출생자 동의",
+          "정기충전",
+          "보호버프"
+        ]
+      },
+      {
+        "id": "C",
+        "name": "주인 없는 경계",
+        "target": "AUX-C22 현재 네더출구 또는 C14 옆길1",
+        "actions": [
+          "시작/중간/귀환 3점 확인",
+          "이 구간만 공동완충분리",
+          "실제옆길통과",
+          "기존 AUX-C22 근접병2 실제처리",
+          "마지막동의자 귀환·물자잔량·퇴로·이번방어범위확인"
+        ],
+        "evidence": [
+          "구간분리실상",
+          "통과명부",
+          "AUX-C22 두 적 처리증거",
+          "귀환/잔량/범위약속"
+        ],
+        "combat_definition_ref": "AUX-C22 그대로, 새적/피해/드롭/XP0",
+        "not_granted": [
+          "C17 무장제한 해제",
+          "다른봉인 해방",
+          "전지역 안전"
+        ]
+      }
+    ],
+    "parallel": "구간/재고/배역 동일자원에는 한 시도만 예약; 독립자원은 병행. 첫 유효선택은 그 제공지원 배정만. 완료안 증거는 보존, 다른안은 차이만 보충.",
+    "interruption": "이미도착/인수/분리/제압 보존. 미확인단계만 재개. 실제사망 정상처리·죽은사람 복제0; 후속 동의자 또는 허락짐의 새 실행으로 남은 기능만 증명. 오프라인 부패/공격/시한0."
+  },
+  "connections": {
+    "allowlist": [
+      "LINK-RIVER",
+      "LINK-COAST",
+      "LINK-NETHER"
+    ],
+    "binding": "C22/C25에서 확인한 현존 전환망 접속 최대3개. 이 중 실제 확인·관리허락·핵연결이 모두 있는 항목만 활성 목록. 없는것은 DISCONNECTED로 남겨 제외, 새차원/포털 생성0. C27 선택안 시험 최소1 연결은 필수.",
+    "fields": [
+      "connectionId",
+      "physicalNodeUUID",
+      "currentWorldAndEndpoints",
+      "managerAndPermission",
+      "C22EvidenceRefs",
+      "linkedToCore",
+      "currentC17Restriction",
+      "admissionMode",
+      "occupants",
+      "cargoOwnership",
+      "safeEgressCheckpoints",
+      "emergencyReserve",
+      "politicalSignatories",
+      "effectiveState"
+    ],
+    "capacities": {
+      "unit": "등록 접속 한 곳의 동시 접수 명부 및 운송 묶음, 바닐라 인벤토리 제한/세계전역 전투력 아님",
+      "LOW": {
+        "people": 2,
+        "cargo_bundles": 1,
+        "medium_direct": false,
+        "large_military_direct": false
+      },
+      "GUARDIAN_VOLUNTARY": {
+        "people": 4,
+        "cargo_bundles": 2,
+        "medium_direct": true,
+        "large_military_direct": false
+      },
+      "ACCORD": {
+        "people": 6,
+        "cargo_bundles": 3,
+        "emergency_people_reserved": 2,
+        "medium_direct": true,
+        "large_military_direct": false
+      },
+      "LOCAL": {
+        "people": 2,
+        "cargo_bundles": 1,
+        "shared_buffer": false,
+        "medium_direct": false,
+        "large_military_direct": false
+      }
+    },
+    "quota_rule": "앞행렬이 출구 확인한 만큼만 다음행렬 접수. 매일 리필·소모재화 아님. 더 적은 실제부지 상한이 있으면 작은값으로 문서/동의를 갱신. 큰항로를 원래 이용하던 독립노선은 이 명세로 차단하지 않음.",
+    "physical": "허가목록 접속의 신규유입 제어·안전 출구 유지·대리장치 상태 변경을 실제 구현. 표지만 바꾸고 통행은 그대로면 미완료. 보행 일반길을 불가시벽으로 감옥화하지 않음; 우회로 보존.",
+    "non_interference": [
+      "천마 잔여봉인",
+      "루브라스 층/계약/종족",
+      "달기·FOX 불씨/개인MAIN/사적관계",
+      "안정된가호/업/장비/신격",
+      "신 독립관측/개입",
+      "연결목록 밖 창구/포탈",
+      "C17 다른 무장제한",
+      "C21 책임잔여",
+      "용사 및 첫용 사망이력"
+    ]
+  },
+  "consent": {
+    "roster": "C25 핵연결 전 기존 사전지정 최종참가자의 실제 UUID 명부를 본인별 참여의사와 함께 고정. 미지정이면 명부작성부터, 온라인접속자/레이드N/보상Q로 자동생성0. C26 종료후라도 이미 지정된 명부 그대로 수입. 사전명부증거 없는 경우 C27 접수 차단 후 명시지정 절차.",
+    "roster_change": "첫 결말접수 뒤 자동 변경 금지. 아직 적용전 모두가 명부변경 내용에 명시 동의하고 신규자는 자기참여를 수락한 경우만 새 rosterVersion. 제거되는 사람도 동의 필요. 반대/부재/사망/장기미접속만으로 제거0. 새명부는 모든 결말표 초기화. 적용후 과거명부수정0.",
+    "proposal_fields": [
+      "endingId",
+      "rosterVersion",
+      "connectionRegistryVersion",
+      "finiteConnectionList",
+      "capacityAndCosts",
+      "C22ProofVersion",
+      "C26StoredProof",
+      "resourceOwnersAndPermissions",
+      "signatoriesAndNonparticipants",
+      "goddessFreedom",
+      "guardianIndependentLifeAndRefusalDrain",
+      "irreversibleEffects",
+      "executionScope"
+    ],
+    "response": "본인 UUID 인증 + proposalHash + YES/NO/DEFER/WITHDRAW + 원문·시각·순번. 자유문장을 확인해 받을 수 있으나 모호한 아무거나/농담/질문/침묵은 미확정. 대리투표0.",
+    "unanimity": "명부가 비지않고 모든 UUID의 최신유효응답이 동일 proposalHash YES. 온라인여부는 조건 아님.",
+    "expires_at": null,
+    "condition_change": "안/실제 연결/수량상한/비용/지원/권리/위험/생명보장/명부 변경은 새버전·기존표 STALE·전원 재동의. 동일내용 설명/표시 오타는 결과필드 불변일 때 해시 유지, 정정이력 남김.",
+    "withdraw": "선택안 고유 불가역 실제적용 전 철회는 RESERVED뿐 아니라 READY/APPLYING의 미적용 실행도 즉시 중단한다. 최신 응답·조건 갱신과 적용은 동일 세계 실행잠금/세대번호로 순서화한다. 불확실하면 RECONCILE, 선택안 고유 불가역효과 없음 확인되면 철회 수용. 여신의 독립 해방은 철회로 되돌리지 않고 결말 고정 근거로도 쓰지 않는다. 이미 선택안 고유 불가역 적용됐으면 과거결정 취소/다른결말 적용0, 같은안 안전복구.",
+    "not_equivalent": [
+      "C21 첫 유효 공동선택",
+      "C22 물자배정",
+      "C23 출전수락",
+      "C24 실제 원본소유자 합일동의",
+      "C26 막타/보상/현장N",
+      "검주인 승인",
+      "NPC찬성"
+    ],
+    "waiting": "안정보관 유지, 시한/48h/독촉벌금/자동찬성/강제로그인0. 추가C22/개인활동 가능."
+  },
+  "goddess": {
+    "id": "SHARED-GODDESS-FREEDOM",
+    "separate_from_vote": true,
+    "sequence": [
+      "C25 접근층 실제해제",
+      "C26 단독제어접속 분리·안정보관",
+      "남은 몸결속 확인",
+      "생존과제어 독립검증",
+      "기존 귀환로 안전확인",
+      "실제 남은결속 해제",
+      "본인 선택 이동 또는 자유체류 확인"
+    ],
+    "completion": "동일 생명 실제 자유이동 가능·잔여강제결속0, 본인 이동거절은 완료방해0. 안전상 아직 못풀린 것은 미완료로 표시. 표를 기다리는동안 가능한독립해방은 수행, 찬성 대가로 석방0.",
+    "not_granted": [
+      "영구사살",
+      "용사부활",
+      "연인/동거강제",
+      "단독제어복원",
+      "다른생명대속"
+    ]
+  },
+  "ending_machine": {
+    "states": [
+      "WAITING",
+      "PROPOSED",
+      "READY",
+      "RESERVED",
+      "APPLYING",
+      "RECONCILE",
+      "APPLIED_VERIFIED"
+    ],
+    "initial": "WAITING",
+    "terminal": "APPLIED_VERIFIED",
+    "guards": [
+      "C26 STABLE_STORED",
+      "selected C22 complete",
+      "fixed roster unanimous same hash",
+      "finite actual connections authorized",
+      "actual originals/core available",
+      "independent life safeguards verified"
+    ],
+    "reservation": "모든 guard 재검증→세계결말키 CAS 예약. 동일 잠금/세대번호에서 본인별 최신응답 순번, 명부·제안·허락·연결 버전과 실제 상태를 검증한다. NO/DEFER/WITHDRAW 및 조건변경은 이전 실행세대를 무효화하고 READY/RESERVED의 실행자도 이를 따르게 한다. 잠금 해제 후 물리작업에는 같은 세대의 유효 실행권을 다시 확인하여 오래된 작업자가 적용하지 못하게 한다. 첫 불가역 경계 직전과 각 미시작 단계 직전 재검증하며, 실제 결과 불명은 RECONCILE 우선이다. 중복요청은 같은 예약만 반환하고 APPLIED_VERIFIED에서는 기존 결과만 읽는다.",
+    "irreversible_boundary": "사전 동의 자료에 선택안 고유 확정 지점을 표시한다: A는 핵의 협약 공동완충 실제 적용, B는 제한 핵운영 실제 적용, C는 중앙3기능의 첫 실제 절단이다. 해당 지점은 결말 간 되돌리기를 허용하지 않는 적용 경계이며 핵의 새 물리 능력을 뜻하지 않는다. INTENT를 먼저 저장하고 그 실제 적용 사실을 확인하면 chosenEnding 고정. 신규 유입 임시차단·기존통행 철수·공통 여신 안전해방만으로는 선택안을 고정하지 않는다. 장치가 바뀌었는지 불명확하면 다른안/재탄생 모두 금지하고 실물대조. INTENT만으로 완료/불가역이라고 주장하지 않으며 APPLIED_VERIFIED는 같은 결과 조회만 허용한다.",
+    "step_order": [
+      "CHECK_SAFE_AND_STOP_NEW_INFLOW",
+      "FINISH_EXISTING_TRANSIT",
+      "VERIFY_GODDESS_FREE_OR_FINISH_SAFE_RELEASE",
+      "APPLY_SELECTED_CORE_MODE",
+      "APPLY_EACH_AUTHORIZED_CONNECTION",
+      "VERIFY_BRANCH_WITNESSES",
+      "VERIFY_ALL_RECEIPTS",
+      "PUBLISH_C27_AND_OPEN_C28"
+    ],
+    "completion": "각 대상 실물상태+해방+해당안 필수결과 전부 VERIFIED일 때만 APPLIED_VERIFIED. 전원표 자체는 완료아님.",
+    "recovery": "진입 guard의 C26 STABLE_STORED는 최초 적용 전 확인이다. 이미 선택안이 실제 적용된 뒤에는 같은 C26 제압·보관 인계증거와 현재 선택안 안전상태를 대조하며, 옛 보관모드를 되살리는 재검증은 하지 않는다. 이미 적용한 효과는 제안 해시가 달라도 고정 효과키의 실물·기존 영수증을 이어 재지급/재소비 없이 복원한다. 미적용 가역 예약은 해제 가능하나 여신 해방/탄생/절단은 되돌리지 않는다. 변경조건이 필수면 같은 결말의 수정계획에 지정명부 전원 재동의와 해당 소유자의 현재 허락을 받고 미완 부분만 잇는다. 기존 불가역 효과는 변경·재승인 대상인 척하지 않고 이력으로 제시한다. 그동안 유입차단/안전출구 유지, 불가역단계 이후 다른안 선택0.",
+    "crash": "진행중 일시조작 취소·지속상태 대조. 완료된 접속/생명/원본 모두 같은UUID. 기록만존재하고 물리없으면 미완료; 물리있고 기록없으면 실상증거로 영수증보수. 양립불가 상태는 해당대상 격리·안전유입차단·운영복구, 보스재전투0."
+  },
+  "endings": [
+    {
+      "id": "A",
+      "name": "열린 협약",
+      "core": "옛 단독명령 복원 없이 동의접속의 공동완충",
+      "links_mode": "ACCORD",
+      "witnesses": [
+        "동의한 두 생활권의 현 통행/물자인수",
+        "실제 비상여유2인분 비워둠",
+        "큰군수직항 차단/우회",
+        "서명/불참·이의/탈퇴 안내 확인"
+      ],
+      "political": "각 서명자 약속만; 현장관리인에게 이의제기 기록→새부담은 당사자 재동의 전 적용0. 탈퇴요청은 신규혜택 접수중단→이미통과명부 안전철수→그서명의 장래혜택만 제거. 독립기득길 폐쇄/미서명자 복종0.",
+      "cost": "최대화물/독점후원/군수편의 포기, 실제 협상 필요; 반복납품0"
+    },
+    {
+      "id": "B",
+      "name": "새 수호자",
+      "core": "생명에게 과유입 닿기 전 차단하는 제한운영",
+      "links_mode": "LOW",
+      "birth": "세계 canonical guardianKey 1개와 탄생의도·예정 entityUUID를 영속 예약하고, 제한운영·생명독립 장치를 먼저 확인한 뒤 같은 UUID의 독립된 새 비신격생명 실제탄생을 검증한다. 미로드/다른 위치/영수증 누락을 미탄생으로 보지 않는다. 탄생이력 또는 현물 결과가 불명확하면 RECONCILE, 기존 탄생 확인 시 같은 개체의 관측만 복구한다. 실제 사망은 미탄생으로 되돌리지 않고 복제·부활·대체 수호자 생성0, 안전 저유입과 확인된 역사만 유지한다. 탄생 전에는 장치의 독립생존 조건을 검증하고 탄생 뒤에는 실제 본체의 독립생존을 검증하여 최종 완료한다. 첫용/귀환룡 기억인격 부활0.",
+      "witnesses": [
+        "저유입작동",
+        "생존·몸·이동의 조절접속 독립",
+        "단일 새생명 실제존재",
+        "중간직항닫힘·좁은길 실제확인"
+      ],
+      "completion_without_help": true,
+      "later_service": "출생후 설명·경험·질문 및 본인자발수락이 있을때만 GUARDIAN_VOLUNTARY. 첫기본제안은 현귀환행렬1회, 요청거절/보류 자유. 플레이어대답선택메뉴/충성강제0.",
+      "cost": "큰창구·대규모지원 불가; 거절시 중간직항도 상실; 노동없어도 생존/엔딩 유지"
+    },
+    {
+      "id": "C",
+      "name": "주인 없는 경계",
+      "core": "중앙흡수·공통명령·사람구속 비가역절단",
+      "links_mode": "LOCAL",
+      "witnesses": [
+        "기존통행 철수·생명독립",
+        "실제 중앙3기능 절단",
+        "허락된 작은옆길 현재통과",
+        "실제 현재방어·퇴로·공동완충 없음 확인"
+      ],
+      "cost": "지역의 실제방어·피난·자발호위 부담. 자동세계무적/오프라인재난/정기세금0",
+      "not_consumed": [
+        "원본 여섯 조각",
+        "합일검"
+      ],
+      "new_central_owner": null
+    }
+  ],
+  "guardian_drain": {
+    "states": [
+      "NOT_BORN",
+      "INDEPENDENT_LOW",
+      "VOLUNTARY_ACTIVE",
+      "STOP_ADMISSION",
+      "DRAINING",
+      "LOW_CLOSED_EXTRA"
+    ],
+    "maximum_active_per_link": 4,
+    "maximum_cargo_per_link": 2,
+    "maximum_links": 3,
+    "max_occupants": 12,
+    "route": "각 실제 연결의 안전 출구까지 최대24블록, 폭3·높이3 이상 기존보행길, 0/8/16/24 체크포인트. 연결기 지형에 맞춰 짧게 하되 위험강제점프/자동텔레포트0. 만족하는 부지 없으면 중간접속 열지 않고 LOW만.",
+    "reserve": "열기전 사람별 최대3구간 철수권1세트, 화물별 동일 지정운반자/경로1세트 예약. 능력치버프/마나량 아님. 단일4인행렬 최대12인구간, 세계최대36인구간·화물최대18묶음구간. 매단계한번 소진·이월누적0. 이미통과자 완료시 미사용예약 해제, 충전아이템 없음.",
+    "on_refusal": "명확한휴식/이탈 즉시 수호자 노동접속 해제 및 신규접수0. 수호자를 철수끝까지 묶지 않음. 접수·출입확인·거절 처리를 같은 접속 실행순서로 직렬화하고, 그 시점 실제 안쪽 명부와 화물·남은구간을 원자적 스냅샷 또는 복구가능 의도/실상대조로 동결한다. 먼저 진입한 대상만 예약 여유 안에서 철수하고 뒤의 진입은 거절하며, 불명확한 경계 대상은 신규0으로 실제 위치부터 대조한다. 잔류장치는 별도 예약범위 철수만 유지한다.",
+    "drain": "동결명부마다 실제 다음 안전점 통과를 확인하며 남은구간 소진. 최대3구간 후 출구 확인 DONE. 아직 진입안한자는 CANCELLED_OUTSIDE, 이미죽은자는 실제사망확인 DEAD_NOT_RETURNED와 일반유품회수 별도, 임의사망 생성0. 연결안 인원이0이고 남은화물은 인수/현물대기보관이 확인되면 잔류0·추가중간접속닫힘.",
+    "offline": "접속종료한 플레이어는 실제 퇴장위치/남은구간 저장, NPC행렬은 마지막실제안전점에중단. 현실시간 차감/잔류증가0. 해당 접속은 신규0인 안전정지, 재접속 후 남은최대3구간만. 불참자자동도착0. 무기한 달력대기는 허용하되 유입도 작업량도 늘지 않음.",
+    "blocked_route": "신규0 유지, 남은원장을동결하고 실제 보수/확인된대체퇴로로 같은 인원만 철수. 위험을 수호자 생존에 전가0. 대체퇴로 권한 없으면 해당구간 안전복구 필요, 완료발화0.",
+    "reopen": "본인이 후일 새 제한도움을 제안+이해·범위수락+현재퇴로/유한여유 재확인 후 새 batchId. 이전잔류 미해결접속 재개방0. 이전 잔량 적립/무한배터리/정기충전/두번째엔딩투표0. 최초 수락·재개 모두 batchId와 수락한 대상·횟수·접속 범위를 고정한다. 기본 한 행렬 완료 뒤 자동 다음행렬 접수0이며 추가행렬은 본인의 새 자발적 범위 수락이 필요하다. 접속별 인원뿐 아니라 열린 전체 batch의 총12명·화물6묶음 상한과 예약여유를 동시에 검사한다."
+  },
+  "delivery_and_facts": {
+    "new_rewards": 0,
+    "C26": "전투원문의 /rewards 기존권리만 읽음. DEFEAT_CONFIRMED 자격은 그 계약이 결정; C27 대기 때문에 소급몰수0. C22/C27 완료 전 그 사건 보상/결말발화0.",
+    "C24": "/rights 기존 원본6→검1·권한/불가역/복구만 참조. C27에서 소모/복제/일반능력복원0.",
+    "C28": "현재변화1+실제현재행동/만남1. 강제납품0. 이미 채택된 지급 정의만 참조, 본 계약 새선물0.",
+    "utterance_guards": [
+      "C25 접근완료를 완전해방이라고 말하지 않음",
+      "C26 HP0만이면 제압, 보관검증전 안전보관 완료발화0",
+      "C27 표완료면 실행동의확보, 실제결과전 새세계/새생명완료 발화0",
+      "B 첫거절이면 독립생명과 저유입결말 완료, 보호서비스 개통이라고 말하지 않음"
+    ],
+    "latecomer": "공개자료 실제열람과 현장현재행동만 개인기록. 과거표/최초승리/원본획득/MAIN/기억복사0."
+  },
+  "implementation_requirements": [
+    "인증 UUID별 버전응답·비동기지속 저장",
+    "세계유일 핵/귀환룡/수호자 및 원본원장 연계",
+    "접속별 물리신규유입차단·안전출구/행렬명부",
+    "개체생존과서비스접속 분리",
+    "단계별 의도/현물확인/영수증 및 중복방지",
+    "허용한 권한·실물 접근 확인",
+    "전투계약 승리/보관/보상 이벤트 읽기",
+    "청중별 사실전달·완료발화 guard"
+  ],
+  "estimates": {
+    "C22_option_minutes": "5–10; 기존 AUX와 동일, 추가안은 고유차이만",
+    "C27_review_apply_minutes": "10–20 능동플레이 예상, 비동기 표 대기는 무제한",
+    "C28_minutes": "3–8 선택현재장면",
+    "guardian_drain": "최대24블록 실제보행; 강제 시간완료 없음",
+    "balance": "장비/공격/보상증가0. 통행상한은 초기 저술값이며 서비스처리량·퇴로 검증용, 실전측정0."
+  },
+  "physical_operations": {
+    "interaction": "전투가 아닌 C22 대리장치/C27 등록조작점은 반경3블록·실제시야·40tick 연속 확인 후 대상상태를 한 번 변경. 이동으로 범위이탈/권한철회/피격/사망/로그아웃은 현재 미완40tick만 취소. 이미검증단계유지. 피해/마나/내구/재료비0, 공격쿨초기화0. C25/C26 조작은 원래계약 우선.",
+    "C27_resources": "핵은 동일실물, 원본 또는 검은 현재허락범위 사용만. 신규납품/검소모/생명희생0. 관리허락 없는 연결은 제외한 새제안에 전원재동의.",
+    "ending_step_mapping": {
+      "A": [
+        "새유입닫기",
+        "명부철수",
+        "여신자유검증",
+        "핵공동완충모드",
+        "목록접속 ACCORD 적용",
+        "동의한 현재행렬통과/인수·비상몫확인",
+        "모든결과검증"
+      ],
+      "B": [
+        "새유입닫기",
+        "명부철수",
+        "여신자유검증",
+        "과유입차단·생명독립 장치검증",
+        "목록접속 LOW 적용·실제통과확인",
+        "guardianKey 예약·독립생명1 실제탄생 및 동일본체검증",
+        "모든결과검증; 봉사수락은 완료조건 아님"
+      ],
+      "C": [
+        "새유입닫기",
+        "명부철수",
+        "여신자유검증",
+        "중앙흡수/공통명령/사람구속3기능 비가역절단",
+        "목록접속 LOCAL 적용",
+        "현재지역 동의통과·방어/퇴로확인",
+        "모든결과검증"
+      ]
+    },
+    "finite_transit_all": "수호자 외 협약접속도 고정명부로 철수. ACCORD 최대일반6+비상2=8명/접속, 최대24명/3접속; 화물3/접속 총9묶음. 각24블록/3구간이라 최대72인구간/27묶음구간. C22 수호시험은1접속 2명/화물3묶음을 순차수송, 감축시 실제안쪽명부만 최대2명·1묶음. 명부는 접수 후 확대0. 사람/화물당 동일구간 재소진0. 여유부족시 새진입불가. 안전길 확보 안되면 가동보류, 기존 생명강제희생0."
+  }
+}

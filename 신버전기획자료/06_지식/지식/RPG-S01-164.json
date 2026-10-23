@@ -1,0 +1,1269 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S01-164",
+  "name": "아엘로",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "아엘로",
+    "canonical_name": "아엘로",
+    "mythology": "그리스·로마",
+    "tier": "중급",
+    "combat_tier": "중급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-164",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-164",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-164",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "하피 종 전체가 아닌 원전에 이름이 있는 개인; 게임 하위 신격은 창작 제안",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-164",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/87/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S01-164/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role",
+            "identity"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S01-164:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S01-164:SELF:002"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S01-164:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-164:EVENT:001"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/fact_or_claim",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/truth_status",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/who_learns",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/from_whom_or_source",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_event",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_audience_and_disclosure",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/before_after_change",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:007"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/known_before/core_private_baseline/0",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/known_before/core_private_baseline/1",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/known_before/core_private_baseline/2",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:010"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/known_before/guard",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:011"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/learned_from_encounter",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:012"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/claim_vs_confirmed_fact/boundary",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:013"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/claim_vs_confirmed_fact/retained_unknowns/0",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:014"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/claim_vs_confirmed_fact/retained_unknowns/1",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:015"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/claim_vs_confirmed_fact/retained_unknowns/2",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:016"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/audience_disclosure",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:017"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/no_automatic_friend_memory",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:018"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/baseline_context",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:019"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/id",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:020"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/claim/text",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:021"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/claim/basis",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:022"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/claim/source_refs/0",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:023"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/claim/source_refs/1",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:024"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/fact_ref",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:025"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/mode",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:026"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:027"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:028"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:029"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/source_refs/0",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:030"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/acquisition/source_refs/1",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:031"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/memory_scope",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:032"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/disclosure/default",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:033"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/disclosure/audience",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:034"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/0/disclosure/condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:035"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/id",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:036"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/claim/text",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:037"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/claim/basis",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:038"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/acquisition/mode",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:039"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:040"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:041"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:042"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/memory_scope",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:043"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/disclosure/default",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:044"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/disclosure/audience",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:045"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/1/disclosure/condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:046"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/id",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:047"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/claim/text",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:048"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/claim/basis",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:049"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/acquisition/mode",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:050"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/acquisition/from_whom_or_what",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:051"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/acquisition/when_or_condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:052"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/acquisition/evidence_status",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:053"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/memory_scope",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:054"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/disclosure/default",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:055"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/disclosure/audience",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:056"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/known_facts/2/disclosure/condition",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:057"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/suspicions/none_reason",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:058"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/misbeliefs/none_reason",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:059"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/deliberate_concealment/none_reason",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:060"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/unknown_or_unavailable/0",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:061"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/unknown_or_unavailable/1",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:062"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/unknown_or_unavailable/2",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:063"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/future_learning/none_reason",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:064"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/preserved_baseline_knowledge/memory_guard",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:065"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/direct_report_inference",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:066"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/audience",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:067"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_3/verbatim/source_quote_speaker",
+      "authoring_item_key": "RPG-S01-164:BOUNDARY:068"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-FAMILIAR",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "K-INTENT",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "K-TEXTURE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "T-IDENTITY",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "아엘로: 특정 하피, 중급. 하피 종 전체가 아닌 원전에 이름이 있는 개인; 게임 하위 신격은 창작 제안",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ROLE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "실제 확보한 과거 오키페테의 정찰 기록과 피네우스의 식탁 분쟁 기록을 구분하며 정한 몫을 지키면 바람 길로 짐을 운반한다",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ACTION",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ACTION",
+            "statement": {
+              "text": "먹을 것을 받으면 자신의 몫을 바람에 날리지 않을 쪽으로 옮긴 뒤 남은 수를 다시 센다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-HISTORY-SOURCE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-HISTORY-SOURCE",
+            "statement": {
+              "text": "현행 원전 참고에 보존된 범위: 타우마스와 엘렉트라의 딸인 하피 두 이름 중 하나다 이 항목만으로 현재 상태·부활·게임 전쟁 참여·NPC의 완전한 기억을 부여하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-FAMILIAR",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-FAMILIAR",
+            "statement": {
+              "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "아엘로의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "아엘로의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "아엘로에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "아엘로의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다. 감각 생물에게 인간의 소유 협상·계약·문서 지식을 주입하지 않는다.",
+        "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+        "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+        "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-164/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "아엘로. 하피 종 전체와 구별되는 하나의 특정 하피이며 신격을 지닌다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-164/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 같은 본체의 접근·위치·잔여 봉인·해당 상호작용 의사가 확인되지 않으면 새 말·몸짓·fallback도 만들지 않는다. 적대 공격 발생에 상호 동의를 요구하지 않는다.",
+        "행동하려는 뜻·농담·선택은 실제 행동·수신·완료·지급이 아니다. 실제 결과와 현재 상태만 반영한다.",
+        "알지 못한 사건·행방·속내를 지어내지 않는다. 타인 보고는 그 사람의 주장으로 기억하고 직접 목격과 구별한다.",
+        "청중 전원에게 허용되지 않은 내용과 그 존재는 대사·거절 이유·제목에도 넣지 않는다. 친구·파티·후발 참가로 경험을 복사하지 않는다.",
+        "일반 잡담과 질문에 개인 과업 소유를 요구하지 않는다. 소유·수락·권리는 해당 전용 행동에만 확인하며 질문 없이도 실제 행동·침묵·보고에 반응한다.",
+        "오키페테·피네우스는 옛 관계로만 보존하고 현재 호출·협업·기록 수신을 생성하지 않는다.",
+        "두 구간/한 구간/자력 정찰을 구분하며 실제 수행·보고·인수·먹은 양을 별도로 보존한다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S01-164/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "아엘로는 실제 수행한 수고의 대가를 받고 자기 몫을 지킨다. 범위가 줄면 지도 빈틈은 남는다. 분노를 탐욕으로 몰아 무상 정찰을 강요하지 않는다.",
+            "truth_status": "실제 행동 뒤 관측된 부분만 확정 사실. 본인의 희망·평가·전언은 각각 그렇게 표시하며 현재 저술 문장은 아직 획득한 기억이 아니다.",
+            "who_learns": "아엘로와 직접 보고 들은 수행자; 전달받은 사람은 자기 수신 범위만",
+            "from_whom_or_source": "위 두 단계의 직접 관찰과 아엘로의 실제 발화. 기존 자기 역사: 오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다. / 빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다. / 대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+            "actual_event": "플레이어가 지상 길을 직접 확인하는 동안 아엘로가 실제 수락한 범위만 날아 보고, 돌아와 보인 지점과 못 본 지점을 말한다.",
+            "actual_audience_and_disclosure": "현장 실제 관찰자·청취자 및 명시 허용된 실제 수신자만. 출판·팀 완료·친구 관계는 자동 수신이 아니며 사적 내용은 당사자가 허용한 청중에게만 전달한다. from_whom_or_source에 적힌 코어 자기 역사는 저자 대조 근거이며 청중에게 일괄 공개되는 발화가 아니다. 공개 거절 사실을 기억 상실로 바꾸지 않는다.",
+            "before_after_change": "첫 만남의 기대만 있던 상태에서 아엘로는 실제 수행한 수고의 대가를 받고 자기 몫을 지킨다. 범위가 줄면 지도 빈틈은 남는다. 분노를 탐욕으로 몰아 무상 정찰을 강요하지 않는다. 이미 아는 자기 역사·예전 재회 기억은 지우지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/0/condition"
+        },
+        "verbatim": "두 구간과 각 몫에 당사자 실제 합의, 현재 비행 가능",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/1/condition"
+        },
+        "verbatim": "가까운 구간과 작은 몫에 실제 합의",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/2/condition"
+        },
+        "verbatim": "서비스 합의 안 함",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/3/condition"
+        },
+        "verbatim": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/4/condition"
+        },
+        "verbatim": "귀환 및 현재 보고 청취 가능",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/5/condition"
+        },
+        "verbatim": "비행 중단·부재·접촉 끊김",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/6/condition"
+        },
+        "verbatim": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/7/condition"
+        },
+        "verbatim": "실제 수행·보고 범위 확인 및 음식 현재 소유·인계 가능",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/8/condition"
+        },
+        "verbatim": "실제 지급권은 있으나 현재 부족·수령 미확인",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/accepted_episode_review/branches/9/condition"
+        },
+        "verbatim": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/87/outline/source_reuse/original_scope_contract_preserved/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "아엘로는 실제 수행한 수고의 대가를 받고 자기 몫을 지킨다. 범위가 줄면 지도 빈틈은 남는다. 분노를 탐욕으로 몰아 무상 정찰을 강요하지 않는다.",
+            "truth_status": "실제 행동 뒤 관측된 부분만 확정 사실. 본인의 희망·평가·전언은 각각 그렇게 표시하며 현재 저술 문장은 아직 획득한 기억이 아니다.",
+            "who_learns": "아엘로와 직접 보고 들은 수행자; 전달받은 사람은 자기 수신 범위만",
+            "from_whom_or_source": "위 두 단계의 직접 관찰과 아엘로의 실제 발화. 기존 자기 역사: 오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다. / 빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다. / 대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+            "actual_event": "플레이어가 지상 길을 직접 확인하는 동안 아엘로가 실제 수락한 범위만 날아 보고, 돌아와 보인 지점과 못 본 지점을 말한다.",
+            "actual_audience_and_disclosure": "현장 실제 관찰자·청취자 및 명시 허용된 실제 수신자만. 출판·팀 완료·친구 관계는 자동 수신이 아니며 사적 내용은 당사자가 허용한 청중에게만 전달한다. from_whom_or_source에 적힌 코어 자기 역사는 저자 대조 근거이며 청중에게 일괄 공개되는 발화가 아니다. 공개 거절 사실을 기억 상실로 바꾸지 않는다.",
+            "before_after_change": "첫 만남의 기대만 있던 상태에서 아엘로는 실제 수행한 수고의 대가를 받고 자기 몫을 지킨다. 범위가 줄면 지도 빈틈은 남는다. 분노를 탐욕으로 몰아 무상 정찰을 강요하지 않는다. 이미 아는 자기 역사·예전 재회 기억은 지우지 않는다."
+          }
+        ],
+        "none_reason": null
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    },
+    "current_knowledge_2": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/87/outline/source_reuse/first_contact_original_source_only/knowledge_boundaries"
+      },
+      "verbatim": {
+        "known_before": {
+          "core_private_baseline": [
+            "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+            "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+            "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다."
+          ],
+          "guard": "자기 코어의 현재 기억만. 새 장면·관계 간선의 제안은 이미 겪은 일로 적재하지 않는다. 실제 재회면 이전 개인 기억을 지우지 않는다."
+        },
+        "learned_from_encounter": "실제 관찰한 단서와 본인이 직접 들은 질문·응답, 실제 참여한 행동 결과만 배운다. 바람에 날릴 방향을 먼저 알아채면 놓을 자리를 바꾼다. 먹이 제공만으로 운송 완료·오키페테의 현재 정찰 결과를 만들지 않는다",
+        "claim_vs_confirmed_fact": {
+          "boundary": "본인의 희망·경계·농담·신화 이본과 현재 관측 사실을 구분한다. 조기 정답은 이미 확보된 증거 부분만 인정하고 모르는 현재 정치·행방·생사·의도를 확정하지 않는다.",
+          "retained_unknowns": [
+            "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+            "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+            "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+          ]
+        },
+        "audience_disclosure": "같은 자리에 있었더라도 실제 들은 청중만 기록한다. 사적 이야기·위치·전언은 당사자가 허용한 내용과 수신자에게만 전달하고, 비공개 전달 구현이 없으면 공개 대화로 누설하지 않고 보류한다.",
+        "no_automatic_friend_memory": "파티·공동 완료·혈연·소개 간선은 개인 기억 전송이 아니다. 친구의 이야기는 출처 있는 전언이며 직접 체험과 구분한다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    },
+    "current_knowledge_3": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/87/outline/knowledge_boundaries"
+      },
+      "verbatim": {
+        "preserved_baseline_knowledge": {
+          "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+          "known_facts": [
+            {
+              "id": "K-FAMILIAR",
+              "claim": {
+                "text": "오키페테의 옛 정찰과 피네우스의 식탁 분쟁이라는 인연을 안다. 실제 확보하지 않은 정찰·분쟁 기록의 내용을 읽었다고 하지는 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "identity"
+                ]
+              },
+              "fact_ref": "T-FAMILIAR",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+                "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "identity"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "현재 직접 대화하는 상대",
+                "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+              }
+            },
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "빼앗기지 않을 먹이 몫을 확보하고 바람 속의 수고를 당연한 서비스로 만들지 않으려 한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+                "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "현재 직접 대화하는 상대",
+                "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+              }
+            },
+            {
+              "id": "K-TEXTURE",
+              "claim": {
+                "text": "대화 중에도 먹을 것 가까이에 손이나 날개를 놓아 바람을 막는다. 바삭한 것과 질긴 것의 씹히는 차이를 까다롭게 고른다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+                "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "현재 직접 대화하는 상대",
+                "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "아엘로의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "아엘로의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "아엘로에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+            "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+            "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+          ],
+          "future_learning": {
+            "none_reason": "아엘로의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+            "items": []
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "direct_report_inference": "실제 관측·현재 수신·권한 있는 전언만 인물 지식이 된다. 지위만 들은 경우 전과를, 방어만 본 경우 운반 숙련을, 현재 힘만 본 경우 과거 성장을 덧붙이지 않는다.",
+        "audience": "실제로 보거나 허락된 설명을 받은 수신자별로만 기억한다. 파티·후발자·세계해금으로 사적 기억을 복제하지 않는다.",
+        "source_quote_speaker": "관계 문장의 원 화자는 source_record_key, 현재 상대는 반대 endpoint다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S01-164/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S01-164:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-164:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    }
+  ]
+}

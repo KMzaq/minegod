@@ -1,0 +1,1117 @@
+{
+  "packet_id": "P2_NONQUEST-080",
+  "category": "퀘스트",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술 기획이며 런타임 스키마·API 지원·구현 완료가 아니다. 게임/API/LLM/영상/5인 서버 시험 미실행.",
+    "보존": "source_contract·retained_profile은 원문값이다. 과거 제안 상태를 소급 바꾸지 않으며 현행 adopted_detail에서 별도 채택한다. 새 SIDE/MAIN/성장 보상0.",
+    "조우": {
+      "참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+      "확률": {
+        "route_scope": "기존에 무작위 일반 조우로 허용된 actor만. 개인별 확정 운영값이 있으면 해당 actor를 이 풀에서 제외해 전용 경로로 단 한 번 처리.",
+        "interval_activity_seconds": 300,
+        "server_trial_probability": 0.25,
+        "actor_cooldown_uptime_seconds": 1800,
+        "cooldown_start": "새 실제 출현 receipt 때만; 실패추첨/보류/기존본체 일반대화로 시작하지 않음.",
+        "trial_scope": "world_uuid + GENERAL + activity_window 한 번. 0번창은 첫 적격 후보가 생기면 한 번 검사하고 이후 누적 간격마다. 재진입/재접속은 추가검사 없음.",
+        "eligibility_order": [
+          "기존 채택 명부와 허용 무작위 경로",
+          "세계공통 해금 또는 기존 무해금 경로",
+          "생존·태어남·봉인·허용 현신 모드",
+          "현재 후보 플레이어의 해당 장소/시간/명시 개인조건",
+          "현재 인물의 방문 의사와 실제 배치가능 경로",
+          "동일 본체 다른 활동 없음 및 해당 공용 쿨 완료"
+        ],
+        "sampling": "후보를 actor별로 묶는다. 먼저 서버창 Bernoulli 판정, 성공이면 고유 actor별 가중 추첨 한 번, 그 actor의 적격 player UUID 집합에서 균등 한 명. 한 actor의 후보 플레이어가 많다고 actor 가중치를 곱하지 않는다.",
+        "rank_order": [
+          "최하급",
+          "하급",
+          "중급",
+          "상급",
+          "최상급",
+          "초월급"
+        ],
+        "weights": {
+          "첫 공용 용 승리 전": [
+            8,
+            6,
+            4,
+            2,
+            1,
+            0.5
+          ],
+          "첫 공용 용 승리 후부터 C21 공용 완료 전": [
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
+          ],
+          "C21 공용 완료 후": [
+            4,
+            4,
+            4,
+            4,
+            3,
+            2
+          ]
+        },
+        "weight_scope": "가중치의 구간 전환은 공개된 실제 공용 완료증거로만. C21은 빈도 변화이지 새 접근 선행 아님. 모든 등급 양수. 비대상 등급 추정 금지; 기존 특수개체의 개별 경로를 따름.",
+        "no_guarantee": "누적 실패 보장/천장 없음. 조우가 필수 성장 공급이 아니며 C02~C05 일반 준비·공개 제작경로 유지.",
+        "lost_subject": "선정 후 실제 출현 전에 주체 이탈/사망/접근불가면 해당 창 보류종료, 새 추첨0·쿨/보상0. 이미 실제 출현했으면 같은 본체 유지; 다음 사람에게 당첨/MAIN/개인보상 이전0."
+      },
+      "단일본체": "세계별 canonical_actor CAS·journal·실제 entity 대조. 최초 미배치/미로드/현재 활동/사망/미탄생/봉인을 분리한다. 최초 미배치 허용은 부활 허가가 아니다. 활동중 본체는 이동/접견을 협의할 뿐 복제하지 않는다. 기존 배치 인사는 재추첨하지 않는다.",
+      "상태": "세계 해금은 누구 한 명의 유효 달성으로 영구 공통이다. 실제 당첨 주체는 현재 적격자 1명, 해금자와 달라도 된다. 해금/당첨은 MAIN·보상·친분·지식 수신권이 아니다.",
+      "예외": "원래 초기 접근은 추가 잠금0. 확정 후행/기록/봉인 제한이 있으면 우선. 새 봉인석·통신·분신 예외 없음."
+    },
+    "대화": "일반 대화는 동일 공간에서 실제 시야/음성 수신 기본8블록 내, 각 원문 별도 모드 우선. 손2블록은 물품 접촉·배치·수선·인수만. 원거리 관찰과 이동에 손거리 조건을 붙이지 않는다. 실제 관계·감정·관측한 힘·존중·후원은 독립이며 숨은 CP 전지적 인식0.",
+    "공통분기": {
+      "거절": "참여·후기·선택 제공을 거절할 수 있다. 사양만으로 기존 성과·권리 소급 삭제0.",
+      "부분": "실제 행위·소비·피해·현물UID·소유·수신만 남긴다. 준비·의향·대사 선택≠물리완료. 대안 경로는 OR이며 선택경로 내부 필수조건만 AND.",
+      "재개": "사망/로그아웃/부재에는 다음 단계 미발생. 현재 안전·접촉·원물·허락을 확인하고 미완료만 잇는다. 자동 귀환/치유/소모품 복제0.",
+      "동시": "행위 회차+대상UID+행위자+개정으로 증거를 결속한다. 같은 물건과 선택권을 공용 CAS로 처리한다. 불확실 인도는 실제 현물 대조 전 재지급0.",
+      "후발": "현재 공개 현장만 실제 관측 가능. 과거 기여·사적 청중·수강·인수 소급0.",
+      "반복": "새 현재 요청과 실제 대상에 한해 가능. 같은 행위 재연·동일 지도 이수·동일 현물 지급 복제0."
+    },
+    "지식": "Story Fact와 NPC 실제 앎을 분리한다. source/speaker/receiver/actual_audience/permission/version/received_at를 기록한다. 전언은 전언이며 NPC의 직접 목격으로 바꾸지 않는다. 저자 진실·미래 결말·공용 해금은 lore 자동 주입0. 사적 내용은 현재 청중 전원의 허락 범위만, 새 청중 유입 시 중단/일반 주제로 전환한다.",
+    "구현": "현재 행동·수신·접근·실물·분기 상태의 바인딩과 저장이 필요하다. 여기의 기록 키는 구현 요구이지 지원된 API 필드가 아니다. 원문 godId를 생산 기준으로 사용하되 실제 등록 검증은 별도다."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S12-001",
+      "name": "아후라 마즈다",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-001/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-001/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-001/outline",
+        "episode_pointers": [
+          "/episode_link_contract/accepted_episode/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「내 이름을 빼고 남는 몫」은 개인 후속 대화로 종결한다. 첫 만남과 공용 장면의 참여를 개인 MAIN 독점 소유로 바꾸지 않는다.",
+            "details": "별도 MAIN 제시·수락·소유·진행·완료 단계 없음. 선택 퀘스트면 명시 수락한 실제 참가자의 수행만 남기고 다른 사람의 독립 생활 활동은 잠그지 않는다. 공용 C/R/T 선행·완료는 원문 그대로 유지한다. ",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/500"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+                "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-004.json",
+                "sha256": "7a05c708376509b485ef89069cca22dff318362127a3a6afb5f4b3adb924f2fc",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+                "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+                "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+                "pointer": ""
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "NOT_APPLICABLE",
+            "reason": "이 이야기의 결과는 아후라 마즈다는 미완료 책임을 남긴 채 실제 이행한 몫만 인정하며 다음 검토에서 자기 권위 대신 그 당사자의 판단을 먼저 묻는다. 이를 물품·가호·주시 지급권으로 환산하지 않는다.",
+            "details": "별도 지급·재화 납품·보상 소비 없음. 실제 이동/전투/생활에서 사용한 자기 또는 허락 물품은 게임의 실제 소비만 반영하고 피해를 지우지 않는다. 후속 관계·통행 협의는 해당 당사자의 현재 판단이며 소유 가능한 영구 보상권이 아니다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/500"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+                "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-004.json",
+                "sha256": "7a05c708376509b485ef89069cca22dff318362127a3a6afb5f4b3adb924f2fc",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+                "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+                "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+                "pointer": ""
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP004A-01",
+            "mode": "dialogue_only",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "퀘스트 제시·수락·소유·완료 없음. 자기 공개/접촉·행동을 선택하고 현재 관측으로 장면을 닫는다. 질문·침묵·농담을 숨은 수주로 만들지 않는다.",
+              "group_individual_evidence": "각자가 실제 한 이동·말·자료 열람·관측을 따로 저장한다. 공용에는 실물·실제 길·배우 위치 결과만 남는다. GROUP 대표 완료 신호/팀 표시는 다른 사람의 개인 수신·수락·수행·지도 권리를 증명하지 않는다.",
+              "nonowner_route": "개인 MAIN 소유자가 없는 장면이다. 동료는 자기 질문·현재 바깥 관찰·침묵·철수를 선택할 수 있으며 다른 사람의 사적 답을 요구할 수 없다.",
+              "late_join": "현재 남은 위치·실제 접촉·유효 허락을 확인하고 자기 장면에서 합류한다. 이미 끝난 통과/자료 전달/발화는 재연하지 않는다. 상대가 부재하거나 공개를 거절하면 자기 주장 범위에서 대화를 닫는다. 다음 방문도 전달하지 않은 부분만 선택적으로 잇는다. 원격 전언·미트라의 동의를 발명하지 않는다.",
+              "leave_save_resume": "장면 종료/이탈 시 현재 위치·물품 소유·실제 소비·완료 관측·실제 청중/수신과 아직 할 일을 분리 저장한다. 재개는 미확인 부분부터다. 대화 중 이탈하면 이미 공개한 말의 청중만 저장한다. 자료 원본은 맡긴 경우만 돌려주고, 미전달 질문을 전달 완료로 만들지 않는다."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이 검수 범위는 별도 보상 없음이다. 자기 이름으로 덮으려던 종이 조각을 뒤집고, 실제 이행 쪽의 돌만 플레이어에게 가까이 놓는다. 상대의 미해결 요구를 가리던 손을 거둔다.",
+              "earned_condition": "별도 지급 조건 없음. 대화의 변화와 관측이 결과이며 보상 해금 검사가 아니다.",
+              "beneficiary_and_claim_right": "수혜 물품·지급권 없음. 당사자의 현재 발언과 관측 경험을 소유 가능한 포상으로 만들지 않는다.",
+              "actual_grant_and_consumption": "보상 실지급·보상 소비 없음. 현재 실제 사용한 개인 물품만 정상 소비이며 원문이나 타인 물건을 포상으로 몰수하지 않는다.",
+              "unclaimed_retry_no_duplicate": "미수령 보상 자체가 없다. 재방문은 새 현재 질문/관측이며 중복 보급을 만들어 복구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계 변화·인정·정보·지도는 MAIN·축복·가호·주시·장비와 별개다. 이 장면에서 이를 일괄 지급하거나 등급·권능·전투력 수치를 올리지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1: 두 돌 사이에 빈 간격이 생긴다. 신 이름이 없어도 남는 플레이어의 말 한 줄이 드러난다. → B2: 아후라 마즈다가 자신의 이름을 적은 면을 뒤집고 완료 몫의 돌만 옮긴다. 미완료 돌은 남는다.",
+              "repeat_and_settlement": "같은 사건의 실제 결과는 보존한다. 반복 방문은 현재 남은 질문/관측만이며 기존 카드 사건·첫 기여·보급을 재생하지 않는다. 서비스 정산·재화 교환·시간 제한·퀘스트 보상 없음.",
+              "no_quest_reason": "개인 발언·질문·현재 응답과 선택적 재방문으로 닫히는 dialogue_only다. 외부 생활 수행은 상담의 자발적 경험이지 수락/완료 검사 과제가 아니다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "dialogue_only"
+        ],
+        "actual_activity": "B1은 실제 약속 한 건 또는 가상임을 밝힌 비유의 주어를 정리하는 대화다. B2는 허락된 당사자 답과 실제 반환·보완 근거를 각각 확인한 부분만 남긴다. 반환했으나 용서를 받지 못한 경우 반환은 유지하고 용서 돌은 빈 채 둔다. 새 반환 퀘스트를 만들지 않는다.",
+        "completion_guard": "B2 변화=(실제 이행 증거 또는 자기 주장으로 한정된 진술) AND 공개 가능한 당사자 답의 실제 수신. 실제 반환 인정은 실물 인수 증거가 있을 때만이다. 가상 비유는 대화로 끝나며 실제 이행 기록으로 승격하지 않는다.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "대화 4–8분, 자발적 현장 왕복은 거리별 별도. 마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "B2 변화=(실제 이행 증거 또는 자기 주장으로 한정된 진술) AND 공개 가능한 당사자 답의 실제 수신. 실제 반환 인정은 실물 인수 증거가 있을 때만이다. 가상 비유는 대화로 끝나며 실제 이행 기록으로 승격하지 않는다."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-005",
+      "name": "라슈누",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-005/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-005/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-005/outline",
+        "episode_pointers": [
+          "/exact_accepted_dossier/episodes/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "길을 돌려주는 재심의 결과는 이번 실제 참여와 당사자의 선택에 붙으며 장기 독점 책임을 만들 필요가 없다.",
+            "details": "이번 길을 돌려주는 재심은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/504"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/2"
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "길을 돌려주는 재심에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+            "details": "물품 보상 없음. 해당 당사자의 실제 판정 수정만 권리 회복이며 플레이어에게 통행 독점권·MAIN을 주지 않는다. 제안된 지급권과 실제 지급은 분리한다. 지도는 실제로 배운 참여자에게만, 물품은 지급 권한·원소유자 허락·현재 보유량이 확인된 범위만 한 번 전달한다. 미수령은 기존 수행/수신 기록으로 복구하고 이미 소비한 재료나 지급을 반복하지 않는다. 실패·거절에는 성공 보상 없음. 장비·축복·가호·주시·호감·MAIN은 별개이며 이번 생활/기초 지도는 수치 강화를 뜻하지 않는다. 수용 능력과 세계의 현행 성장 창구를 확인하기 전 상위 권능으로 넘기지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품 규칙을 우회하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/504"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/2"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "dialogue_only"
+            ],
+            "role_specific_reason": "라슈누는 천천히 비교하고 빨리 결론 내리기를 싫어한다. 번듯한 보증에 기가 눌리기보다 보증인이 너무 길게 말하면 먼저 자리를 줄인다. 길을 돌려주는 재심에서 증거가 충족되면 여행을 막은 자기 판정을 그 범위만 철회하고, 모자라면 제한을 넓히지 않은 채 보완할 사항을 당사자에게 직접 말한다.의 실제 결과가 필요하여 이 모드를 택했다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/504"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/2"
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP030A-RPG-S12-005",
+            "mode": "dialogue_only",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "이번 길을 돌려주는 재심은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "PROPOSED",
+              "reason_and_source": "길을 돌려주는 재심에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+              "earned_condition": "별도 지급권·수강권 없음. 실제 증거에 따른 당사자 판정 철회 또는 미충족 보완 요청만 남는다.",
+              "beneficiary_and_claim_right": "별도 지급권·수강권 없음. 실제 증거에 따른 당사자 판정 철회 또는 미충족 보완 요청만 남는다.",
+              "actual_grant_and_consumption": "별도 지급권·수강권 없음. 실제 증거에 따른 당사자 판정 철회 또는 미충족 보완 요청만 남는다. 계약 열람·진술 공개 허락 범위만 사용한다. 판정 수정은 해당 당사자의 권리 회복이며 플레이어 통행 독점권·보상·MAIN이 아니다. 미트라 부재의 반대 답을 생성하지 않는다. 이미 실제 인수·사용·반환한 물건을 이 확인 장면에서 다시 지급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "실제 유효 수행·소유·현재 보관·실제 수신을 대조하여 아직 미인수·미수신·미수강인 해당 몫만 이어 처리한다. 이 역할에 없는 물품·교습 자격을 복구 명목으로 만들지 않는다. 반복 클릭·후발 친구·재접속으로 재지급·재수강 완료를 생성하지 않는다. 계약 열람·진술 공개 허락 범위만 사용한다. 판정 수정은 해당 당사자의 권리 회복이며 플레이어 통행 독점권·보상·MAIN이 아니다. 미트라 부재의 반대 답을 생성하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 신규 저술안의 제안은 다음과 같다. 라슈누는 미트라에게 실제 받은 계약과 청원자의 이행 흔적을 나란히 놓고 플레이어에게 자신이 직접 본 사실만 말하게 한다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n직접 본 이행과 약속을 나눈다: 실제 받은 계약과 허락된 이행 흔적을 나란히 놓는다. 플레이어는 직접 본 행위의 대상과 시점을 말하고 전언은 출처를 따로 밝힌다. 라슈누는 미트라에게 실제 연락 가능한 경우만 반대 근거를 묻고 미수신 항목을 빈 채 둔다.\nB2 증거가 충족되면 여행을 막은 자기 판정을 그 범위만 철회하고, 모자라면 제한을 넓히지 않은 채 보완할 사항을 당사자에게 직접 말한다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n충족한 범위만 판정을 철회한다: 이번 이동을 막은 자기 판정의 근거와 실제 충족 증거를 라슈누가 대조한다. 해당 재심에서 미트라에게 물은 반대 근거의 실제 응답이 필요한 허가 변경은 현재 쟁점에 유효한 그 응답을 실제 수신했을 때만 진행한다. 이미 유효하게 받은 응답은 상대의 현재 부재 때문에 다시 요구하지 않는다. 필요한 응답이 없으면 이 철회는 보류하고 부족한 근거를 남기는 보완 경로로 간다. 일반 대화·증거 분리·이미 입증된 이행 기록은 계속 가능하며 별도의 선택적 후속 인계 전체를 필수로 만들지 않는다. 그 제한을 수정할 권한과 증거가 실제 있는 범위만 철회를 직접 고하고 해당 당사자가 그 통지를 받는다.\n부족한 근거를 남기고 재심을 연다: 실제 부족한 이행 흔적이나 미트라의 미수신 답을 항목별로 당사자에게 말한다. 라슈누는 제한을 새로 넓히지 않고 보완 후 다시 볼 항목을 남긴다.\n보지 않은 이행을 봤다고 말한다: 직접 보지 않은 일을 목격한 것으로 실제 진술하고 모순이 확인되면 라슈누가 그 진술을 근거에서 제외한다. 가정 질문이나 단순 추측은 허위 진술로 단정하지 않는다.\nB3 선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 계약 열람·진술 공개 허락 범위만 사용한다. 판정 수정은 해당 당사자의 권리 회복이며 플레이어 통행 독점권·보상·MAIN이 아니다. 미트라 부재의 반대 답을 생성하지 않는다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 dialogue_only 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "dialogue_only"
+        ],
+        "actual_activity": "재심 대상은 실제 제한 판정 한 건의 문제 조항이다. 계약 1건과 실제 이행 흔적을 대조하고 직접 관측·전언·미확인을 나눈다. 필요한 반대 답이 이미 유효하게 수신되었다면 미트라를 다시 소환하지 않는다. 제한 철회와 부족한 근거를 남기는 보완은 대안이다.",
+        "completion_guard": "철회=(해당 제한 수정 권한 AND 현재 쟁점의 충족 증거 AND (반대 응답 불필요 OR 현재 쟁점에 유효한 반대 응답 실제 수신) AND 라슈누의 해당 제한 철회 실제 결정·고지 AND 해당 당사자의 실제 통지 수신). 증거 정리·통지 준비만으로 철회0. 보완=(부족한 근거 또는 필요한 답의 미수신 확인 AND 라슈누의 부족 항목 실제 설명 AND 해당 당사자 수신); 기존 제한을 유지하며 새로 넓히지 않는다. 철회 OR 보완은 별도 결말이고 부분·미수신은 완료가 아니다.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "대화 5–10분, 유효 응답 대기는 별도. 마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "철회=(해당 제한 수정 권한 AND 현재 쟁점의 충족 증거 AND (반대 응답 불필요 OR 현재 쟁점에 유효한 반대 응답 실제 수신) AND 라슈누의 해당 제한 철회 실제 결정·고지 AND 해당 당사자의 실제 통지 수신). 증거 정리·통지 준비만으로 철회0. 보완=(부족한 근거 또는 필요한 답의 미수신 확인 AND 라슈누의 부족 항목 실제 설명 AND 해당 당사자 수신); 기존 제한을 유지하며 새로 넓히지 않는다. 철회 OR 보완은 별도 결말이고 부분·미수신은 완료가 아니다."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-008",
+      "name": "앙그라 마이뉴",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-008/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-008/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-008/outline",
+        "episode_pointers": [
+          "/episode_link_contract/accepted_episode/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「손해 뒤에도 남은 약속」은 개인 후속 대화로 종결한다. 첫 만남과 공용 장면의 참여를 개인 MAIN 독점 소유로 바꾸지 않는다.",
+            "details": "별도 MAIN 제시·수락·소유·진행·완료 단계 없음. 선택 퀘스트면 명시 수락한 실제 참가자의 수행만 남기고 다른 사람의 독립 생활 활동은 잠그지 않는다. 공용 C/R/T 선행·완료는 원문 그대로 유지한다. ",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/507"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+                "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-004.json",
+                "sha256": "7a05c708376509b485ef89069cca22dff318362127a3a6afb5f4b3adb924f2fc",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+                "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+                "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+                "pointer": ""
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "NOT_APPLICABLE",
+            "reason": "이 이야기의 결과는 앙그라 마이뉴는 관찰된 반례에는 그 상대가 반드시 회피할 것이라는 추측을 거두고 다음에 숨은 대가를 묻는다. 냉소 전체가 치유되거나 복종하지 않는다. 이를 물품·가호·주시 지급권으로 환산하지 않는다.",
+            "details": "별도 지급·재화 납품·보상 소비 없음. 실제 이동/전투/생활에서 사용한 자기 또는 허락 물품은 게임의 실제 소비만 반영하고 피해를 지우지 않는다. 후속 관계·통행 협의는 해당 당사자의 현재 판단이며 소유 가능한 영구 보상권이 아니다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/507"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-004.json",
+                "sha256": "5721b376c9e37c51496ffe19e5a298737e1cb1536e8a63d2a704071d7f92f382",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-004.json",
+                "sha256": "7a05c708376509b485ef89069cca22dff318362127a3a6afb5f4b3adb924f2fc",
+                "pointer": "/records/2"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/개인서사_범위계약.md",
+                "sha256": "eaecc11a9f3ae9855f0e1133cb6380c55bd6c3af07e17783b351c217389c52a3",
+                "pointer": ""
+              },
+              {
+                "file": "outputs/full_authoring_20261014/personal_story_planning/신규_개인퀘스트_저술범위_보충.md",
+                "sha256": "609507467803400a8f4ed88c5834b1bec2e7499a1ab375dc2b9d0d727d65de8a",
+                "pointer": ""
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP004A-03",
+            "mode": "dialogue_only",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "퀘스트 제시·수락·소유·완료 없음. 자기 공개/접촉·행동을 선택하고 현재 관측으로 장면을 닫는다. 질문·침묵·농담을 숨은 수주로 만들지 않는다.",
+              "group_individual_evidence": "각자가 실제 한 이동·말·자료 열람·관측을 따로 저장한다. 공용에는 실물·실제 길·배우 위치 결과만 남는다. GROUP 대표 완료 신호/팀 표시는 다른 사람의 개인 수신·수락·수행·지도 권리를 증명하지 않는다.",
+              "nonowner_route": "개인 MAIN 소유자가 없는 장면이다. 동료는 자기 질문·현재 바깥 관찰·침묵·철수를 선택할 수 있으며 다른 사람의 사적 답을 요구할 수 없다.",
+              "late_join": "현재 남은 위치·실제 접촉·유효 허락을 확인하고 자기 장면에서 합류한다. 이미 끝난 통과/자료 전달/발화는 재연하지 않는다. 실제 비용은 되돌리지 않는다. 대화 끊김이면 현재 전달된 근거까지만 그의 앎으로 저장하며 다음에는 미전달 결과만 원할 때 말한다.",
+              "leave_save_resume": "장면 종료/이탈 시 현재 위치·물품 소유·실제 소비·완료 관측·실제 청중/수신과 아직 할 일을 분리 저장한다. 재개는 미확인 부분부터다. 원문은 소유자에게 반환한다. 이탈 때 공개된 두 줄과 실제 청중만 저장한다. 친구가 종이를 봤다는 이유로 사적 약속 전체를 알게 하지 않는다."
+            },
+            "rewards": {
+              "status": "NONE",
+              "reason_and_source": "이 검수 범위는 별도 보상 없음이다. 가렸던 손이 종이 아래에서 떨어진다. 반례가 실제 전달된 경우 그는 “반드시 도망간다”는 말을 반복하지 않고 대가를 묻는 짧은 질문으로 공격점을 옮긴다.",
+              "earned_condition": "별도 지급 조건 없음. 대화의 변화와 관측이 결과이며 보상 해금 검사가 아니다.",
+              "beneficiary_and_claim_right": "수혜 물품·지급권 없음. 당사자의 현재 발언과 관측 경험을 소유 가능한 포상으로 만들지 않는다.",
+              "actual_grant_and_consumption": "보상 실지급·보상 소비 없음. 현재 실제 사용한 개인 물품만 정상 소비이며 원문이나 타인 물건을 포상으로 몰수하지 않는다.",
+              "unclaimed_retry_no_duplicate": "미수령 보상 자체가 없다. 재방문은 새 현재 질문/관측이며 중복 보급을 만들어 복구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계 변화·인정·정보·지도는 MAIN·축복·가호·주시·장비와 별개다. 이 장면에서 이를 일괄 지급하거나 등급·권능·전투력 수치를 올리지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1: 가렸던 종이 아래줄이 드러나고, 그가 앞줄을 두드리던 손이 멈춘다. → B2: 그가 이번 건의 생략 문구를 접고 손해를 보인 물건 쪽으로 시선을 돌린다.",
+              "repeat_and_settlement": "같은 사건의 실제 결과는 보존한다. 반복 방문은 현재 남은 질문/관측만이며 기존 카드 사건·첫 기여·보급을 재생하지 않는다. 서비스 정산·재화 교환·시간 제한·퀘스트 보상 없음.",
+              "no_quest_reason": "개인 발언·질문·현재 응답과 선택적 재방문으로 닫히는 dialogue_only다. 외부 생활 수행은 상담의 자발적 경험이지 수락/완료 검사 과제가 아니다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "dialogue_only"
+        ],
+        "actual_activity": "B1에서 허락된 원문 아래줄을 실제 읽거나 기억의 출처를 밝힌다. 생략을 쓰지 않겠다는 발언은 의향뿐이다. B2는 이미 실제 치른 비용의 남은 현물·인수 근거를 본 범위만 반례로 인정한다. 증명하기 위해 재료를 다시 소모시키지 않는다.",
+        "completion_guard": "반례 인정=실제 이행 근거의 수신 AND 이행 범위 한정. B1 의향/서약만으로 B2 손해·진심 입증0. 손해를 말했다는 이유로 타인 채무를 생성하지 않는다.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "대화 4–8분. 실제 이행은 이미 있거나 자발적 외부 활동이며 상담의 강제 과업·마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "반례 인정=실제 이행 근거의 수신 AND 이행 범위 한정. B1 의향/서약만으로 B2 손해·진심 입증0. 손해를 말했다는 이유로 타인 채무를 생성하지 않는다."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-009",
+      "name": "아파오샤",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-009/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-009/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-009/outline",
+        "episode_pointers": [
+          "/exact_accepted_dossier/episodes/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "마른 자리의 값의 결과는 이번 실제 참여와 당사자의 선택에 붙으며 장기 독점 책임을 만들 필요가 없다.",
+            "details": "이번 마른 자리의 값은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/508"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "마른 자리의 값에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+            "details": "협력 자체에 선행 보상 없음. 실제 한정 응답만 관계에 남으며 남의 물·가호·권능은 지급하지 않는다. 제안된 지급권과 실제 지급은 분리한다. 지도는 실제로 배운 참여자에게만, 물품은 지급 권한·원소유자 허락·현재 보유량이 확인된 범위만 한 번 전달한다. 미수령은 기존 수행/수신 기록으로 복구하고 이미 소비한 재료나 지급을 반복하지 않는다. 실패·거절에는 성공 보상 없음. 장비·축복·가호·주시·호감·MAIN은 별개이며 이번 생활/기초 지도는 수치 강화를 뜻하지 않는다. 수용 능력과 세계의 현행 성장 창구를 확인하기 전 상위 권능으로 넘기지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품 규칙을 우회하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/508"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "아파오샤는 메마른 고요를 자기 몫으로 탐낸다. 호의를 가장해 공존을 설교하지 않으며 상대가 간절해질수록 대답을 늦추는 심술이 있다. 마른 자리의 값에서 티슈트리야의 실제 물 저장 필요와 맞부딪혀 작은 마른 틈만 남기거나 더 큰 취수 구간까지 빼앗으려는 아파오샤의 요구에 플레이어가 응답한다.의 실제 결과가 필요하여 이 모드를 택했다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/508"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/5"
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP030A-RPG-S12-009",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "이번 마른 자리의 값은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "PROPOSED",
+              "reason_and_source": "마른 자리의 값에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+              "earned_condition": "별도 지급권·수강권 없음. 아파오샤의 현재 한정 응답만 관계에 남는다.",
+              "beneficiary_and_claim_right": "별도 지급권·수강권 없음. 아파오샤의 현재 한정 응답만 관계에 남는다.",
+              "actual_grant_and_consumption": "별도 지급권·수강권 없음. 아파오샤의 현재 한정 응답만 관계에 남는다. 아파오샤의 한정 응답은 영구 공존·개심이 아니다. 물통의 원소유와 취수권은 교섭으로 자동 양도되지 않는다. 협력만으로 성장·가호·권능 지급 없음. 이미 실제 인수·사용·반환한 물건을 이 확인 장면에서 다시 지급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "실제 유효 수행·소유·현재 보관·실제 수신을 대조하여 아직 미인수·미수신·미수강인 해당 몫만 이어 처리한다. 이 역할에 없는 물품·교습 자격을 복구 명목으로 만들지 않는다. 반복 클릭·후발 친구·재접속으로 재지급·재수강 완료를 생성하지 않는다. 아파오샤의 한정 응답은 영구 공존·개심이 아니다. 물통의 원소유와 취수권은 교섭으로 자동 양도되지 않는다. 협력만으로 성장·가호·권능 지급 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 신규 저술안의 제안은 다음과 같다. 아파오샤는 마른 경계 안에서 물통을 옮기지 않는 조건으로 플레이어에게 대치할 자리를 내준다. 플레이어는 수락하거나 바깥에서 맞선다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n물통을 건드리지 않고 경계 안에서 맞선다: 현재 안전 접근이 가능하고 아파오샤가 제시한 조건을 실제 듣고 물통을 옮기지 않기로 응답한다. 허용한 마른 자리에 실제 서서 대치한다.\n바깥에서 대치한다: 경계 안 조건을 거절하고 실제 안전한 바깥 자리에서 요구를 듣는다. 안에 들어간 것으로 만들지 않는다.\nB2 티슈트리야의 실제 물 저장 필요와 맞부딪혀 작은 마른 틈만 남기거나 더 큰 취수 구간까지 빼앗으려는 아파오샤의 요구에 플레이어가 응답한다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n작은 마른 틈만 남기는 한정 교섭을 한다: 티슈트리야의 실제 전달된 저장 필요 또는 현재 드러난 취수 작업을 근거로 작은 마른 틈과 취수 구간을 가리킨다. 아파오샤가 실제 그 한정을 받아들여 취수 쪽을 건드리지 않는 행동을 확인한다. 응답 전에는 교섭 미완료다.\n더 넓은 취수 방해를 돕는다: 실제로 타인의 취수 물통을 옮겨 접근을 막은 경우 이동한 통과 막힌 취수 범위를 기록한다. 티슈트리야가 실제 그 방해를 알면 도움 요청을 철회할 수 있으며 부재한 즉시 새 말을 만들지 않는다.\nB3 선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 아파오샤의 한정 응답은 영구 공존·개심이 아니다. 물통의 원소유와 취수권은 교섭으로 자동 양도되지 않는다. 협력만으로 성장·가호·권능 지급 없음.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "event"
+        ],
+        "actual_activity": "B1은 물통을 건드리지 않고 허용된 마른 자리에 서기 OR 안전한 바깥에서 접촉하기다. B2의 작은 틈은 지금 실제 있는 마른 구간 중 양측이 가리킨 한 구간을 좌우 끝점으로 고정한다. 티슈트리야의 전달된 필요 OR 현재 드러난 취수 작업을 근거로 교섭하고 아파오샤의 실제 수락·비간섭을 확인한다. 취수 방해 분기는 실제 위반 발생 기록이지 권장 목표가 아니다.",
+        "completion_guard": "한정 교섭=(저장 필요 실제 수신 OR 현재 취수 작업 실제 관측) AND 현재 한정 응답 AND 실제 비간섭 확인. 바깥 경로에 안쪽 수락을 AND하지 않는다. 단순 물통 언급으로 물 이동·차단·약탈 기록0.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "관찰·교섭 5–10분. 응답·실제 저장 관측은 별도이며 마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "한정 교섭=(저장 필요 실제 수신 OR 현재 취수 작업 실제 관측) AND 현재 한정 응답 AND 실제 비간섭 확인. 바깥 경로에 안쪽 수락을 AND하지 않는다. 단순 물통 언급으로 물 이동·차단·약탈 기록0."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-011",
+      "name": "잘",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-011/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-011/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-011/outline",
+        "episode_pointers": [
+          "/exact_accepted_dossier/episodes/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "가려진 자리의 등불의 결과는 이번 실제 참여와 당사자의 선택에 붙으며 장기 독점 책임을 만들 필요가 없다.",
+            "details": "이번 가려진 자리의 등불은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/510"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/7"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/7"
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "가려진 자리의 등불에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+            "details": "아이 정보·거처 출입권은 보상 아님. 실제 도운 플레이어에게 잘이 허용한 짧은 감사, 아이의 사생활은 공개하지 않는다. 제안된 지급권과 실제 지급은 분리한다. 지도는 실제로 배운 참여자에게만, 물품은 지급 권한·원소유자 허락·현재 보유량이 확인된 범위만 한 번 전달한다. 미수령은 기존 수행/수신 기록으로 복구하고 이미 소비한 재료나 지급을 반복하지 않는다. 실패·거절에는 성공 보상 없음. 장비·축복·가호·주시·호감·MAIN은 별개이며 이번 생활/기초 지도는 수치 강화를 뜻하지 않는다. 수용 능력과 세계의 현행 성장 창구를 확인하기 전 상위 권능으로 넘기지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품 규칙을 우회하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/510"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/7"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/7"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "잘은 겉모습을 훑는 시선을 누구보다 빨리 알아차린다. 낯선 이를 들일 때는 다정하지만 자기 판단을 대신해 주려는 친절에는 고집이 세다. 가려진 자리의 등불에서 잘이 방문객에게 오늘은 보지 말라고 직접 말하고 자신이 맡을 저녁 돌봄을 실행한다.의 실제 결과가 필요하여 이 모드를 택했다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/510"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/7"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/7"
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP030A-RPG-S12-011",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "이번 가려진 자리의 등불은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "PROPOSED",
+              "reason_and_source": "가려진 자리의 등불에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+              "earned_condition": "별도 지급권·수강권·출입권 없음. 잘이 실제 도움을 알 때의 짧은 감사만 가능하며 아이 정보는 감사 보상이 아니다.",
+              "beneficiary_and_claim_right": "별도 지급권·수강권·출입권 없음. 잘이 실제 도움을 알 때의 짧은 감사만 가능하며 아이 정보는 감사 보상이 아니다.",
+              "actual_grant_and_consumption": "별도 지급권·수강권·출입권 없음. 잘이 실제 도움을 알 때의 짧은 감사만 가능하며 아이 정보는 감사 보상이 아니다. 아이의 신원·사연·거처 출입은 보상이 아니다. 장소·등불·식사 소유자의 실제 허락을 확인한다. 실제 도움에 짧은 감사만; 생활 돌봄은 잘의 실행이지 플레이어의 자동 공로가 아니다. 이미 실제 인수·사용·반환한 물건을 이 확인 장면에서 다시 지급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "실제 유효 수행·소유·현재 보관·실제 수신을 대조하여 아직 미인수·미수신·미수강인 해당 몫만 이어 처리한다. 이 역할에 없는 물품·교습 자격을 복구 명목으로 만들지 않는다. 반복 클릭·후발 친구·재접속으로 재지급·재수강 완료를 생성하지 않는다. 아이의 신원·사연·거처 출입은 보상이 아니다. 장소·등불·식사 소유자의 실제 허락을 확인한다. 실제 도움에 짧은 감사만; 생활 돌봄은 잘의 실행이지 플레이어의 자동 공로가 아니다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 신규 저술안의 제안은 다음과 같다. 잘과 루다베가 실제 동의한 거처 안에서 익명 피난 아이가 가려진 자리와 열린 자리 중 원하는 곳을 고르게 하고 플레이어는 등불을 그곳에 놓는다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n아이의 자리 선택 뒤 등불을 놓는다: 잘과 루다베가 이번 거처 사용에 실제 동의한 범위를 확인한다. 아이에게 가려진 자리와 열린 자리를 보여 주고 실제 원하는 쪽의 답을 기다린다. 아이가 실제 고른 자리에 스스로 앉은 범위를 확인하고 플레이어는 그 자리의 안전한 위치에 허락된 등불을 놓는다. 열린 자리 선택은 공개 소개 허락이 아니며, 가려진 자리 선택일 때만 시선 차단을 기록한다. 무응답이면 임의 선택하지 않고 조용히 기다린다.\nB2 잘이 방문객에게 오늘은 보지 말라고 직접 말하고 자신이 맡을 저녁 돌봄을 실행한다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n방문을 막고 저녁 돌봄을 실행한다: 잘이 실제 방문객에게 오늘은 보지 말라고 직접 말한다. 루다베와 합의한 식사 몫을 아이에게 제시하고 아이가 받아 먹거나 쉬도록 자기 시간을 실제 쓴다. 플레이어는 허락된 도움만 맡는다.\n아이를 축하 구경거리로 데려온다: 실제로 아이를 공개 소개하려 움직이거나 방문객을 불러들이면 잘이 그 사실을 알고 방문을 닫고 소개를 철회한다. 실제 공개된 정보는 지워지지 않는다.\nB3 선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 아이의 신원·사연·거처 출입은 보상이 아니다. 장소·등불·식사 소유자의 실제 허락을 확인한다. 실제 도움에 짧은 감사만; 생활 돌봄은 잘의 실행이지 플레이어의 자동 공로가 아니다.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "event"
+        ],
+        "actual_activity": "잘과 루다베의 실제 장소 사용 동의를 확인하고 실제 아이에게 열린 자리 OR 가려진 자리를 보여 준다. 무응답이면 임의 선택0. 선택한 자리의 허락 등불 1개를 2블록 손접촉 범위에서 놓고 안정·빛·통행을 확인한다. 등불이 없으면 기존 빛으로 쉬는 부분만 유지하고 등불 배치 완료를 주지 않는다. 저녁 돌봄은 잘의 실제 행동이고 플레이어는 맡은 운반 등만 공로다.",
+        "completion_guard": "B1=(잘의 동의 AND 루다베의 동의 AND 아이의 실제 선택 AND 선택 자리에 스스로 앉음 AND 허락된 등불 실제 배치). 열린 자리 선택≠공개소개 동의. B2의 돌봄 성과=(루다베와 합의한 식사 몫의 실제 제시 AND 잘의 실제 돌봄 시간 사용 AND (아이의 실제 식사 수령·먹음 OR 아이의 실제 쉼)). 방문객이 실제 있을 때는 잘의 방문 제한 발언과 그 방문객의 실제 수신도 확인한다. 방문객이 없으면 새 방문객·통지를 만들지 않고 돌봄만 부분 기록하며 원문 방문 차단을 수행했다고 하지 않는다. 식사·등불 준비나 운반만으로 아이의 수령·쉼을 만들지 않는다.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "일상 3–6분, 돌봄 8–15분의 정적 추정. 식사·휴식 강제 타이머 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "B1=(잘의 동의 AND 루다베의 동의 AND 아이의 실제 선택 AND 선택 자리에 스스로 앉음 AND 허락된 등불 실제 배치). 열린 자리 선택≠공개소개 동의. B2의 돌봄 성과=(루다베와 합의한 식사 몫의 실제 제시 AND 잘의 실제 돌봄 시간 사용 AND (아이의 실제 식사 수령·먹음 OR 아이의 실제 쉼)). 방문객이 실제 있을 때는 잘의 방문 제한 발언과 그 방문객의 실제 수신도 확인한다. 방문객이 없으면 새 방문객·통지를 만들지 않고 돌봄만 부분 기록하며 원문 방문 차단을 수행했다고 하지 않는다. 식사·등불 준비나 운반만으로 아이의 수령·쉼을 만들지 않는다."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-012",
+      "name": "루다베",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-012/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-012/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-012/outline",
+        "episode_pointers": [
+          "/exact_accepted_dossier/episodes/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "손님이 떠날 수 있는 초대의 결과는 이번 실제 참여와 당사자의 선택에 붙으며 장기 독점 책임을 만들 필요가 없다.",
+            "details": "이번 손님이 떠날 수 있는 초대은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/511"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "손님이 떠날 수 있는 초대에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+            "details": "물품·가호 없음. 실제 오간 초대의 신뢰만 남고 가문 동맹·영구 왕래권을 확정하지 않는다. 제안된 지급권과 실제 지급은 분리한다. 지도는 실제로 배운 참여자에게만, 물품은 지급 권한·원소유자 허락·현재 보유량이 확인된 범위만 한 번 전달한다. 미수령은 기존 수행/수신 기록으로 복구하고 이미 소비한 재료나 지급을 반복하지 않는다. 실패·거절에는 성공 보상 없음. 장비·축복·가호·주시·호감·MAIN은 별개이며 이번 생활/기초 지도는 수치 강화를 뜻하지 않는다. 수용 능력과 세계의 현행 성장 창구를 확인하기 전 상위 권능으로 넘기지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품 규칙을 우회하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/511"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "dialogue_only"
+            ],
+            "role_specific_reason": "루다베는 남이 대신 골라 주는 평온보다 자신이 선택한 왕래를 원한다. 다정한 초대 뒤에도 자신의 문턱을 누가 넘는지는 직접 정한다. 손님이 떠날 수 있는 초대에서 가문 체면을 위한 긴 연회를 줄이거나 초대를 취소하고 다음 기회를 잡을지 루다베와 실제 손님이 정한다.의 실제 결과가 필요하여 이 모드를 택했다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/511"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/8"
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP030A-RPG-S12-012",
+            "mode": "dialogue_only",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "이번 손님이 떠날 수 있는 초대은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "PROPOSED",
+              "reason_and_source": "손님이 떠날 수 있는 초대에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+              "earned_condition": "별도 지급권·수강권 없음. 실제 방문 또는 실제 취소의 신뢰만 남는다.",
+              "beneficiary_and_claim_right": "별도 지급권·수강권 없음. 실제 방문 또는 실제 취소의 신뢰만 남는다.",
+              "actual_grant_and_consumption": "별도 지급권·수강권 없음. 실제 방문 또는 실제 취소의 신뢰만 남는다. 초대 내용은 지정 수신자에게 허락 범위만 전한다. 손님의 실제 답·시간 변경 동의가 필요하며 가문 동맹·영구 왕래권·물품 보상 없음. 이미 실제 인수·사용·반환한 물건을 이 확인 장면에서 다시 지급하지 않는다.",
+              "unclaimed_retry_no_duplicate": "실제 유효 수행·소유·현재 보관·실제 수신을 대조하여 아직 미인수·미수신·미수강인 해당 몫만 이어 처리한다. 이 역할에 없는 물품·교습 자격을 복구 명목으로 만들지 않는다. 반복 클릭·후발 친구·재접속으로 재지급·재수강 완료를 생성하지 않는다. 초대 내용은 지정 수신자에게 허락 범위만 전한다. 손님의 실제 답·시간 변경 동의가 필요하며 가문 동맹·영구 왕래권·물품 보상 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 신규 저술안의 제안은 다음과 같다. 루다베가 초대할 상대에게 머물 시간과 돌아갈 시각을 직접 묻고 플레이어가 중개를 맡으면 상대의 답을 실제 가져온다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n실제 초대와 시간 질문을 전한다: 루다베가 현재 초대할 상대에게 머물 시간과 돌아갈 시각을 묻는다. 플레이어가 중개에 동의하면 허락된 질문만 실제 그 상대에게 전달하고 상대가 답한 문장을 가감 없이 가져온다. 직접 대화가 실제 가능하면 중개 없이 당사자가 답한다.\nB2 가문 체면을 위한 긴 연회를 줄이거나 초대를 취소하고 다음 기회를 잡을지 루다베와 실제 손님이 정한다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n짧은 방문에 합의하고 끝에 귀로를 비운다: 루다베와 실제 손님이 긴 연회를 줄인 시간에 동의한다. 실제 방문이 이루어지면 앉을 자리와 짐 놓을 곳을 내주고 합의한 끝에 돌아갈 길을 비우고 손님이 자기 의사로 실제 떠난 범위를 확인한다. 길을 비운 것만으로 출발·귀환을 완료하지 않는다.\n이번 초대를 취소한다: 루다베와 실제 손님이 지금 맞출 시간이 없음을 확인해 이번 초대를 취소한다. 다음 기회는 새 동의 전 미정으로 두고 당사자에게 실제 취소를 알린다.\n돌아갈 시간을 숨겨 붙잡는다: 실제 손님의 귀환 시각을 중개 과정에서 숨기거나 떠나는 길을 막으면 손님이 실제 방문을 중단한 범위를 남긴다. 루다베가 사실을 실제 알면 중개를 회수한다.\nB3 선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 초대 내용은 지정 수신자에게 허락 범위만 전한다. 손님의 실제 답·시간 변경 동의가 필요하며 가문 동맹·영구 왕래권·물품 보상 없음.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 dialogue_only 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "dialogue_only"
+        ],
+        "actual_activity": "현재 초대 대상 1명에게 머물 시간과 돌아갈 시각을 각각 직접 묻거나 허락된 중개로 전한다. 질문 전달·답 수신·초대 수락·실제 도착·출발·귀환은 서로 다른 기록이다. 기본 제안은 현재 합의한 짧은 방문이며 사전 합의된 다른 길이도 유지한다. 취소는 당사자 실제 통지 수신으로 닫고 다음 방문을 자동 예약하지 않는다.",
+        "completion_guard": "짧은 방문=(루다베의 실제 동의 AND 손님의 실제 동의 AND 실제 방문 AND 합의 끝의 길 비움 AND 실제 자발 출발). 목적지 귀환을 말하려면 별도 도착 관측/허락된 보고 수신이 필요하다. OR 취소=(이번 일정 불일치 확인 AND 실제 취소 수신). 방문과 취소 동시 성공0.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "초대 대화 5–8분. 실제 방문 시간은 당사자 합의 값을 회차에 고정하며 강제 체류·추가 마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "짧은 방문=(루다베의 실제 동의 AND 손님의 실제 동의 AND 실제 방문 AND 합의 끝의 길 비움 AND 실제 자발 출발). 목적지 귀환을 말하려면 별도 도착 관측/허락된 보고 수신이 필요하다. OR 취소=(이번 일정 불일치 확인 AND 실제 취소 수신). 방문과 취소 동시 성공0."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S12-017",
+      "name": "카이 카부스",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S12-017/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S12-017/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S12-017/outline",
+        "episode_pointers": [
+          "/exact_accepted_dossier/episodes/0"
+        ]
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "왕의 장식 없는 명령의 결과는 이번 실제 참여와 당사자의 선택에 붙으며 장기 독점 책임을 만들 필요가 없다.",
+            "details": "이번 왕의 장식 없는 명령은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/515"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/12"
+              }
+            ]
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "왕의 장식 없는 명령에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+            "details": "수선품은 원소유자에게 반환. 플레이어는 왕의 재고를 보상으로 챙기지 않으며 실제 운반 감사만 받는다. 제안된 지급권과 실제 지급은 분리한다. 지도는 실제로 배운 참여자에게만, 물품은 지급 권한·원소유자 허락·현재 보유량이 확인된 범위만 한 번 전달한다. 미수령은 기존 수행/수신 기록으로 복구하고 이미 소비한 재료나 지급을 반복하지 않는다. 실패·거절에는 성공 보상 없음. 장비·축복·가호·주시·호감·MAIN은 별개이며 이번 생활/기초 지도는 수치 강화를 뜻하지 않는다. 수용 능력과 세계의 현행 성장 창구를 확인하기 전 상위 권능으로 넘기지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품 규칙을 우회하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/515"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/12"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "카이 카부스는 반대를 들을 때도 먼저 왕의 체면을 세우려 한다. 실수를 바로잡고 싶으면서도 남이 먼저 잘못을 이름 붙이면 목소리가 커진다. 왕의 장식 없는 명령에서 잘과 루스탐에게 실제 들은 부담을 받아 왕이 이번 장식 몫을 줄여 수선을 먼저 하거나 장식을 유지하겠다고 직접 선언한다.의 실제 결과가 필요하여 이 모드를 택했다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/515"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-030.json",
+                "sha256": "3959f0cb545f475196e4cfb9c9b4cff65b7bda313b22e4389aec7ebb13916c6a",
+                "pointer": "/records/12"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-030.json",
+                "sha256": "20c2b40edd82f7095ce53fbef33f9431ab7d6d0db7fd558a5e7654d78b971299",
+                "pointer": "/records/12"
+              }
+            ]
+          }
+        },
+        "episodes": [
+          {
+            "episode_id": "EP030B-RPG-S12-017",
+            "mode": "event",
+            "quest_kind": "NONE",
+            "participation": {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "이번 왕의 장식 없는 명령은 당사자의 실제 일회 행동 또는 일반 서비스/면담으로 완결한다. 공개 물건·생활권·타인의 사과/돌봄을 독점할 필요가 없어 새 MAIN을 붙이지 않는다. 기존 MAIN 자격·소유가 있더라도 이번 도움과 별도이며 소유자 부재에도 현재 일반 참여가 가능하다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            },
+            "rewards": {
+              "status": "PROPOSED",
+              "reason_and_source": "왕의 장식 없는 명령에서 실제 수행에 맞는 결과와 비용만 남긴다. 성공 수행 없는 자동 호의·성장 지급은 없다.",
+              "earned_condition": "실제 도구 운반에 대한 감사만. 수선품은 원소유자의 몫이며 플레이어 보상·교습권 없음.",
+              "beneficiary_and_claim_right": "실제 도구 운반에 대한 감사만. 수선품은 원소유자의 몫이며 플레이어 보상·교습권 없음.",
+              "actual_grant_and_consumption": "실제 도구 운반에 대한 감사만. 수선품은 원소유자의 몫이며 플레이어 보상·교습권 없음. 군비·도구는 원소유자의 재산이다. 수선품은 원소유자에게 실제 반환한다. 운반 감사 외 플레이어 재고·교습·왕권 보상 없음. 이미 실제 옮기거나 인수·먹은 물건을 정산 장면에서 다시 지급·소비하지 않는다.",
+              "unclaimed_retry_no_duplicate": "현재 본인 실제 수행·현보유·수신·선택 제공 여부를 대조하여 이 역할에 실제 남은 항목만 처리한다. 없는 교습·보상·위탁을 복구 명목으로 만들지 않는다. 기존 같은 물품·수선·지도는 다른 사람의 장면이나 재접속에서 복제하지 않는다. 군비·도구는 원소유자의 재산이다. 수선품은 원소유자에게 실제 반환한다. 운반 감사 외 플레이어 재고·교습·왕권 보상 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            },
+            "mode_contract": {
+              "interaction_or_service_loop": "B1 현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n수선 도구를 작업대에 옮긴다: 왕이 장식을 바로 세우다 손을 멈추고 수선용과 장식용을 실제 나눈다. 플레이어는 허락된 수선 도구를 기존 작업대의 빈 쪽으로 옮긴다. 장식은 아직 놓지 않고 고장 장비의 수선할 부분을 가리킨다.\nB2 현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n장식 몫을 줄이고 장비를 고친다: 이번 쟁점에 대해 잘의 반대와 루스탐의 부담 설명을 왕이 실제 수신한 경우 그 내용을 대조한다. 미수신이면 수선 준비만 보존하고 결정은 보류한다. 왕이 이번 장식 몫을 줄이겠다고 직접 선언하면 허락된 도구와 재료로 고장 장비 하나를 수선하고 실제 작동을 확인한다. 원소유자에게 반환하여 수령을 확인한다. 왕은 장식을 뒤로 밀고 자기 결정이라고 밝힌다.\n장식을 유지하고 도구를 돌린다: 왕이 실제 설명을 들은 뒤 장식을 유지하겠다고 직접 결정하고 수선용 도구를 장식 배치 쪽으로 돌린 경우 수선 작업을 실제 멈춘다. 플레이어는 미수선 장비와 사용한 재료를 분리하고 왕에게 현재 손실을 숨기지 않고 보고한다.\nB3 선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 군비·도구는 원소유자의 재산이다. 수선품은 원소유자에게 실제 반환한다. 운반 감사 외 플레이어 재고·교습·왕권 보상 없음.",
+              "repeat_and_settlement": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다.",
+              "no_quest_reason": "검수된 event 범위의 현재 상호작용이다. 실제 요청·처리·거절·마침으로 닫히며 별도 퀘스트 수주·MAIN·숨은 의뢰 조건을 추가하지 않는다. 검수 범위에 있는 선택 지도는 현재 행동의 완료와 분리해 별도 동의·실습으로만 제공한다.",
+              "quest_card": null
+            }
+          }
+        ]
+      },
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "accepted_modes": [
+          "event"
+        ],
+        "actual_activity": "현재 배분 논의 한 건에서 장식 몫과 수선 도구를 분리한다. 허락받은 실제 도구 묶음의 품목·정수량·원소유자·작업대를 시작 시 기록한다. 잘의 반대와 루스탐의 부담 설명을 왕이 실제 받은 뒤 변경 OR 유지 결정을 직접 내린다. 변경이면 고장 장비 1개를 실제 수선·작동 확인·원소유자 반환한다. 유지이면 수선을 멈추고 실제 사용분과 고장 상태를 보고한다.",
+        "completion_guard": "수선 결말=(잘의 유효 반대 실제 수신 AND 루스탐의 해당 부담 설명 실제 수신 AND 왕의 실제 배분 변경 결정·책임 선언 AND 허락된 도구·재료로 고장 장비 1개 실제 수선 AND 해당 장비 작동 확인 AND 원소유자의 실제 인수). OR 장식 유지=(실제 설명 수신 AND 왕의 유지 결정 AND 도구를 장식 배치 쪽으로 실제 돌림 AND 수선 실제 중단 AND 실제 미수선 상태·사용 재료·손실 보고 수신). 준비·운반·작동 확인만으로 실제 수선 완료0. 수선은 끝났으나 인수 전이면 수선 완료·반환 미완료로 나누며 같은 원물만 반환한다.",
+        "reward_detail": "원문에 지정된 실제 생활 결과·감사·현재 관계만. 추가 지급권·수강권·장비·가호·주시·레벨0. 원물은 소유자에게 실제 반환하며 반환을 플레이어 보상으로 바꾸지 않는다.",
+        "time_and_balance": "일상 3–6분, 실제 배분·수선 10–18분의 정적 예상. 당사자 답 대기 별도, 마감 없음. 정적 추정이며 시험값 아님. 본편 성장 공급을 대체하지 않고 현재 선택과 생활 결과가 가치다.",
+        "recovery": "공통 거절·부분·재개·후발·동시 계약을 적용한다. 실제 미수령 몫만 같은 권리·원물로 이어 처리하고 본 역할에 없는 교습·물품은 생성하지 않는다.",
+        "acceptance_cases": [
+          {
+            "case": "의향만 제시/물리행동 생략",
+            "expected": "부분·미실행으로 유지, 다음 결말·지급0"
+          },
+          {
+            "case": "정상 경로와 대안 경로",
+            "expected": "수선 결말=(잘의 유효 반대 실제 수신 AND 루스탐의 해당 부담 설명 실제 수신 AND 왕의 실제 배분 변경 결정·책임 선언 AND 허락된 도구·재료로 고장 장비 1개 실제 수선 AND 해당 장비 작동 확인 AND 원소유자의 실제 인수). OR 장식 유지=(실제 설명 수신 AND 왕의 유지 결정 AND 도구를 장식 배치 쪽으로 실제 돌림 AND 수선 실제 중단 AND 실제 미수선 상태·사용 재료·손실 보고 수신). 준비·운반·작동 확인만으로 실제 수선 완료0. 수선은 끝났으나 인수 전이면 수선 완료·반환 미완료로 나누며 같은 원물만 반환한다."
+          },
+          {
+            "case": "후기 사양·중도 접속종료",
+            "expected": "실제 이미 끝난 부분 유지, 미수신·미인수·미완료만 재개"
+          },
+          {
+            "case": "실제 관계 상대 부재/늦은 청중",
+            "expected": "대리 동의·원격 답·사적 기억 자동 공유0"
+          },
+          {
+            "case": "단일 본체 동시 선정과 재시작",
+            "expected": "공통 CAS/journal 대조, 동일 본체·원물 복제0"
+          }
+        ]
+      }
+    }
+  ]
+}

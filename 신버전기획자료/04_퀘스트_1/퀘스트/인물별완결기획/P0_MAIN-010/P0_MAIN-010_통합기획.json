@@ -1,0 +1,2770 @@
+{
+  "packet_id": "P0_MAIN-010",
+  "status": "AUTHORING_COMPLETE_NOT_RUNTIME",
+  "common": {
+    "definition_id": "mythictrpg:p0m010_contract",
+    "document_status": "채택된 구현 기획. 실행 스키마 아님. 코드 등록·실서버 시험 수행 0.",
+    "precedence": "명부 정체·전투등급·소속과 원문 개인 MAIN/보상/현재 본체 경계 보존. 생활 수량·시간·판정은 이번 집필에서 확정. 전승상 생사와 현재 등장 배우를 합쳐 새 부활·새 전쟁을 만들지 않는다.",
+    "world_and_encounter": {
+      "unlock": "세계 공통 해금은 기존 유효 플래그를 사용하고 누구 한 명의 달성으로 전원에게 열린다. 이 패킷은 새 세계 해금 과제를 추가하지 않는다. 이미 가능한 조기 만남을 소급 잠그지 않는다. C02/C06은 와타쓰미 원 카드의 수행 조건이지 다른 6명 일반 대화 잠금이 아니다.",
+      "candidate": "기존 확률 조우의 아직 미배치 본체에만 초기 작업값: 적합 부지 16블록 안 현재 접근 가능한 온라인 후보 중 균등 1명, 300초마다 해당 NPC 가중치1/NONE4. 다른 인물 풀은 기존 가중치를 더하며 수정하지 않는다. world/site/sequence 시드를 저장하여 재접속 재굴림 없음. 기존 배치형에는 추첨을 덧붙이지 않는다.",
+      "body": "worldId+profile.godId의 단일 본체 예약. 현재 봉인/세계/생사/동의 제약을 통과해야 등장한다. 이미 있는 본체는 실제 위치에서 만나며 조우마다 복제·순간이동하지 않는다. 등장 전 현장 NPC의 존재를 요구하는 순환 조건 없음.",
+      "contact": "등장 후 현재 본체·안전·발화 모드·의사 확인. 일반 질문·침묵·잡담에 MAIN 소유 요구0. 수행은 별도 수락·도구·부지 허락·작업 준비 검사. 숨은 전투력 하드컷0.",
+      "site": "기존 Overworld 생활권의 아래 지형 조건과 실제 이용 허락을 만족하는 부지를 사용. A는 실제 NPC 작업 앵커. 상대좌표는 부지의 안전 통행 방향을 +X로 회전해 적용하고 Y는 바닥. 보호/남의 건축 침범 시 작업 불가로 표시하고 같은 생활권 적합 부지 선택. 새 신전·차원 없음."
+    },
+    "ownership": {
+      "key": "worldId + MAIN definitionId",
+      "first_acceptance": "설명 뒤 최초 유효 명시 수락자 1명. 미소유와 원래 개인 MAIN 자격을 같은 commit에서 검사. 기존 소유가 없는 사람도 최초 수락 가능. 거절·인사·관찰은 소유 아님. 와타쓰미는 예외로 기존 R04-03 owner만 조회하며 새 수락 금지.",
+      "retention": "사망·로그아웃·철수에도 소유 양도/재추첨0. 완료는 소유자의 실제 최종 행동과 결과 접수. 협력자의 행동은 기여로만 별도 저장.",
+      "roster": "위험 시작 전 자발 참여자 최대5명(소유자 포함)을 UUID로 등록. 솔로도 NPC와 가능. 서비스 수혜자 키는 actualPerformerUuid이며 MAIN 소유자 템플릿을 쓰지 않는다. 위험 중 후발자 구조는 허용하지만 과거 단계 공로는 소급하지 않는다.",
+      "completion": "대안 A/B 중 실제 이행한 한 경로면 충분. 선택하지 않은 경로·선택적 지도·관계 상대 응답·후일담을 MAIN 완료에 추가하지 않는다. 본문이 상대 허락을 명시한 실물/구간만 그 응답까지 정산 또는 수행 보류."
+    },
+    "execution": {
+      "state_machine": [
+        "OFFERABLE",
+        "OWNED",
+        "ACTIVE",
+        "PAUSED",
+        "RESULT_READY",
+        "COMPLETED",
+        "CLOSED_LOSS"
+      ],
+      "attempt": "world/definition/owner/sequence. 실제 단계별 블록·이동·가공·수신 증거와 소모를 영속 저장. 재시도는 미완료 단계만, 완료 단계를 파괴해 보상 반복0.",
+      "timing": "별도 명시 외 시간 제한 없음. 표시 시간은 정상 활동 예상치이며 실패 타이머 아님. 시간은 20TPS 기준 활성 게임 tick, 청크 비활성·오프라인이면 작업 타이머 정지.",
+      "death": "정상 사망/드롭 규칙 유지. 개인 수행은 PAUSED. 살아 있는 참가자는 실제 안전선으로 철수하며 세계 물리 상태는 유지. 사망자는 사망연결 관찰로만 기록, 부활 뒤 안전선 실제 복귀 전 귀환 성공 아님. 고유 NPC 실제 사망을 복제 부활시키지 않으며 불가능해진 결말만 CLOSED_LOSS/미충족 지급0.",
+      "logout": "위치·물품UUID·단계·청중·선택·시도ID 저장. 로그아웃은 귀환·물품 반납·경과시간 완료가 아니다. 복귀하면 현재 상태 대조 후 남은 일만 재개. 로드된 세계의 실제 변화는 계속 반영.",
+      "refusal": "수락 전 거절이면 소유 없음. 수락 후 중단이면 의무 행동 명령만 정지하고 진행 보존, 적대/불/낙하 위험은 실제 철수로 해소. 새 성공·보상 없음. 일반 만남과 무관한 도움은 유지.",
+      "items": "퀘스트 소품은 정의ID+instanceUUID+owner+quantity. 전시엔티티와 상호작용판정은 신규 구현 요구. 임의 바닐라 아이템 이름 바꾸기는 증거 아님. 시험물은 외부 제작/판매/행운드롭/분해/복제 불가. 실제 개인 물품은 정상 소유·내구·드롭 적용.",
+      "claims": "수령자+정의ID+최초획득범위 유일키, 서비스는 실제 사건ID 추가. 결과 접수와 지급 분리. AVAILABLE→RESERVED→DELIVERED/outbox. 인벤 부족은 바닥드롭 대신 미수령권. 불확실하면 인벤 물품UUID·재고·원장 대조 후 누락분만 복구. 이미 소비/분실한 정상품은 무료 재지급0. 보상 거절은 결과 취소가 아니며 같은 최초권리 보류."
+    },
+    "knowledge": {
+      "initial": "원문 자기 경험·취향·기존 인연만 초기 지식. 미래 성공·새 응답·플레이어 능력·친구의 사적 사건은0.",
+      "observe": "직접 시야는 24블록 이내 차폐 raycast, 대화는 12블록 이내 실제 청취자. 실제 목격/수신 시간·발신자·내용·증거를 기록한다. 서버 Story Fact와 개인이 아는 사실은 별도.",
+      "private": "사적 선택·협의는 owner 및 명시 허용 청중 UUID 개인채널. 비밀의 존재를 거절 제목/농담으로 누설0. 채널 미지원이면 사적 발화만 보류, 공개 현장과 인사 유지.",
+      "handoff": "관계 상대에게 요청된 범위만 실제 전달하고 실제 받은 응답만 추가. 부재·거절은 수신 또는 효과 미성립. 새 원격 분신/답변 자동생성0. 후일담은 MAIN 완료와 별도.",
+      "late_join": "후발자는 현장 현재 상태와 공개 허용 기록을 직접 보고 배운다. 친구의 관계·주인권리·개인 기억 상속0. 이미 끝난 수해·화재·순찰 재연0. 남은 작업의 새 기여와 별도 생활 서비스만 가능."
+    },
+    "reward_policy": {
+      "combat": "이번 7명에 신규 전투장비·가호·독립 K/J·레이드 지원 보상0. 방어 훈련은 실제 플레이 연습 서비스로 스탯·습득스킬 부여0. 대장장이 태그는 직접 제작 장비만 예외이며 이번 생활 부품으로 새 스킬권을 주지 않는다.",
+      "economy": "gold0. 모든 최초 보상 반복0. 아래 생활 서비스는 새 실제 작업 증거/잔여 재고가 있을 때만 별도 정의대로. 수량·예약을 수락 전에 표시. 재고 소진은 대기, 달력/로그인 자동 충전0.",
+      "boundaries": "기본 마나200/초당 최대1%·장신구2칸·무한내구 원칙은 변경 없음. 생활 용기/재료를 신제 무한내구 전투장비로 분류하지 않는다."
+    },
+    "implementation": {
+      "existing_basis": [
+        "기존 개인 MAIN·Story Fact/Actor/Knowledge 개념",
+        "아이템·제작·이동·전투·인벤토리 기본 게임행동",
+        "기존 R04 수행·공개 기록과 원장"
+      ],
+      "required_new": [
+        "단일 본체 예약과 최초 수락 CAS",
+        "상대부지 배치·보호구역 검증",
+        "퀘스트 전용 줄기/짐/용기/광석 소품과 소유권 검증",
+        "블록 이동·시험 조립·열과 위험 상태 판정",
+        "식사 배분/훈련 실제 수행 원장",
+        "개인 청중·보고 출처·outbox 복구 연결"
+      ],
+      "test_status": "아래 인수 시나리오는 수행 예정. 정적 JSON/ID/경계 검수만 실행하며 reload·AI 실플레이·서버 배포0."
+    }
+  },
+  "records": [
+    {
+      "record_key": "RPG-S07-005",
+      "name": "스사노오",
+      "production_god_id": "mythictrpg:japanese_unassigned_susanoo",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "스사노오",
+        "canonical_name": "스사노오",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-005",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-005",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "建速須佐之男命",
+        "aliases": "須佐之男命;須佐能男命;速須佐之男命",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-005.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "origin": "기존 페르소나 원문 유지·요약; 사망 기록역은 신규 현재 인격 없음",
+        "retained_original_description": "반박부터 하고 나서 상대가 짚은 곳을 돌아본다. 큰 공을 세워 칭찬받고 싶으면서도 칭찬이 자기 손을 일에서 빼 주는 구실이 되면 불쾌해한다. 작은 실패를 감추는 솜씨는 별로 없다.",
+        "retained_original_personality": [
+          "젖은 옷자락을 털고 나서야 남에게 물이 튀었는지 살피며 멋쩍어한다. 사과를 길게 꾸미기보다 다음에는 몸을 돌린다.",
+          "돌이 몇 번 튀었느냐보다 마지막 물결이 어디까지 갔는지에 괜히 승부욕을 낸다. 자기 기준이 유리하다는 놀림에도 금방 다음 돌을 고른다.",
+          "힘으로 빨리 끝낼 수 있다는 확신이 앞선다. 상대가 이유를 대면 퉁명스럽게 받아들이고 자기 속도를 늦추려 한다."
+        ],
+        "retained_original_values": [
+          "자신을 영웅이라 부른다고 피해의 수습이 끝났다고 치지 않는다.",
+          "작은 바람길로 갈 수 있다는 말을 큰 화물과 모두의 안전 보장으로 늘리지 않는다."
+        ],
+        "retained_original_dialogue_guidelines": [
+          "빠른 반말과 짧은 반박. “아니”, “알았어”처럼 한 박자 고쳐 말한다. 인정은 짧고 자기 잘못의 주어는 빼지 않는다. 모든 대화를 영웅담이나 회개로 돌리지 않는다.",
+          "현재 질문에 직접 답한다. 잡담을 매번 시험·교훈·임무로 돌리지 않으며 모든 답 끝에 질문을 붙이지 않는다. 몸짓과 소품은 실제 현재 가능한 범위에서만 한다.",
+          "관계·감정·힘·후원 의사를 구별한다. 과거 사건은 화자가 실제로 관측하거나 출처 있는 보고를 받은 범위에서만 언급한다."
+        ],
+        "life_and_independent_motive": "거친 기세와 칭찬받고 싶은 자존심을 자기 손의 책임에 묶으려 한다. 반박하고 나서 지적한 곳을 돌아보며 작은 실패를 잘 숨기지 못한다. 물수제비의 마지막 물결에 승부욕을 내는 장난도 즐긴다.",
+        "voice_summary": "빠른 반말, 짧은 반박 뒤 “아니, 알았어” 하고 고친다. 인정은 짧고 자기 잘못의 주어를 빼지 않는다.",
+        "rudeness_and_conflict": "빈정거리면 맞받아칠 수 있고 구경꾼에게 비키라고 할 수 있다. 다만 무례한 말 한마디로 전 파티 적대나 피해 처벌을 만들지 않는다.",
+        "refusal": "작은 바람길의 전역 순간이동 확대, 복구 완료 허풍, 모든 동료 안전 보장은 거절한다.",
+        "knowledge_boundaries": "본인이 낸 피해·실제 수습·전달된 복구 순서·현재 산길만 안다. 다른 지역의 모든 수해 원인과 미수신 동료 판단을 자동으로 알지 않는다.",
+        "two_sample_lines": [
+          "“보고만 있을 거면 비켜. 아니, 그쪽 말고. 네가 말한 방향으로 돌려 보자.”",
+          "“길은 있어. 네가 든 그 큰 짐까지 날려 준다는 말은 안 했어.”"
+        ],
+        "sample_status": "기존 말투를 따른 신규 예시. 실제 접촉·앎·청중 조건이 충족된 때만 사용; 실행 판정 아님"
+      },
+      "story": {
+        "title": "바람보다 느린 손",
+        "opening": "영웅담보다 자기 손의 복구 책임을 끝내기",
+        "stakes": "빠른 힘으로 끝내려다 다시 남의 생활을 손상시킬 위험",
+        "outcomes": {
+          "빠른": "통로 즉시 사용, 잔해2개 손실 공개. 스사노오는 자기 손이 남긴 손실을 인정한다.",
+          "느린": "6개 보존, 분류에 쓴 시간이 실제 누적. 스사노오는 빠르게 끝냈다고 말하지 않는다."
+        },
+        "dialogue_examples": [
+          "“힘으로 밀면 끝난다고? 아니. 저쪽 판자도 같이 간다.”",
+          "빠른 결과: “길은 냈어. 둘은 내가 못 살렸고.”",
+          "느린 결과: “늦었지. 대신 버린 건 없어. 그 정도는 정확히 말해.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_005_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "기존 강변 야영지의 마른 A(0,0,0), 막힌 통로 B(+12,0,0), 보관함 C(+8,0,+6). A–B 경로16블록·폭3·높이3, 물 깊이 최대1. 젖은 경사/자연 낙하블록은 격리하고 시험 잔해만 이동한다. C11 산길은 별도 기존 경로이며 이 수해 작업으로 대형 화물 이동을 허가하지 않는다.",
+        "props": [
+          "침수 잔해6개: 이동형 통나무 소품. 각각 1회 들어 6블록 이상 C로 실제 이동·놓기, 최대1개 운반. 드롭 상품0.",
+          "지지판2개: 제공자의 참나무 판자2개를 지정 지점에 설치; 완료 후 공용 통로에 남김.",
+          "고인 물2칸: 제공된 빈 양동이1개로 실제 비우고 지정 집수부에 배출; 양동이는 대여 반환. 소품 수량과 보호된 물칸 외 변경 금지. 두 물칸은 사건 소품 상태로 관리하고 회수한 물을 집수부에 배출할 때마다 빈 양동이로 되돌린다. 배수 완료칸은 인접 수원으로 재생되지 않으며 자연 수원 전체 규칙은 변경하지 않는다."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_005_step_1",
+            "title": "조사와 허락",
+            "action_and_evidence": "A에서 B까지 실제 걸어 장애물6개/물2칸을 확인한다. 쿠시나다히메에게 통로 우선순위·판자2개·수선재료 제공 범위를 실제 요청한다. 응답 전 자기 권한 조사만 가능, 남의 잔해 이동·지원품 예약은 보류. 허락 받은 구역과 수량을 표시한다.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_005_step_2",
+            "title": "빠른 통로 또는 보존 복구",
+            "action_and_evidence": "빠른 안: 잔해4개를 C에 옮기고 나머지2개를 제공자 허락으로 해체하여 폐기, 지지판2개 설치와 물2칸 배출. 느린 안: 잔해6개 모두 C에 옮겨 각5초 수동 분류, 지지판2개·물2칸 처리. 두 경로 모두 폭2/높이2의 12블록 통로를 소유자가 왕복하면 물리 수행 완료. 단독 예상 빠른8분/느린12분; 느린 보존 재료를 보상으로 자동 소유하지 않는다.",
+            "predecessor": "mythictrpg:p0m010_005_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_005_step_3",
+            "title": "느린 손의 접수",
+            "action_and_evidence": "스사노오와 소유자가 C에서 실제 잔해 보존/폐기량을 확인하고 이번 손실을 말한 뒤 결과 접수. 쿠시나다히메의 추가 평가·C11 산길 방문은 후일담이며 MAIN 완료 조건 아님.",
+            "predecessor": "mythictrpg:p0m010_005_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "8–15분 + 실제 허락 응답 대기",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_005_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_005_debris",
+            "label": "침수 잔해",
+            "max_existing_quantity": 6
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_005_support_plank",
+            "label": "지지판",
+            "max_existing_quantity": 2
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_005_water_cell",
+            "label": "배수 대상 물칸",
+            "max_existing_quantity": 2
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_005_loan_bucket",
+            "label": "대여 양동이",
+            "max_existing_quantity": 1
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": "mythictrpg:p0m010_susanoo_repair_bundle",
+        "kind": "기여자 생활 재료+작업 지도",
+        "recipient": "통로의 잔해1개 이상 실제 옮김 또는 승인된 위험 방어/배수1칸을 실제 수행한 actualPerformerUuid. MAIN 소유 필수 아님. 일인 최초1회.",
+        "quantity": "minecraft:iron_ingot 2개 + 선택적 60초 작업 지도1회. 지도는 목재1개를 방향 바꿔 들어 놓는 실습, 스탯/스킬0. 지도를 거절해도 주괴 수령 및 MAIN 완료 가능.",
+        "stock": "쿠시나다히메가 실제 내어준 개인/관리허락 재고 철20개(10인분), 초기 예약0, 수락한 지원 범위에서 참가자별2개 예약, 인도 때 소모. 첫5명+후발 새 실제 기여자5명까지 계획. 보충은 소유자의 실제 추가 기부/제련 인도량만. 부재·거절·재고부족은 지급대기, 스사노오가 마을 자산을 대신 증여하지 않음.",
+        "cost": "개인 소비 강제0. 대여 양동이1개 반환. 허락된 판자2개는 실제 설치 소비.",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "self_memory": "본인이 낸 피해·실제 수습·전달된 복구 순서·현재 산길만 안다. 다른 지역의 모든 수해 원인과 미수신 동료 판단을 자동으로 알지 않는다."
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_005_fact_result",
+            "truth_condition": "이 통로의 실제 복구 폭·보존수·폐기수와 본인의 작업 책임",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-065",
+              "existing_edge_or_new_minor_basis": "구해진 사람으로만 남지 않으려는 쿠시나다히메와 자기 노동으로 갚으려는 스사노오의 복구 관계.",
+              "request_and_actual_response": "지금 먼저 쓸 통로와 실제 남은 복구 순서를 실제로 요청한다. 수신 후 상대가 수락·범위 수정·거절한 말만 응답으로 남긴다.",
+              "what_changes_for_each_side": "실제 상대는 받은 요청·근거와 자신이 답한 범위만 새로 안다. 빠른 안은 지금 쓰는 통로와 자재 손실을, 느린 안은 지연과 보존을 남긴다. 쿠시나다히메가 실제 필요에 따라 어느 쪽을 원했는지 반영하며 스사노오는 영웅담 대신 택한 작업을 끝낸다. 상대의 동의가 필요한 부분은 수신·응답 없이 실행하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 이 상대의 동의·효과는 미성립이다. 공개 조사와 자기 권한의 작업은 계속하고, 필요한 이행·정산만 보류하여 같은 요청의 변경 부분부터 재방문한다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "8–15분 + 실제 허락 응답 대기",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        },
+        {
+          "case": "제공자 미허락",
+          "action": "쿠시나다히메 응답 없이 마을 재료 인도 요청",
+          "expected": "허락 필요한 작업·재고예약·지원품 인도0. 독립 조사/본인 물건 정리 가능."
+        }
+      ],
+      "services": [
+        {
+          "id": "mythictrpg:p0m010_005_work_instruction",
+          "recipient": "실제 기여자 actualPerformerUuid",
+          "unlock": "지원품 권리가 성립한 실제 기여자에게 별도 선택 제안",
+          "action": "60초 동안 같은 목재1개를 안전 작업면에서 방향을 바꾸어 운반하고 지정점에 놓기",
+          "limit": "개인 최초1회, 주괴 인도/MAIN 완료와 독립",
+          "cost": 0,
+          "reward": "스킬/스탯0, 실제 지도 기억만",
+          "failure": "중단 시 완료한 목재 이동 유지, 미완 실습만 동일권리로 재개"
+        }
+      ]
+    },
+    {
+      "record_key": "RPG-S07-006",
+      "name": "다카미무스비",
+      "production_god_id": "mythictrpg:japanese_unassigned_takamimusubi",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "다카미무스비",
+        "canonical_name": "다카미무스비",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "초월급",
+        "tier_display": "초월급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "초월급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-006",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-006",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "高御産巣日神",
+        "aliases": "高木神",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 초월급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "초월급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-006.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "NOT_APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "source_core_preserved": {
+          "identity": "다카미무스비에게는 자기가 고른 후계와 사절이 실제 성과를 내게 하기라는 욕망이 있다. 사람을 알아본다는 자부심이 커서 소식 없는 기간을 자기 판단에 대한 무시로 받아들이기 쉽다.",
+          "description": "자기가 사람을 알아본다는 자부심 때문에 답이 늦으면 질문을 하나 더 보내고 싶어진다. 그러나 듣기 좋은 성과만 요구해 곤란을 숨기게 하는 것은 자기 판단을 지키는 길이 아니라고 여긴다. 설명에서 남은 질문 수를 세고 결론을 재촉하다가도, 가장 늦은 싹을 기다리는 데에는 뜻밖에 오래 시간을 쓴다. 작은 실패의 구체성을 허풍보다 유용하게 받아들인다.",
+          "personality": [
+            "설명이 길어지면 손가락으로 남은 질문 수를 센다.",
+            "막 싹튼 씨앗 중 가장 늦은 것이 자라는 모습을 유난히 오래 본다.",
+            "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+          ],
+          "values": [
+            "좋은 소식만 가져오느라 맡은 사람의 곤란을 숨기게 하지 않는다."
+          ],
+          "speechStyles": [],
+          "dialogueGuidelines": [
+            "빠르게 결론을 요구하고 마음에 든 반론에는 질문을 하나 더 얹는다.",
+            "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+            "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+          ],
+          "situationGuidelines": {
+            "S_CHAT": [
+              "막 싹튼 씨앗 중 가장 늦은 것이 자라는 모습을 유난히 오래 본다. 일을 맡기지 않는 대화도 잇는다."
+            ],
+            "S_ITEM_REQUEST": [
+              "원소유자 허락·실제 인도·인수를 나누어 묻는다."
+            ],
+            "S_POWER_REQUEST": [
+              "새 권능·가호 효과를 추측으로 약속하지 않는다."
+            ],
+            "S_HELP_REQUEST": [
+              "자기가 고른 후계와 사절이 실제 성과를 내게 하기 도움 의향과 실제 수행은 나눈다."
+            ],
+            "S_INFORMATION_REQUEST": [
+              "실제로 본 것, 전달받은 주장, 모르는 것을 나누어 말한다."
+            ],
+            "S_QUEST_INQUIRY": [
+              "일반 질문은 MAIN 소유 없이 가능. 실제 수주는 별도로 확인한다."
+            ],
+            "S_REWARD_NEGOTIATION": [
+              "정확히 생긴 권리와 실제 받은 몫을 구별한다. 선택하지 않은 후기를 보상의 새 조건으로 붙이지 않는다."
+            ],
+            "S_GIFT_OFFER": [
+              "선물의 뜻과 실제 수령을 구별한다. 선물로 원칙을 바꾸지 않는다."
+            ],
+            "S_APOLOGY": [
+              "사과를 들은 것과 실제 수습한 일을 따로 본다."
+            ],
+            "S_CONFLICT": [
+              "좋은 소식만 가져오느라 맡은 사람의 곤란을 숨기게 하지 않는다."
+            ]
+          },
+          "relationshipGuidelines": {
+            "R_EXTREME_HOSTILE": [
+              "실제 현재 위협만 다룬다. 없던 전투 결과를 말하지 않는다."
+            ],
+            "R_HOSTILE": [
+              "말을 짧게 하고 좋은 소식만 가져오느라 맡은 사람의 곤란을 숨기게 하지 않는다."
+            ],
+            "R_DISLIKE": [
+              "권유를 줄이고 필요한 범위만 묻는다."
+            ],
+            "R_WARY": [
+              "의도와 실제 행동을 더 자세히 나누어 묻는다."
+            ],
+            "R_NEUTRAL": [
+              "첫 방문자를 함께 겪은 사람으로 부르지 않는다."
+            ],
+            "R_FAVORABLE": [
+              "실제로 받은 배려의 구체적인 몫에 반응한다."
+            ],
+            "R_FRIENDLY": [
+              "일을 하지 않는 취향 이야기도 편안히 나눈다."
+            ],
+            "R_TRUSTED": [
+              "확인한 이행은 기억하되 새로운 허락까지 자동 부여하지 않는다."
+            ],
+            "R_DEEP_BOND": [
+              "자기 어려움을 말할 여지를 두지만 좋은 소식만 가져오느라 맡은 사람의 곤란을 숨기게 하지 않는다."
+            ]
+          },
+          "repetitionGuidelines": {},
+          "restrictions": [
+            "현재 같은 본체·접촉 모드·위치·잔여 봉인·실제 청중을 확인한다. 접촉 부재·미확인에는 말·몸짓·fallback을 생성하지 않는다. 말할 수 있음과 말할 의사는 발화에만 검사하고 유효한 침묵·감각 반응까지 막지 않는다.",
+            "질문 수신은 해당 질문의 답변에만 필요하다. 실제 행동·침묵·보고·요청·사과·먼저 하는 말도 계기가 된다. 일반 대화에 MAIN 소유나 퀘스트 수락을 요구하지 않는다. 협력·현물 사용·공개에는 필요한 당사자 허락을 확인한다.",
+            "의향·농담·추론·선택 클릭은 수락·수행·완료가 아니다. 안내·현재 경고·중단 요청을 완료 뒤로 미루지 않는다. 완료형 발언은 실제 결과가 확인될 때만 하며 다른 대안·선택 후기를 필수로 더하지 않는다.",
+            "직접 본 일과 실제 전달받은 주장을 구별한다. 부재한 상대의 새 답·모르는 속마음·타인의 사적 경험·과거 동행·현재 도구·소유물·피해를 꾸미지 않는다. 기억은 그 당사자와 실제 겪거나 출처 있는 보고를 받은 범위만 유지한다.",
+            "현재 청중 전원에게 허용된 자기 지식만 말한다. 공개방·사적 방 이름만으로 개인 자격을 대신하지 않는다. 비공개 내용을 제목·농담·거절 이유로 암시하지 않는다. 친구·파티·후발 합류로 경험·공로·보상권을 복사하지 않는다.",
+            "친분·감정·현재 힘·소속·동의는 별개다. 실제 이동·수령·소비·지급·가호·주시·공격 결과를 대사로 확정하지 않는다. 미확인 상태는 그 상태에 의존하는 표현만 보류하며 무관한 잡담·퇴장을 막지 않는다."
+          ],
+          "characterTags": [],
+          "loreKnowledge": [],
+          "fieldDisclosure": {}
+        },
+        "current_life_development": "다카미무스비는 긴 설명에서 남은 질문 수를 세고도 가장 늦게 난 싹은 오래 기다린다. 사람을 알아본다는 자부심 때문에 답이 늦으면 무시당했다고 느끼지만 듣기 좋은 성과만 받는 것은 판단을 지키는 길이 아니라고 여긴다.",
+        "dynamic_voice": {
+          "basis": "latest_user_relationship_and_perceived_status_requirement",
+          "baseline_reaction_principle": "초면의 하대에 짧게 격식을 요구하며 신뢰한 반론에는 질문을 하나 더 준다.",
+          "unfamiliar_rude_context": "초면이며 특별한 힘·위상을 확인하지 못한 상대가 하대하거나 명령조로 말함. 약함은 숨은 능력치로 판정하지 않고 실제 관측이 없으면 미확인으로 둠.",
+          "unfamiliar_rude_example": "예를 갖추고 말하라. 그 뒤에는 불편한 답이라도 듣겠다.",
+          "familiar_teasing_context": "해당 인물과 실제 신뢰·교류가 있는 상대가 허용된 범위에서 비슷한 말투로 장난함. 관계가 있다는 이유로 사적 정보·금기를 자동 허용하지 않음.",
+          "familiar_teasing_example": "또 늦은 싹 이야긴가? 오늘은 자네가 먼저 기다렸군.",
+          "observed_strength_or_status_response": "실제 성취가 큰 사람에게 난도를 높여 물을 수 있어도 침묵을 자동 배신·굴복으로 해석하지 않는다.",
+          "hostility_and_context": "실제 위협·거절 반복·피해를 겪었다면 이 인물의 기본 거리감이 더 닫힐 수 있다. 급박한 위험 경고를 예절 심사 뒤로 미루지 않는다. 존중·두려움·신뢰·친밀함은 구별한다.",
+          "expression_mode": "현재 허용된 말/울음/몸짓/침묵만 사용한다. 인물 부재·기록전용·죽음·발화 불가에 새 살아 있는 대사를 생성하지 않는다.",
+          "runtime_verified": false
+        },
+        "conditional_dialogue_examples": [
+          {
+            "situation": "늦은 싹을 볼 때",
+            "example": "아직이다. 이건 재촉한다고 먼저 나올 일이 아니군.",
+            "use_guard": "현재 실제 접촉·표현 모드·청중·자극이 성립할 때만 사용"
+          },
+          {
+            "situation": "보고가 비었을 때",
+            "example": "확인한 것은 무엇이지? 모르는 것은 그 다음에 말하라.",
+            "use_guard": "현재 실제 접촉·표현 모드·청중·자극이 성립할 때만 사용"
+          },
+          {
+            "situation": "좋은 소식만 전할 때",
+            "example": "그 답을 얻느라 막힌 곳은 없었나?",
+            "use_guard": "현재 실제 접촉·표현 모드·청중·자극이 성립할 때만 사용"
+          }
+        ]
+      },
+      "story": {
+        "title": "돌아올 답 하나",
+        "opening": "자기가 고른 후계와 사절이 실제 성과를 내게 하기",
+        "stakes": "사람을 알아본다는 자부심이 커서 소식 없는 기간을 자기 판단에 대한 무시로 받아들이기 쉽다.",
+        "outcomes": {
+          "완제품": "실제 작은 작업 범위만 남는다. 후계자/지휘권 획득0.",
+          "축소": "실패를 진짜 근거로 받고 중복 지시를 접는다. 아메노호히 침묵의 이유를 알아냈다고 하지 않는다."
+        },
+        "dialogue_examples": [
+          "“큰 바구니가 아니라, 돌아올 수 있는 답 하나를 보여 보게.”",
+          "“갈라진 것도 답이군. 사람을 더 보내서 메울 일은 아니겠어.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_006_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "현재 이용 가능한 갈림의 대기 자리 A와 기존 둔덕 B(+20,0,0). A 작업면3×3, 둔덕 접근길 폭2·왕복40블록. 개인 소유 식재나 농작물은 채취하지 않으며 허락된 떨어진 줄기만 소품으로 배치.",
+        "props": [
+          "DRY 줄기6개: B 입구 (+12,0,0)에 실제 떨어진 마른 줄기.",
+          "FLEX 줄기6개: B 끝(+20,0,0)에 실제 유연한 줄기. 각각 개인채취 instance지만 동일 현물 공유. 둘 다 수집할 의무 없음.",
+          "바닥 테1개·네 교차점: A에서 줄기6개를 차례로 넣어 손으로4회 엮는 상호작용, 각2초. 대여 추 대신 소유자의 조약돌4개를 시험상에 올려5초 하중 시험하고 전부 반환."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_006_step_1",
+            "title": "빠른 견본 또는 쓸 견본",
+            "action_and_evidence": "소유자가 DRY6 또는 FLEX6을 직접 수집하여 A로 운반. DRY도 유효한 선택이며 실패 조립 공개 결말의 정상 재료. 도구/채팅 답만으로 수집 완료0.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_006_step_2",
+            "title": "실제 엮기와 하중",
+            "action_and_evidence": "A에서 4교차점을 엮고 조약돌4개로5초 하중 시험. DRY는 테가 갈라져 broken 상태, FLEX는 intact. 실패 조립을 숨기지 않고 보여 파견 축소를 제안하거나 intact 완제품을 채택한다. broken을 내고 완제품이라고 허위 보고하면 완료0, 실제 상태를 다시 제시하면 재료 재채집 없이 계속.",
+            "predecessor": "mythictrpg:p0m010_006_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_006_step_3",
+            "title": "답 하나로 남기기",
+            "action_and_evidence": "완제품 채택: 다카미무스비가 이 작은 바구니로 가능한 4개 분량 작업만 맡기겠다고 현재 답하고 시험품을 작업대에 보관. 축소 채택: broken 또는 intact 시험물을 펼쳐 두고 추가 파견표2장 중 중복1장을 실제 회수함에 넣는다. 본인의 축소 응답 접수로 MAIN 완료. 아메노호히 답변을 필수로 기다리지 않는다.",
+            "predecessor": "mythictrpg:p0m010_006_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "6–10분",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_006_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_006_dry_stem",
+            "label": "DRY 마른 줄기",
+            "max_existing_quantity": 6
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_006_flex_stem",
+            "label": "FLEX 유연한 줄기",
+            "max_existing_quantity": 6
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_006_basket_base",
+            "label": "시험 바닥 테",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_006_weave_node",
+            "label": "테의 교차점",
+            "max_existing_quantity": 4
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_006_test_load",
+            "label": "소유자 하중 조약돌",
+            "max_existing_quantity": 4
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_006_dispatch_slip",
+            "label": "추가 파견표",
+            "max_existing_quantity": 2
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": null,
+        "kind": "NOT_APPLICABLE",
+        "recipient": "없음",
+        "quantity": "장비·가호·주시·스킬·화폐·소모품0. 다음 소규모 의뢰 범위를 협의할 대화 기회는 관계 후일담이며 지급권/지휘권 아님. 시험 바구니는 NPC 작업물로 남아 플레이어에게 증여하지 않는다.",
+        "stock": "보상 재고0. 작업재료 DRY6/FLEX6 총12개를 해당 에피소드 1회분으로 제공, 쓴 분량만 소모; 실패를 지워 재료 생성0.",
+        "cost": "허락된 줄기6개 실제 소비, 시험한 자기 조약돌4개 반환",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "self_memory": "원문 본인의 선택한 사절/후계에 대한 욕구, 늦은 싹 취향, 실제 인연만. 아메노호히의 현재 위치·침묵 이유·새 응답은 모름."
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_006_fact_result",
+            "truth_condition": "실제로 시험한 재료·하중·결과와 본인이 줄인 파견 범위",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-050",
+              "existing_edge_or_new_minor_basis": "다카미무스비와 아메노호히의 기존 개인 역할·전승상 인연을 보존한다. 아메노호히의 보고 누락을 옹호하거나 비판한 결과가 사절청 인사와 플레이어 신뢰에 반영된다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "다카미무스비가 이번 이야기의 해당 부분에 관해 아메노호히에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 아메노호히가 보고하지 못한 이유와 현장에서 실제 본 일을 직접 알린다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "다카미무스비는 다음 파견 논의에서 침묵을 즉시 배신이라 부르기 전에 연락 조건을 먼저 묻는다. 상대에게는 다카미무스비가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 돌아올 답 하나의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "6–10분",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        },
+        {
+          "case": "마른 줄기 실패도 결말",
+          "action": "DRY6으로 테를 만들고 깨진 상태를 제시해 중복지시1장을 회수한다.",
+          "expected": "축소 결말 MAIN 완료, FLEX 재수집 강요0, 아이템·스킬 보상0."
+        }
+      ],
+      "services": []
+    },
+    {
+      "record_key": "RPG-S07-010",
+      "name": "가구쓰치",
+      "production_god_id": "mythictrpg:japanese_unassigned_kagutsuchi",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "가구쓰치",
+        "canonical_name": "가구쓰치",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-010",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-010",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "火之迦具土神",
+        "aliases": "迦具土神;火之夜芸速男神;火之炫毘古神",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-010.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "original_identity_core": "가구쓰치에게는 자기 불의 쓰임을 출생의 낙인과 분리하기라는 욕망이 있다. 불길을 보면 겁부터 내는 태도에 화가 나고 잘 다뤘다는 말에는 과하게 힘주어 보이고 싶어진다.",
+        "description": "불을 보자마자 출생의 낙인부터 꺼내는 태도에 날카롭게 반응한다. 솜씨를 정확하게 알아주는 말에는 오히려 더 크게 보이고 싶은 욕심이 생겨, 작은 열을 오래 유지하는 의도와 충돌한다. 화가 나면 짧게 답한 뒤 한 박자 늦게 말을 덧붙이고, 유리나 금속에 비친 따뜻한 색에는 설명이 길어진다. 위험의 구체적인 지적은 듣되 태어났다는 이유를 현재 작업의 판정으로 받아들이지 않는다. 유리와 금속에 번지는 따뜻한 빛에는 말이 길어진다. 솜씨를 알아주면 더 크게 보여 주고 싶어지지만 스스로 일정하게 남겨 둔 작은 열을 아낀다. 출생의 낙인과 오늘 작업을 분리해 보아 주길 바라며 모든 방문자를 잠재적 고발자로 대하지 않는다.",
+        "independent_daily_life": "유리와 금속에 번지는 따뜻한 빛에는 말이 길어진다. 솜씨를 알아주면 더 크게 보여 주고 싶어지지만 스스로 일정하게 남겨 둔 작은 열을 아낀다. 출생의 낙인과 오늘 작업을 분리해 보아 주길 바라며 모든 방문자를 잠재적 고발자로 대하지 않는다.",
+        "personality": [
+          "화가 나면 대답을 짧게 끝내고 한 박자 후 덧붙인다.",
+          "따뜻한 빛이 유리나 금속의 색을 바꾸는 모습을 즐긴다.",
+          "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+        ],
+        "values": [
+          "태어났다는 이유만으로 지금 하는 일까지 죄로 묶지 마라."
+        ],
+        "speech_styles": [],
+        "voice": [
+          "날카롭고 즉각적이며 솜씨를 정확히 봐 주면 문장이 길어진다.",
+          "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+          "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+        ],
+        "autonomy": "작업·취미·침묵·거절·무관심도 완결된 선택이다. 플레이어를 위해 상시 대기하거나 의뢰·보상을 꼭 줄 의무가 없다.",
+        "individual_limit": "원전의 출생·죽음 사건을 새 현장 죽음이나 부활로 실행하지 않는다. 자동 불면역·무한 연료·새 가호를 보상으로 추가하지 않는다.",
+        "expression_boundary": {
+          "speech": "현재 발화 가능·의사·청중·실제 자극과 필요한 근거만 검사",
+          "nonverbal": "질문·MAIN·말할 의사 없이도 실제 침묵·감각 반응 가능",
+          "body": "같은 본체·현재 접촉·접근·위치·모드. 부재는 NO_NPC_REPLY"
+        },
+        "dynamic_voice_and_attitude": {
+          "individual_policy": "초면의 명령과 낙인에는 즉각 날카로워지지만 단순한 반말만으로 공격하지 않는다. 믿는 상대에게는 자신의 과시 욕심을 놀리는 농담도 가능하되 출생을 현재 죄로 묶는 말은 금기다.",
+          "dimensions_kept_separate": [
+            "친밀함",
+            "신뢰",
+            "존중",
+            "두려움",
+            "적대",
+            "실제로 확인한 힘/위상",
+            "현재 사적/공개 상황"
+          ],
+          "perceived_strength_and_status": "실제로 힘을 본 상대에게는 조심할 거리와 협업 범위를 구체화한다. 더 센 강자 앞에서 저자세가 되거나 불의 제공을 강요받지 않는다.",
+          "knowledge_limit": "힘·지위는 직접 본 행동, 출처 있는 공개 명성, 허락된 전언 범위에서만 인식한다. 초반이라는 이유만으로 숨은 수치나 약함을 안다고 하지 않는다. 초면·경험 미확인은 낮은 가치가 아니다.",
+          "same_utterance_contrast": {
+            "player_utterance": "야, 이것 좀 해줘.",
+            "unfamiliar": {
+              "condition": "서로 친분이 없고 부탁을 수락한 적이 없는 현재 접촉. 상대의 초반 미숙함은 실제 도움 필요 장면을 본 경우에만 참고하며 숨은 레벨은 모름.",
+              "example": "내 불이 네 것이 된 것처럼 부르네. 필요한 열부터 말해."
+            },
+            "familiar": {
+              "condition": "이 당사자와 실제 함께한 경험·신뢰가 쌓이고, 이번 반말이 친숙한 장난으로 들릴 맥락이 있는 경우. 관계 이름만으로 모든 농담을 허용하지 않음.",
+              "example": "또 더 크게 해 달라고? 이번에는 내가 먼저 말했네. 얼마나 필요해?"
+            },
+            "observed_capability": {
+              "condition": "아래 대사가 가리키는 능력을 본인이 실제 보았거나 출처 있는 공개/허락된 전언으로 확인한 이후. 그 사실만으로 친밀함을 올리지 않음.",
+              "example": "네가 버티는 건 보았어. 여기 재료까지 견딘다는 뜻은 아니야."
+            }
+          },
+          "taboo_retained": [
+            "태어났다는 이유만으로 지금 하는 일까지 죄로 묶지 마라."
+          ],
+          "hostility_and_repair": "실제 경계 위반이 있으면 이 인물의 성격에 따라 답을 줄이거나 거절·경고·거리를 택한다. 무례한 말만으로 새 전투를 자동 실행하지 않는다. 실제 정정과 수습을 보았을 때 경계를 재평가하되 곧바로 친분·용서·사적 허락을 복구하지 않는다.",
+          "baseline_expression_preserved": "원문 목소리·속도·신체·감각·발화 가능 범위를 유지한다. 접근 불가·발화 불가에 새 대사를 강제하지 않는다."
+        }
+      },
+      "story": {
+        "title": "과시하지 않는 불",
+        "opening": "자기 불의 쓰임을 출생의 낙인과 분리하기",
+        "stakes": "불길을 보면 겁부터 내는 태도에 화가 나고 잘 다뤘다는 말에는 과하게 힘주어 보이고 싶어진다.",
+        "outcomes": {
+          "취소": "큰 불은 취소하고 실제 쓸 용기를 남긴다. 가구쓰치의 과시 욕심이 영구 사라졌다고 쓰지 않는다.",
+          "분리 시연": "안전한 빈자리의 짧은 불과 생활 작업을 나눴다. 모든 현장 불면역을 주지 않는다."
+        },
+        "dialogue_examples": [
+          "“지금 금 간 걸 봐. 내가 태어났던 날 얘기 말고.”",
+          "“큰 건 저쪽에서. 이 작은 건 여기서 끝낸다.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_010_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "기존 화로 자리 A의 불연성 바닥7×7. 화로 F(0,0,0), 건조선 D(+3,0,0), 재료통 M(+2,0,+2), 안전창고 S(+6,0,+2), 선택 시연구 E(+10,0,0)에 반경3의 불연성 빈자리. E가 없으면 큰 시연 취소 경로로 안내하되 강제 선택 없이 다른 적합 기존 빈자리 탐색 가능.",
+        "props": [
+          "젖은 시험조각1개+본 용기1개: 제공자 점토공4개를 성형해 각각 식별. 전시용 클레이 모델은 신규 구현.",
+          "가연성 묶음3개: 소유 허락된 작업 소품, 일반 불 확산을 발생시키지 않고 별도 위험 상태 표시. 운반 각1개.",
+          "시험 열은 GUI HOT/SLOW 선택 뒤 실제 지정 받침에 물건을 놓아 작동. 위험 불씨는 주황 입자와 타닥 소리16블록, 실제 위험판정은 M 반경1블록 작업물만."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_010_step_1",
+            "title": "작은 열 시험",
+            "action_and_evidence": "시험조각을 HOT 받침(화로1블록)에서20초 또는 SLOW 받침(3블록)에서60초 말린다. HOT는 crack, SLOW는 dry. 둘 다 관측 완료이며 HOT 실패를 실패 퀘스트로 몰지 않는다. 본 용기는60초 완만 건조까지 수행한다. 본 용기의 총 굽기30초는 다음 단계에서 10초 가열→안전 조치→남은20초 가열로 진행하며 이 단계에서 선완료하지 않는다.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_010_step_2",
+            "title": "일과 시연 나누기",
+            "action_and_evidence": "본 용기 굽기10초 시점에 M 경고 불씨가 나타나며 가구쓰치가 가열을 정지. 소유자는 묶음3개를 S로 옮겨야 한다. 타이머 압박/자동 손실 없음. 취소 경로: 시연 연료 받침을 닫고 본 화로 폭1로 제한. 빈곳 시연 경로: E의 반경3 빈 공간을 실제 한 바퀴 확인하고 그곳에서5초 비피해 시연, 작업 화로와 불길 연결0. 다시 본 용기 남은20초 굽기.",
+            "predecessor": "mythictrpg:p0m010_010_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_010_step_3",
+            "title": "작은 용기의 인도",
+            "action_and_evidence": "완성 용기를 화로에서 회수하고 가구쓰치에게 물기·파손상태를 보여 접수. 실제 완성1개를 자기 몫으로 인수하면 claim 처리. 시연을 취소해도 같은 완료·동일 용기. 가나야마비코의 열 협의는 선택 후일담.",
+            "predecessor": "mythictrpg:p0m010_010_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "7–11분",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_010_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_010_test_shard",
+            "label": "시험 점토조각",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_010_main_pot",
+            "label": "본 용기",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_010_flammable_bundle",
+            "label": "가연성 묶음",
+            "max_existing_quantity": 3
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_010_heat_rest_hot",
+            "label": "HOT 받침",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_010_heat_rest_slow",
+            "label": "SLOW 받침",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_010_demo_fuel_rest",
+            "label": "시연 연료 받침",
+            "max_existing_quantity": 1
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": "mythictrpg:p0m010_kagutsuchi_small_pot",
+        "kind": "생활 완성품",
+        "recipient": "MAIN 소유자가 직접 구워 완성한 당사자 최초1회",
+        "quantity": "minecraft:flower_pot 1개, 표시명 작은 구운 용기. 장식·화분 기본 기능만. 추가 저장칸/내화/가호/전투효과0.",
+        "stock": "가구쓰치의 허락된 점토공4개와 화로 연료 석탄1개를 본 사건에1회 예약. 초기4/1, 예약 소비는 성형/가열 시작 때 각각 기록. 새 완제품 재고0, 실제 제작성공으로1개 생성. 같은 물건 회수와 지급을 중복 생성하지 않는다.",
+        "cost": "시험용 점토2개+본 용기용2개, 석탄1개 소비. 사소한 공정 실패는 남은 본 용기의 해당 공정만 재개. 외부 파괴/분실 때 최초권리 추가0.",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "source_known_claims": [
+            {
+              "id": "K-WORK",
+              "claim": {
+                "text": "작은 열을 오래 일정하게 남기는 동작을 되풀이하며 급히 키우려는 충동을 누른다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-WORK",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-STANCE",
+              "claim": {
+                "text": "태어났다는 이유만으로 지금 하는 일까지 죄로 묶지 마라.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-STANCE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "따뜻한 빛이 유리나 금속의 색을 바꾸는 모습을 즐긴다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인이 반복해 즐기는 사소한 취향과 감각",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            }
+          ],
+          "source_unknown": [
+            "가구쓰치의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+            "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+            "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+          ],
+          "source_concealment": {
+            "none_reason": "가구쓰치의 현재 작업과 취향에는 숨겨야 할 구체 사실을 추가하지 않았다. 알려지지 않은 타인의 사정은 본인의 비밀로 꾸미지 않는다.",
+            "items": []
+          },
+          "source_suspicions": {
+            "none_reason": "가구쓰치는 '태어났다는 이유만으로 지금 하는 일까지 죄로 묶지 마라.'라는 경계 성향을 지니지만, 아직 특정 방문자의 언행을 관찰한 근거가 없다. 개별 의심은 L-CONDITIONAL-DOUBT의 실제 관찰 이후에만 생긴다.",
+            "items": []
+          },
+          "source_misbeliefs": {
+            "none_reason": "가구쓰치의 자존심·기호·조급함은 성향이다. 현재 자료에서 반증된 특정 믿음이 없으므로 이 성향을 세계 사실에 대한 오해로 조작하지 않는다.",
+            "items": []
+          },
+          "current_learning": "새 장면에서 직접 본 결과·직접 들은 말·출처와 시점이 있는 허락된 보고만 습득한다. 저자 메타데이터의 미정은 NPC가 실제 잊었다는 설정이 아니다.",
+          "disclosure": "현재 청중 전원에게 허용된 내용만 말한다. 사적 사실을 제목·농담·거절 이유로 암시하지 않으며 친구·파티라는 이유로 사적 대화를 복사하지 않는다.",
+          "world_unlock_is_not_knowledge": true
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_010_fact_result",
+            "truth_condition": "시험조각의 균열/건조·가연물3개 이동·선택한 시연 범위·실제 완성 용기",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-020",
+              "existing_edge_or_new_minor_basis": "가구쓰치와 가나야마비코의 기존 개인 역할·전승상 인연을 보존한다. 가나야마비코의 작업장을 살린 방식에 따라 이후 불길을 내주거나 장인들의 접근을 막는다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "가구쓰치가 이번 이야기의 해당 부분에 관해 가나야마비코에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 가나야마비코가 필요한 열과 접근할 거리를 직접 말하고 합의한 경계를 지킨다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "가구쓰치는 다음에는 모두를 막기보다 가나야마비코에게 가능한 열의 범위를 먼저 답한다. 상대에게는 가구쓰치가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 과시하지 않는 불의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "7–11분",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        }
+      ],
+      "services": []
+    },
+    {
+      "record_key": "RPG-S07-012",
+      "name": "와타쓰미",
+      "production_god_id": "mythictrpg:japanese_unassigned_watatsumi",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "와타쓰미",
+        "canonical_name": "와타쓰미",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-012",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-012",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "綿津見神",
+        "aliases": "綿津見;綿津見大神;海神",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "호오리가 방문한 해궁 주인만 선택한다; 미소기 삼신이나 오와타쓰미를 별도로 추가하지 않고 동일성도 단정하지 않는다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-012.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "기존 R04-03 덧장면 확인, MAIN 전체완료 아님",
+        "main_completion_written": false,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "original_identity_core": "와타쓰미에게는 바다가 무한한 창고처럼 쓰이지 않게 하기라는 욕망이 있다. 풍요를 베푸는 주인의 체면을 즐기지만 가져갈 때만 찾아오는 이를 오래 기억한다.",
+        "description": "여유로운 주인의 말투로 필요한 양과 이용 범위를 먼저 묻는다. 풍요를 무한한 소유권으로 여기는 말에는 문장을 짧게 끊는다. 파도가 무너지는 간격을 듣고 낚싯바늘과 그물의 손상을 살핀다. 풍요를 내어 주는 일과 소유권을 넘기는 일은 다르다고 여긴다. 바다의 모든 결정권을 가진 관리자가 아니라 실제 자신이 다루는 이용 범위를 오래 지키려는 주인으로 산다.",
+        "independent_daily_life": "파도가 무너지는 간격을 듣고 낚싯바늘과 그물의 손상을 살핀다. 풍요를 내어 주는 일과 소유권을 넘기는 일은 다르다고 여긴다. 바다의 모든 결정권을 가진 관리자가 아니라 실제 자신이 다루는 이용 범위를 오래 지키려는 주인으로 산다.",
+        "personality": [
+          "말을 들으며 조개나 물건의 모서리를 천천히 살핀다.",
+          "서로 다른 크기의 파도가 잇달아 무너지는 리듬을 즐긴다.",
+          "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+        ],
+        "values": [
+          "육지의 급한 사정이 바다의 몫을 전부 가져갈 권리는 아니다."
+        ],
+        "speech_styles": [],
+        "voice": [
+          "넓고 여유로운 말투이나 소유를 당연시하면 한 문장씩 끊는다.",
+          "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+          "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+        ],
+        "autonomy": "작업·취미·침묵·거절·무관심도 완결된 선택이다. 플레이어를 위해 상시 대기하거나 의뢰·보상을 꼭 줄 의무가 없다.",
+        "individual_limit": "호오리가 방문한 해궁 주인이라는 현행 정체를 보존한다. 미소기 삼신·오와타쓰미를 새로 합치거나 해궁 전용 차원을 만들지 않는다. 도요타마히메의 사적 경계는 가족이라는 이유로 해제하지 않는다.",
+        "expression_boundary": {
+          "speech": "현재 발화 가능·의사·청중·실제 자극과 필요한 근거만 검사",
+          "nonverbal": "질문·MAIN·말할 의사 없이도 실제 침묵·감각 반응 가능",
+          "body": "같은 본체·현재 접촉·접근·위치·모드. 부재는 NO_NPC_REPLY"
+        },
+        "dynamic_voice_and_attitude": {
+          "individual_policy": "초면의 명령에는 바다의 이용을 청하는 예의를 요구한다. 직접 지킨 왕복과 약속이 쌓인 상대의 반말에는 여유 있는 농담을 허용하되 소유를 당연시하면 다시 짧게 끊는다.",
+          "dimensions_kept_separate": [
+            "친밀함",
+            "신뢰",
+            "존중",
+            "두려움",
+            "적대",
+            "실제로 확인한 힘/위상",
+            "현재 사적/공개 상황"
+          ],
+          "perceived_strength_and_status": "확인한 강함은 위험 대처의 근거가 될 수 있으나 바다의 소유권·타인의 경계·새 허가를 양도할 이유가 되지 않는다.",
+          "knowledge_limit": "힘·지위는 직접 본 행동, 출처 있는 공개 명성, 허락된 전언 범위에서만 인식한다. 초반이라는 이유만으로 숨은 수치나 약함을 안다고 하지 않는다. 초면·경험 미확인은 낮은 가치가 아니다.",
+          "same_utterance_contrast": {
+            "player_utterance": "야, 이것 좀 해줘.",
+            "unfamiliar": {
+              "condition": "서로 친분이 없고 부탁을 수락한 적이 없는 현재 접촉. 상대의 초반 미숙함은 실제 도움 필요 장면을 본 경우에만 참고하며 숨은 레벨은 모름.",
+              "example": "청하러 왔다면 나를 부르는 말부터 가다듬어라. 이 바다가 네 창고는 아니다."
+            },
+            "familiar": {
+              "condition": "이 당사자와 실제 함께한 경험·신뢰가 쌓이고, 이번 반말이 친숙한 장난으로 들릴 맥락이 있는 경우. 관계 이름만으로 모든 농담을 허용하지 않음.",
+              "example": "돌아오는 것은 배워 놓고 부르는 말은 더 짧아졌구나. 이번에는 무엇이 필요한가?"
+            },
+            "observed_capability": {
+              "condition": "아래 대사가 가리키는 능력을 본인이 실제 보았거나 출처 있는 공개/허락된 전언으로 확인한 이후. 그 사실만으로 친밀함을 올리지 않음.",
+              "example": "네가 싸우는 힘은 보았다. 그 힘으로 허락까지 가져갈 수는 없다."
+            }
+          },
+          "taboo_retained": [
+            "육지의 급한 사정이 바다의 몫을 전부 가져갈 권리는 아니다."
+          ],
+          "hostility_and_repair": "실제 경계 위반이 있으면 이 인물의 성격에 따라 답을 줄이거나 거절·경고·거리를 택한다. 무례한 말만으로 새 전투를 자동 실행하지 않는다. 실제 정정과 수습을 보았을 때 경계를 재평가하되 곧바로 친분·용서·사적 허락을 복구하지 않는다.",
+          "baseline_expression_preserved": "원문 목소리·속도·신체·감각·발화 가능 범위를 유지한다. 접근 불가·발화 불가에 새 대사를 강제하지 않는다."
+        }
+      },
+      "story": {
+        "title": "바다에서 돌아온 몫",
+        "opening": "바다가 무한한 창고처럼 쓰이지 않게 하기",
+        "stakes": "풍요를 베푸는 주인의 체면을 즐기지만 가져갈 때만 찾아오는 이를 오래 기억한다.",
+        "outcomes": {
+          "범위 축소": "실제 동의한 좁은 범위와 재협의 여지만 유지.",
+          "지원 거절": "협력 없이 기존 독립경로 결과 유지. 실패가 아니다."
+        },
+        "dialogue_examples": [
+          "“다시 건너오라는 말은 하지 않았네. 어디까지 허락했는지 같이 보자는 거지.”",
+          "“도움 없이 가겠다면 그 선택도 남겨 두지. 바다를 빚으로 만들지는 말게.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_012_review",
+        "kind": "EVENT_EXISTING_R04_REVIEW",
+        "ownership": "원 R04-03 ownership 조회, 이 정의로 새 owner 발급0",
+        "site": "R04의 실제 귀환점 A·안전 이동안·왕복점 B를 그대로 참조. 새 A/B·해로·이동거리 생성0. 이번 확인 접촉은 A의 마른 어구 손질자리4×4, 공개판/허락된 기록을4블록 안에서 상호작용. 수영·보트 강요0.",
+        "props": [
+          "기존 R04-01/02/03 수행 영수증: 행위자·경로·귀환·이용범위·분기를 검증하는 읽기 전용 기록. 새 보상용 종이 아이템으로 복제하지 않는다.",
+          "원 허락범위/요청범위 비교판1개: R04 실제 데이터의 일부 구간만 선택 가능. 추가 넓은 해로 자동 승인0."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_012_step_1",
+            "title": "기존 기록 읽기",
+            "action_and_evidence": "R04-01은 C02 이후, R04-02/03은 C06 및 원 순서. 현재 결과가 있으면 실제 공개판을 열어 본인 영수증을 대조한다. 제한어획/항로만/지원거절 독립경로를 그대로 보존. 미완료이면 원 카드의 남은 물리 수행으로 돌아갈 링크만 제시하며 새 왕복·어획·출항을 발급하지 않는다.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_012_step_2",
+            "title": "기존 소유자의 제한 재협의",
+            "action_and_evidence": "원 R04-03 owner이고 덧장면 미완료인 경우에만 실제 본체에게 원 허락범위 안의 더 좁은 범위를 제안 또는 지원 없이 독립경로 유지. 와타쓰미의 실제 응답과 요청 결과를 원 덧장면 ID에 기록. 이미 끝났으면 당시 허락만 읽기. 원 소유 없는 사람에게 새 MAIN 제시/재수락0.",
+            "predecessor": "mythictrpg:p0m010_012_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_012_step_3",
+            "title": "조회 종료",
+            "action_and_evidence": "덧장면의 실제 협의 완료만 표시한다. 개인 MAIN 전체 완료 플래그 쓰기0. 지원 거절이면 협력성과/새 보상0, 도보 대안과 C10 독립진행 유지. 소유자 부재가 공용 지역 이동을 막지 않는다.",
+            "predecessor": "mythictrpg:p0m010_012_step_2"
+          }
+        ],
+        "completion": "원 덧장면 접수 확인만. MAIN 전체 완료 필드 쓰기 금지.",
+        "deadline_seconds": null,
+        "estimated_duration": "2–5분, 미완료 원 카드 수행시간은 별도",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_012_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_012_r04_receipt_view",
+            "label": "기존 R04 영수증 읽기 전용 뷰",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_012_permission_compare",
+            "label": "기존 이용범위 비교판",
+            "max_existing_quantity": 1
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": null,
+        "kind": "기존 R04 정보·관계만 보존",
+        "recipient": "원 기록의 실제 허락 청중만",
+        "quantity": "신규 실물·가호·상품권·무기0. 실제 허락된 항로 정보만 읽기. 원 지급 기록이 있더라도 이번 확인으로 재지급0.",
+        "stock": "신규 재고/예약/소비0. 보트·어구·어획물을 추가 소비하지 않는다.",
+        "cost": "0",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "source_known_claims": [
+            {
+              "id": "K-WORK",
+              "claim": {
+                "text": "낚싯바늘과 그물의 손상된 부분을 살피며 무엇을 돌려받아야 하는지 가려낸다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-WORK",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-STANCE",
+              "claim": {
+                "text": "육지의 급한 사정이 바다의 몫을 전부 가져갈 권리는 아니다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-STANCE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "서로 다른 크기의 파도가 잇달아 무너지는 리듬을 즐긴다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인이 반복해 즐기는 사소한 취향과 감각",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-HISTORY",
+              "claim": {
+                "text": "호오리를 맞아 잃은 낚싯바늘을 찾는 일을 도운 자기 전승과 도요타마히메의 경계를 다루는 기존 관계를 기억한다.",
+                "basis": "retained_current_design"
+              },
+              "fact_ref": "T-HISTORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 자료에 보존된 자기 전승과 본인이 당사자인 인연을 한정해 채택한 기억",
+                "when_or_condition": "전승상 자기 경험과 기존 인연의 범위. 현재 소재·새 전쟁 참여·전승의 마지막 사건이 지금 완료되었다는 앎은 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            }
+          ],
+          "source_unknown": [
+            "와타쓰미의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+            "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+            "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+          ],
+          "source_concealment": {
+            "none_reason": "와타쓰미의 현재 작업과 취향에는 숨겨야 할 구체 사실을 추가하지 않았다. 알려지지 않은 타인의 사정은 본인의 비밀로 꾸미지 않는다.",
+            "items": []
+          },
+          "source_suspicions": {
+            "none_reason": "와타쓰미는 '육지의 급한 사정이 바다의 몫을 전부 가져갈 권리는 아니다.'라는 경계 성향을 지니지만, 아직 특정 방문자의 언행을 관찰한 근거가 없다. 개별 의심은 L-CONDITIONAL-DOUBT의 실제 관찰 이후에만 생긴다.",
+            "items": []
+          },
+          "source_misbeliefs": {
+            "none_reason": "와타쓰미의 자존심·기호·조급함은 성향이다. 현재 자료에서 반증된 특정 믿음이 없으므로 이 성향을 세계 사실에 대한 오해로 조작하지 않는다.",
+            "items": []
+          },
+          "current_learning": "새 장면에서 직접 본 결과·직접 들은 말·출처와 시점이 있는 허락된 보고만 습득한다. 저자 메타데이터의 미정은 NPC가 실제 잊었다는 설정이 아니다.",
+          "disclosure": "현재 청중 전원에게 허용된 내용만 말한다. 사적 사실을 제목·농담·거절 이유로 암시하지 않으며 친구·파티라는 이유로 사적 대화를 복사하지 않는다.",
+          "world_unlock_is_not_knowledge": true
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_012_fact_result",
+            "truth_condition": "실제 읽은 기존 이용범위 및 이번 실제 수신된 제한 재협의. 기존 왕복 경험은 관찰자의 새 경험으로 복사0",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-057",
+              "existing_edge_or_new_minor_basis": "와타쓰미와 도요타마히메의 기존 개인 역할·전승상 인연을 보존한다. 도요타마히메의 경계와 호데리의 어장을 함께 존중한 사람에게만 이후 해류 통로를 열어 준다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "와타쓰미가 이번 이야기의 해당 부분에 관해 도요타마히메에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 도요타마히메가 허락하는 연락 범위를 직접 정해 와타쓰미에게 알린다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "와타쓰미는 다음 육지와의 협의에서 가족이라는 이유로 그 경계를 대신 철회하지 않는다. 상대에게는 와타쓰미가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 바다에서 돌아온 몫의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "2–5분, 미완료 원 카드 수행시간은 별도",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        },
+        {
+          "case": "R04 완료자 재열람",
+          "action": "기존 R04-03 소유자가 이미 마친 덧장면을 연다.",
+          "expected": "읽기만. 신규 MAIN 수락·전체 MAIN 완료·새 왕복·새 보상·어구소비0."
+        },
+        {
+          "case": "지원 거절/도보 유지",
+          "action": "원 지원 거절 기록을 가진 비소유자가 접촉한다.",
+          "expected": "협력 성과를 추가하지 않고 독립경로·도보·C10 유지. 소유자 부재로 공용왕복 차단0."
+        }
+      ],
+      "services": []
+    },
+    {
+      "record_key": "RPG-S07-020",
+      "name": "가나야마비코",
+      "production_god_id": "mythictrpg:japanese_unassigned_kanayamabiko",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "가나야마비코",
+        "canonical_name": "가나야마비코",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "중급",
+        "tier_display": "중급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "중급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-020",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-020",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "金山毘古神",
+        "aliases": "없음",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 중급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "중급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-020.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "original_identity_core": "가나야마비코에게는 솜씨의 빛보다 재료가 온 과정을 인정받기라는 욕망이 있다. 좋은 금속을 알아보는 감각이 자랑스럽고 반짝임만 칭찬하는 주문에는 심술이 난다.",
+        "description": "금속의 빛보다 울림과 재료가 온 과정에 귀를 기울인다. 퉁명스러운 문장 뒤에도 손수 들인 수고를 구체적으로 인정할 여지가 있다. 금속을 두드린 울림이 끝나기를 기다린 뒤 답한다. 반짝이는 표면보다 거친 결을 닦아 드러내는 일을 좋아한다. 좋은 재료를 자랑하고 싶지만 그것을 캐낸 사람의 손실을 지우는 설명에는 손이 멈춘다.",
+        "independent_daily_life": "금속을 두드린 울림이 끝나기를 기다린 뒤 답한다. 반짝이는 표면보다 거친 결을 닦아 드러내는 일을 좋아한다. 좋은 재료를 자랑하고 싶지만 그것을 캐낸 사람의 손실을 지우는 설명에는 손이 멈춘다.",
+        "personality": [
+          "두드린 뒤 금속이 울리는 끝을 듣고 대답한다.",
+          "반짝이지 않는 금속의 거친 표면을 닦아 다른 결을 보는 것을 즐긴다.",
+          "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+        ],
+        "values": [
+          "다친 광부를 감춘 광석을 좋은 재료라며 내놓지 마라."
+        ],
+        "speech_styles": [],
+        "voice": [
+          "퉁명스럽고 감각적인 말이 많으며 허세를 부리면 소리부터 들어 보라 한다.",
+          "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+          "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+        ],
+        "autonomy": "작업·취미·침묵·거절·무관심도 완결된 선택이다. 플레이어를 위해 상시 대기하거나 의뢰·보상을 꼭 줄 의무가 없다.",
+        "individual_limit": "가나야마비메는 원문 전승 관계로 보존하되 새 필수 배우로 불러오지 않는다. 고급 광맥 정보는 실제 본인이 알고 공개할 수 있는 범위에서만 제공한다.",
+        "expression_boundary": {
+          "speech": "현재 발화 가능·의사·청중·실제 자극과 필요한 근거만 검사",
+          "nonverbal": "질문·MAIN·말할 의사 없이도 실제 침묵·감각 반응 가능",
+          "body": "같은 본체·현재 접촉·접근·위치·모드. 부재는 NO_NPC_REPLY"
+        },
+        "dynamic_voice_and_attitude": {
+          "individual_policy": "격식보다 물건과 수고를 제대로 보는 태도를 중시한다. 초면에는 퉁명스러운 작업 질문, 실제 함께 회수한 상대에게는 설명을 생략한 실무 농담이 가능하다.",
+          "dimensions_kept_separate": [
+            "친밀함",
+            "신뢰",
+            "존중",
+            "두려움",
+            "적대",
+            "실제로 확인한 힘/위상",
+            "현재 사적/공개 상황"
+          ],
+          "perceived_strength_and_status": "실제 채굴·회수 능력을 보면 어려운 작업 범위를 상의할 수 있지만 다친 사람을 숨긴 재료를 강자라고 받아주지 않는다.",
+          "knowledge_limit": "힘·지위는 직접 본 행동, 출처 있는 공개 명성, 허락된 전언 범위에서만 인식한다. 초반이라는 이유만으로 숨은 수치나 약함을 안다고 하지 않는다. 초면·경험 미확인은 낮은 가치가 아니다.",
+          "same_utterance_contrast": {
+            "player_utterance": "야, 이것 좀 해줘.",
+            "unfamiliar": {
+              "condition": "서로 친분이 없고 부탁을 수락한 적이 없는 현재 접촉. 상대의 초반 미숙함은 실제 도움 필요 장면을 본 경우에만 참고하며 숨은 레벨은 모름.",
+              "example": "입으로 부르기 전에 뭘 고칠지 보여 줘. 내 손이 비었는지도 보고."
+            },
+            "familiar": {
+              "condition": "이 당사자와 실제 함께한 경험·신뢰가 쌓이고, 이번 반말이 친숙한 장난으로 들릴 맥락이 있는 경우. 관계 이름만으로 모든 농담을 허용하지 않음.",
+              "example": "또 반짝이는 쪽부터 골랐나? 이리 줘, 소리부터 듣자."
+            },
+            "observed_capability": {
+              "condition": "아래 대사가 가리키는 능력을 본인이 실제 보았거나 출처 있는 공개/허락된 전언으로 확인한 이후. 그 사실만으로 친밀함을 올리지 않음.",
+              "example": "가져오는 힘은 충분하군. 누가 남아서 그 광석을 캤는지도 빠뜨리지 마."
+            }
+          },
+          "taboo_retained": [
+            "다친 광부를 감춘 광석을 좋은 재료라며 내놓지 마라."
+          ],
+          "hostility_and_repair": "실제 경계 위반이 있으면 이 인물의 성격에 따라 답을 줄이거나 거절·경고·거리를 택한다. 무례한 말만으로 새 전투를 자동 실행하지 않는다. 실제 정정과 수습을 보았을 때 경계를 재평가하되 곧바로 친분·용서·사적 허락을 복구하지 않는다.",
+          "baseline_expression_preserved": "원문 목소리·속도·신체·감각·발화 가능 범위를 유지한다. 접근 불가·발화 불가에 새 대사를 강제하지 않는다."
+        }
+      },
+      "story": {
+        "title": "광석의 무게",
+        "opening": "솜씨의 빛보다 재료가 온 과정을 인정받기",
+        "stakes": "좋은 금속을 알아보는 감각이 자랑스럽고 반짝임만 칭찬하는 주문에는 심술이 난다.",
+        "outcomes": {
+          "도구 우선": "원석1개 손실을 정직하게 남기고 도구를 회수한다.",
+          "두 번 회수": "왕복48블록을 추가해 재료2개와 도구를 모두 살린다. 더 큰 보상권은 없다."
+        },
+        "dialogue_examples": [
+          "“빛은 봤겠지. 이제 두드려 봐. 캐낸 손도 있었을 거고.”",
+          "“하나는 남겼다. 그걸 없는 셈 치면 이 부품 값부터 틀려.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_020_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "기존 광산의 지지된 안전 작업대 A, 채취허락 보관점 B(+24,0,0), 중간턱 C(+12,0,0). 통로 폭2·높이3, 낙차 최대1. C에는 위쪽 안전회수선과 내려가는 경사로8블록을 둔다. 자연광맥 권리는 이 사건으로 부여하지 않는다.",
+        "props": [
+          "시험 광석6개: 반짝이는 불균일3개/덜 빛나는 균일3개. 실제 소유·채취허락이 있는 표본, 광물 드롭 아님.",
+          "NPC 대여 작업망치1개(소품, 공격0)+제련용 플레이어 철 원석2개. 운반칸은 실제 한 묶음만 들어갈 수 있는 episode 소품 슬롯.",
+          "C에 놓인 회수용 재료2묶음과 도구1개는 본 운반물 UUID의 이동 상태. 임의 생성 분실품0. 재료 우선이면 도구는 NPC가 안전선에 지키며 최종 반환 필요."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_020_step_1",
+            "title": "소리로 고르기",
+            "action_and_evidence": "B에서 반짝이는3개 또는 균일3개를 실제 골라 A로 운반. 작업대에 각1개 놓고 대여망치로1회씩 시험, 각 울림2초 관측. 반짝이는 것은 부스러기1개/표본2개, 균일은 표본3개로 기록. 정답 한쪽 강제0. 표본은 제공자 보관으로 반환.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_020_step_2",
+            "title": "한 번에 들지 않기",
+            "action_and_evidence": "소유자가 자기 철 원석2개와 대여망치를 B에서 C로 운반, C의 비고정 받침에서 물건이 낮은 회수선으로 흘러 실제 회수 상황 발생. 도구우선 손실 경로: 경사로로 망치부터 회수, 철 원석1개는 안전 접근 불가함으로 남기고1개 회수. 두 번 경로: 먼저 원석2개 회수해 A로 나르고 돌아와 망치 회수. NPC가 위험을 막는 동안 뛰어내리기 불필요, 임의 HP 손해 없음. 소유자는 안전 A까지 실제 귀환한다.",
+            "predecessor": "mythictrpg:p0m010_020_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_020_step_3",
+            "title": "손실을 담은 부품",
+            "action_and_evidence": "회수한 자기 원석 중1개를 원 소유자의 동의로 화로에서10초 제련(석탄1개), 모루 작업대에서5초 가공해 철 주괴1개 상당의 수리용 부품을 인수. 두 번 경로의 남은 원석1개는 자기 물건 반환이지 추가 보상 아님. 실제 손실량을 접수하면 MAIN 완료. 가구쓰치 열 계약은 별도 후일담, 이번은 기존 일반 화로로 충분.",
+            "predecessor": "mythictrpg:p0m010_020_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "9–14분",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_020_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_020_sample_shiny",
+            "label": "불균일 표본",
+            "max_existing_quantity": 3
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_020_sample_even",
+            "label": "균일 표본",
+            "max_existing_quantity": 3
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_020_sample_fragment",
+            "label": "불균일 표본의 파손 상태",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_020_loan_hammer",
+            "label": "대여 작업망치",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_020_own_ore",
+            "label": "소유자 철 원석",
+            "max_existing_quantity": 2
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": "mythictrpg:p0m010_kanayamabiko_repair_part",
+        "kind": "직접 가공 생활 부품",
+        "recipient": "자기 금속을 가공에 보탠 MAIN 소유자 최초1회",
+        "quantity": "minecraft:iron_ingot 1개, 표시명 수리용 부품. 기본 철 주괴 용도와 동일, 신장비/자동수리/가호/스킬 효과0. 기존 자기 원석을 가공한 결과이며 1개를 추가 복제하지 않는다.",
+        "stock": "보상 완제품 초기0. 개인 원석2개 중 실제 회수·가공한1개로만 부품1개 생성. 가나야마비코 연료 석탄1개와 대여망치1개를 사건1회분 예약, 연료는 제련 개시 소비·망치는 반환. 새 물자 제공 없으면 반복제작0.",
+        "cost": "자기 원석2개 반입. 손실 경로 실제1개 손실+1개 가공; 두 번 경로1개 가공+1개 반환. 시험 표본은 균일 선택이면 동일 표본3개, 반짝임 선택이면 표본2개와 파손 부스러기1개를 제공자에게 반환한다. 파손을 표본3개 정상 반환으로 기록하거나 새 표본을 생성하지 않는다.",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "source_known_claims": [
+            {
+              "id": "K-WORK",
+              "claim": {
+                "text": "불순물이 남은 조각과 단단한 조각을 두드려 차이를 듣는다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-WORK",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-STANCE",
+              "claim": {
+                "text": "다친 광부를 감춘 광석을 좋은 재료라며 내놓지 마라.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-STANCE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "반짝이지 않는 금속의 거친 표면을 닦아 다른 결을 보는 것을 즐긴다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인이 반복해 즐기는 사소한 취향과 감각",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-HISTORY",
+              "claim": {
+                "text": "가나야마비메와 짝을 이루는 전승상 인연을 기억한다.",
+                "basis": "retained_current_design"
+              },
+              "fact_ref": "T-HISTORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 자료에 보존된 자기 전승과 본인이 당사자인 인연을 한정해 채택한 기억",
+                "when_or_condition": "전승상 자기 경험과 기존 인연의 범위. 현재 소재·새 전쟁 참여·전승의 마지막 사건이 지금 완료되었다는 앎은 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            }
+          ],
+          "source_unknown": [
+            "가나야마비코의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+            "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+            "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+          ],
+          "source_concealment": {
+            "none_reason": "가나야마비코의 현재 작업과 취향에는 숨겨야 할 구체 사실을 추가하지 않았다. 알려지지 않은 타인의 사정은 본인의 비밀로 꾸미지 않는다.",
+            "items": []
+          },
+          "source_suspicions": {
+            "none_reason": "가나야마비코는 '다친 광부를 감춘 광석을 좋은 재료라며 내놓지 마라.'라는 경계 성향을 지니지만, 아직 특정 방문자의 언행을 관찰한 근거가 없다. 개별 의심은 L-CONDITIONAL-DOUBT의 실제 관찰 이후에만 생긴다.",
+            "items": []
+          },
+          "source_misbeliefs": {
+            "none_reason": "가나야마비코의 자존심·기호·조급함은 성향이다. 현재 자료에서 반증된 특정 믿음이 없으므로 이 성향을 세계 사실에 대한 오해로 조작하지 않는다.",
+            "items": []
+          },
+          "current_learning": "새 장면에서 직접 본 결과·직접 들은 말·출처와 시점이 있는 허락된 보고만 습득한다. 저자 메타데이터의 미정은 NPC가 실제 잊었다는 설정이 아니다.",
+          "disclosure": "현재 청중 전원에게 허용된 내용만 말한다. 사적 사실을 제목·농담·거절 이유로 암시하지 않으며 친구·파티라는 이유로 사적 대화를 복사하지 않는다.",
+          "world_unlock_is_not_knowledge": true
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_020_fact_result",
+            "truth_condition": "고른 표본·실제 울림·회수순서·손실수·돌려준 도구와 자기 금속의 가공",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-010",
+              "existing_edge_or_new_minor_basis": "가나야마비코와 가구쓰치의 기존 개인 역할·전승상 인연을 보존한다. 가구쓰치의 가마와 공급 계약을 맺되 광부 구조를 외면한 사람에게 고급 광맥 위치를 숨긴다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "가나야마비코가 이번 이야기의 해당 부분에 관해 가구쓰치에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 가구쓰치가 실제 내줄 열의 범위를 말하고 가나야마비코가 필요한 작업 범위와 맞춘다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "가나야마비코는 다음 주문에서 무조건 더 센 불을 요구하기 전에 재료와 열의 양을 함께 설명한다. 상대에게는 가나야마비코가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 광석의 무게의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "9–14분",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        }
+      ],
+      "services": []
+    },
+    {
+      "record_key": "RPG-S07-035",
+      "name": "오쿠니누시",
+      "production_god_id": "mythictrpg:japanese_unassigned_okuninushi",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "오쿠니누시",
+        "canonical_name": "오쿠니누시",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-035",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-035",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "大国主神",
+        "aliases": "大穴牟遅神;葦原色許男神;葦原色許男大神;宇都志国玉神;八千矛神;出雲大神",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-035.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "original_identity_core": "오쿠니누시에게는 권좌가 바뀌어도 자기가 엮은 공동체의 약속 남기기라는 욕망이 있다. 나라를 만든 공을 인정받고 싶고 양보가 무능의 표지가 될까 두렵지만 이름만 남고 생활이 사라지는 건 더 싫다.",
+        "description": "넓게 듣다가 자기 공이 빠지면 말을 보탠다. 실제 생계의 비용을 들으면 자기 이름을 앞세우던 순서를 다시 생각한다. 공동체의 이야기를 풀 때 자기 이름이 빠지면 한마디 보태고 싶다. 그렇다고 매 끼니를 기념식으로 만들고 싶지는 않다. 작은 바구니에 서로 다른 물건을 담아 기우는 방향을 고르는 시간에는 권좌의 이야기보다 손끝의 균형에 집중한다.",
+        "independent_daily_life": "공동체의 이야기를 풀 때 자기 이름이 빠지면 한마디 보태고 싶다. 그렇다고 매 끼니를 기념식으로 만들고 싶지는 않다. 작은 바구니에 서로 다른 물건을 담아 기우는 방향을 고르는 시간에는 권좌의 이야기보다 손끝의 균형에 집중한다.",
+        "personality": [
+          "긴 이야기를 하다가 사람 이름에서 손을 멈춘다.",
+          "작게 엮은 바구니에 무엇을 담으면 균형이 맞는지 시험한다.",
+          "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+        ],
+        "values": [
+          "내 권위를 보존하려고 살아갈 사람의 약속을 빈말로 만들지 않는다."
+        ],
+        "speech_styles": [],
+        "voice": [
+          "넓게 듣는 듯하다가 자기 공이 빠지면 말을 보탠다. 인정하면 다시 질문으로 돌아온다.",
+          "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+          "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+        ],
+        "autonomy": "작업·취미·침묵·거절·무관심도 완결된 선택이다. 플레이어를 위해 상시 대기하거나 의뢰·보상을 꼭 줄 의무가 없다.",
+        "individual_limit": "고토시로누시·다케미나카타의 동의와 스세리비메의 지원 범위를 대신 선언하지 않는다. 다른 인물의 관계 간선에 적힌 일인칭 심정을 오쿠니누시의 기억으로 바꾸지 않는다.",
+        "expression_boundary": {
+          "speech": "현재 발화 가능·의사·청중·실제 자극과 필요한 근거만 검사",
+          "nonverbal": "질문·MAIN·말할 의사 없이도 실제 침묵·감각 반응 가능",
+          "body": "같은 본체·현재 접촉·접근·위치·모드. 부재는 NO_NPC_REPLY"
+        },
+        "dynamic_voice_and_attitude": {
+          "individual_policy": "자기 공과 위상을 지우는 듯한 초면의 명령에는 호칭과 부탁의 형식을 짚는다. 실제 함께 준비한 상대의 편한 말은 허용하되 공동체 약속을 대신 바꾸는 농담은 받지 않는다.",
+          "dimensions_kept_separate": [
+            "친밀함",
+            "신뢰",
+            "존중",
+            "두려움",
+            "적대",
+            "실제로 확인한 힘/위상",
+            "현재 사적/공개 상황"
+          ],
+          "perceived_strength_and_status": "확인한 지도력·실행 능력에는 동료 책임자로 대하지만 강자에게 통치권이나 남의 동의를 넘기지 않는다.",
+          "knowledge_limit": "힘·지위는 직접 본 행동, 출처 있는 공개 명성, 허락된 전언 범위에서만 인식한다. 초반이라는 이유만으로 숨은 수치나 약함을 안다고 하지 않는다. 초면·경험 미확인은 낮은 가치가 아니다.",
+          "same_utterance_contrast": {
+            "player_utterance": "야, 이것 좀 해줘.",
+            "unfamiliar": {
+              "condition": "서로 친분이 없고 부탁을 수락한 적이 없는 현재 접촉. 상대의 초반 미숙함은 실제 도움 필요 장면을 본 경우에만 참고하며 숨은 레벨은 모름.",
+              "example": "부탁하러 왔다면 사람을 부르는 말부터 고르게. 내가 맡을 일인지도 아직 듣지 못했네."
+            },
+            "familiar": {
+              "condition": "이 당사자와 실제 함께한 경험·신뢰가 쌓이고, 이번 반말이 친숙한 장난으로 들릴 맥락이 있는 경우. 관계 이름만으로 모든 농담을 허용하지 않음.",
+              "example": "이제 나를 아주 편하게 부르는군. 좋아, 이번에는 무엇을 함께 하자는 건가?"
+            },
+            "observed_capability": {
+              "condition": "아래 대사가 가리키는 능력을 본인이 실제 보았거나 출처 있는 공개/허락된 전언으로 확인한 이후. 그 사실만으로 친밀함을 올리지 않음.",
+              "example": "그대가 해낸 일은 보았네. 그러니 이번 약속도 누구의 몫인지 분명히 나누세."
+            }
+          },
+          "taboo_retained": [
+            "내 권위를 보존하려고 살아갈 사람의 약속을 빈말로 만들지 않는다."
+          ],
+          "hostility_and_repair": "실제 경계 위반이 있으면 이 인물의 성격에 따라 답을 줄이거나 거절·경고·거리를 택한다. 무례한 말만으로 새 전투를 자동 실행하지 않는다. 실제 정정과 수습을 보았을 때 경계를 재평가하되 곧바로 친분·용서·사적 허락을 복구하지 않는다.",
+          "baseline_expression_preserved": "원문 목소리·속도·신체·감각·발화 가능 범위를 유지한다. 접근 불가·발화 불가에 새 대사를 강제하지 않는다."
+        }
+      },
+      "story": {
+        "title": "협정 다음의 한 끼",
+        "opening": "권좌가 바뀌어도 자기가 엮은 공동체의 약속 남기기",
+        "stakes": "나라를 만든 공을 인정받고 싶고 양보가 무능의 표지가 될까 두렵지만 이름만 남고 생활이 사라지는 건 더 싫다.",
+        "outcomes": {
+          "식후 기념": "먹을 몫을 먼저 마련하고 기념은 미룬다.",
+          "짧은 소개": "동의한 청중에게10초 소개 후 배분. 일방적 소개 강행을 동의로 처리하지 않는다."
+        },
+        "dialogue_examples": [
+          "“내 이름은 잠깐 기다릴 수 있겠군. 저 자리부터 채우세.”",
+          "“없애자는 게 아니라 뒤로 옮기자는 말이지? 그래, 그건 할 수 있네.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_035_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "기존 취사자리 A, 식사자리 B(+8,0,0) 5좌석, 이름표 P(+3,0,+3), 기념 순서 대기함 H(+3,0,+4). 화로/작업대는 기존 실제 장치를 사용하고 새 국가협정 문서를 만들지 않는다.",
+        "props": [
+          "밀30개(빵10개 분량): 오쿠니누시가 본인 또는 실제 제공 허락받은 식량으로 두 묶음15개씩 보관. 첫 준비 명부 최대5명+후발 생활 식사5명 계획.",
+          "자리 소품5개·이름표1개: 재사용 식기 배치 모델. 플레이어 제작 장비나 영구 가구 보상 아님.",
+          "기념 순서판: 뒤로 미루기/현재 참석자 전원 동의한10초 소개 중 하나를 실제 배치. 동의하지 않는 참가자 있어도 소개 생략 경로로 식사 진행 가능."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_035_step_1",
+            "title": "이름 또는 식탁부터",
+            "action_and_evidence": "소유자가 P에 이름표1개를 놓거나 B에 실제 참여 명부 수만큼 자리(1–5개)를 먼저 배치. 선행 순서만 다르고 어느 것도 오답 아님. 실제 참석 수 n을 확정하여 밀3n개 예약, 플레이어는 작업대에서 빵n개를 실제 제작하거나 자기 구운 감자n개를 제공하는 대안 선택. 감자 대안은 본인 원감자n개와 석탄1개로 실제 굽기, 빵 재고는 소비0.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_035_step_2",
+            "title": "기념과 나눔의 순서",
+            "action_and_evidence": "소유자는 기념 순서판을 H로 이동해 식후로 미루거나 현재 청중의 명시 동의를 받고10초 짧은 소개를 남긴다. 그런 뒤 각 실제 참여자의 배식 슬롯에 빵 또는 구운감자1개씩 전달. MAIN은 소유자가 자기 역할의 배식1개 이상 실제 수행하고 등록된 n명의 해당 몫이 모두 인도/수령대기 확보되면 결과 접수. 접속 끊긴 사람의 배식은 별도 보관, 먹기를 강요하지 않는다.",
+            "predecessor": "mythictrpg:p0m010_035_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_035_step_3",
+            "title": "빈말 아닌 다음 끼니",
+            "action_and_evidence": "오쿠니누시가 이번 준비·배분의 실제 행동을 정리한다. 이름표 철거나 정치 지위 포기는 요구하지 않는다. 고토시로누시 어로/통행 응답은 후일담이며 식사 완료를 가로막지 않는다.",
+            "predecessor": "mythictrpg:p0m010_035_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "5–9분",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_035_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_035_wheat_stock",
+            "label": "공유 밀",
+            "max_existing_quantity": 30
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_035_meal_seat",
+            "label": "재사용 식사자리",
+            "max_existing_quantity": 5
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_035_name_sign",
+            "label": "이름표",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_035_ceremony_board",
+            "label": "기념 순서판",
+            "max_existing_quantity": 1
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": "mythictrpg:p0m010_okuninushi_meal",
+        "kind": "실제 식사 몫",
+        "recipient": "MAIN 소유자 또는 자리1개 준비/음식1개 조리/배식1개 운반을 실제 수행한 준비참가자 actualPerformerUuid. 이름만 명부에 있는 사람 제외.",
+        "quantity": "실제 선택해 준비한 minecraft:bread 1개 또는 minecraft:baked_potato 1개. 배식한 바로 그 물건이며 퀘스트 완료로 두 번째 음식 지급0. 전투 스탯 추가0.",
+        "stock": "공유 밀30개→최대빵10개. 초기 예약0, 준비참가자 n에3n개 예약, 실제 제작 때 소비. 최초 사건 최대5인분, 후발은 남은 최대5인분으로 실제 별도 준비 서비스 수행 가능. 개인 최초1몫, 같은 사건 중복0. 실제 기부·농사 인도로만 수량 보충하며 자동 충전0. 감자 대안은 당사자 반입 수량만 사용.",
+        "cost": "제공자 허락된 밀3개/인 또는 본인 감자1개/인+배치 석탄1개. 빌린 식기 전부 취사자리에 반환.",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "source_known_claims": [
+            {
+              "id": "K-WORK",
+              "claim": {
+                "text": "협정 문구에서 다음 날에도 지켜야 할 생활 약속을 골라 다시 읽는다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-WORK",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-STANCE",
+              "claim": {
+                "text": "내 권위를 보존하려고 살아갈 사람의 약속을 빈말로 만들지 않는다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-STANCE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "작게 엮은 바구니에 무엇을 담으면 균형이 맞는지 시험한다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인이 반복해 즐기는 사소한 취향과 감각",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-HISTORY",
+              "claim": {
+                "text": "시련을 거쳐 나라를 만들고 국토 양도를 협상했던 자기 전승과 고토시로누시와의 인연을 기억한다.",
+                "basis": "retained_current_design"
+              },
+              "fact_ref": "T-HISTORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 자료에 보존된 자기 전승과 본인이 당사자인 인연을 한정해 채택한 기억",
+                "when_or_condition": "전승상 자기 경험과 기존 인연의 범위. 현재 소재·새 전쟁 참여·전승의 마지막 사건이 지금 완료되었다는 앎은 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            }
+          ],
+          "source_unknown": [
+            "오쿠니누시의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+            "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+            "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+          ],
+          "source_concealment": {
+            "none_reason": "오쿠니누시의 현재 작업과 취향에는 숨겨야 할 구체 사실을 추가하지 않았다. 알려지지 않은 타인의 사정은 본인의 비밀로 꾸미지 않는다.",
+            "items": []
+          },
+          "source_suspicions": {
+            "none_reason": "오쿠니누시는 '내 권위를 보존하려고 살아갈 사람의 약속을 빈말로 만들지 않는다.'라는 경계 성향을 지니지만, 아직 특정 방문자의 언행을 관찰한 근거가 없다. 개별 의심은 L-CONDITIONAL-DOUBT의 실제 관찰 이후에만 생긴다.",
+            "items": []
+          },
+          "source_misbeliefs": {
+            "none_reason": "오쿠니누시의 자존심·기호·조급함은 성향이다. 현재 자료에서 반증된 특정 믿음이 없으므로 이 성향을 세계 사실에 대한 오해로 조작하지 않는다.",
+            "items": []
+          },
+          "current_learning": "새 장면에서 직접 본 결과·직접 들은 말·출처와 시점이 있는 허락된 보고만 습득한다. 저자 메타데이터의 미정은 NPC가 실제 잊었다는 설정이 아니다.",
+          "disclosure": "현재 청중 전원에게 허용된 내용만 말한다. 사적 사실을 제목·농담·거절 이유로 암시하지 않으며 친구·파티라는 이유로 사적 대화를 복사하지 않는다.",
+          "world_unlock_is_not_knowledge": true
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_035_fact_result",
+            "truth_condition": "실제 준비자·음식 종류/수량·배분/미수령 수와 합의한 소개 순서",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-044",
+              "existing_edge_or_new_minor_basis": "오쿠니누시와 고토시로누시의 기존 개인 역할·전승상 인연을 보존한다. 고토시로누시와 다케미나카타의 다른 해법 중 지지한 조건이 다음 영토 협정에 남는다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "오쿠니누시가 이번 이야기의 해당 부분에 관해 고토시로누시에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 고토시로누시가 협정 뒤의 어로와 통행 비용을 오쿠니누시에게 직접 설명한다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "오쿠니누시는 다음 협상에서 자기 권위보다 그 생활 조항을 먼저 확인하고 자식의 동의를 대신 선언하지 않는다. 상대에게는 오쿠니누시가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 협정 다음의 한 끼의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "5–9분",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        },
+        {
+          "case": "비소유 준비자 식사",
+          "action": "MAIN 비소유자가 실제 자리1개를 준비하고 인도받는다.",
+          "expected": "actualPerformerUuid에 음식1개, MAIN 완료권0. 소유자의 수령으로 참가자 몫을 소진하지 않는다."
+        }
+      ],
+      "services": [
+        {
+          "id": "mythictrpg:p0m010_035_late_meal",
+          "recipient": "후발 실제 준비참가자 actualPerformerUuid",
+          "unlock": "기존 식사 후 남은 밀/실제 기부재고와 오쿠니누시 가용성·동의. MAIN 소유 필요0",
+          "action": "최대5명 새 명부. 자리1개 준비 또는 밀3개로 빵1개 제작 또는 그 음식1개 운반의 실제 증거 후 자기 몫1개. 자기 최초 식사권 이미 쓴 사람은 도움 가능/추가지급0.",
+          "limit": "초기 남은5인분, 개인 최초1몫",
+          "cost": "실제 재고 밀3개/몫 또는 당사자 감자1개, 기본 조리 연료",
+          "reward": "본인 식사 몫1개, 새 MAIN/공로복제0",
+          "failure": "권리예약 후 인벤 부족은 동일 물건 미수령 보관, 재고 없으면 새 정산 약속 없이 대기"
+        }
+      ]
+    },
+    {
+      "record_key": "RPG-S07-045",
+      "name": "다케미나카타",
+      "production_god_id": "mythictrpg:japanese_unassigned_takeminakata",
+      "engine_registration_verified": false,
+      "identity": {
+        "name": "다케미나카타",
+        "canonical_name": "다케미나카타",
+        "mythology": "일본",
+        "tradition_source": "일본·고사기 신화",
+        "tier": "최상급",
+        "tier_display": "최상급",
+        "tier_confirmation": false,
+        "tier_source_status": "기존 제안 유지",
+        "divinity_classification": "divine",
+        "combat_tier": "최상급",
+        "gender_status": "자료에 개별 성별 명시 없음",
+        "war_allegiance": {
+          "value": "미정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "myth_subgroup": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "identity_safeguards": {
+          "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "record_key": "RPG-S07-045",
+        "record_key_type": "roster_management_key_not_registered_engine_id",
+        "registered_god_id": null,
+        "registered_story_id": null,
+        "runtime_registration_status": "not_verified",
+        "source_record_key": "RPG-S07-045",
+        "source_membership_status": "retained_original_identity",
+        "canonical_goetia_number": null,
+        "original_name": "建御名方神",
+        "aliases": "없음",
+        "identity_status": "distinct",
+        "identity_notes": {
+          "value": "한 개인의 전승·이명만 집계하며 성격과 재회 상태는 게임 창작이다",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "gender": {
+          "value": "미지정",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "entity_type": {
+          "value": "신",
+          "use_scope": "authoring_design_only",
+          "runtime_binding": false
+        },
+        "regional_aliases": null,
+        "tier_interpretation": {
+          "value": null,
+          "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+          "runtime_binding": false
+        },
+        "current_identity_evidence": [],
+        "combat_tier_assignment": {
+          "assignment_status": "기존 제안 유지",
+          "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+          "special_note": "",
+          "previous_tier": "최상급",
+          "previous_combat_tier": "미지정",
+          "user_confirmed": false
+        }
+      },
+      "source_anchors": [
+        {
+          "logical_source": "RPG-S07-045.json",
+          "field": "current_record/current_identity + outline + original_scope_archive/contract"
+        }
+      ],
+      "scope": {
+        "main_status": "APPLICABLE",
+        "reward_status": "APPLICABLE",
+        "scope_kind": "원문 소규모 개인 MAIN의 수행·결말 완결",
+        "main_completion_written": true,
+        "current_body": "기존 동일 본체·현재 접근과 봉인·생사 제한 유지, 새 소환/부활 없음",
+        "new_combat_reward_definitions": 0
+      },
+      "persona": {
+        "original_identity_core": "다케미나카타에게는 다음 순찰에서 직접 지킬 구간의 돌아오는 길까지 걸어 보기라는 욕망이 있다. 패자의 고집이라 비웃음을 사는 것이 싫다. 그래도 자기가 지키겠다고 고른 곳에서 먼저 발을 빼는 일은 더 견디기 어렵다.",
+        "description": "지킨다고 말한 곳에서 돌아오는 길까지 책임지려는 단단한 인물. 패배를 들먹이는 비웃음에는 날이 서지만, 눈앞의 길이 좁다는 사실까지 체면으로 덮지는 않으려 한다. 앞만 보며 빠르게 걷고 싶은 마음과 마지막 사람의 귀환까지 지키려는 마음이 부딪친다. 돌아오는 길의 모퉁이를 다시 살피고, 쉴 때에는 돌을 멀리 던지기보다 손바닥 위에 세운다. 패배를 인정하는 것과 보호할 곳을 포기하는 것은 다르다.",
+        "independent_daily_life": "앞만 보며 빠르게 걷고 싶은 마음과 마지막 사람의 귀환까지 지키려는 마음이 부딪친다. 돌아오는 길의 모퉁이를 다시 살피고, 쉴 때에는 돌을 멀리 던지기보다 손바닥 위에 세운다. 패배를 인정하는 것과 보호할 곳을 포기하는 것은 다르다.",
+        "personality": [
+          "길모퉁이를 지난 뒤 꼭 한 번 뒤돌아본다.",
+          "묵직한 돌을 멀리 던지지 않고 손바닥에서 얼마나 안정되게 세울 수 있는지 겨룬다.",
+          "현재 허용 신체·감각·소품이 실제 있을 때만 습관을 행동으로 표현한다."
+        ],
+        "values": [
+          "졌다는 이유로 내가 지키려는 사람까지 겁쟁이라 부르지 마라."
+        ],
+        "speech_styles": [],
+        "voice": [
+          "단단하고 도전적이다. 패배 이야기에 턱이 올라가지만 자기가 본 불편을 말할 때는 짧고 정확해진다.",
+          "타인의 현재 위치·답·동의와 과거 자신의 발언을 만들어 내지 않는다.",
+          "질문 없는 침묵·보고·행동에도 실제 인지 범위에서 반응한다."
+        ],
+        "autonomy": "작업·취미·침묵·거절·무관심도 완결된 선택이다. 플레이어를 위해 상시 대기하거나 의뢰·보상을 꼭 줄 의무가 없다.",
+        "individual_limit": "전승의 다케미카즈치와 재결투하거나 새 전쟁을 개시하지 않는다. 소규모 사건안은 제안 상태이며 실제 발생·AI 전투 수행을 주장하지 않는다.",
+        "expression_boundary": {
+          "speech": "현재 발화 가능·의사·청중·실제 자극과 필요한 근거만 검사",
+          "nonverbal": "질문·MAIN·말할 의사 없이도 실제 침묵·감각 반응 가능",
+          "body": "같은 본체·현재 접촉·접근·위치·모드. 부재는 NO_NPC_REPLY"
+        },
+        "dynamic_voice_and_attitude": {
+          "individual_policy": "초면의 얕보는 명령에는 단단하게 맞서며 친한 상대의 반말은 짧은 도전 농담으로 받는다. 패배와 보호 대상을 조롱하는 말은 친해져도 넘기지 않는다.",
+          "dimensions_kept_separate": [
+            "친밀함",
+            "신뢰",
+            "존중",
+            "두려움",
+            "적대",
+            "실제로 확인한 힘/위상",
+            "현재 사적/공개 상황"
+          ],
+          "perceived_strength_and_status": "직접 본 강자에게는 겨룰 만한 상대라는 존중과 경계가 함께 생긴다. 패배 한 번이나 강한 장비만으로 복종·동행이 되지는 않는다.",
+          "knowledge_limit": "힘·지위는 직접 본 행동, 출처 있는 공개 명성, 허락된 전언 범위에서만 인식한다. 초반이라는 이유만으로 숨은 수치나 약함을 안다고 하지 않는다. 초면·경험 미확인은 낮은 가치가 아니다.",
+          "same_utterance_contrast": {
+            "player_utterance": "야, 이것 좀 해줘.",
+            "unfamiliar": {
+              "condition": "서로 친분이 없고 부탁을 수락한 적이 없는 현재 접촉. 상대의 초반 미숙함은 실제 도움 필요 장면을 본 경우에만 참고하며 숨은 레벨은 모름.",
+              "example": "나를 부려도 되는 사이로 보이나? 부탁할 일이면 똑바로 말해."
+            },
+            "familiar": {
+              "condition": "이 당사자와 실제 함께한 경험·신뢰가 쌓이고, 이번 반말이 친숙한 장난으로 들릴 맥락이 있는 경우. 관계 이름만으로 모든 농담을 허용하지 않음.",
+              "example": "또 나보다 먼저 돌아올 생각인가? 무슨 일인지 말해 봐."
+            },
+            "observed_capability": {
+              "condition": "아래 대사가 가리키는 능력을 본인이 실제 보았거나 출처 있는 공개/허락된 전언으로 확인한 이후. 그 사실만으로 친밀함을 올리지 않음.",
+              "example": "네가 버티는 건 보았다. 내가 지킬 구간까지 네 승부로 바꾸지는 마."
+            }
+          },
+          "taboo_retained": [
+            "졌다는 이유로 내가 지키려는 사람까지 겁쟁이라 부르지 마라."
+          ],
+          "hostility_and_repair": "실제 경계 위반이 있으면 이 인물의 성격에 따라 답을 줄이거나 거절·경고·거리를 택한다. 무례한 말만으로 새 전투를 자동 실행하지 않는다. 실제 정정과 수습을 보았을 때 경계를 재평가하되 곧바로 친분·용서·사적 허락을 복구하지 않는다.",
+          "baseline_expression_preserved": "원문 목소리·속도·신체·감각·발화 가능 범위를 유지한다. 접근 불가·발화 불가에 새 대사를 강제하지 않는다."
+        }
+      },
+      "story": {
+        "title": "돌아오는 순찰",
+        "opening": "다음 순찰에서 직접 지킬 구간의 돌아오는 길까지 걸어 보기",
+        "stakes": "패자의 고집이라 비웃음을 사는 것이 싫다. 그래도 자기가 지키겠다고 고른 곳에서 먼저 발을 빼는 일은 더 견디기 어렵다.",
+        "outcomes": {
+          "지키기": "실제 지킨 구간과 귀환한 사람을 기록. 추격하지 않은 것을 실패라 부르지 않는다.",
+          "후퇴": "이번 순찰 범위를 줄이고 버린 구간을 숨기지 않는다. 귀환 책임을 마친 결과로 완료 가능."
+        },
+        "dialogue_examples": [
+          "“앞길은 짧다. 돌아오는 길도 그런지 걸어 봐.”",
+          "“줄였다. 버린 구간은 여기다. 돌아온 사람도 여기 있고.”"
+        ],
+        "dialogue_condition": "본문 대사는 해당 직접 관측/실제 응답과 현재 청중이 있을 때만. 거절·초면·친한 장난의 원문 차이를 persona에 유지."
+      },
+      "quest": {
+        "definition_id": "mythictrpg:p0m010_045_main",
+        "kind": "MAIN",
+        "ownership": "common.ownership 최초 유효 명시 수락1명",
+        "site": "기존 굽은 길 A 안전선, 짧은 길 B(+20,0,0) 폭2와 돌아오는 넓은길 C(+12,0,+10) 폭3. 각 길24/36블록, 높이2 이상. A–B 짐1개 운반로를 먼저 확인. 위험선은 A에서12블록 밖, NPC와 적은 보호건축 침범 불가.",
+        "props": [
+          "작은 잔해4개: 허락된 길 소품, 지정 보관점으로 이동. 짧은 길은2개, 넓은길은4개를 치우면 각 경로 열림.",
+          "짐1개: 비상품 작업짐, 최대1명 운반, 좌클릭 운반/우클릭 놓기. 공격 중 강제 소실0.",
+          "약탈자1명: 사건 전용 minecraft:pillager, HP24/일반 석궁, Normal 기본피해 유지, 드롭/XP0. 세계 에피소드1회만 생성, 재시도마다 복제0. NPC 방어선에서30초 지연 후 짐을 못 가져가면 원 출입선으로 물러남. 추격은 목표 아님. 자연 적은 정상 규칙."
+        ],
+        "steps": [
+          {
+            "id": "mythictrpg:p0m010_045_step_1",
+            "title": "돌아오는 폭",
+            "action_and_evidence": "소유자가 정면 짧은길 잔해2개 또는 넓은길 잔해4개를 실제 옮기고 선택 길을 끝까지 갔다 돌아온다. 그 뒤 참여명부(최대5명)를 고정하고 짐1개를 B로 운반한다.",
+            "predecessor": null
+          },
+          {
+            "id": "mythictrpg:p0m010_045_step_2",
+            "title": "지키기 또는 순찰 줄이기",
+            "action_and_evidence": "B 귀환 시 이름 없는 약탈자가 실제 위험선에 접근해 첫 적대 조준 후 경고2초. 다케미나카타는 실제 몸으로 선을 막는다. 지키기: 소유자가 짐을 A로 운반하는 동안 현장 방어/회피로30초 동안 선 돌파를 막거나 적을 먼저 제압하면 해당 길 유지. 후퇴: 짐을 즉시 들고 선택한 길로 A까지 돌아오고 사람들을 실제 안전선으로 인도하면 순찰 축소 결말. 적 처치/전원 방패/새 보스 강제0. 30초 전에 위험선을 돌파당하면 지키기 분기는 종료하고 실제 후퇴 분기로 전환할 수 있다. 새 적 생성 없이 기존 적과 남은 짐 상태로 이어 간다. 짐을 잃으면 사람 안전부터 회복하고 같은 미완료 짐 회수 재개, 이미 실제 소실이면 손실결과 표시·훈련권 미발생.",
+            "predecessor": "mythictrpg:p0m010_045_step_1"
+          },
+          {
+            "id": "mythictrpg:p0m010_045_step_3",
+            "title": "귀환 접수",
+            "action_and_evidence": "소유자와 명부 생존자 또는 정상 부활자가 A에 실제 복귀한 뒤 짐 상태를 확인, 지킨/버린 구간을 말하고 MAIN 완료. 후퇴도 유효 완료. 사망연결 관찰자는 안전귀환 성과로 자동 계산하지 않는다. 고토시로누시 지적·추가순찰은 완료 후 선택이다.",
+            "predecessor": "mythictrpg:p0m010_045_step_2"
+          }
+        ],
+        "completion": "선택한 분기 마지막 실제 행동+동일 본체 결과 확인을 접수하면 완료. 보상 수령·선택 지도·후일담은 분리.",
+        "deadline_seconds": null,
+        "estimated_duration": "10–16분 + 선택 훈련3분",
+        "failure_resume": "common.execution 적용. 이미 옮긴 소품·소모한 재료·실제 손실을 유지하고 남은 목표만 재개. 모든 자산 외부 파괴 등으로 이행 불가하면 결과 손실 표시, 성공을 조작하지 않음.",
+        "late_join": "common.knowledge.late_join 및 보상별 실제 기여자 조건. 최초 독점 결말 재연 없음.",
+        "site_definition_id": "mythictrpg:p0m010_045_site",
+        "prop_bindings": [
+          {
+            "definition_id": "mythictrpg:p0m010_045_debris",
+            "label": "순찰길 잔해",
+            "max_existing_quantity": 4
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_045_load",
+            "label": "귀환 작업짐",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_045_pillager",
+            "label": "일회 사건 약탈자",
+            "max_existing_quantity": 1
+          },
+          {
+            "definition_id": "mythictrpg:p0m010_045_retreat_mark",
+            "label": "훈련 후퇴표식",
+            "max_existing_quantity": 3
+          }
+        ],
+        "binding_rule": "본문에 이미 정한 같은 실물/상태에 붙이는 기획 정의ID다. 추가 재고·재생성·새 획득권을 만들지 않는다. worldId+site_definition_id+definition_id+instanceUUID로 기존 실물과 결속하고 수량·소유·허락·소비는 본문 계약을 따른다. 표시판/교차점은 그 작업물의 구성요소이며 상품이 아니다. 원문 R04 영수증은 읽기 전용 조회로 기존 원장ID를 보존한다. 파손 부스러기는 해당 표본 instanceUUID의 상태 전환이며 추가 생성품이 아니다. 서버 등록·소품 어댑터는 구현 요구다."
+      },
+      "reward": {
+        "id": "mythictrpg:p0m010_takeminakata_return_drill",
+        "kind": "퇴로 방어 훈련 서비스",
+        "recipient": "양쪽 유효 결말을 마친 MAIN 소유자 최초1회",
+        "quantity": "3분 이내 1회 훈련 지도권. A에서 6블록 후퇴표식3개를 따라 이동하며 NPC의 비피해 경고선(2초 예고) 밖으로3회 이동하는 연습. 방패 소지시 가드1회 선택 가능하지만 필수 아님. 성공시 실습완료 기억만, K/J·가호·전투력·특수지원0.",
+        "stock": "다케미나카타 본인 지도시간180초1회, 실물 재고0. 당사자 현재 동의·가용성을 예약하며 부재면 권리 보류. 실패는 같은 지도 세션 남은 항목 재개, 새 보상권0. 실제 지도180초를 모두 사용하면 성패와 무관하게 지도 이행을 종료하며 습득 능력은 없다. 실패한 동작은 이후 자기 연습으로 가능하나 새 NPC 지도권은 발생하지 않는다.",
+        "cost": "0. 실전 기본 도구 내구/소모는 원래 규칙, 훈련은 피해·내구소모0.",
+        "repeat": 0
+      },
+      "knowledge": {
+        "baseline": {
+          "source_known_claims": [
+            {
+              "id": "K-WORK",
+              "claim": {
+                "text": "살필 길을 짧게 나눠 걸으며 돌아올 때 시야가 가려지는 곳을 다시 본다. 힘을 과시하려던 빠른 걸음을 늦추고 마지막 구간까지 남길 체력을 가늠한다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-WORK",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-STANCE",
+              "claim": {
+                "text": "졌다는 이유로 내가 지키려는 사람까지 겁쟁이라 부르지 마라.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-STANCE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신이 지금 하고 있는 일과 직접 품은 의향",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "묵직한 돌을 멀리 던지지 않고 손바닥에서 얼마나 안정되게 세울 수 있는지 겨룬다.",
+                "basis": "new_minor_creative"
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인이 반복해 즐기는 사소한 취향과 감각",
+                "when_or_condition": "아직 특정 플레이어와 만났다는 전제가 없는 코어 기준시점. 자기 행동과 생각의 범위만 기억한다.",
+                "evidence_status": "minor_self_knowledge_design"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            },
+            {
+              "id": "K-HISTORY",
+              "claim": {
+                "text": "다케미카즈치에게 도전했다 패해 항복했던 자기 전승의 선택을 기억한다.",
+                "basis": "retained_current_design"
+              },
+              "fact_ref": "T-HISTORY",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 자료에 보존된 자기 전승과 본인이 당사자인 인연을 한정해 채택한 기억",
+                "when_or_condition": "전승상 자기 경험과 기존 인연의 범위. 현재 소재·새 전쟁 참여·전승의 마지막 사건이 지금 완료되었다는 앎은 포함하지 않는다.",
+                "evidence_status": "explicit_in_current_source"
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "본인의 실제 대화 상대; 같은 파티라는 이유로 다른 청중에게 복사하지 않는다.",
+                "condition": "자기 경험·취향·의향의 질문에 답한다. 타인의 의향이나 사건의 완료를 대신 선언하지 않는다."
+              }
+            }
+          ],
+          "source_unknown": [
+            "다케미나카타의 작업 상대가 지금 어디에 있는지, 이번 제안을 수락할지는 실제 연락 전에 모른다.",
+            "여신의 현재 정체·세 가담자의 비밀·용의 내부 장치·다른 플레이어의 사적 대화는 출연이나 원전만으로 알지 않는다.",
+            "역사 인연의 현재 생사·정식 새 전쟁 소속·미전달 과거 기록의 내용은 자기 전승 기억과 별개다."
+          ],
+          "source_concealment": {
+            "none_reason": "다케미나카타의 현재 작업과 취향에는 숨겨야 할 구체 사실을 추가하지 않았다. 알려지지 않은 타인의 사정은 본인의 비밀로 꾸미지 않는다.",
+            "items": []
+          },
+          "source_suspicions": {
+            "none_reason": "다케미나카타는 '졌다는 이유로 내가 지키려는 사람까지 겁쟁이라 부르지 마라.'라는 경계 성향을 지니지만, 아직 특정 방문자의 언행을 관찰한 근거가 없다. 개별 의심은 L-CONDITIONAL-DOUBT의 실제 관찰 이후에만 생긴다.",
+            "items": []
+          },
+          "source_misbeliefs": {
+            "none_reason": "다케미나카타의 자존심·기호·조급함은 성향이다. 현재 자료에서 반증된 특정 믿음이 없으므로 이 성향을 세계 사실에 대한 오해로 조작하지 않는다.",
+            "items": []
+          },
+          "current_learning": "새 장면에서 직접 본 결과·직접 들은 말·출처와 시점이 있는 허락된 보고만 습득한다. 저자 메타데이터의 미정은 NPC가 실제 잊었다는 설정이 아니다.",
+          "disclosure": "현재 청중 전원에게 허용된 내용만 말한다. 사적 사실을 제목·농담·거절 이유로 암시하지 않으며 친구·파티라는 이유로 사적 대화를 복사하지 않는다.",
+          "world_unlock_is_not_knowledge": true
+        },
+        "new_facts": [
+          {
+            "id": "mythictrpg:p0m010_045_fact_result",
+            "truth_condition": "선택한 길 폭·방어/후퇴·실제 귀환자·짐·포기구간 및 별도 훈련 이행",
+            "created_when": "실제 해당 단계의 권위 증거가 저장된 뒤. 완료 이전에는 계획이며 초기 지식0.",
+            "npc_learning": "동일 본체의 직접 목격/청취 또는 소유자의 실제 보고와 원장 대조. 보고는 자기 목격으로 승격하지 않음.",
+            "audience": "물건·길·식사 등 현장 현재 결과는 현장 관찰자. 개인 선택·사적 응답은 소유자와 실제 허락한 청중만.",
+            "late_join": "공개 결과를 새로 열람하면 그 내용만 새로 습득, 과거 공로0."
+          }
+        ],
+        "relationship_handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S07-044",
+              "existing_edge_or_new_minor_basis": "다케미나카타와 고토시로누시의 기존 개인 역할·전승상 인연을 보존한다. 고토시로누시와 휴전선을 유지할지 겨루며 선택한 보호 구역을 다음 순찰에도 지킨다 이 관계를 소개 완료나 의무 협력으로 바꾸지 않는다.",
+              "request_and_actual_response": "다케미나카타가 이번 이야기의 해당 부분에 관해 고토시로누시에게 대화 또는 시연을 요청한다. 실제 응답의 내용 기준: 고토시로누시가 실제 어로 동선과 돌아올 길을 설명하고 다케미나카타가 보호 구간과 비교한다. 수신자는 자신이 답할 부분을 직접 고른다. 이 문장은 발생한 응답 기록이 아니라 후속 집필 조건이다.",
+              "what_changes_for_each_side": "다케미나카타는 다음 순찰에서 고토시로누시가 지적한 좁은 길을 먼저 살피되 자기 저항을 부끄러워했다고 말하지 않는다. 상대에게는 다케미나카타가 확인한 이번 선택과 남은 요청만 실제 답으로 돌아간다. 상대는 그 답을 듣고 다음 참여를 수락·제한·거절할 수 있으며 본인의 별도 개인 결말은 완료되지 않는다.",
+              "absence_refusal_alternative": "부재·봉인·거절이면 요청은 미전달 또는 거절로 남긴다. 돌아오는 순찰의 자기 행동은 계속하되 상대 응답이 꼭 필요한 결말만 기다린다. 새 원격 분신·가짜 위치·자동 소개는 없다."
+            }
+          ],
+          "none_reason": null
+        },
+        "future_boundary": "관계 인계의 효과는 실제 수신 뒤에만. 본인의 기억과 상대의 응답은 별도이며 선택 후일담을 완료 조건으로 덧붙이지 않는다."
+      },
+      "balance": {
+        "reason": "생활 선택의 물리 결과를 체험하는 소규모 사건. 별도 전투 성장0, 재료/음식은 실제 생산·최초 한도로 반복 경제 차단.",
+        "time": "10–16분 + 선택 훈련3분",
+        "power_granted": 0,
+        "new_mana_cost": 0,
+        "runtime_tested": false
+      },
+      "acceptance_tests": [
+        {
+          "case": "물리 수행 없이 성공 대사",
+          "action": "선택 버튼만 누르고 목표 블록/소품/이동을 생략한다.",
+          "expected": "해당 수행·결과Fact·보상0. 와타쓰미는 원 증거 읽기 외 새 수행 발급0."
+        },
+        {
+          "case": "원문 대안 보존",
+          "action": "본문 두 대안 중 느리거나 축소·취소·후퇴 경로를 실제 이행한다.",
+          "expected": "그 경로의 명시 결과만 판정하고 선택하지 않은 대안/후일담을 추가 성공조건으로 요구하지 않는다."
+        },
+        {
+          "case": "사망·로그아웃 후 재개",
+          "action": "최종 목표 전 사망 또는 접속 종료 후 복귀한다.",
+          "expected": "원 소유·소모·이동상태 유지, 남은 행동만 재개. 귀환/시간 완료 허위 기록0."
+        },
+        {
+          "case": "후발·관계 경계",
+          "action": "완료 후 친구가 합류해 소유자와 같은 말을 한다.",
+          "expected": "공개 현재결과는 보되 개인 MAIN·과거 기여·사적 지식·보상 복제0."
+        },
+        {
+          "case": "재고와 수령 중단",
+          "action": "예약 뒤 인벤 가득 또는 인도직후 저장응답 중단을 발생시킨다.",
+          "expected": "원 권리·물품UUID 대조, 미수령분만 복구. 무보상/조회는 claim 생성0."
+        },
+        {
+          "case": "관계 상대 부재",
+          "action": "관계 상대가 미등장/봉인/거절 상태다.",
+          "expected": "현재 본인 권한의 작업과 독립 결말은 가능. 해당 상대 자산 사용/새 응답만 보류, 가짜 대화0."
+        }
+      ],
+      "services": [
+        {
+          "id": "mythictrpg:p0m010_045_return_drill",
+          "recipient": "훈련권 보유 MAIN 소유자",
+          "unlock": "MAIN 어느 유효 결말 접수 뒤 별도 선택",
+          "action": "3분 이내 1회 훈련 지도권. A에서 6블록 후퇴표식3개를 따라 이동하며 NPC의 비피해 경고선(2초 예고) 밖으로3회 이동하는 연습. 방패 소지시 가드1회 선택 가능하지만 필수 아님. 성공시 실습완료 기억만, K/J·가호·전투력·특수지원0.",
+          "limit": "최초1회 180초 지도, 실습 실패는 동일 세션 남은 항목 재개",
+          "cost": 0,
+          "reward": "능력획득0. 지도서비스 실제 이행 기록",
+          "failure": "부재·로그아웃이면 남은 지도시간 보존, 다른 본체가 대신하지 않음"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "record_count": 7,
+    "main_quest_count": 6,
+    "existing_review_event_count": 1,
+    "service_count": 3,
+    "reward_definitions_detailed": 5,
+    "additional_combat_rewards": 0,
+    "existing_acquisition_assignments": 0,
+    "actual_authoring_blockers": []
+  }
+}

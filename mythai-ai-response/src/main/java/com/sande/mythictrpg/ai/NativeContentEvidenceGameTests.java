@@ -121,7 +121,6 @@ public final class NativeContentEvidenceGameTests {
                 query(); phase = 4;
             } else if (phase == 4) {
                 if (!reading.isDone()) return; page = reading.join();
-                if (page.entries().isEmpty() && readAttempts < 8) { query(); return; }
                 require(page.entries().size() == 1 && page.entries().getFirst().text().equals(VALID), "Only permitted real NPC source is readable: " + page.status());
                 require(access.current(page), "Actual content owner approves issued source now");
                 require(engine.currentCalls > 0 && engine.prepareCalls > 0, "Production owner callbacks actually used");
@@ -169,9 +168,10 @@ public final class NativeContentEvidenceGameTests {
             } else if (phase == 82) {
                 if (!reading.isDone()) return;
                 var descendant = reading.join();
-                if (descendant.entries().isEmpty() && descendantAttempts < 8) { queryDescendant(); return; }
                 require(descendant.entries().size() == 1 && descendant.entries().getFirst().text().equals(REPLY),
-                        "New live turn re-reads actual dependent reply through native source and original CONTENT owner");
+                        "New live turn re-reads actual dependent reply through native source and original CONTENT owner"
+                                + "; status=" + descendant.status() + ", entries=" + descendant.entries().size()
+                                + ", attempts=" + descendantAttempts);
                 require(descendantAccess.current(descendant), "Descendant page remains authorized at the next turn's use boundary");
                 ConversationRooms.INSTANCE.leave(player, room, "FIXTURE_END_ORIGIN");
                 require(!access.current(page) && !access.current(seal) && !NativeRoomEvidence.current(server, readingRequest, references.getFirst()), "Origin room authority expires");
@@ -209,17 +209,22 @@ public final class NativeContentEvidenceGameTests {
             return !engine.requests.isEmpty() && ConversationRooms.INSTANCE.memoryReadCurrent(server, engine.requests.getLast());
         }
         private void query() {
-            readAttempts++; access = RecordedMemoryAccess.open(server, readingRequest).orElseThrow();
+            readAttempts++;
             var actor = new RecordingRecords.ActorRef(RecordingRecords.ActorKind.GOD, readingRequest.speakerGodId().toString());
             var selection = new MemoryReadSession.ActorSelection(Optional.of(RecordingRecords.ActorKind.GOD), Set.of(actor), Set.of());
-            reading = access.query(new MemoryReadSession.Query("native_content_", Optional.empty(), Optional.empty(), selection), Optional.empty(), new MemoryReadSession.Budget(4, 8192));
+            reading = RecordedMemoryAccess.openAfterCapture(server, readingRequest).thenCompose(opened -> {
+                access = opened.orElseThrow();
+                return access.query(new MemoryReadSession.Query("native_content_", Optional.empty(), Optional.empty(), selection), Optional.empty(), new MemoryReadSession.Budget(4, 8192));
+            });
         }
         private void queryDescendant() {
             descendantAttempts++;
-            descendantAccess = RecordedMemoryAccess.open(server, descendantRequest).orElseThrow();
             var actor = new RecordingRecords.ActorRef(RecordingRecords.ActorKind.GOD, descendantRequest.speakerGodId().toString());
             var selection = new MemoryReadSession.ActorSelection(Optional.of(RecordingRecords.ActorKind.GOD), Set.of(actor), Set.of());
-            reading = descendantAccess.query(new MemoryReadSession.Query(REPLY, Optional.empty(), Optional.empty(), selection), Optional.empty(), new MemoryReadSession.Budget(4, 8192));
+            reading = RecordedMemoryAccess.openAfterCapture(server, descendantRequest).thenCompose(opened -> {
+                descendantAccess = opened.orElseThrow();
+                return descendantAccess.query(new MemoryReadSession.Query(REPLY, Optional.empty(), Optional.empty(), selection), Optional.empty(), new MemoryReadSession.Budget(4, 8192));
+            });
         }
         @Override public void close() {
             if (closed) return; closed = true;
@@ -269,7 +274,8 @@ public final class NativeContentEvidenceGameTests {
             return owner.preparePublication(event.withEvidence(List.of(candidate), Set.of()));
         }
         public CompletableFuture<Boolean> prepareRecordedEvidence(Request request, List<RoomEvidenceReference> refs) {
-            prepareCalls++; return owner.prepareRecordedEvidence(request, refs);
+            prepareCalls++;
+            return owner.prepareRecordedEvidence(request, refs);
         }
         public boolean recordedEvidenceCurrent(Request request, List<RoomEvidenceReference> refs) {
             currentCalls++; return owner.recordedEvidenceCurrent(request, refs);

@@ -49,8 +49,12 @@ public final class RaidGameTests {
     private static final ResourceLocation GOD = id("demeter");
     private RaidGameTests() { }
 
-    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty", timeoutTicks = 100)
+    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty", timeoutTicks = 200)
     public static void queueBossDeathReturnAndCorruptSnapshot(GameTestHelper helper) {
+        withReadyArena(helper, () -> runQueueBossDeathReturnAndCorruptSnapshot(helper));
+    }
+
+    private static void runQueueBossDeathReturnAndCorruptSnapshot(GameTestHelper helper) {
         var channels = new ArrayList<EmbeddedChannel>();
         ServerPlayer player = connect(helper, "RaidFixture", channels);
         ServerPlayer outsider = connect(helper, "RaidOutsider", channels);
@@ -151,8 +155,12 @@ public final class RaidGameTests {
         }
     }
 
-    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty", timeoutTicks = 100)
+    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty", timeoutTicks = 200)
     public static void globalGodLeaseWaitsThenRunsWithoutDuplication(GameTestHelper helper) {
+        withReadyArena(helper, () -> runGlobalGodLeaseWaitsThenRunsWithoutDuplication(helper));
+    }
+
+    private static void runGlobalGodLeaseWaitsThenRunsWithoutDuplication(GameTestHelper helper) {
         var channels = new ArrayList<EmbeddedChannel>();
         ServerPlayer player = connect(helper, "GodRaidFixture", channels);
         RaidCatalog.Snapshot previousCatalog = RaidCatalog.INSTANCE.snapshot();
@@ -279,7 +287,37 @@ public final class RaidGameTests {
         }
     }
 
-    private static String fixtureJson() {
+    /** These synchronous lifecycle checks require real entity-ticking chunks before their first start. */
+    private static void withReadyArena(GameTestHelper helper, Runnable lifecycle) {
+        Vec3 anchor = Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(2, 2, 2)));
+        AABB bounds = new AABB(anchor.x - 2, anchor.y - 1, anchor.z - 2,
+                anchor.x + 5, anchor.y + 4, anchor.z + 5);
+        var tickets = new RaidChunkTickets();
+        UUID readinessId = UUID.randomUUID();
+        helper.assertTrue(tickets.acquire(readinessId, helper.getLevel(), bounds), "raid readiness ticket failed");
+        boolean[] done = {false};
+        int[] waited = {0};
+        helper.onEachTick(() -> {
+            if (done[0]) return;
+            try {
+                if (!tickets.readyForEntities(readinessId)) {
+                    helper.assertTrue(++waited[0] < 150, "raid entity sections never became ready");
+                    return;
+                }
+                // Patch shared catalogs and connect players only inside the existing synchronous fixture,
+                // which owns its restoration. Hold this ticket through its repeated starts and cleanup.
+                done[0] = true;
+                lifecycle.run();
+            } catch (RuntimeException | AssertionError failure) {
+                done[0] = true;
+                throw failure;
+            } finally {
+                if (done[0]) tickets.release(readinessId);
+            }
+        });
+    }
+
+    static String fixtureJson() {
         return "{\"schemaVersion\":1,\"displayName\":\"Synthetic raid fixture\",\"mode\":\"PUBLIC_WORLD\","
                 + "\"arenas\":[\"mythictrpg:test_raid_arena\"],\"minimumPlayers\":1,\"maximumPlayers\":1,"
                 + "\"queueTimeoutTicks\":120,\"combatTimeoutTicks\":120,\"livesPerPlayer\":1,"
@@ -299,7 +337,7 @@ public final class RaidGameTests {
                 + "\"rewardGodId\":\"mythictrpg:demeter\",\"rewards\":[]}";
     }
 
-    private static String arenaJson(Vec3 anchor, ResourceLocation dimension) {
+    static String arenaJson(Vec3 anchor, ResourceLocation dimension) {
         var json = new JsonObject();
         json.addProperty("schemaVersion", 1);
         json.addProperty("dimension", dimension.toString());

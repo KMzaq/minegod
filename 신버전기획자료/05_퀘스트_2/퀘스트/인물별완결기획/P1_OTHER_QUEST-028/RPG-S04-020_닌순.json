@@ -1,0 +1,188 @@
+{
+  "record_key": "RPG-S04-020",
+  "name": "닌순",
+  "mythology": "메소포타미아",
+  "god_id": "mythictrpg:mesopotamian_unassigned_ninsun",
+  "identity_reference": "RPG-S04-020/current_record/current_identity",
+  "combat_tier": "중급",
+  "main_status": "NOT_APPLICABLE",
+  "source_reward_status": "APPLICABLE",
+  "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020",
+  "canonical_episode_id": "EP015B-RPG-S04-020",
+  "aliases": [
+    "Q-P1_OTHER_QUEST-028-RPG-S04-020",
+    "EP015B-RPG-S04-020"
+  ],
+  "title": "돌아올 몫의 짐",
+  "quest_kind": "SIDE",
+  "runtime_ready": false,
+  "source_reference": {
+    "profile": "기존페르소나_인물별/RPG-S04-020/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S04-020/authoring_contract.json",
+    "episode_field": "exact_accepted_dossier/episodes",
+    "outline": "RPG-S04-020/current_record/outline"
+  },
+  "scope_guard": "식량 없는 배치도 실제 부담을 관측하고 돌아오면 유효. 식량 강제 구매·시식·양 경로 수행 금지. 조언 거절은 실제 수신/짐 선택 확인시 유효 결말. 무사귀환·불사 축원0.",
+  "site": "여행 초입 쉼터 O, 기존 안전길을 따라 둔덕 아래 T까지48블록(편도). 높이차 한 걸음1블록 이하, 절벽·적 위험 없음. 왕복96블록, 생존 스프린트/배고픔을 강제하지 않는다.",
+  "objectives": [
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-O1",
+      "title": "짐 배분 선택",
+      "action": "허락된 한 벌: 빵2·횃불4·작업도구1. 귀환 배치는 빵2를 핫바에, 빈손/빈 슬롯1개를 남긴다. 전리품 우선은 빈 묶음 주머니1개를 손에 들고 빵2를 O에 보관한다. 원정 준비 전체가 아니라 이번 연습용 배치만 검사.",
+      "evidence": "소유자 허락, 인벤토리 위치/보관uuid",
+      "previous_objective_id": null,
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS1"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-O2",
+      "title": "왕복 실습",
+      "action": "O→T→O 연속 실제 이동. T에서 빵을 가져왔으면 실제 꺼내기1회, 안 가져왔으면 보관 상태·현재 부재를 확인한다. 먹기 필수0. 필요한 재배치 후 남은 길만 돌아오고 닌순의 실제 확인을 받는다. 맡은 도구·미사용 식량을 원소유자에게 반환한다.",
+      "evidence": "왕복 경유 위치, 인벤토리 실물, 식량소비0 기본, 닌순 확인",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-O1",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS2"
+    },
+    {
+      "objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-O3",
+      "title": "조언과 선택",
+      "action": "길가메시에게 닌순이 실제 관측한 부담을 직접 말하고 그가 수락/거절 후 실제 고른 짐을 펼치거나 멘 상태를 닌순이 확인한다. 플레이어도 자기 짐에 선택 귀환 배치를 실제 적용한다. 길가메시 미수신이면 자기 실습만 완료, SIDE 최종은 대기.",
+      "evidence": "길가메시 수신·선택·실제 짐, 자기 재배치",
+      "previous_objective_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-O2",
+      "time_limit_seconds": null,
+      "completion_event_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS3"
+    }
+  ],
+  "source_branch_contract": [
+    {
+      "source_beat_id": "B1",
+      "action": "자기와 길가메시가 실제 사용을 허락한 원정 짐을 펼친다. 참가자는 전리품 여유를 남긴 배치 또는 귀환 식량을 손 닿는 곳에 두는 배치 중 하나로 직접 짐을 멘다.",
+      "branches": [
+        {
+          "choice_id": "B1-1",
+          "player_intent": "귀환 식량을 먼저 넣는다",
+          "actual_execution": "꺼낼 식량을 바깥쪽에 두고 빈손 하나를 남기도록 짐끈을 조인다.",
+          "observed_result": "귀환 식량과 빈손이 실제 확보된 배치. 아직 왕복하지 않았다."
+        },
+        {
+          "choice_id": "B1-2",
+          "player_intent": "전리품 공간을 우선 남겨 시험한다",
+          "actual_execution": "큰 빈 주머니를 손에 들고 선택한 나머지 짐을 멘다. 비워 둔 식량을 확인한다.",
+          "observed_result": "전리품 공간과 손의 부담을 시험할 준비만 남는다. 준비의 취약함을 원정 성공으로 덮지 않는다."
+        }
+      ],
+      "source_consumption": "연습 짐은 원주인 소유. 먹지 않은 식량은 소비 아님. 남겨 둔 물품은 위치와 보관자를 저장한다."
+    },
+    {
+      "source_beat_id": "B2",
+      "action": "선택한 배치로 짧은 길을 걸어 둔덕 아래에서 멈춘다. 식량을 가져온 배치는 실제 꺼낼 수 있는지 확인하고, 쉼터에 남긴 배치는 길 위에 식량이 없다는 부담을 확인한다. 없던 식량을 만들거나 가져온 것으로 바꾸지 않는다. 짐이 불안정하면 안전하게 재배치하고 같은 남은 길로 쉼터에 돌아온다.",
+      "branches": [
+        {
+          "choice_id": "B2-1",
+          "player_intent": "선택한 배치의 실제 부담을 확인하고 돌아온다",
+          "actual_execution": "선택한 짐으로 둔덕까지 걷는다. 식량을 지녔다면 실제 꺼내는 동작을 확인하고, 쉼터에 남겼다면 길 위에 꺼낼 식량이 없음을 확인한다. 실제 짐만 안전하게 고쳐 같은 남은 길로 쉼터에 돌아온다. 두 배치 모두 실제 부담과 귀환을 확인하면 유효하며 식량을 가져오도록 과거 선택을 바꾸지 않는다.",
+          "observed_result": "선택 배치의 부담과 귀환이 관측됐다. 아직 길가메시가 조언을 들은 것은 아니다."
+        }
+      ],
+      "source_consumption": "자기 물건만 재배치. 도중 사용·유실분만 실제 차감하고 연습 종료 시 맡은 짐은 주인에게 실제 인계한다."
+    },
+    {
+      "source_beat_id": "B3",
+      "action": "닌순이 실제 관측한 짐 문제와 돌아올 몫을 길가메시에게 직접 말하게 한다. 그가 현재 고른 짐을 실제 펼치거나 메어 보인 것을 닌순이 확인한다. 플레이어는 자기 짐에도 선택한 귀환 배치를 직접 적용한다.",
+      "branches": [
+        {
+          "choice_id": "B3-1",
+          "player_intent": "직접 조언하고 실제 선택을 존중한다",
+          "actual_execution": "닌순의 실제 조언을 듣게 하고 길가메시의 수락 또는 거절을 그대로 확인한다. 길가메시가 선택한 짐과 자기 짐의 실제 배치를 각각 확인한다.",
+          "observed_result": "수락이면 바꾼 짐, 거절이면 그대로 고른 짐과 경고 수신이 남는다. 자기 배치 적용 뒤 이 SIDE 경로 완료."
+        },
+        {
+          "choice_id": "B3-2",
+          "player_intent": "길가메시를 만나지 못해 자기 준비만 끝낸다",
+          "actual_execution": "자기 짐을 다시 꾸리고 닌순과 현재 연습 결과만 확인한다. 전달할 근거를 남겨 둔다.",
+          "observed_result": "자기 실습만 완료한 부분 결과. 길가메시 조언·배치 확인과 SIDE 최종 확인은 대기."
+        }
+      ],
+      "source_consumption": "닌순이 실제 왕복 실습을 확인한 수행자의 승인 비상 식량 몫만 재고에서 실제 인계한다. 길가메시 조언 대기와 분리한다. 미수령 몫 보존, 반복 방문으로 새 몫0. 추가 지도는 별도 선택 실습. 짐은 원주인에게 돌려준다."
+    }
+  ],
+  "ending_boundary": {
+    "observable_personal_change": "선택한 짐 배분으로 실제 왕복하고, 닌순이 그 부담을 직접 확인한 뒤 길가메시에게 조언을 실제 전달하여 그의 선택한 짐을 확인한다. 참가자는 자기 짐을 실제 다시 꾸려 마친다. 길가메시의 조언 거절도 확인된 응답이면 유효 결말이나 부재·미수신이면 그 부분 대기. 원정 승패·무사귀환 보장 없음.",
+    "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+    "next_encounter_memory": "닌순은 아들이 거절해도 가방을 빼앗지 않는다. 경고의 근거를 말한 뒤 자기 찻잔을 들어 자신의 판단으로 남긴다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+    "playfeel_and_difference": "돌아올 몫의 짐: 각 물품의 소유자, 실제 식량 위치, 한 손으로 끈을 풀 수 있는지를 함께 본다. 빈 전리품 주머니를 실제 전리품으로 세지 않는다. → 닌순이 원정 보증 대신 실제 짐에 근거한 자신의 조언을 남긴다. 다음에는 이 경험이 있는 사람의 귀환 식량 위치부터 묻는다."
+  },
+  "reward": {
+    "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-SETTLEMENT",
+    "description": "B2 실제 왕복을 닌순이 확인한 수행자에게 승인 비상재고 빵2개 개인1회. 이는 원문에 독립된 실습 정산이며 SIDE 최종완료 보상으로 표시하지 않는다. 길가메시 부재와 분리. 추가 짐 지도 선택1회. 길가메시 짐·원정품 공제0.",
+    "earned_condition": "독립 practice_verified=B2 실제 왕복+닌순 확인; final_complete와 별도",
+    "new_entitlement": false,
+    "ledger_canonical_episode_id": "EP015B-RPG-S04-020",
+    "repeat": "개인 동일 에피소드 최초1회; 원물반환은 미반환 원물량만",
+    "optional_training": "원하면 동일 연습재료로 슬롯 재배치1회,60초. 새 빵 재지급0"
+  },
+  "knowledge": [
+    {
+      "fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-FACT-RESULT",
+      "text": "짐의 실제 선택과 왕복 부담, 길가메시 수신 여부와 본인 선택. 닌순 자기 관측과 받은 보고를 나눈다.",
+      "source_events": [
+        "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS1",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS2",
+        "Q-P1_OTHER_QUEST-028-RPG-S04-020-OBS3"
+      ],
+      "learners": "실제 목격자 및 허락된 보고의 실제 수신자",
+      "receipt_key": "fact_definition_id + receiver_actor_id + source_event_id",
+      "disclosure": "공개 현물 결과와 당사자 허락 사적 발언 분리"
+    }
+  ],
+  "persona_in_scene": {
+    "description": "부드럽게 안부를 묻다가 무모한 계획을 들으면 필요한 식량과 돌아올 여력을 하나씩 센다. 길가메시가 살아 돌아오기를 바라면서도 아들의 명성 때문에 자기 판단이 축원 한마디로 줄어드는 것은 싫다. 걱정이 많다는 말을 들어도 책임질 수 없는 안심은 팔지 않는다. 차가 식으며 뒤늦게 올라오는 향을 기다릴 때에는 다음 질문도 조금 늦춘다.",
+    "voice": [
+      "안부는 부드러운 반말로 묻고 무모한 말에는 비용을 한 가지씩 되묻는다.",
+      "걱정 말라는 답을 들으면 식량이나 손의 여유처럼 만질 수 있는 근거로 되돌아온다.",
+      "상대가 놓고 간 물건을 모으는 습관은 실제 놓인 물건과 취급 허락이 있을 때만. 원소유권을 가져오지 않는다.",
+      "준비를 인정한 뒤에는 같은 걱정을 끝없이 반복하지 않고 남은 조언만 짧게 한다."
+    ],
+    "neutral": [
+      "안부를 묻고 무엇을 원하는지 듣는다."
+    ],
+    "wary": [
+      "자랑보다 짐과 돌아올 몫을 먼저 듣는다."
+    ],
+    "trusted": [
+      "위험과 포기할 일을 솔직히 말한 실제 행동을 알게 되면 걱정부터 늘이지 않는다."
+    ],
+    "hostile": [
+      "대답을 짧게 하고 무모한 보증 요구를 막는다."
+    ],
+    "boundary": [
+      "반대하는 원정에 어머니의 축원이라는 이름만 빌려주지 않는다.",
+      "걱정과 조언은 자기 판단으로 말하고 상대의 최종 선택을 빼앗지 않는다.",
+      "돌아올 여력을 확인한 것과 무사귀환 보장은 다르다."
+    ]
+  },
+  "expected_minutes": "8~12(길가메시 접촉 대기 제외)",
+  "balance": "짧은 실제 생활 노동에 소량 일반 재료/식량 또는 선택 지도만 대응. 전투 스탯·장비·가호·MAIN 추가0. 실물과 책임·인수의 차이를 이해하는 역할 가치가 주 보상이다. 예상시간과 수량은 정적 기획이며 실전 검증 아님.",
+  "required_new_implementation": [
+    "위 실제 목표의 서버 권위 관측·원물수불·개별 수신 연결",
+    "공통계약 alias/재고/복구 요구 적용"
+  ],
+  "acceptance_cases": [
+    {
+      "case": "정상 대안 각각",
+      "expected": "식량 없는 배치도 실제 부담을 관측하고 돌아오면 유효. 식량 강제 구매·시식·양 경로 수행 금지. 조언 거절은 실제 수신/짐 선택 확인시 유효 결말. 무사귀환·불사 축원0."
+    },
+    {
+      "case": "필수 마지막 실제 수행 누락",
+      "expected": "부분 결과만 저장, final_complete=false. 독립 실습정산이 명시된 경우에만 그 별도 조건으로 정산."
+    },
+    {
+      "case": "비공개 보고·상대 부재",
+      "expected": "짐의 실제 선택과 왕복 부담, 길가메시 수신 여부와 본인 선택. 닌순 자기 관측과 받은 보고를 나눈다. 실제 수신 없는 상대 지식0."
+    },
+    {
+      "case": "선택 지도 거절",
+      "expected": "실제 끝낸 수행/정산권 유지, 수강경험0"
+    }
+  ]
+}

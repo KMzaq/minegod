@@ -1,0 +1,73 @@
+{
+  "record_key": "RPG-S01-027",
+  "name": "오케아노스",
+  "definition_id": "GR020-027-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_titan_oceanus",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-027/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-027/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "01_기존102명/07_심판과귀환15_세계해금정정.json#/records/14/outline",
+    "accepted_episodes": [
+      "EP005B-RPG-S01-027"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "최상급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "하류까지 남긴 흐름",
+  "site": "오버월드 연결된 기존 강. O 상류 관측, D=(0,0,24) 하류 관측, 중간 실제 막힘1을 OC-BLOCK-01. 실제 강 굴곡에 따라 경로거리24~48, 보트 폭2이상 확보.",
+  "objectives": [
+    "상·하류2지점에서 물블록 상태와 보트통로 폭을 각각 기록. 오염 기능이 없으면 실제 막힘만 사용, 깨끗한 강에 원인을 새로 심지 않는다.",
+    "소유자가 허락한 유입 홈의 떠내려온 가지1~3개를 마른 쪽에서 실제 건져 허락된 수거칸에 옮긴다. 제거 대상은 해당 가지 소품 UUID만이며 타인 블록/둑/장치 철거로 확대하지 않는다. 허락 없는 독점 둑 제안은 거절하고 실행0.",
+    "하류 D로 다시 이동해 같은 관측2항목을 대조하고 보트1회 통과 또는 남은 막힘을 보고. 스틱스에게는 오케아노스가 실제 동의한 관리책임만 전달 가능."
+  ],
+  "branches": "막힘 없음은 현황확인 종료, 제거 공로0. 하류 피해가 남으면 부분개선으로 끝내며 무한 정화 선언0. 타인 부지 미허가는 조사까지만 완료하고 철거보류. 스틱스 답변 없어도 물리 작업은 닫힌다.",
+  "reward": null,
+  "expected_minutes": [
+    5,
+    10
+  ],
+  "acceptance_tests": [
+    "상류만 확인하면 최종완료0",
+    "남의 블록 무허가 철거0",
+    "하류 피해 은폐 시 안내보류"
+  ],
+  "special": "",
+  "reward_status_source": "NOT_APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "오케아노스는 현재 확인한 뱃길의 범위를 안내하며 스틱스에게 전달하기로 실제 동의한 물길 책임만 말한다. 하류 피해를 숨기면 안내를 보류한다.",
+  "source_outcome": "오케아노스는 현재 확인한 뱃길의 범위를 안내하며 스틱스에게 전달하기로 실제 동의한 물길 책임만 말한다. 하류 피해를 숨기면 안내를 보류한다. 실제 물리 작업과 스틱스의 아직 미수신·미승인인 응답을 분리한다.",
+  "counterpart_delivery": [
+    {
+      "record_key": "RPG-S01-033",
+      "scope": "오케아노스가 동의한 현재 상·하류 관측과 남은 물길 책임만 스틱스에게 전달하고 해당 한정 통행 약속의 해석을 묻는다. 스틱스가 실제로 답한 조항과 미확인 부분만 되돌린다.",
+      "delivery": "실제 해당 상대에게 허락된 관측/요청을 전달하고 응답한 범위만 저장. 부재/거절이면 공동 부분만 보류, 앞 단계 독립 수행 유지."
+    }
+  ],
+  "knowledge_fact": {
+    "id": "GR020-027-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "오케아노스의 직접 관측 또는 실제 보고수신, 해당 참가자와 실제 청중. 외부 상대는 counterpart_delivery 수신완료 범위만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

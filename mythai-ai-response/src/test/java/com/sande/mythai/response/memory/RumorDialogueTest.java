@@ -30,6 +30,25 @@ public final class RumorDialogueTest {
         check(packed.rumors().size()<list.size(),"over-budget claims omitted from evidence manifest");
         check(packed.prompt().equals(bounded),"manifest and generated prompt use one projection");
         UUID owner=UUID.randomUUID();
+        var ordinaryContext=new com.sande.mythictrpg.ai.memorycontract.ConversationMemoryContext(UUID.randomUUID(),
+                UUID.randomUUID(),UUID.randomUUID(),owner,"mythictrpg:fortuna",Set.of(owner),false);
+        var currentGame=DialogueMemoryBridge.currentRumorTurn(ordinaryContext,List.of(r),"내 소문을 들었어?",2);
+        check(!currentGame.context().readOnly()&&currentGame.hasRumors()&&currentGame.prompt().contains("RUMOR_RECEIVED"),
+                "ordinary writable gameplay attaches an actual current received claim");
+        check(currentGame.journal()==null&&currentGame.selected().isEmpty()&&!currentGame.hasExperiences(),
+                "NEW current rumor path opens neither a legacy journal nor observation lookup");
+        check(currentGame.hasGuardedEvidence()&&currentGame.rumors().equals(List.of(r)),
+                "ordinary current rumor keeps source roots for publication revalidation and social review");
+        var currentBounded=DialogueMemoryBridge.currentRumorTurn(ordinaryContext,list,"소문",2);
+        check(currentBounded.rumors().equals(packed.rumors())&&currentBounded.prompt().equals(packed.prompt()),
+                "NEW rumor topics include only claims that fitted the bounded prompt");
+        check(!DialogueMemoryBridge.currentRumorTurn(ordinaryContext,List.of(r),"사과 가격이 얼마야",2).hasRumors(),
+                "ordinary unrelated turns do not attach rumor assessments");
+        var recovered=new RumorLedger.HeardRumor(r.rootId(),r.revision(),r.text(),r.epithet(),r.reception(),"RECOVERED",2);
+        var recoveryTurn=DialogueMemoryBridge.currentRumorTurn(ordinaryContext,List.of(recovered),"그 소문",2);
+        check(recoveryTurn.prompt().contains("RECOVERED")&&recoveryTurn.prompt().contains("historical_claim_not_current_belief")
+                        &&!recoveryTurn.prompt().contains(r.epithet()),
+                "ordinary recovered reputation is attributed as historical and loses the adverse epithet");
         var oldEntry=new MemoryJournal.Entry(UUID.randomUUID(),new MemoryJournal.Key(UUID.randomUUID(),"mythictrpg:fortuna",owner),
                 UUID.randomUUID(),1,MemoryJournal.Source.PLAYER_STATEMENT,Set.of(owner),System.currentTimeMillis(),"earlier",false);
         var mixed=DialogueMemoryBridge.packLegacy(List.of(oldEntry),list);

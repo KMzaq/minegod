@@ -117,7 +117,7 @@ public final class DialogueMemoryRecordingTest {
                 static List<RumorLedger.HeardRumor> heard(Server server,ConversationMemoryContext c){return List.of();}
                 static List<RumorLedger.HeardRumor> selectRumors(List<RumorLedger.HeardRumor> rows,String text,boolean opening){return rows;}
                 static String prompt(List<MemoryJournal.Entry> rows,List<RumorLedger.HeardRumor> rumors){return rows.isEmpty()?"":"remembered";}
-                static final class MemoryFoundationSettings {enum Mode{RUMOR_TEST} static Mode mode(){return Mode.RUMOR_TEST;}}
+                static final class MemoryFoundationSettings {enum Mode{RUMOR_TEST} static Mode mode(){return Mode.RUMOR_TEST;} static boolean supportsRumors(){return true;}}
                 static final class ExperienceHistory {
                     record Reference(java.util.function.BooleanSupplier guard){static Reference guarded(java.util.function.BooleanSupplier guard){return new Reference(guard);}}
                     int records; void record(String text,List<Reference> refs){records++;}

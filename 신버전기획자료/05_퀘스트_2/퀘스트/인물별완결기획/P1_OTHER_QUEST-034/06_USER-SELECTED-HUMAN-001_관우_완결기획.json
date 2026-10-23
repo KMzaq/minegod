@@ -1,0 +1,96 @@
+{
+  "record_key": "USER-SELECTED-HUMAN-001",
+  "name": "관우",
+  "episode_id": "EP020B-USER-SELECTED-HUMAN-001",
+  "definition_alias": "Q034-06",
+  "god_id": "mythictrpg:chinese_unassigned_guan_yu",
+  "status": "저술 채택 / 구현·플레이시험 미실행",
+  "identity": {
+    "combat_tier": "상급",
+    "main_status": "NOT_APPLICABLE",
+    "record_only": false
+  },
+  "title": "돌아올 때까지의 약속",
+  "common_contract": "P034_COMMON",
+  "source_refs": [
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-001/profile.json",
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-001/authoring_contract.json#/exact_existing_cards/EP020B-USER-SELECTED-HUMAN-001",
+    "원문제작범위_보존색인.json#/records/USER-SELECTED-HUMAN-001/contract",
+    "P23_stage2.md",
+    "퀘스트/관우/퀘스트와보상.json#/equipment/H01 및 /quests/2, /claim_and_recovery"
+  ],
+  "persona": "관우에게는 다음에 맡으려는 짧은 호위에서 갈 수 있는 구간과 돌아올 때를 정해 출발 준비 끝내기라는 욕망이 있다. 실력을 인정받는 것만큼 스스로 고른 약속의 무게를 자랑스러워하며 얕은 아첨에는 시간을 쓰기 싫다.",
+  "source_completion_guard": "이 인간 경로의 유효 수락·현재 자격을 갖춘 플레이어가 실제 짐 주인의 속도에 맞춰 호위하고 필요한 방어 또는 엄폐를 수행하여 합의한 구간 끝과 귀환을 약속한 때 안에 직접 마친 근거를 확인받아야 SIDE 성공·호위 지도권이다. 위협이 실제 없으면 전투를 만들지 않고 같은 동행·도착·귀환으로 판단한다. 추격 이탈·늦어진 호위·미귀환은 실패·미완료이며 관우의 대행으로 플레이어 공로가 생기지 않는다. 추격자가 실제 정당하게 얻은 전리품은 독립 보존한다.",
+  "source_reward_guard": "현재 가호 미보유 인간 경로의 유효 수락자가 자기 호위·합의 끝점·제때 귀환을 실제 이행한 경우만 거리 유지·후위 방어 지도권이다. 실제 위협이 없으면 전투는 요구하지 않는다. 관우 대행·추격·철수·늦은 귀환은 자기 호위 성공이 아니다. 실제 정당한 자기 전리품은 이 지도권과 별개로 보존한다.",
+  "site": "기존 길 A→B의 경로길이32~64블록, 짐주인·관우와 실제 도보 귀환 A를 포함한다.",
+  "objectives": [
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-001:O1",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "가호 미보유 인간경로 자격을 확인하고 짐주인과 구간·돌아올 때를 직접 정한다. 본 사건은 시각 숫자 대신 짐주인의 다음 출발 전 귀환 약속이며 그 출발은 실제 확인 이벤트, 자동 현실마감0. 합의 변경 시 재동의."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-001:O2",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "짐주인과 거리6블록 이내를 유지하며 B까지 동행한다. 실제 작은 위협이 있으면 추격하지 않고 방패 방어 또는 실제 벽 뒤 엄폐 중 하나. 위협 없으면 동행만."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-001:O3",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "짐주인의 B 도착 및 A 귀환을 직접 마치고 짐주인 인수·귀환 시점을 관우가 목격하거나 실제 보고받게 한다. 멀리 추격해 호위가 끊긴 구간은 누락으로 남긴다."
+    }
+  ],
+  "branch_and_partial": "추격·늦은귀환·미귀환은 호위 실패/미완료. 추격으로 정당히 얻은 자기 전리품은 별도 보존. 위협을 만들어 전투완료를 강제하지 않는다.",
+  "reward": {
+    "definition": "약속 구간·제때 귀환 성공자에 거리유지·후위방어 지도1회. 신병 지급0. 기존 H01 「귀환의 장도」(mythictrpg:guan_yu_return_blade)는 이 SIDE의 보상이 아니다. 기존 동일 ID·개인 최초1회 권리, 피해9/보조4.5·공격속도1.25·16tick(선딜6/후딜10)·사거리4블록/70도/최대3·내구1561·무스킬을 보존한다. 기존 별도 Q3(mythictrpg:guan_yu_ravine_return)의 실제 승리·개인자격·인계·증여/claim 절차만 획득근거이며 이 SIDE/독립지도/옛 호위 완료로 소급 지급권·추가 장도·무료 재발급을 만들지 않는다.",
+    "additional_combat_reward_count": 0,
+    "recipient": "유효 수락하고 해당 실제 몫을 수행한 본인만",
+    "limit": "동일 원물 요청의 정당한 몫1회; 반복 같은 원물 정산0",
+    "recovery_ref": "P034_COMMON#/rights"
+  },
+  "service": {
+    "service_id": "SVC034-06",
+    "session_key": "service_id+world_uuid+npc_uuid+player_uuid+session_uuid",
+    "relationship_to_episode": "선택 보상 지도이행 또는 별도 새 독립실습; 원사건 수행으로 소급0",
+    "objective": "안전길12블록에서 관우와 앞뒤 간격3~6블록을 유지하며 왕복1회, 뒤에서 오는 실제 연습 신호에 자기 방패를1회 들거나 엄폐한다. 공격력·가호·의형제 효과0.",
+    "repeat": "실습 반복 가능, 보상물/스탯/MAIN 추가0"
+  },
+  "reaction": "“쫓아갈 수 있었는지 말고, 누가 돌아왔는지 보자.” 관우는 칭찬보다 실제 약속 범위를 기억한다.",
+  "knowledge": {
+    "fact_id": "EP020B-USER-SELECTED-HUMAN-001:RESULT",
+    "payload": "선택한 분기, 실제 목표증거, 수행자, 소유자 인수, 남은 손해/미완료, 시점; 추론은 주장표시",
+    "npc_receipt": "직접 목격 또는 허락 보고 실제수신 뒤에만 반응",
+    "private": "개인약속·비공개 피해/채무·현재 관계는 실제 청중별 제한",
+    "relationship_handoff": {
+      "items": [],
+      "none_reason": "이번 이야기는 관우와 실제 수행자의 선택으로 끝난다. 코어에 현재 명부 상대가 없으면 새 인연·강제 소개를 만들지 않는다. 명부 밖 전승 인연은 기억으로만 보존하며 현재 등장·응답을 발명하지 않는다."
+    }
+  },
+  "failure_resume": "P034_COMMON#/recovery 적용. 위협에 못 맞서면 엄폐와 동행 철수를 택한다. 실패 시 남은 대상·짐·약속을 확인하며 관우에게 맡긴 것만으로 플레이어 수행 완료는 아니다.",
+  "late_join": "P034_COMMON#/late_join 및 독립서비스 회차키 적용",
+  "estimated_play": "8~12분",
+  "balance": "일반 재료의 실제 몫 또는 능력치 없는 지도. 무한 생성 경제 없음. 생활·조작·판단 학습 가치, 전투등급 보상 우회0. 예상시간은 정적 기획 추정.",
+  "acceptance_tests": [
+    {
+      "case": "정상",
+      "expect": "해당 선택경로 목표의 실제 증거 후 해당몫만 정산"
+    },
+    {
+      "case": "미실행 후기 거절",
+      "expect": "이미 끝낸 원사건·권리 유지"
+    },
+    {
+      "case": "원물 소실/수령거절",
+      "expect": "잔존/미인수·손해 별도, 복제0"
+    },
+    {
+      "case": "후발 실습",
+      "expect": "독립 service/session만, 원EP완료0"
+    },
+    {
+      "case": "권리 지급중 재시작",
+      "expect": "같은 권리·실지급 receipt 대조, 중복0"
+    }
+  ],
+  "runtime_ready": false
+}

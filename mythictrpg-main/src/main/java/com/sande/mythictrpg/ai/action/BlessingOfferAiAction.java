@@ -26,9 +26,12 @@ final class BlessingOfferAiAction {
         if (template == null) {
             return AiActionValidation.reject("Blessing template is not registered for this God");
         }
-        return BuiltInRegistries.MOB_EFFECT.getHolder(template.effectId()).isPresent()
-                ? AiActionValidation.accept()
-                : AiActionValidation.reject("Blessing effect is no longer registered");
+        var effect = BuiltInRegistries.MOB_EFFECT.getHolder(template.effectId()).orElse(null);
+        if (effect == null) return AiActionValidation.reject("Blessing effect is no longer registered");
+        var issue = effect.value().isBeneficial() ? java.util.Optional.<String>empty()
+                : com.sande.mythictrpg.ai.action.protection.AiConsequenceGate.curseRejection(
+                        new MobEffectInstance(effect, template.durationTicks(), template.amplifier()));
+        return issue.map(AiActionValidation::reject).orElseGet(AiActionValidation::accept);
     }
 
     private static AiActionExecution execute(AiActionContext context, AiActionProposal proposal) {
@@ -38,14 +41,23 @@ final class BlessingOfferAiAction {
         }
         Holder.Reference<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(template.effectId())
                 .orElse(null);
-        if (effect == null || !context.targetPlayer().addEffect(new MobEffectInstance(effect,
-                template.durationTicks(), template.amplifier(), false, true, true))) {
+        if (effect == null) {
             return AiActionExecution.rejected("Blessing effect could not be applied");
         }
+        if (!effect.value().isBeneficial()) {
+            var issue = com.sande.mythictrpg.ai.action.protection.AiConsequenceGate.curseRejection(
+                    new MobEffectInstance(effect, template.durationTicks(), template.amplifier()));
+            if (issue.isPresent()) return AiActionExecution.rejected(issue.get());
+        }
+        var applied = com.sande.mythictrpg.quest.reward.BlessingEffectApplication.apply(context.targetPlayer(),
+                new MobEffectInstance(effect, template.durationTicks(), template.amplifier(), false, true, true));
+        if (applied == com.sande.mythictrpg.quest.reward.BlessingEffectApplication.Result.REJECTED)
+            return AiActionExecution.rejected("Blessing effect could not be applied");
         return AiActionExecution.executed(Map.of(
                 "template_id", template.id().toString(),
                 "effect_id", template.effectId().toString(),
                 "duration_ticks", Integer.toString(template.durationTicks()),
-                "amplifier", Integer.toString(template.amplifier())));
+                "amplifier", Integer.toString(template.amplifier()),
+                "application", applied.name()));
     }
 }

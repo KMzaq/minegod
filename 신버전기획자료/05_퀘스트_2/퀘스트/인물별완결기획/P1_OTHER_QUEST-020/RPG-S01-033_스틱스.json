@@ -1,0 +1,66 @@
+{
+  "record_key": "RPG-S01-033",
+  "name": "스틱스",
+  "definition_id": "GR020-033-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_underworld_styx",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-033/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-033/authoring_contract.json",
+    "fields": [
+      "/exact_scope_contract/main_ownership",
+      "/exact_scope_contract/rewards_and_costs",
+      "/exact_scope_contract/relation_handoffs",
+      "/exact_scope_contract/knowledge_events"
+    ],
+    "story": "01_기존102명/07_심판과귀환15_세계해금정정.json#/records/13/outline",
+    "accepted_episodes": [],
+    "episode_field": "/exact_accepted_episodes"
+  },
+  "preserved_identity": {
+    "tier": "최상급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "승리 뒤에도 같은 주어",
+  "site": "오버월드 기존 강변 짧은 물길에서 편도8~16블록·왕복32블록 이내. ST-START-01과 ST-TURN-01 양끝, ST-BOAT-01 소유자 확인된 minecraft:oak_boat 1, ST-RETURN-01=출발칸, ST-NO-01은 경로 밖 원소유자 부지4×4. 보트 엔티티와 회수 아이템의 논리 물체UUID 연결을 유지한다.",
+  "objectives": [
+    "보트 소유자와 스틱스 앞에서 이번1회 왕복·보트반환·타인부지 미상륙 조항3개를 명시 동의. 농담/희망은 수락 처리0, 담보나 자동 처벌 없음.",
+    "허락된 물길을 보트1로 실제 왕복하며 반환칸에 보트를 놓고 원소유자가 해당 UUID 반환을 확인. 승부나 전투가 끼어도 원래 조항을 자동 변경하지 않는다.",
+    "스틱스에게 실제 지킨3항목과 어긴 항목을 돌아와 설명. 실제 위반은 정정행동(부지 이탈·보트 실물 반환)까지 확인한 뒤 수정상태로 종료한다."
+  ],
+  "branches": "보트 소실은 미반환 상태·소유자와 해결협의, 자동복제/배상강요0. 약속 거절은 미수주. 실제 지킨 조항은 다음 통과 설명 생략 근거일 뿐 영구 출입권 아님. 소유자가 반환칸 보관을 사전 허락했다면 같은 보트 실물 인계 기록까지 남기고 소유자 응답만 대기한다. 소유자 부재를 새 확인 발화로 대체하지 않는다. 동승자는 조항의 자기 수락·실제 왕복만 기록하며 타인의 반환 공로·채무는 복제하지 않는다.",
+  "reward": null,
+  "expected_minutes": [
+    3,
+    7
+  ],
+  "acceptance_tests": [
+    "농담 서약자동등록0",
+    "반환UUID 일치",
+    "왕복승리와 위반상태 독립"
+  ],
+  "special": "",
+  "reward_status_source": "NOT_APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "스틱스는 지킨 사람에게 다음 통과에서 같은 약속 설명을 반복하지 않고, 위반자에게는 그 조항의 정정을 먼저 요구한다. 영구 복종·새 처벌 권능은 없다.",
+  "source_outcome": "스틱스는 지킨 사람에게 다음 통과에서 같은 약속 설명을 반복하지 않고, 위반자에게는 그 조항의 정정을 먼저 요구한다. 영구 복종·새 처벌 권능은 없다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR020-033-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "스틱스의 직접 관측 또는 실제 보고수신, 해당 참가자와 실제 청중. 외부 상대는 counterpart_delivery 수신완료 범위만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false,
+  "source_precedence": "현재 이야기 01_기존102명/07_심판과귀환15_세계해금정정.json#/records/13/outline/current_encounter/scene_specific_conditions의 오버월드 실제 강변 배치를 적용한다. 과거 exact_scope_contract/playable_plan의 네더 통행로 문구는 현행 장소와 충돌하므로 현재 장소를 덮어쓰지 않는다. 이는 자동 차원이동·네더 우회 허가가 아니라 최신 현행 배치 우선이며 본체의 실제 위치·접근·봉인은 계속 재검사한다."
+}

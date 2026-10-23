@@ -163,7 +163,10 @@ final class SealedGuardianEncounter {
         if (step.stage() == RaidPatternTimeline.Stage.WINDUP && now % 4 == 0) telegraph(level, cast);
         if (step.enteredActive()) {
             for (ServerPlayer player : participants(server, attempt)) if (hits(cast, player.position()))
-                player.hurt(boss.damageSources().mobAttack(boss), cast.pattern == Pattern.BOMBARD ? 4 : 6);
+                com.sande.mythictrpg.prototype.PrototypeCombatAccess.hurt(player,boss,
+                        ResourceLocation.fromNamespaceAndPath("mythictrpg","trial/guardian_"+switch(cast.pattern) {
+                            case SWEEP -> "sweep";case RING -> "ring";case BOMBARD -> "bombard";
+                        }),boss.getBoundingBox().getCenter(),cast.pattern == Pattern.BOMBARD ? 4 : 6);
             level.sendParticles(ParticleTypes.POOF, cast.center.x, cast.center.y + .3, cast.center.z, 24, 2, .2, 2, .04);
             for (Vec3 mark : cast.marks) level.sendParticles(ParticleTypes.EXPLOSION, mark.x, mark.y + .2, mark.z, 1, 0, 0, 0, 0);
             sound(level, cast.center, SoundEvents.IRON_GOLEM_ATTACK, .7f);

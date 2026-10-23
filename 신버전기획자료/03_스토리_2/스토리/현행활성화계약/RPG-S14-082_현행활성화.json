@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S14-082",
+  "name": "가프",
+  "definition_id": "ACTIVATION-RPG-S14-082",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 허용 네더 경로 A→B→A 왕복1회로 실제 왕복 통행을 개통 확인. 이미 열린 통로도 실제 최초 확인이면 충분, 새 포탈 건설/봉인해제/희생0. 귀환점 실제 접근가능 receipt와 이동 결속.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "현재 승인 부지에 도달 AND 현재 네더 귀환 경로를 대조할 자기 또는 열람허가 받은 실제 기록1개 소지. 허용 실물=minecraft:filled_map 또는 내용 있는 writable_book/written_book 또는 기존 개인팩의 출처확인 기록. 현재 부지·경로/물품을 가리키는 정보1개를 현재 관찰/자기 실제 receipt와 대조해 확인. NPC의 선행 서명/응답·미전달 비밀·다른 사람 해금이력 복사는 불가. 초기 대조는 플레이어의 실물/현장 확인이며 NPC와 하는 후속 대조·수락은 별도. 기록 소비/납부0.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-053/RPG-S14-082.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "역사 access override null은 실행 허가가 아님. 실제 원문 세계해금/현재접근 및 패킷 선후행·배치를 대조. 052/053의 기존 네더 차원·바이옴·대체부지·소유·봉인을 그대로 유지.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-053/RPG-S14-082.json",
+      "record_key": "RPG-S14-082",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "327e2b0f2c5a360034194e86662f9c00c16d71302238e90457ce29a785b1a012"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-053/RPG-S14-082_가프.json",
+      "record_key": "RPG-S14-082",
+      "pointers": [
+        "/adopted_detail"
+      ],
+      "sha256": "81091e6bee146db02745b8f9c8dce7ea8d7b097328fc0ad341e37df21a668a86"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

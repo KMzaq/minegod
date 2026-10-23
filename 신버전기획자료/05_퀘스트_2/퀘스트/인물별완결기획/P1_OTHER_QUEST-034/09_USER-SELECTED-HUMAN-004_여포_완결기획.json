@@ -1,0 +1,95 @@
+{
+  "record_key": "USER-SELECTED-HUMAN-004",
+  "name": "여포",
+  "episode_id": "EP020B-USER-SELECTED-HUMAN-004",
+  "definition_alias": "Q034-09",
+  "god_id": "mythictrpg:chinese_unassigned_lu_bu",
+  "status": "저술 채택 / 구현·플레이시험 미실행",
+  "identity": {
+    "combat_tier": "상급",
+    "main_status": "NOT_APPLICABLE",
+    "record_only": false
+  },
+  "title": "박수 없는 한 합",
+  "common_contract": "P034_COMMON",
+  "source_refs": [
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-004/profile.json",
+    "기존페르소나_인물별/USER-SELECTED-HUMAN-004/authoring_contract.json#/exact_existing_cards/EP020B-USER-SELECTED-HUMAN-004",
+    "원문제작범위_보존색인.json#/records/USER-SELECTED-HUMAN-004/contract",
+    "02_천군_연결15_세계해금정정.md"
+  ],
+  "persona": "여포에게는 자기 실력을 걸 만한 다음 도전 하나를 고르고 시시한 과시 제안을 걷어내기라는 욕망이 있다. 강함을 드러내는 쾌감이 크고 장황한 칭찬은 자신을 다루려는 말처럼 느껴져 쉽게 싫증 낸다.",
+  "source_completion_guard": "현재 인간 경로 자격과 자기 명시 수락으로 정한 정면 힘겨루기·짧은 회피전 또는 전투 준비 없는 안전 소품 겨루기 중 한 경로를 실제 수행하고 합의 종료에서 도구를 거둔 참가자가 SIDE를 마친다. 승리나 여포의 허점을 반드시 만들어야 하는 새 합격선은 없다. 실제 만들어낸 허점이 있을 때만 여포가 그것을 짚으며 없으면 자기 관찰한 동작을 짚는다. 종료 위반은 방어·파기로 끝나고 약속 지도 보류다.",
+  "source_reward_guard": "현재 인간 경로의 실제 수락 참가자가 택한 한 합 또는 승인된 안전 소품 한 차례를 실제 수행하고 합의 종료에서 거둔 경우만 돌입 간격·무기 회수 지도권이다. 승리·허점 생성은 추가 필수 조건이 아니다. 종료 위반·미완료·관찰은 권리 없음.",
+  "site": "기존 평탄한7×7 연습자리. 양측 안전범위와 관전자선을 경계1블록 밖에 둔다.",
+  "objectives": [
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-004:O1",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "가호 미보유 인간경로 자격·실제 사용도구·종료 조건 확인. OR 정면 힘겨루기 / 짧은 회피전 / 전투준비 없는 안전 소품 겨루기 중1개만 수락한다."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-004:O2",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "시작신호 후 선택한1합 실제 수행. 첫 유효 접촉 또는 어느 쪽 명시 종료신호가 발생하면 즉시 끝이다. 승리·허점 생성 요구0. 안전 소품 경로는 허락 막대기를 서로 교차시킨 실제 접촉1회 또는 종료신호로 마친다."
+    },
+    {
+      "id": "EP020B-USER-SELECTED-HUMAN-004:O3",
+      "required_for": "선택한 해당 분기 및 실제 맡은 몫",
+      "action_and_evidence": "종료 뒤 공격 입력을 새로 하지 않고 도구를 거둔 행동을 확인한다. 이미 날아간 공격은 시전시각을 대조하고 고의 추가공격과 구분; 위해 발생 시 실제 피해·치료 필요를 별도 남긴다."
+    }
+  ],
+  "branch_and_partial": "미실행 대안을 수집하지 않는다. 종료위반이면 여포 방어·대련파기와 지도보류. 부상·사망은 안전중지, 실제 회복 후 새 시도키로 새 합 가능, 이전 위반기억은 삭제0.",
+  "reward": {
+    "definition": "정상 합 수행 및 종료 준수자에 돌입간격·무기회수 지도1회. 패배도 같은 권리. 종료위반·관찰·미실행권0. 신병·등급상승0.",
+    "additional_combat_reward_count": 0,
+    "recipient": "유효 수락하고 해당 실제 몫을 수행한 본인만",
+    "limit": "동일 원물 요청의 정당한 몫1회; 반복 같은 원물 정산0",
+    "recovery_ref": "P034_COMMON#/rights"
+  },
+  "service": {
+    "service_id": "SVC034-09",
+    "session_key": "service_id+world_uuid+npc_uuid+player_uuid+session_uuid",
+    "relationship_to_episode": "선택 보상 지도이행 또는 별도 새 독립실습; 원사건 수행으로 소급0",
+    "objective": "여포의 실제 시범 뒤3블록 간격에서 표적에 접근→자기 도구 회수→3블록 밖 복귀1회. 타격력·대쉬·무적·K/J 스킬을 부여하지 않는 조작 연습.",
+    "repeat": "실습 반복 가능, 보상물/스탯/MAIN 추가0"
+  },
+  "reaction": "“박수는 됐다. 방금 멈춘 손은 보았다.” 실제 허점이 없으면 있었던 듯 칭찬하지 않는다.",
+  "knowledge": {
+    "fact_id": "EP020B-USER-SELECTED-HUMAN-004:RESULT",
+    "payload": "선택한 분기, 실제 목표증거, 수행자, 소유자 인수, 남은 손해/미완료, 시점; 추론은 주장표시",
+    "npc_receipt": "직접 목격 또는 허락 보고 실제수신 뒤에만 반응",
+    "private": "개인약속·비공개 피해/채무·현재 관계는 실제 청중별 제한",
+    "relationship_handoff": {
+      "items": [],
+      "none_reason": "이번 이야기는 여포와 실제 수행자의 선택으로 끝난다. 코어에 현재 명부 상대가 없으면 새 인연·강제 소개를 만들지 않는다. 명부 밖 전승 인연은 기억으로만 보존하며 현재 등장·응답을 발명하지 않는다."
+    }
+  },
+  "failure_resume": "P034_COMMON#/recovery 적용. 전투 준비가 없으면 안전한 소품 겨루기만 한다. 중단·실패를 겁쟁이 확정으로 기록하지 않고 실제 회복 후 새로운 합을 택한다.",
+  "late_join": "P034_COMMON#/late_join 및 독립서비스 회차키 적용",
+  "estimated_play": "3~7분",
+  "balance": "일반 재료의 실제 몫 또는 능력치 없는 지도. 무한 생성 경제 없음. 생활·조작·판단 학습 가치, 전투등급 보상 우회0. 예상시간은 정적 기획 추정.",
+  "acceptance_tests": [
+    {
+      "case": "정상",
+      "expect": "해당 선택경로 목표의 실제 증거 후 해당몫만 정산"
+    },
+    {
+      "case": "미실행 후기 거절",
+      "expect": "이미 끝낸 원사건·권리 유지"
+    },
+    {
+      "case": "원물 소실/수령거절",
+      "expect": "잔존/미인수·손해 별도, 복제0"
+    },
+    {
+      "case": "후발 실습",
+      "expect": "독립 service/session만, 원EP완료0"
+    },
+    {
+      "case": "권리 지급중 재시작",
+      "expect": "같은 권리·실지급 receipt 대조, 중복0"
+    }
+  ],
+  "runtime_ready": false
+}

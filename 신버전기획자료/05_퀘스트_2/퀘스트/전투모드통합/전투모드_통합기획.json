@@ -1,0 +1,402 @@
+{
+  "document_type": "AUTHORING_DESIGN_NOT_RUNTIME_SCHEMA",
+  "contract_id": "COMBAT-MOD-INTEGRATION-01",
+  "revision": 2,
+  "status": "ADOPTED_TRANSITION_PROPOSAL_NOT_IMPLEMENTED",
+  "tested": false,
+  "recommended_mode": "BC_NATIVE_BASELINE",
+  "alternative_mode": "LEGACY_GEOMETRY",
+  "mutually_exclusive_modes": true,
+  "target": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.248",
+    "simply_swords": {
+      "version": "1.70.2",
+      "file_id": 8746001
+    },
+    "better_combat": {
+      "version": "2.4.0+1.21.1-neoforge",
+      "version_id": "VhIOvcXP"
+    },
+    "exact_combination_test": "NOT_RUN",
+    "dedicated_server_five_players": "NOT_RUN",
+    "dependency_lock": "정확 배포 메타데이터 대조 후 별도 확정"
+  },
+  "invariants": [
+    "기존 mythictrpg 정의ID·콘텐츠ID·획득권 유지",
+    "무스킬은 무스킬",
+    "신제 무한내구와 개별 유한 예외 유지",
+    "이관으로 새 보상/무료수리/추가권리0",
+    "마나·쿨·장신구·가호 출처별 권리 유지",
+    "원문 NPC/세계/MAIN/개인수행 조건 유지"
+  ],
+  "owners": {
+    "normal_attack": "BETTER_COMBAT_ONLY",
+    "normal_attack_scope": [
+      "입력실행",
+      "실제스윙판정",
+      "선딜타점회수",
+      "콤보",
+      "쌍수교대",
+      "평타애니와풍절음"
+    ],
+    "integration": [
+      "권리와보호필터",
+      "시전마나쿨",
+      "우클릭",
+      "K/J",
+      "장신구가호",
+      "내구정산",
+      "피해분류",
+      "보스연결"
+    ],
+    "simply_swords": "검증된 의존 리소스와 무기군 참고. 능력자동상속0.",
+    "npc_and_boss_ai": "기존 컨트롤러 별도"
+  },
+  "item_strategy": {
+    "implementation": "자체 효과없는 신규 아이템 + SS 허용 리소스 + BC 프로필 + 기존 개별 기술",
+    "rename_original_item_only": false,
+    "inherit_unique_base_by_default": false,
+    "inherit_plain_ss_base_as_effect_free": false,
+    "ids": "레지스트리ID·논리정의ID·권리ID·physicalUUID를 구분하고 기존정의에 연결",
+    "license": "사용자 확보 담당. 확보 완료 주장0. 의존성 재사용 우선."
+  },
+  "ss_effect_policy": {
+    "on_hit": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "passive_inventory_tick": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "active_main_offhand_keys": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "channel": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "implicit": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "gems": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "awakening": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "attack_speed_bonus": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "healing_lifesteal": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "mana_restore": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요.",
+    "cooldown_reset": "기본상속0; 허용목록에 명시된 자체효과만. 개별 경로별 차단시험 필요."
+  },
+  "input_contract": {
+    "same_tick": "서버 승인순서 첫 유효행동만; 나머지는 무소모거절·자동예약0",
+    "normal_lifecycle": "BC 상태를 공통잠금에 연결; 별도평타시계0",
+    "weapon_active": "주손우클릭1개",
+    "learned": "K선택→J 또는 기존명령",
+    "interaction_priority": "Shift우클릭·직접지정 상자/문/NPC가 기술보다우선",
+    "active_locks_bc": true,
+    "bc_recovery_locks_active": true,
+    "cancel": "BC 선딜취소만 허용범위 적용; 이미준피해회수/공격가용시각을교체로앞당김0"
+  },
+  "hands": {
+    "two_handed": "주손유지중 보조손공격·방패·음식·활성기0; 실물삭제0; NPC/블록상호작용유지",
+    "H01_explicit_change": "구보조손사용설명→새양손전투사용차단",
+    "dual_wield": "명시허용조합만 BC 교대. 별도전투엔진0. 기존미명시 신규공속보너스0을출시초기기준으로검증",
+    "unverified_dual_combo": "해당조합만 비활성",
+    "accessory_slots": 2
+  },
+  "events": {
+    "kinds": [
+      "NORMAL_MELEE",
+      "WEAPON_SKILL",
+      "LEARNED_SKILL",
+      "NPC_SUPPORT",
+      "NON_DAMAGE_INTERACTION"
+    ],
+    "fields": [
+      "actual_actor_uuid",
+      "credit_owner_uuid",
+      "content_id",
+      "action_id",
+      "hand",
+      "swing_or_cast_sequence",
+      "combat_target_id",
+      "damage_path"
+    ],
+    "dedup": "같은행동·허용펄스·본체전투ID별1회. 다부위본체합치기. 재전송0. 실제다단의서로다른펄스보존.",
+    "chain": "적격무기스킬cast전체최초유효체력피해1회",
+    "flat_attack": "기존적격피해사건별규칙; 모든효과를cast1회로재정의하지않음",
+    "separate_damage": "물리평타/물리기술/마법/기믹을자동합침0"
+  },
+  "mana": {
+    "base_max": 200,
+    "regen_fraction_current_max_per_second": 0.01,
+    "regen_condition": "살아서접속중",
+    "slots": 2,
+    "increase_max_fills_current": false,
+    "decrease_max": "clamp",
+    "commit": "승인영수증·마나차감·쿨시작·스냅샷 하나의논리거래",
+    "before_rejection_cost": 0,
+    "after_commit_cancel": "비용쿨유지",
+    "refund": "기존적격공격만 cast종료적중0 때 snapshot비율1회; 상한지불량100%; 쿨환급0",
+    "pure_defense_refund": false
+  },
+  "cooldowns": {
+    "ordinary": "playerUUID+skillID, 서버가동tick, 재접속·교체·부활·재지급초기화0",
+    "accessory": "개별획득권리별원문시간기준",
+    "unique_originals": "worldUUID+physicalUUID+mode 원문우선",
+    "uncertain_commit": "영수증대조전재실행0"
+  },
+  "rights_and_loot": {
+    "only_authorized_acquisition": true,
+    "block_native_routes": [
+      "레시피",
+      "전리품상자주입",
+      "pity",
+      "몹장비드롭",
+      "재련",
+      "보석룬",
+      "관리소환의캠페인사용"
+    ],
+    "hide_recipe_is_enforcement": false,
+    "native_item_means_quest_right": false,
+    "existing_unverified_native_item": "자동파괴0·격리와원장확인",
+    "migration": "같은claim잠금→구실물대조→새실물교체→영수증대조→구실물무효화; 불명시중복지급0"
+  },
+  "H01_transition": {
+    "definition_id": "mythictrpg:guan_yu_return_blade",
+    "old": {
+      "damage_primary": 9,
+      "damage_auxiliary": 4.5,
+      "attack_speed": 1.25,
+      "cycle_ticks": 16,
+      "hit_tick": 6,
+      "range": 4,
+      "angle": 70,
+      "max_targets": 3,
+      "vertical_delta": 1.5,
+      "movement_multiplier": 0.6
+    },
+    "recommended": {
+      "basis": "BC_GLAIVE 개발브랜치후보",
+      "base_damage": 9,
+      "attack_speed": 1.25,
+      "combo_multipliers": [
+        0.8,
+        0.8,
+        1.4
+      ],
+      "nominal_raw_hits": [
+        7.2,
+        7.2,
+        12.6
+      ],
+      "range_bonus": 0.5,
+      "range_absolute": "실제개체도달거리+0.5; 기존4와동등보장0",
+      "angles": [
+        150,
+        150,
+        180
+      ],
+      "hitboxes": [
+        "VERTICAL_PLANE",
+        "VERTICAL_PLANE",
+        "HORIZONTAL_PLANE"
+      ],
+      "upswing": 0.5,
+      "conditional_nominal_hit_tick": 8,
+      "conditional_nominal_cycle_ticks": 16,
+      "max_targets": "BC정상후보목록; 구3명상한폐기",
+      "auxiliary_rule": "구4.5삭제·BC정상표적별타격",
+      "shaft_capsule": "삭제",
+      "movement": "BC선택프로필/서버기본",
+      "two_handed": true,
+      "nominal_average_single_target_dps": 11.25,
+      "actual_dps": "NOT_MEASURED",
+      "nominal_assumptions": "방어·치명·힘·인챈트·고정추가피해 없음, 3단 모두 같은16tick 주기로 완충·명중, 콤보 끝 추가대기/재설정/클립 제한 없음일 때만 (0.8+0.8+1.4)/3=1, 9×1.25=11.25. 실제 주기·클립 길이·DPS는 미측정."
+    },
+    "preserved": {
+      "durability": 1561,
+      "mana": 0,
+      "weapon_skill": null,
+      "new_claims": 0,
+      "E": 10,
+      "W": 8,
+      "K": 0
+    },
+    "legacy_alternative": "구기하필터·주보조배분·6tick타점·자루공간의버전별어댑터필요; BC평타와병렬타격0"
+  },
+  "named_skill_invariants": {
+    "H03": {
+      "angle": 100,
+      "mana": 20,
+      "cooldown_ticks": 160,
+      "timing": [
+        2,
+        4,
+        8
+      ],
+      "counter_damage": 0
+    },
+    "OLY-ATH-W01": {
+      "mana": 28,
+      "cooldown_ticks": 200,
+      "counter_damage": 6,
+      "counter_range": 2.5,
+      "counter_tick": 6,
+      "only_original_attacker": true,
+      "damage_kind": "WEAPON_SKILL_NOT_BC_NORMAL"
+    },
+    "UNIFIED-SWORD": {
+      "normal_initial_attributes": [
+        12,
+        1.4
+      ],
+      "old_normal_range": 3,
+      "old_normal_cap": 1,
+      "normal_transition": "무기별BC프로필전후표; 14tick고정사칭0",
+      "active_damage": 24,
+      "active_mana": 24,
+      "active_cooldown_ticks": 240,
+      "active_cap": 1,
+      "durability": 4096,
+      "world_quantity": 1,
+      "binding_interaction_damage": 0
+    }
+  },
+  "boss_bridge": {
+    "scope": [
+      "mythictrpg:workshop_trial_warden",
+      "mythictrpg:ravine_rampager"
+    ],
+    "hurt_key": [
+      "attemptUUID",
+      "bossCombatId",
+      "attackerPlayerUUID"
+    ],
+    "suppression_ticks": 10,
+    "within_window": "같거나작으면억제·큰것은차이만",
+    "refresh_on_followup": false,
+    "different_players_share_key": false,
+    "projectiles_share_owner_in_this_scope": true,
+    "unclassified_parry_or_cc": "BLOCK",
+    "global_apply_to_all_bosses": false,
+    "npc_ai_auto_from_equipment": false,
+    "native_iframe_reset_gate": "BC 개발 ServerNetwork는 allow_fast_attacks일 때 대상 timeUntilRegen을0으로 만든다. 기존 전투계약의 피격무적/두보스10tick억제/페이즈무적은 자동 보장되지 않는다. 초기 캠페인에서는 기존무적을 지우는 설정을 허용하지 않는 운영 기준으로 시작하며 정확배포 설정 적용/성능변화와 독립 보스억제 접점을 확인한다. BC가 원래 리셋하는 것을 전부 끄는 설정이 검증되지 않으면 해당 실행경로를 잠근다. 기존 보스10tick를 다른 모든대상에 강제0."
+  },
+  "implementation_order": [
+    "버전·배포메타·리소스·접점대조",
+    "무효과신규아이템과원장연결",
+    "BC평타단일화·H01새기준시험",
+    "우클릭/KJ/마나/쿨/잠금",
+    "원본획득우회·손·장신구가호·보스",
+    "2인/5인·본편회귀",
+    "연출과동기화인수",
+    "통과한무기만활성"
+  ],
+  "sources": [
+    {
+      "id": "SS_RELEASE",
+      "url": "https://www.curseforge.com/minecraft/mc-mods/simply-swords/files/8746001"
+    },
+    {
+      "id": "BC_RELEASE",
+      "url": "https://modrinth.com/mod/better-combat/version/2.4.0%2B1.21.1-neoforge"
+    },
+    {
+      "id": "BC_INTEGRATION",
+      "url": "https://github.com/ZsoltMolnarrr/BetterCombat#integrate-your-mod"
+    },
+    {
+      "id": "BC_ATTRIBUTES",
+      "url": "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/java/net/bettercombat/api/WeaponAttributes.java"
+    },
+    {
+      "id": "BC_GLAIVE",
+      "url": "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/resources/data/bettercombat/weapon_attributes/glaive.json"
+    },
+    {
+      "id": "BC_HAMMER",
+      "url": "https://raw.githubusercontent.com/ZsoltMolnarrr/BetterCombat/1.21.1/common/src/main/resources/data/bettercombat/weapon_attributes/hammer.json"
+    },
+    {
+      "id": "SS_GLAIVE_PARENT",
+      "url": "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/resources/data/simplyswords/weapon_attributes/iron_glaive.json"
+    },
+    {
+      "id": "SS_ADDON",
+      "url": "https://github.com/Sweenus/SimplySwords/tree/Architectury-1.21/developer-docs"
+    },
+    {
+      "id": "SS_UNIQUE_BASE",
+      "url": "https://github.com/Sweenus/SimplySwords/blob/Architectury-1.21/developer-docs/unique-weapon-walkthrough.md"
+    },
+    {
+      "id": "SS_ACTIVE_API",
+      "url": "https://github.com/Sweenus/SimplySwords/blob/Architectury-1.21/developer-docs/api/active-abilities.md"
+    },
+    {
+      "id": "SS_UNIQUE_WIKI",
+      "url": "https://github.com/Sweenus/SimplySwords/wiki/Unique-Weapons"
+    },
+    {
+      "id": "SS_GEM_WIKI",
+      "url": "https://github.com/Sweenus/SimplySwords/wiki/Gem-Socketing"
+    },
+    {
+      "id": "SS_PLAIN_BASE",
+      "url": "https://raw.githubusercontent.com/Sweenus/SimplySwords/Architectury-1.21/common/src/main/java/net/sweenus/simplyswords/item/SimplySwordsSwordItem.java"
+    }
+  ],
+  "source_contracts": [
+    "전투와보상/공통실행",
+    "공통설계/전역기준",
+    "스킬연출/00_공통연출기준",
+    "관우/보스와밸런스",
+    "공방/보스와밸런스",
+    "본편성장/원본과합일검_기획"
+  ],
+  "damage_application_contract": {
+    "status": "NEW_TRANSITION_DESIGN_NOT_IMPLEMENTED",
+    "source_references": [
+      "퀘스트/공통설계/전역기준.json#/blessings/effect_details/0",
+      "퀘스트/공통설계/전역기준.json#/power_policy",
+      "퀘스트/공통설계/전역기준.json#/equipment_rules",
+      "퀘스트/전투와보상/공통실행.json"
+    ],
+    "A0_definition": "이 전환의 A0는 정상 플레이어 기본 공격기여+현재 실제 공격손 무기의 기여만 합친 무버프 총공격이다. 힘/약화 등 상태 modifier, 인챈트, 장신구 고정보정, 레이드0.04항, BC combo/dual/sweep 임시배율, 치명·충전·대상방어를 제외한다. H01 정상조건 A0=9. 이 정의는 기존 CP공식의 A를 소급 재작성하지 않는 신규 실행 입력 정의다.",
+    "level": "L은 힘 표시 단계(0=없음, I=1)이며 엔진 amplifier가0부터 시작하면 단계로 한번만 변환한다.",
+    "attribute_constructor": "목표 총공격9를 SS/바닐라 생성자 damage 인자9로 그대로 넣지 않는다. 해당 배포 API가 기본1+재질M+인자C를 만드는 경로라면 C=8-M이고 최종 무버프 속성9로 인수한다. 자체 modifier 경로면 플레이어기본1+무기8 한 번만 부여한다. 두 경로 동시 적용0. 속도1.25도 기본4인 additive 경로에서 modifier -2.75이며, 배포 실제 기본/operation이 다르면 결과1.25를 검증한다. 숫자는 조건부 역산이지 검증된 생성자 호출 코드가 아니다.",
+    "strength_native": "바닐라 Strength/가호가 이미 공격속성에 +3L을 반영하면 통합부는 +3L을 다시 더하지 않는다. 가호가 같은 효과를 주는 여러 출처의 상한/선택은 기존 규칙을 유지한다. 값 자체가 아니라 modifier 식별자·operation·출처와 실제 포함 여부를 기록한다.",
+    "native_order": [
+      "권리·실제손·행동·대상보호 승인 후 A0와 출처별 속성·인챈트·장신구 스냅샷 확보. CP 점수식은 실행하지 않는다.",
+      "기본+무기 및 적격 상태 modifier를 엔진 속성에 정확히1회 반영. 프로젝트 고정추가피해는 이 속성에 중복 등록하지 않는다.",
+      "BC가 해당 단계의 combo 및 허용된 dual/sweep 보정을 자기 경로에서1회 반영한다. 개발소스는 temp_attack ADD_MULTIPLIED_BASE를 사용한다. 통합부가 BC 처리후 피해에 combo를 다시 곱하거나 SS의 피해수치를 더하지 않는다.",
+      "BC가 호출한 정상 공격 경로에서 충전·치명·적격 인챈트를1회 처리한다. 정확1.21.1 배포 경로의 내부 순서는 소스/단계로그로 확인한다. 날카로움 포함 명목값7.5를 속성7.5로 넣고 날카로움II를 다시 실행하지 않는다.",
+      "정상 공격의 방어 전 결과에 프로젝트 추가보정만 합친다. 적격 레이드 직접근접의 추가량은0.04×A0×L, 적격 장신구는 원문 피해사건별 고정량F. 이 두 항은 BC 콤보/치명/인챈트로 재증폭하지 않는 신규 전환안이다. 대상별 적격 여부와 실제 추가량을 기록하고 하나의 피해사건으로 합친다.",
+      "합친 원시피해를 기존 damage type의 방어·강인함·저항·보호·무적/보스억제 경로에 정확히1회 전달한다. 실제 대상별 순서를 후킹 완료로 주장하지 않으며 접점/태그 검증 실패시 해당 경로를 잠근다. 갑옷 후 체력에서 보정량을 직접 빼거나 별도 추가공격 호출0.",
+      "최종 유효피해·출처·이벤트ID 확정 후 기존 가호/장신구 적중 규칙과 내구를 정산한다. 같은 요청·본체중복·추가효과 재귀0; 의도된 여러 펄스는 별도 유지."
+    ],
+    "already_included_rule": "실측 공격속성/방어전 피해에 힘·날카로움·F·레이드항·combo가 이미 포함됐으면 그 항은 재가산0. 어느 단계인지 모르는 최종 float에서 임의로 빼고 다시 더하지 않는다. 소유한 출처 modifier를 이관·제거하고 단일 경로로 정규화한 뒤 결과를 확인한다. 타모드 출처를 안전하게 분리할 수 없으면 해당 조합을 활성화하지 않는다.",
+    "skill_exclusion": "위 근접전환식은 투사체/마법/독립 무기기술/NPC지원에 자동 적용0. 아테나 응수6·합일검24·H03피해0을 무기공격력/힘/콤보로 재증폭0. 장신구는 개별 원문 적격 피해사건 규칙만 적용한다.",
+    "math_boundary": "A0+3L+0.04A0L은 combo=1·완충·비치명·무인챈트·F=0·무방어·적격레이드라는 제한된 비교식이다. CP식이나 BC 결과를 이 식에 재입력하지 않는다. H01 A0=9/L=1이면 일반직접근접12, 적격레이드12.36인 조건부 단일적용 검산이다. BC 단계0.8/0.8/1.4에는 이 값을 다시 곱하지 말고 정상공격 단계로그+독립 레이드0.36 합성으로 검증한다.",
+    "required_log_fields": [
+      "base_entity_attack",
+      "weapon_material_component",
+      "weapon_constructor_or_modifier_component",
+      "A0",
+      "strength_level",
+      "attribute_modifiers_with_ids_operations_sources",
+      "attack_damage_before_BC_temp",
+      "attack_damage_after_BC_temp",
+      "combo_index",
+      "combo_multiplier",
+      "dual_sweep_config_and_delta",
+      "enchantment_contribution",
+      "critical_and_charge_stage",
+      "native_pre_defense_damage",
+      "raid_extra",
+      "accessory_fixed_extra",
+      "combined_raw_damage",
+      "defense_stages",
+      "boss_suppression",
+      "final_hp_delta"
+    ],
+    "acceptance_cases": [
+      "H01 무버프9/속도1.25; 바닥·공격후·주보조교체·해제·재접속에도 SS재질/생성자/기본값 누적0.",
+      "힘0/I/II, 가호와 기존 Strength 동시, BC각단계, 1/3/5표적에서 modifier와 피해 단계로그 대조. 일반에는 레이드항0, 적격레이드만0.04A0L 1회.",
+      "공방검 A0=6 + 날카로움II 별도. 기존 명목총7.5는 최종 비교값이지 item attribute 입력7.5가 아님. 인챈트0/II와 치명 on/off를 BC각단계별 대조.",
+      "장신구0/1/2슬롯·같은품 별도적법권리2개·전투교체에서 원문 적격 F만1회. F를 A0에 포함해 레이드 추가량이나 combo를 증폭하지 않음.",
+      "0.8/0.8/1.4·중도취소·콤보재시작·다중대상 sweeping 설정과 허용쌍수 보정의 합산 operation을 배포소스로 확인. 독립 곱셈을 가정하지 않음.",
+      "갑옷/강인함/저항/보호 각각 on/off, 일반무적·보스10tick억제·페이즈무적에서 전체 한 경로 처리. 추가F/레이드항이 무적을 우회하지 않음.",
+      "패킷재전송·보스다부위·5인 동일tick·동일인 기술/평타 경합에서 피해/방어/가호/내구 추가실행0."
+    ],
+    "implementation_boundary": "목표 배포jar와 실제 API/이벤트 우선순위/후킹 미검증. 위 순서는 기획 입력·소유권·중복방지 인수계약이며 구현완료 증거가 아니다."
+  }
+}

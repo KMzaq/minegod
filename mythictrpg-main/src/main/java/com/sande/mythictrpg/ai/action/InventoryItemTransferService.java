@@ -18,9 +18,9 @@ final class InventoryItemTransferService {
     }
 
     static Availability availability(ServerPlayer player, ResourceLocation itemId) {
-        int inventoryCount = count(player.getInventory(), itemId);
+        int inventoryCount = count(player, player.getInventory(), itemId);
         Optional<Container> lookedAt = lookedAtContainer(player);
-        int containerCount = lookedAt.map(container -> count(container, itemId)).orElse(0);
+        int containerCount = lookedAt.map(container -> count(player, container, itemId)).orElse(0);
         return new Availability(inventoryCount, containerCount, lookedAt);
     }
 
@@ -29,10 +29,11 @@ final class InventoryItemTransferService {
         if (available.total() < requested) {
             return false;
         }
-        int remaining = remove(player.getInventory(), itemId, requested);
+        if (requested <= 0) return false;
+        int remaining = remove(player, player.getInventory(), itemId, requested);
         if (remaining > 0 && available.lookedAtContainer().isPresent()) {
             Container container = available.lookedAtContainer().orElseThrow();
-            remaining = remove(container, itemId, remaining);
+            remaining = remove(player, container, itemId, remaining);
             container.setChanged();
         }
         player.getInventory().setChanged();
@@ -49,11 +50,11 @@ final class InventoryItemTransferService {
         return blockEntity instanceof Container container ? Optional.of(container) : Optional.empty();
     }
 
-    private static int count(Container container, ResourceLocation itemId) {
+    private static int count(ServerPlayer player, Container container, ResourceLocation itemId) {
         int count = 0;
         for (int slot = 0; slot < container.getContainerSize(); slot++) {
             ItemStack stack = container.getItem(slot);
-            if (!stack.isEmpty() && itemId.equals(net.minecraft.core.registries.BuiltInRegistries.ITEM
+            if (transferable(player, stack) && itemId.equals(net.minecraft.core.registries.BuiltInRegistries.ITEM
                     .getKey(stack.getItem()))) {
                 count += stack.getCount();
             }
@@ -62,11 +63,11 @@ final class InventoryItemTransferService {
     }
 
     /** Returns the amount that could not be removed. */
-    private static int remove(Container container, ResourceLocation itemId, int requested) {
+    private static int remove(ServerPlayer player, Container container, ResourceLocation itemId, int requested) {
         int remaining = requested;
         for (int slot = 0; slot < container.getContainerSize() && remaining > 0; slot++) {
             ItemStack stack = container.getItem(slot);
-            if (stack.isEmpty() || !itemId.equals(net.minecraft.core.registries.BuiltInRegistries.ITEM
+            if (!transferable(player, stack) || !itemId.equals(net.minecraft.core.registries.BuiltInRegistries.ITEM
                     .getKey(stack.getItem()))) {
                 continue;
             }
@@ -75,6 +76,11 @@ final class InventoryItemTransferService {
             remaining -= removed;
         }
         return remaining;
+    }
+
+    private static boolean transferable(ServerPlayer player, ItemStack stack) {
+        return !stack.isEmpty() && com.sande.mythictrpg.ai.action.protection.AiProtectedItems
+                .rejection(player, stack).isEmpty();
     }
 
     record Availability(int inventoryCount, int containerCount, Optional<Container> lookedAtContainer) {

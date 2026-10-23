@@ -13,7 +13,11 @@ final class AiActionConfirmationTerms {
             throw new IllegalArgumentException("Confirmation template is no longer available");
         }
         List<String> lines = new ArrayList<>();
-        if (template instanceof ItemRequestTemplate item) {
+        if (template instanceof PlayerDamageTemplate damage) {
+            lines.add("위험 경고: 이 행동은 사망을 허용하며 아이템·경험치 손실이 발생할 수 있습니다.");
+            lines.add("피해: " + damage.damageMode() + " / " + damage.amount());
+            lines.add("거절하거나 확인하지 않으면 실행하지 않습니다. 확인 시에도 중요·귀속 물품 손실은 보호합니다.");
+        } else if (template instanceof ItemRequestTemplate item) {
             lines.add("아이템 소비: " + item.itemId() + " × " + item.count());
             lines.add("본인 인벤토리와 확인 시 바라보는 근처 상자에서 소비합니다.");
             lines.add("아이템 전달만 수행하며, 보상·호감도 상승을 자동으로 약속하지 않습니다.");

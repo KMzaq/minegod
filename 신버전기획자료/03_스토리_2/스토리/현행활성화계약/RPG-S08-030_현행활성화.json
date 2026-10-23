@@ -1,0 +1,98 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S08-030",
+  "name": "프윌",
+  "definition_id": "ACTIVATION-RPG-S08-030",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 숲의 허용된 출발점 A에서 갈림길 B에 도보 도달하여 실제 분기와 귀환 방향1회 관찰 후 A로 돌아온 왕복1회. 표적·시야·관찰증거는 공통 관찰계약. 사냥·NPC 대답0.",
+      "completion_count": 1,
+      "scope": "같은 world_uuid에서 실제 player_uuid 한 명이 선택한 AND/OR 조건 전체를 달성하면 세계영구; 여러 사람 부분이력 합산0",
+      "initial_state": "새 세계 WORLD_RELEASE=false. 아래 실제 유효 달성 전에는 계약 작성·후보 등록만으로 true가 되지 않는다. 이미 유효하게 배치/접촉된 기존 본체와 그 세계 원장은 재잠금하지 않는다.",
+      "transition": "FALSE → 같은 플레이어의 실제 완료 증거 검증 → world_uuid+record_key 최초 CAS → TRUE 영구. 해금 달성자의 개인 소유/관계/보상/수신을 자동 생성하지 않는다.",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "evidence": "실제 source event ID, world/player UUID, 행동별 object/item/route UUID, 순서있는 실제 위치 및 인수/소비 전후를 같은 시도로 결속. 각 행동의 정수량은 rule을 따른다. 이미 있는 동일 receipt는 증거로 참조할 수 있으나 횟수 누적·물품/권리/보상 재생성0. 다른 인물의 조건에도 사실상 맞는 사건이면 인물별 세계 판정에 참조 가능하며 같은 사건을 새 행동으로 복제하지 않는다.",
+      "source_history_is_not_current_rule": true,
+      "current_adoption_note": "원문 미채택 후보를 현재 일반설계로 선택·수량화했다. 원문 status/null/후보 문자열은 수정하지 않으며 과거부터 채택됐다고 소급하지 않는다.",
+      "resource_refs": []
+    },
+    "first_encounter": {
+      "current_predicate": "현재 방문에서 실제 기존 길 또는 관찰 가능한 숲 지형 표적1개를 실제 바라보거나 관찰 상호작용1회. 공통 observation의 시야·16블록 이내 규칙을 적용하고 없는 흔적/동물을 만들어 두지 않는다.",
+      "current_location": "현재 기존 숲 폐허·산림의 허용된 공용 구간에 실제 도달해 숲의 관찰 가능한 흔적 또는 기존 길을 살피는 플레이어. 해당 장소의 현재 통행·위험·배치 여건이 적합해야 한다.",
+      "source_location_quote": "현재 기존 숲 폐허·산림의 허용된 공용 구간에 실제 도달해 숲의 관찰 가능한 흔적 또는 기존 길을 살피는 플레이어. 해당 장소의 현재 통행·위험·배치 여건이 적합해야 한다.",
+      "site_anchor": "실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음",
+      "world_dimension": "minecraft:overworld",
+      "location_exact_ref": "스토리/인물별연결/RPG-S08-030.json#/connection_manuscript/encounter_generation/location/effective_current_rule",
+      "site_source_ref": "스토리/인물별연결/RPG-S08-030.json#/connection_manuscript/encounter_generation",
+      "preparation_source_ref": "스토리/인물별연결/RPG-S08-030.json#/connection_manuscript/source_reuse/retained_placement_source_only/meeting_route/value",
+      "preparation_label": "숲 흔적 관찰",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "기존 무작위 공용 풀. 확률/주기/NONE/actor가중/적격주체선정/쿨다운/CAS는 공통계약 pool 및 전역 참조를 그대로 사용. 이 파일은 전용 수치·새 풀·추가 추첨을 만들지 않는다.",
+      "subject": "현재 세계 가용성과 위 개인 조건을 갖춘 실제 온라인 생존 플레이어1명. 해금자일 필요 없고 0명이면 발생0. 여러 명은 기존 전역 선택계약.",
+      "time": "별도 시간제한 없음. 실제 현재 부지의 출입·위험·세계/봉인 가용성은 항상 검사. 세계해금 행동의 시간조건은 그 행동에만 적용하고 첫조우에 이식하지 않는다.",
+      "no_preappearance_actor_response": true,
+      "existing_body_contact": "이미 등장한 동일 본체의 일반 인사·재대화·친구 합류에는 위 최초 후보 준비물·관찰/이동 과제·새 추첨을 다시 요구하지 않는다. 현재 접근·청중·허용 접촉모드만 확인하며 실제 서비스/거래/수락은 기존 활동의 별도 조건을 따른다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "정체·현재 접근·발화/비언어·MAIN/보상 범위는 source_refs의 현재 페르소나와 기존 개별기획 그대로. 후속 활동 소품·소개자·장면 수행/응답은 최초 배치 전제로 끌어올리지 않는다. 원문 옛 사망·기적은 지금의 부활·새 본체를 허가하지 않는다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "knowledge_boundary": "세계 해금 receipt는 세계 가용성을 위한 기술 원장일 뿐 NPC의 자동 지식·개인 관계·공적 인정이 아니다. 누가 했는지는 실제 목격 또는 허락된 전달과 해당 청중의 실제 수신이 있을 때만 안다. 해금자=조우주체라고 대사에서 추정하지 않는다.",
+    "new_implementation": "실제 행동/수량/물품·경로·관찰 receipt와 원장 연결은 신규 구현 요구이며 실제 게임/API/LLM/영상/5인 시험은 수행하지 않았다. 일반 기획 채택과 런타임 등록·실행 완료는 별개다."
+  },
+  "source_history_preserved": {
+    "exact_value": "누구 한 명이 기존 숲의 허용된 탐험 구간을 걸어 갈림길과 귀환점을 실제 확인한 왕복 이력. 사냥감 처치나 정직하다는 판정은 필수가 아니다.",
+    "exact_ref": "스토리/인물별연결/RPG-S08-030.json#/connection_manuscript/world_unlock/proposed_observable_history",
+    "interpretation": "원문 역사 후보의 보존 인용. 실제 현행 실행은 adopted_activation만 읽는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S08-030.json",
+      "record_key": "RPG-S08-030",
+      "pointers": [
+        "/connection_manuscript/world_unlock/proposed_observable_history",
+        "/connection_manuscript/encounter_generation",
+        "/connection_manuscript/current_basic_persona",
+        "/connection_manuscript/main_and_reward_boundary",
+        "/connection_manuscript/source_reuse/retained_placement_source_only/meeting_route/value"
+      ],
+      "sha256": "50b7f42a955b97b81ff60bafed55d14b3c88bf65e7e19dde8f002b172dc79f49"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S08-030.json",
+      "record_key": "RPG-S08-030",
+      "pointers": [
+        "/current_identity",
+        "/production_scope",
+        "/current_access",
+        "/original_profile",
+        "/connection_persona"
+      ],
+      "sha256": "6eaa332a642f6f208a596be2eee685ffa0d8b4cc903de48c72c8573ccc39c1a8"
+    },
+    {
+      "logical_file": "퀘스트/인물별범위/RPG-S08-030.json",
+      "record_key": "RPG-S08-030",
+      "pointers": [
+        "/contract"
+      ],
+      "sha256": "688d78b8fee727e908dccf4e07b7e44d5b94a266b6ecae3db77fc69bdfca3506"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-040/10_RPG-S08-030_프윌_완결기획.json",
+      "record_key": "RPG-S08-030",
+      "pointers": [
+        "/identity_guard",
+        "/episodes",
+        "/services"
+      ],
+      "sha256": "76122091edef6b08acd8f84196bbc3522a5dc1cff28060d28775f337dba604d9"
+    }
+  ],
+  "source_null_boundary": "원문 connection_persona 또는 역사 runtime 필드가 null이면 그대로 보존한다. 현재 정체·원프로필과 실제 연결 원고의 current_basic_persona/basic_persona, 이 별도 adopted_activation을 결속하며 null을 무조건 허용이나 과거 채택으로 바꾸지 않는다.",
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

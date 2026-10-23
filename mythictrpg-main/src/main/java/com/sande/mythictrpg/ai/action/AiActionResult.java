@@ -59,7 +59,8 @@ public record AiActionResult(UUID proposalId, ResourceLocation actionType, Statu
             "template_id", "item_id", "count", "effect_id", "duration_ticks", "amplifier",
             "damage_mode", "damage_type", "requested_damage", "health_before", "health_after", "allow_death",
             "quest_id", "quest_status", "reward_table_id", "tier", "status", "combat_started", "attempt_id",
-            "affinity_before", "affinity_after", "affinity_delta", "event_id", "event_kind");
+            "affinity_before", "affinity_after", "affinity_delta", "previous_affinity", "current_affinity", "applied_delta", "event_id", "event_kind",
+            "directive", "target_entity_id", "target_player_id", "work_completed");
 
     private static String quoted(String text, int maximum) {
         String bounded = text.length() > maximum ? text.substring(0, maximum) + "…" : text;

@@ -1,0 +1,53 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S12-010",
+  "name": "루스탐",
+  "definition_id": "ACTIVATION-RPG-S12-010",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "initial_access_preserved",
+    "world_unlock": {
+      "rule": "기존 C01 공통 시작 뒤 초기접근 후보를 유지. 새 세계해금·개인 재해금0. 기존 접근/현재 적격성과 본체 상태만 확인.",
+      "completion_count": 0,
+      "scope": "기존 접근 유지/별도 세계 행동과제 없음",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "기존 초기접근의 공개 마당/생활권 방문. 휴대 기록 대조는 후속 선택 활동이며 최초 인사에 기록 소지·납부0. 실제 대조를 택하면 자기 관찰 경로가 적힌 지도/기록1개를 현재 지형 또는 실제 관측에 비교; 타흐미네 표식은 별도 허가를 실제 받은 경우에만 취급.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-045/RPG-S12-010.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "현재 마스터의 명부·정체·전투등급·미정 소속·접근 분류를 그대로 보존한다. / 이야기상 옛 죽음·귀환·기적을 현재의 새 사망·부활·능력 효과로 자동 확정하지 않는다. / 자료의 종교·문학 배경을 사용한 게임 창작이다. 현실의 신앙 전체를 대신 설명하거나 평가하는 발화로 쓰지 않는다. / 사소한 행동은 기존 공간·도구로 표현한다. 새 차원·필수 건축·퀘스트·보상·실행 JSON을 요구하지 않는다. / 축복과 가호를 구별하며 소개나 도움을 자동 가호·정치 가입·MAIN 수락으로 바꾸지 않는다. / 실제 Story 서버 시험은 하지 않았다. 조건 지원과 런타임 연결·실행 성공은 다른 상태다. / 현재 접근 원본: 기존 명부가 C01 공통 시작 뒤 공개 생활권의 초기 조우 후보로 제안한 인물. 현행 원칙과 충돌하는 개별 후행 조건을 확인하지 못해 후보안으로 유지한다. 전원 확정 출현이나 새 초기 배정을 뜻하지 않는다. / 자기 과거 회상 경계: 여러 과업을 수행해 온 자신의 영웅 행적이라는 범위는 기억한다. 제공된 원전 요약에 없는 과업의 세부와 소흐랍의 현재 신원 확인 결과는 넣지 않는다. 제외된 마야·잉카 인물을 현재 배우로 되살리지 않는다. 현재 정체·등급·신격·미정 소속과 봉인·실제 세계/네더/엔드 접근은 결속 원문 그대로다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-045/RPG-S12-010.json",
+      "record_key": "RPG-S12-010",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "ddc6cfa9853197ba932d00b4b050840d0b9b89502f64b24e106ef5a88177c175"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-045/05_RPG-S12-010_루스탐_완결기획.json",
+      "record_key": "RPG-S12-010",
+      "pointers": [
+        "/world_unlock_and_encounter",
+        "/adopted_detail"
+      ],
+      "sha256": "c7646ea0dfb52a63d030f42665cfbfaf01f0a5fd50a4e17ded0fc04368c1543b"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

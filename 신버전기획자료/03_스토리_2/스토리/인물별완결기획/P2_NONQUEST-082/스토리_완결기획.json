@@ -1,0 +1,428 @@
+{
+  "packet_id": "P2_NONQUEST-082",
+  "category": "스토리",
+  "status": "완결 저술·정적 자체검수; 독립검수 및 실제 구현 전",
+  "common_contract": {
+    "status": "이번 기획 권한으로 채택한 완결 저술. 실행 스키마·실제 등록 완료가 아니다.",
+    "runtime_ready": false,
+    "source_precedence": "현행 기록배역·명시 접근·생사·봉인 > 아래 인물별 현재 채택 > 기존 실제 카드·EP의 수행과 결과 > 역사 후보. source_contract는 원문 그대로이며 adopted_detail이 현재 적용 범위를 명시한다.",
+    "ownership": "개인 MAIN·새 SIDE·성장 보상 0. 기존 공유 T03/T04/R08은 원래 사건이고 중복 등록하지 않는다. 세계 해금자·조우 주체는 자동 소유자·수혜자가 아니다.",
+    "execution": "제안, 수락, 준비, 실제 수행, 관측, 인수, 선택 후기·청취를 각각 저장한다. END는 장면 종료일 뿐 성공·안전 귀환·보상 수령이 아니다.",
+    "distance": "손 2블록은 실제 집기·인수·전달에만. 현재 일반 대화는 같은 현장 시야·8블록 이내에서 해당 발화 청중을 확인한다. 제한 존재는 원문 접촉 범위가 이 거리보다 먼저이며 새 통신 반경이 아니다. 관측은 안전점에서 표적 시야·16블록 이내가 기본이며 T03 기존 특정 관찰 2블록 계약은 유지한다.",
+    "ledger": "world_uuid/record_key/activity_id/attempt_id/participant_uuid/source_event_id로 수행·인수·수신을 구별하고 같은 event 중복 저장은 같은 결과만 반환한다. 물품 인계는 원소유·허가·실물 감소·수령 증가를 원자 처리한다. 실패면 미전달, 결과 불명이면 실물과 원장을 대조하고 재소비하지 않는다.",
+    "recovery": "로그아웃·사망·서버 재시작은 실제 완료한 관측·이동·소비·인수만 보존한다. 미완 귀환·대화는 완료하지 않고 현재 안전·소유·본체·청중으로 남은 부분만 재개한다. 사망 손실은 기존 규칙 그대로. 후발자는 현재 자료와 남은 행동을 이용하며 과거 목격·응답·보상권을 상속하지 않는다.",
+    "rewards": "이 패킷 신규 장비·스킬·가호·주시·레이드 지원 0. 자기 짐 회수는 원소유 반환, 교섭은 해당 한정 합의, 설명은 실제 수신 지식이다. 원문의 이미 성립한 한정 설명 기회와 미수신 상태는 보존하되 실패·거절 경로에 권리를 생성하지 않는다.",
+    "knowledge": "저자 진실·원문 설정은 자동 NPC 지식이 아니다. 직접 목격/자기 행위/허가된 전언/실제 열람을 나누며 새 발화마다 현재 청중 전원의 공개 자격을 확인한다. 기록은 새 질문에 답하지 않는다.",
+    "implementation": [
+      "부지·실제 단일본체·발화모드·거리/시야 바인딩",
+      "이동·관측·물품 인수·대화 수신 증거와 CAS 원장",
+      "부분 수행 복구와 현재 청중별 지식 공급",
+      "T03/T04·R08 기존 사건 상태 읽기 및 중복 등록 방지"
+    ],
+    "tests": "정적 설계·JSON/복사동등성/분기 검산만 수행. 실제 게임·API·LLM·영상·5인 시험 미실시.",
+    "encounter_activation": {
+      "policy_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter",
+      "atomic_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/atomic_contract",
+      "pool": "기존 무작위 경로의 활동300초·서버창25%·출현후1800초·NONE·단한번추첨·actor 가중 후 실제 적격 player 1명·CAS 원장 재사용. 여기서 확률을 NPC별25%로 곱하지 않는다. 확정 전용 경로가 있으면 그 경로 우선.",
+      "world_release": "신규 조건은 한 실제 플레이어의 같은 세계 유효 이력으로 world_uuid+record_key 최초 1회 영구 해금. 팀의 부분이력 합산 없음. 재접속 초기화 없음. 이미 유효하게 해금·접촉한 원장은 소급 재잠금하지 않는다.",
+      "body_state": {
+        "NEVER_PLACED": "canonical actor가 아직 엔티티로 최초 배치되지 않았다는 명시 원장 상태. 허용 존재/접근모드·부지·현재 적격주체와 예약을 검사한 뒤 같은 actor 최초 배치 가능. 현장 선재·이전 NPC 응답을 요구하지 않는다.",
+        "PRESENT": "동일 body_instance 방문. 새 추첨·본체복제0. 선정주체 아닌 친구도 현재 접근/청중/의사 범위에서 자유합류.",
+        "UNLOADED_OR_MISSING": "이미 body_instance가 있거나 출현결과 불확실하면 journal/entity 대조 및 동일 인스턴스 복원만. 미로드를 NEVER_PLACED로 바꾸지 않는다. 확인 전 새 발화/인계0.",
+        "DEAD_SEALED_ABSENT_BUSY": "실제 기존 사망·봉인·현장 부재·다른 활동은 그대로. 새 본체/부활/분신/원격응답0. 허용된 현재 접촉 모드만. 해금 영구이력은 취소하지 않음.",
+        "contact": "실제 같은 본체와 감각/거리/청중 확인. 발화 의사는 답변·허가에 적용; 유효한 비언어 반응까지 발화 의사로 차단0. 사적 수락/허가/거래는 실제 본인 응답 필요."
+      },
+      "subject": "세계 해금 후 현재 적격 주체만 추첨. 최초 해금자와 조우자는 달라도 된다. 본체가 아직 없을 때 현장 NPC 응답을 선행으로 요구하지 않는다. 같은 본체가 이미 있으면 새 추첨 없이 현장 접촉하고 친구의 개인 재해금을 요구하지 않는다.",
+      "site": "기존 허용 차원의 실제 적합 구조물 OR 안전 자연부지. 선호 바이옴 AND 희귀 구조물을 강제하지 않는다. 최초조우 부지와 활동부지는 별도이며 실제 단일본체의 허용 이동 없이 순간이동 연결하지 않는다.",
+      "initialization": "신규 조건은 false에서 시작하며 작성·배치계획은 수행 영수증이 아니다. 초기접근 카터·아탈은 C01 공통 시작을 그대로 사용한다. 최초미배치·미로드·사망·봉인을 구별하며 기록배역은 본체 상태기계 대상이 아니다.",
+      "source_ref": "현행활성화_공통계약의 initialization/site_and_observation/body_state_machine을 동일 의미로 재사용. 기존 record-only·특수 접촉을 무작위 인간 NPC 풀로 변환하지 않는다."
+    }
+  },
+  "records": [
+    {
+      "record_key": "RPG-S13-001",
+      "name": "크툴루 (현재 기록 배역)",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-001/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-001/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-001/outline"
+      ],
+      "preserved_episodes": [],
+      "adopted_detail": {
+        "title": "이름 옆의 빈칸",
+        "scene": "탑에서 읽은 이름은 바다에서 들은 목소리가 아니다. 조사자는 항로와 도상을 나란히 펼친 뒤 실제로 확인한 선만 짚는다. 빈칸은 빈칸으로 남는다. 기록 앞에서 큰소리를 내어도 페이지는 새 답을 만들지 않는다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "없음: T03 기록 접근만",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "T03의 현재 기록 지점",
+          "world_release_guard": "T02 AND C15 AND 실제 T03 조사 접근 AND (자료 실재 AND 열람권 AND 실제 열람)",
+          "specific_boundary": "본체 해금·세계 NPC 등장 없음. 항로 OR 도상 한 자료 열람 가능, 두 자료 대조는 항로 AND 도상 각각 열람 필요.",
+          "current_subject_guard": "실제 독자의 자료별 열람권·열람만. 본체·NPC 현재 출석 검사는 적용하지 않는다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "T03 실제 기록 조사 지점; 옛 해안 접촉은 현재 비활성 역사.",
+        "individual_turn": "니알라토텝의 T03 흔적은 별도 출처다. 이름이 한 조사에 등장한다고 둘의 현장 공모·통신을 만들지 않는다.",
+        "outcome": "T02 AND C15 이후 실제 확보·열람한 이름·항로 또는 도상만 출처와 함께 표시한다. 대조는 두 자료 실재·열람권·열람 AND 대조 수행이 있을 때만. 현행 T03가 이름 한 줄만 제공하면 그 한 줄의 열람으로 닫고 없는 도상·항로를 필수 생성하지 않는다. T03 전체 완료는 기존 조사/봉쇄 또는 전투 규칙이 별도 판정한다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "크툴루 EP004A-04는 현재 적용 제외. T03 기록역을 우선한다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-002",
+      "name": "니알라토텝",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-002/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-002/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-002/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP004A-05",
+          "title": "목적지를 버린 거래",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-002/authoring_contract.json#/episode_link_contract/accepted_episode/0",
+          "stage_ids": [
+            "B1",
+            "B2"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "목적지를 지운 손짓",
+        "scene": "멀리 향하던 손끝이 플레이어가 실제 돌아온 굽이로 내려온다. “안전”의 의미를 물으면 그는 “어디까지인지 먼저 말해 볼까?”라고 되묻는다. 길을 걷지 않은 사람에게는 돌아왔다고 인정하지 않는다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "일반 열린 길목 방문 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "기존 탑과 이어진 현재 열린 길목",
+          "world_release_guard": "현재 열린 길목에 실제 도달 1회; C장·T03·공물·계약 수락을 일반 해금에 추가하지 않는다.",
+          "specific_boundary": "T03는 흔적 전용. T04는 T03 AND C20 뒤 (실제 본체 대면 관리 OR 본체 없는 영구 절단). 일반 만남이 이를 대신하지 않는다.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "기존 탑으로 이어지는 Overworld 길목. 돌아온 길의 굽이와 탑 쪽으로 시야가 끊기는 갈림이 한자리에서 보인다. 실제 니알라토텝 본체가 현재 대면 가능한 때만 대화한다. T03의 어긋난 발소리는 이 배우를 대신하지 않는다.",
+        "individual_turn": "카터와의 옛 흥정은 카터의 경험이다. 플레이어의 계약·서명으로 복사하지 않으며 T04 청중이 C20의 비공개 고백을 자동 알지 않는다.",
+        "outcome": "EP004A-05/B1A는 목적지 포기 의사와 귀환길 선택일 뿐 도착 아님. B2A는 실제 굽이 도달·귀환 방향 확인 뒤 재협상 또는 종료. B2B의 미이동 주장은 완료 아님. T04 관리/절단·제압과 합산하지 않는다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-003",
+      "name": "요그 소토스",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-003/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-003/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-003/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP004A-06",
+          "title": "말한 닫힘과 닿은 닫힘",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-003/authoring_contract.json#/episode_link_contract/accepted_episode/0",
+          "stage_ids": [
+            "B1",
+            "B2"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "닫혔다고 말한 자리",
+        "scene": "탐사자의 말이 끝났지만 바닥은 바뀌지 않았다. 실제 닫힘이 없는 날은 그것이 결말이다. 별도 승인된 닫힘이 실제 닿은 때만 안전한 바깥 보행선에서 그 양 끝과 인접한 이어짐을 비교한다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "기존 Overworld 경계 바깥 안전 보행선 관측 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "원문 기존 탐사 구간의 실제 경계 바깥 고체 발판",
+          "world_release_guard": "실제 허용 탐사선 도달 AND 경계와 돌아갈 발판을 같은 방문에서 실제 관측. 본체 응답·봉쇄 성공은 해금에 불필요.",
+          "specific_boundary": "End 배치·탐험 후보는 미채택 역사로 보존. 명시 first_contact_original_contract와 EP004A-06의 Overworld 현장을 현재 최초·활동 기준으로 채택한다. 차원 간 이동 권능·투사 없음.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true,
+          "reconciliation": {
+            "adopted": "Overworld 기존 한정 경계 접촉; 최초조우와 EP 활동을 같은 원문 현장 범위로 결속",
+            "preserved_unadopted": "outline End 범용 배치·탐험 후보는 원문값 그대로 보존하나 현재 실행 대상 아님",
+            "evidence": [
+              "기존페르소나_인물별/RPG-S13-003/authoring_contract.json#/first_contact_original_contract/world_region",
+              "기존페르소나_인물별/RPG-S13-003/authoring_contract.json#/episode_link_contract/accepted_episode/0/entry/actual_location",
+              "772명_스토리와기본페르소나_통합.json#RPG-S13-003/outline/activation_boundary/new_unlock_adopted",
+              "772명_스토리와기본페르소나_통합.json#RPG-S13-003/outline/fixed_current_snapshot/current_access"
+            ],
+            "reason": "End 후보는 retained_design_proposal_current_server_unverified·author_reference_only이고 명시 접근 변경이나 이동 허용 근거가 없다. 두 차원 본체·원격투사·새 이동 권능을 만들지 않는다."
+          }
+        },
+        "activity_location": "Overworld 기존 탐사 구간에서 요그 소토스가 이미 잇는 경계에 실제로 닿은 한 지점. 탐사자가 서 있던 바깥 바닥과 현재 통과 가능한 가장자리를 함께 볼 수 있는 자리다. 임의의 문·새 제단·통신 장치를 붙이지 않는다.",
+        "individual_turn": "아미티지가 봉쇄를 검토했다는 보고는 검토다. 실제 실행·이 경계에 닿음·관측이 없으면 닫힘으로 바꾸지 않는다.",
+        "outcome": "EP004A-06/B1A는 논의와 실제 적용 구분. B2는 별도 승인된 닫힘이 실제 실행되어 같은 경계에 닿은 경우에만. 닫힘 미발생이면 B1의 현상 그대로라는 관측으로 정상 종료하며 새 봉쇄 과제를 만들지 않는다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-004",
+      "name": "슈브 니구라스",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-004/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-004/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-004/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP038-RPG-S13-004",
+          "title": "멈춘 숲의 가장자리",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-004/authoring_contract.json#/exact_accepted_dossier/episodes/0",
+          "stage_ids": [
+            "B1",
+            "B2",
+            "B3"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "짐은 돌아오고 방향은 남는다",
+        "scene": "퇴로 쪽 발판을 한 번 밟아 본 뒤 플레이어는 허락받은 짐에 닿을 수 있는지 살핀다. 손이 닿지 않는 짐은 안쪽에 남는다. 회수한 몫이 바깥에 놓여도 짧은 “더 바깥으로”는 감사도 영구 억제의 약속도 아니다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "기존 숲 흔적·퇴로 관측 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "기존 숲 폐허·감시탑 외곽 또는 같은 숲의 안전 부지",
+          "world_release_guard": "실제 숲 흔적 1곳 관측 AND 경계를 건드리지 않는 현재 퇴로 확인. 흔적이 실제 없으면 이 관측은 미충족이며 새 증식 흔적을 만들지 않는다.",
+          "specific_boundary": "물품 회수는 이후 별도 원소유 허가·안전·접촉 작업이다. 해금 때문에 억제를 풀거나 새 주민 대피를 만들지 않는다.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "현재 세계의 실제 숲 경계 바깥 안전 지점",
+        "individual_turn": "주민의 짐과 주민의 감사는 실제 원소유자·수신자의 몫이다. 슈브 니구라스가 주민 전원의 의사를 대변하지 않는다.",
+        "outcome": "EP038-RPG-S13-004/B1-1은 실제 흔적·퇴로 관측만. B2-1에서 자기 물건 또는 현재 원소유자가 허락한 물건을 실제 들어 올려 안전 외곽까지 운반한 몫만 회수 완료. B3-1의 원소유자 실제 인수는 별도 반환 완료이며 본체의 감사·억제 동의는 필요 없음.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-005",
+      "name": "마더 하이드라",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-005/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-005/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-005/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP038-RPG-S13-005",
+          "title": "돌아오겠다고 한 목소리",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-005/authoring_contract.json#/exact_accepted_dossier/episodes/0",
+          "stage_ids": [
+            "B1",
+            "B2",
+            "B3"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "돌아온다는 말의 주인",
+        "scene": "마더 하이드라는 배의 이름보다 누가 돌아오겠다고 말했는지 되묻는다. 처음 온 동료가 옆에 서 있어도 그에게 같은 빚을 묻지 않는다. 연기를 수락했다는 실제 응답을 들은 뒤에도 선박의 출항은 따로 확인한다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "해양 유적 접근 가능 범위 탐사 후 마른 해안 귀환 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "안전 갑판 OR 자연 해안의 마른 관측부, 본체는 연결된 적합 수역",
+          "world_release_guard": "실제 해안 A→이미 접근 가능한 해양 유적 외곽 B→마른 해안 A 귀환. 도보/보트의 실제 이동만, 해저 잠수·제물·보스 토벌 필수 아님.",
+          "specific_boundary": "새 빚 없음. 유적 희귀성으로 무한 탐색을 강제하지 않고 이미 조사된 적합 현장을 선정한다. 현재 본체 형태 지원은 배치 의존이며 인간 대체물 금지.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "현재 세계의 안전 갑판 또는 마른 해안과 연결된 실제 수역",
+        "individual_turn": "와타쓰미의 응답은 실제 물은 해류 구간만. 파더 다곤의 거래와 마더 하이드라의 약속을 하나의 공유 장부로 만들지 않는다.",
+        "outcome": "EP038-RPG-S13-005/B1에서 자기 약속의 실제 유무와 출항 사유를 밝힌다. 와타쓰미가 부재하면 해류 응답만 미확인. B2-1의 대상·범위·재접촉 시점을 당사자가 특정하고 하이드라의 실제 한정 수락이 있어야 연기 성립. 선박 출항·도착은 별도 실제 항해 증거.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-006",
+      "name": "랜돌프 카터",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-006/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-006/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-006/outline"
+      ],
+      "preserved_episodes": [],
+      "adopted_detail": {
+        "title": "꿈의 지도 옆에 오늘의 길",
+        "scene": "카터는 물소리를 설명하다가 동료가 오늘 돌아갈 시간을 말하면 문장을 줄인다. A로 돌아온 두 사람 앞에 꿈의 세 줄과 실제 차이 한 줄이 남는다. 그는 기억을 버리지 않아도 오늘 동행을 끝낼 수 있음을 받아들인다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "C01 공통 시작의 기존 초기 가용성",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "기존 생활권의 주점·공용 쉼터",
+          "world_release_guard": "C01 공통 시작 AND 현재 공개 생활권 통행 가능. 지도 제작·A/B 왕복·침대·수면 이력 없음.",
+          "specific_boundary": "R08-01 C02, R08-02 R08-01, R08-03 R08-02 AND C20은 활동 조건이지 일반 인사 해금이 아니다.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "R08_A/B/T/H의 원문 기존 생활권. 최초조우 공간과 활동 순서가 다르며 본체 부재 대안은 원문대로.",
+        "individual_turn": "아탈의 경고는 실제 들은 범위만. 쿠라네스의 한정 설명은 도시 개방이나 카터의 자동 탐색 일정 변경이 아니다.",
+        "outcome": "기존 R08 세 카드를 재사용한다. R08-01은 C02 이후 실제 A→B→A AND 허락된 꿈 설명 3줄 실제 청취/열람 AND 현재 차이1개 비교 AND (허락된 사본의 주석 범위 확정 OR 꿈 기록과 실제 답사의 출처를 구별한 분리 보관 확정). 원본 꿈 기록을 임의 수정하지 않고 공용 최초 표시와 각자의 개인 해석을 구분한다. R08-02는 R08-01 이후 현재 경고 실제 수신 AND 본인 탐사 범위·철수점 결정 AND 안전한 T 바깥 또는 T 접근 불가 시 A에서 짧은 양손 상태 확인 AND (A/H 실제 귀환 OR A에서 미출발 확인 OR 유효 T 입장 인계). 확인 뒤 재무장 가능하며 결정 보류·로그아웃은 자동 도전/완료가 아니다. R08-03은 R08-02 AND C20 AND 공개 허락된 귀환 사례의 카터와 플레이어 실제 수신·출처 확인 AND 그 사례와 카터 집의 미확인 구별 AND 현재 선택에 필요한 당사자 의사 확인 AND (오늘 작별 OR 상호 동의한 공개 지점1곳 실제 관찰 뒤 작별 OR 카터의 잔류 의사를 확인한 본인 선귀환) AND H 실제 귀환 AND (아탈 실제 수신 OR 아탈 부재 시 허용 공용 접수). C20 비공개 고백 공개·동행자 전원 귀환·추가 탐사는 필수가 아니다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-007",
+      "name": "쿠라네스",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-007/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-007/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-007/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP038-RPG-S13-007",
+          "title": "도시 대신 내어 준 저녁",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-007/authoring_contract.json#/exact_accepted_dossier/episodes/0",
+          "stage_ids": [
+            "B1",
+            "B2",
+            "B3"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "도시는 열지 않는 저녁",
+        "scene": "한 방향을 알려 준 뒤 쿠라네스는 플레이어가 돌아올 때까지 같은 현장에 있는 척하지 않는다. 실제 다시 만난 자리에서 관측과 기억을 대조한다. 평범한 저녁 이야기는 길어질 수 있어도 도시의 입구는 대화의 대가가 되지 않는다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "실제 보트 해안 왕복 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "해안 가까운 기존 야영지 OR 노출된 안전 갑판",
+          "world_release_guard": "같은 실제 플레이어가 해안 A→다른 해안 B→원래 생활권 A를 보트로 왕복. 명령이동·리스폰은 왕복 아님, 최소 장거리·밤·수면·카터 동행 조건 없음.",
+          "specific_boundary": "활동의 해안 짧은 답사는 이후 별도이며 세계 해금 왕복과 동일 이력으로 자동 완료하지 않는다. 셀레파이스 이동 없음.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "현재 세계의 실제 안전 갑판과 접근 가능한 해안",
+        "individual_turn": "카터에게 전할 범위는 쿠라네스가 고른다. 카터가 실제 수신하고 제한을 받아들였을 때만 그 사람의 계획 후보가 달라진다.",
+        "outcome": "EP038-RPG-S13-007/B1 실제 공개 표지 청취→안전 해안 답사→갑판 재접촉 자리 귀환. B2-1 실제 위치·방향 보고와 쿠라네스의 대조·공개 범위 결정. 카터가 있을 때는 실제 전달 AND 제한 수락 응답이 있어야 카터 계획 변경. 카터 부재는 그 전달만 미발생이며 독립 답사·귀환·대조를 취소하지 않는다. B3-1은 허락한 한 방향의 실제 설명 수신을 별도 저장.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-009",
+      "name": "아탈",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-009/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-009/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-009/outline"
+      ],
+      "preserved_episodes": [],
+      "adopted_detail": {
+        "title": "돌아온 발소리부터",
+        "scene": "아탈은 탑의 정체를 맞히려는 말보다 어디서 멈출지를 먼저 묻는다. 안전점에서 손을 비우는 짧은 준비가 끝나면 무장은 다시 갖춰도 된다. 돌아온 사람에게는 발견 목록보다 오늘 돌아왔다는 말을 먼저 듣는다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "C01 공통 시작의 기존 초기 가용성",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "기존 생활권 안전 공용 공간",
+          "world_release_guard": "C01 공통 시작 AND 현재 생활권 통행 가능. 등반·사망·경고 청취 완료를 요구하지 않는다.",
+          "specific_boundary": "기록 경고와 실제 상담은 별개. R08_T 미바인딩이면 A에서 공개 기록으로 미출발 결말 가능.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "R08_A/B/T/H의 원문 기존 생활권. 최초조우 공간과 활동 순서가 다르며 본체 부재 대안은 원문대로.",
+        "individual_turn": "바르자이의 사적 과거를 새 청중의 흥미거리로 꺼내지 않는다. 카터의 꿈과 플레이어의 현재 귀환 보고를 나누어 듣는다.",
+        "outcome": "R08 카드의 동일 사건·동일 원장을 카터와 공유 참조한다. 아탈은 실제 수신한 보고만 반응한다. 본체가 없을 때 R08-02의 고정 경고 열람, R08-03의 공용 귀환 접수는 허용하며 새 원격 응답은 없다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-027",
+      "name": "파더 다곤",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-027/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-027/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-027/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP038-RPG-S13-027",
+          "title": "한 번의 바다 다음에",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-027/authoring_contract.json#/exact_accepted_dossier/episodes/0",
+          "stage_ids": [
+            "B1",
+            "B2",
+            "B3"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "보여 준 몫과 건넨 몫",
+        "scene": "갑판에서 들어 보인 짐은 아직 플레이어의 것이다. 다곤은 이번 몫과 다음 만남을 구별해 말하라고 요구한다. 실제 전달 가능한 같은 본체 접촉이 없으면 물건을 바다에 던져 인수로 꾸미지 않고 거래를 보류한다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "기존 바닷길의 실제 항해·안전 해안 귀환 1회",
+          "dimension": "minecraft:overworld",
+          "first_encounter_site": "기존 선박 안전 갑판 OR 마른 해안과 연결된 적합 수역",
+          "world_release_guard": "해안 A→현재 항로의 다른 안전 지점 B→해안 A의 실제 보트 왕복. 공물·계약·심해 진입·전바다 허가 불필요.",
+          "specific_boundary": "현재 거래 인수와 항해 성공은 이후 별도. 거대 본체를 갑판 위에 배치하지 않는다.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "현재 세계의 안전 갑판 또는 마른 해안과 연결된 실제 적합 수역",
+        "individual_turn": "마더 하이드라를 대신해 계약하지 않는다. 다른 배의 응답·승객 동의·와타쓰미의 해류 권한을 자기 교환에 합치지 않는다.",
+        "outcome": "EP038-RPG-S13-027/B1 제시는 준비. B2-1에서 자기 소유 품목·정수량·이번 요청·다음 재접촉 범위를 실제 상호 수락한 뒤 동일 본체에게 실제 인도 AND 인수를 확인해야 그 교섭 성립. 실제 선박 이동은 별도. B3-1은 이미 수행한 교환을 재소비하는 단계가 아니다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    },
+    {
+      "record_key": "RPG-S13-028",
+      "name": "아자토스",
+      "runtime_ready": false,
+      "source_refs": [
+        "기존페르소나_인물별/RPG-S13-028/authoring_contract.json",
+        "기존페르소나_인물별/RPG-S13-028/profile.json",
+        "772명_스토리와기본페르소나_통합.json#RPG-S13-028/outline"
+      ],
+      "preserved_episodes": [
+        {
+          "episode_id": "EP004A-07",
+          "title": "단편을 끝내지 않는 사람",
+          "source_pointer": "기존페르소나_인물별/RPG-S13-028/authoring_contract.json#/episode_link_contract/accepted_episode/0",
+          "stage_ids": [
+            "B1",
+            "B2"
+          ]
+        }
+      ],
+      "adopted_detail": {
+        "title": "단편 뒤에 붙이지 않은 뜻",
+        "scene": "“조용히 있겠습니다.” 현재 제한 접촉에서 “조용. …아직.”이 실제 들렸다면 그 두 단편만 남긴다. “그러면 내 편인가?”라는 물음 뒤의 “네 말. …내 말, 아님.”은 동맹 선언이 아니다. 침묵만 들었다면 모른 채 떠나도 온전한 종료다.",
+        "encounter_activation": {
+          "status": "현재 채택·실제 활성화/등록 미실행",
+          "release_kind": "기존 End 보행선·귀환 지면 관측 1회",
+          "dimension": "minecraft:the_end",
+          "first_encounter_site": "기존 도달 가능한 End 고체 지면의 제한 직접접촉 자리",
+          "world_release_guard": "기존 End 안전 보행선에 실제 도달 AND 돌아갈 지면 관측. 이 이력은 세계 가용 기록만 열며 낯선 소리를 본체로 인증하지 않는다.",
+          "specific_boundary": "후속 ENC/EP004A의 기존 동일 존재 직접 제한접촉만 채택. 새로운 형태·매체·각성·상시 현현은 추가하지 않는다. 유효 접촉 바인딩이 없으면 관찰 종료, 단편 재생 없음. 일반 인간형 대면·사회적 인사로 확대하지 않는다. 원문 same-being 직접 제한접촉의 본체 자산·감각 연결만 구현 요구다.",
+          "current_subject_guard": "현재 생존·온라인·실제 해당 부지 접근 AND 현재 안전·통행 AND 허용된 단일본체 가용성 AND (세계 해금 또는 원문 초기접근). 본체 등장 전에는 부지 적합성만, 등장 후에는 동일 body_instance 현재 접촉을 검사한다.",
+          "source_proposal_not_retroactively_approved": true
+        },
+        "activity_location": "End의 기존 도달 가능한 지면 중 현재 동일 존재와 제한적 접촉이 실제 성립하는 자리. 돌아갈 기존 지면 방향을 등 뒤에 확보하고 낭떠러지와 떨어져 멈춘다. 정확한 본체 위치·접촉 매체는 등록 연결 전이며 엔드 입장이 소환이 아니다.",
+        "individual_turn": "다른 외신·카터·아미티지의 이름은 소개권·원격 연락권이 아니다. 같은 단편을 전해 들은 친구는 직접 수신자가 아니다.",
+        "outcome": "EP004A-07/B1 실제 들은 단편과 자기 해석을 구별한다. 같은 직접 접촉에서 B2A는 실제 단편 수신 때만, 침묵만이면 B2B 모름 종료. 정체 추리·어휘 정답·친분·전투 승리로 발화권을 만들지 않는다.",
+        "not_current_fact": "장면은 실행 가능한 현재 설계다. 아직 누구도 수행·동의·수신한 것으로 선기록하지 않는다.",
+        "historical_exception": "옛 미채택 상태·원문값은 보존하되 일반 조우는 위 별도 현재 채택을 따른다."
+      }
+    }
+  ]
+}

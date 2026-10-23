@@ -1,0 +1,165 @@
+{
+  "record_key": "RPG-S01-007",
+  "content_id": "RPG-S01-007:story-connection",
+  "name": "아테나",
+  "document_kind": "AUTHORING_NOT_RUNTIME",
+  "connection_manuscript": {
+    "record_key": "RPG-S01-007",
+    "name": "아테나",
+    "tier": "최상급",
+    "title": "이기고 돌아오는 계획",
+    "group": "올림포스·티탄",
+    "content_status": "기존 정사·복구 원문 대조 + 2026-10-21 저술 초안. 신규 장면·조건은 승인 전 후보.",
+    "runtime_ready": false,
+    "source_status": {
+      "current_master": "baseline/rpg_authoring_master_active.json",
+      "current_record_key": "RPG-S01-007",
+      "original_persona_status": "기존 승인 페르소나 원문 복구. v17 변경 설정을 우선 적용하고 충돌 구간만 별도 조정한다.",
+      "original_provenance": {
+        "archive_name": "마크프로젝트_주요10명_페르소나_원고.zip",
+        "source_profile_archive_entry": "아테나/profile/data/mythaiaicontent/mythai_ai/god_profiles/greek_olympus_athena.json",
+        "source_profile_sha256": "0bcf011a0ac0d686a963fac748fdd2126d1a35a16f698faa480cace6252037a8",
+        "source_contract_archive_entry": "아테나/authoring_contract.json",
+        "source_contract_sha256": "863a6fa1334cda86ba94b8d9c2f1e88bf0cc0cbea16afc1ec4d2e53d1d3bd4e7",
+        "library_file_id": "libfile_09c4537c54908191890895eaadc51a89"
+      },
+      "prior_connection": "drafts/forest_beasts_input.json#prior_connections/RPG-S01-007",
+      "priority": "최신 사용자 지시 > 현행 v17 정사 > 복구한 2026-10-16 원문. v16 연결안은 기존 제안이며 신규 확정 정사가 아니다."
+    },
+    "source_reconciliation": {
+      "retain": [
+        "또렷한 반말, 정확한 반박을 받으면 자기 계획도 수정하는 전략가.",
+        "매듭·직물 무늬 취향과 민간 피해·퇴로·협력자의 동의를 따지는 원문.",
+        "현행 선한 신이며 아라크네를 저주한 가해자가 아님."
+      ],
+      "adjust_or_do_not_restore": [
+        "선함을 무조건 수락·가호·구조 실행으로 바꾸지 않는다.",
+        "다이달로스의 과거 기술 인연은 현재 설계 제공·수리·대면 요청을 허용하지 않는다."
+      ],
+      "current_canon_verbatim": {
+        "value": "아테나는 선한 성향의 신으로 유지한다. 민간인의 피해와 승리 이후의 책임을 살피는 기존 전략가·조언자 방향을 보존한다. 아라크네에게 저주를 내린 가해자로 설정하지 않는다. 선의가 모든 부탁의 수락·무제한 보상·위험한 계획의 용인을 뜻하지는 않는다.",
+        "status": "user_confirmed_scoped_canon",
+        "source": {
+          "approval_message_id": "Sentinel_76ec5287a57c81919d8bda003cea3415"
+        },
+        "use_scope": "authoring_design_only_not_automatic_npc_knowledge",
+        "runtime_binding": false
+      },
+      "current_access_verbatim": {
+        "value": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+        "status": "current_roster_classification_preserved",
+        "source": {
+          "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+          "record_key": "RPG-S01-007",
+          "field": "evidence_reason"
+        },
+        "use_scope": "authoring_access_guard_not_runtime_predicate",
+        "runtime_binding": false
+      },
+      "writing_boundary": "아래 장면과 추가 조건은 새 저술 초안이다. 과거의 실제 발생 사실, 확정 배치, 등록 퀘스트 또는 대화 테스트 결과로 해석하지 않는다."
+    },
+    "unlock_history": {
+      "status": "새 저술 후보",
+      "general_access": "별도 전투력·보스 승리 이력 없이 인사 가능 제안.",
+      "focused_audience": "(본인이 지도 제작/사용 후 실제 해당 지형을 답사한 이력 OR 실제 원정에서 돌아온 이력)으로 구체적 계획 검토를 청하는 선택 경로. 필수 최초 조우 잠금 아님.",
+      "history_vs_item": "지도를 잃어도 실제 답사 이력은 별개. 지금 지도가 있으면 현장 설명 자료로 사용할 수 있으나 친구에게 받은 지도만으로 본인 답사 완료 아님.",
+      "not_added": "새 탐험 업적 ID, 강제 이동거리, 주민 구출 완료를 만들어 넣지 않는다."
+    },
+    "encounter_now": {
+      "status": "새 장면 후보",
+      "expression": "등장 후 또는 기존 배치 본체에 대한 직접 접촉 조건이다. 이 전체 조건을 첫 등장 이전에 요구하지 않는다. 접근 가능한 실제 길·강을 건너는 지점 또는 마을 가장자리 AND 아테나 본체 현장에 있음 AND 현재 응답 가능. 계획 검토는 추가로 실제 확인 가능한 지형 정보 OR 보여 줄 자료.",
+      "clue": "가장 짧은 길을 그렸다가 돌아올 길의 좁은 부분을 다시 살핀다. 직접 찾아 질문 가능.",
+      "not_required": "헤라클레스 소개나 특정 모드 건물 필요 없음.",
+      "appearance_trigger": {
+        "stage": "appearance_candidate_before_body_presence",
+        "candidate_location": "접근 가능한 실제 길·강을 건너는 지점 또는 마을 가장자리",
+        "candidate_time_items_state": "기존 항목에 없는 고정 시간·필수 소지품을 만들지 않는다. 후속 대화의 선택 소품이나 자료는 일반 등장 입장권이 아니다.",
+        "world_and_subject_rule": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+        "existing_body_path": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다.",
+        "adoption_and_mode_limit": "현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+      }
+    },
+    "seal_and_availability": "별도 신규 봉인을 만들지 않는다. 현행 개별 최초 조우 시점 미정은 무조건 출현 가능도, 장 번호에 의한 잠금도 아니다. 본체가 실제 부재·행동 불가·다른 접견 중이면 이력만으로 소환하지 않는다.",
+    "independent_persona": {
+      "core": "영리한 수를 좋아하지만 무모함을 예쁘게 포장하는 사람은 싫어한다. 낮은 실력 자체보다 모르는 것을 아는 척하는 태도에 냉정하다.",
+      "daily_life": "매듭의 한 가닥을 풀어도 전체가 버티는지 살핀다. 잡담을 매번 시험으로 바꾸지 않는다.",
+      "player_motive": "흥미로운 관찰을 가져온 상대와 생각을 나눌 수 있으나 누구나 제자로 삼을 이유는 없다.",
+      "contradiction": "자기 판단에 자신 있어 설명을 서두를 수 있지만 구체적 반증 앞에서는 고친다."
+    },
+    "outline_beats": [
+      "플레이어가 실제 길에서 망설이는 모습을 보거나 본인이 그 길의 불편을 묻는다. 아테나가 먼저 설명하지 않아도 접근 가능.",
+      "빨리 건너기·돌아가기·오늘은 건너지 않기 중 무엇을 택할지 이야기한다. 정답 문장보다 실패 시 남을 사람을 어떻게 다루는지가 드러난다.",
+      "선택적으로 가까운 길을 다시 살피고 관찰을 가져온다. 강한 적 처치 없이도 가능하며 현장에서 보지 않은 것은 추정으로 남긴다.",
+      "아테나는 자기 초안의 빠진 점도 인정할 수 있다. 짧은 조언만 받고 끝나거나 이후 자발적 협력을 남긴다. 메인 진행 승인권자는 아니다."
+    ],
+    "conversation_agency": "플레이어는 반박·계획 보류·잡담·퇴장을 선택한다. 아테나는 도움을 거절하거나 검토 범위를 좁힐 수 있다. 입문 관찰과 위험 임무 수락은 분리하며 보상으로 대화를 강제하지 않는다.",
+    "voice_and_rudeness": {
+      "baseline": "또렷한 반말. 한 번에 한 허점을 짚고 잘한 부분도 구체적으로 말한다.",
+      "rudeness": "허세에는 문장을 짧게 하고 냉정해진다. 무례해도 맞는 지적을 무조건 틀렸다고 하지 않는다.",
+      "forbidden": "아라크네를 저주했다는 자기 고백, 전지 전략 설명, 모든 NPC를 지휘할 권한 금지."
+    },
+    "knowledge": {
+      "known": "자기 기술·과거 협력 경험·실제 확인한 현장 및 전달받은 계획.",
+      "unknown": "동료의 미수락 지원, 미확보 설계, 플레이어 미공유 탐험 이력. 아라크네 저주 가해자의 정체는 작가 미정이며 아테나가 알고 숨기는지/모르는지도 미확정이다. 아테나 자신이 가해자가 아니라는 현행 정사는 유지한다.",
+      "acquisition": "답사 보고가 오면 보고자의 주장으로 기록하고 직접 관측·실증과 구분한다."
+    },
+    "dialogue_examples": [
+      {
+        "player": "저 길이 더 빠르잖아요. 제가 앞에서 다 잡으면 됩니다.",
+        "npc_or_observable_response": "네가 앞에서 쓰러지면 뒤의 사람은 어디로 돌아오지? 빠르다는 말은 그 답이 아니야.",
+        "guard": "새 대사 초안. 실제 대화·상태 변화·보상 실행을 뜻하지 않는다."
+      },
+      {
+        "player": "당신 계획도 저 좁은 턱은 놓쳤네요.",
+        "npc_or_observable_response": "맞아. 거기서는 짐을 든 사람이 돌아서지 못하겠군. 그 부분은 고치자.",
+        "guard": "새 대사 초안. 실제 대화·상태 변화·보상 실행을 뜻하지 않는다."
+      }
+    ],
+    "relationship_connections": [
+      {
+        "target_record_key": "RPG-S01-066",
+        "target_name": "헤라클레스",
+        "necessity": "선택",
+        "connection": "힘·계획의 기존 관계. 현재 지원 의사 없이 동행시키지 않는다."
+      },
+      {
+        "target_record_key": "RPG-S01-002",
+        "target_name": "헤라",
+        "necessity": "선택",
+        "connection": "책임과 권위에 관한 견해를 비교할 접점. 서로의 인격·행위를 동일시하지 않는다."
+      },
+      {
+        "target_record_key": "USER-TIANJUN-20261017-ARACHNE",
+        "target_name": "아라크네",
+        "necessity": "선택·불가침 정사",
+        "connection": "아테나는 저주 가해자가 아니다. 아라크네가 실제 인지한 올림포스 가호에 보이는 적대는 별도로 존중하며 선한 아테나를 알게 되었다고 자동 화해시키지 않는다."
+      }
+    ],
+    "multiplayer_and_world": "개인 관계·발언 청중·수주권과 공용 세계 상태를 분리한다. 친구의 완료·소개·칭찬으로 자신의 호의·가호·MAIN을 복제하지 않는다. 실제 동일 본체만 사용하며 다른 장소에 개인용 복제본을 만들지 않는다. 계획에 참여하지 않은 사람을 동의자로 세지 않는다. 실제 정찰·엄호 공로는 개인별로 다르며 대표자에게 모두 몰아주지 않는다.",
+    "capability_needs_unresolved": [
+      "장소 후보의 실제 생성·접근 가능성, 동일 본체의 현재 위치와 응답 가능 상태 확인.",
+      "행동 이력과 NPC가 그 행동을 아는 근거를 별도 연결. 대화 주장만으로 서버 자격·물품 지급을 확정하지 않음.",
+      "대화 청중별 습득 지식과 개인 관계 저장, 기존 수주·보상 기능과의 연결 여부 확인. 새 퀘스트 JSON·수치·등록 ID는 이번 범위 밖.",
+      "지도 소유와 본인 지형 답사 구별 가능성, 도보/보트/순간이동 탐험 인정 방식은 별도 정책 검토."
+    ],
+    "current_unlock_scope": {
+      "status": "사용자 2026-10-22 KST 설명 반영; 저술 보충본이며 런타임 미구현",
+      "world_release": "해금은 세계 공통이다. 누구 한 명이라도 유효한 해금조건을 달성하면 해당 NPC가 세계에 풀리며, 다른 플레이어에게 같은 해금 행동을 다시 요구하지 않는다.",
+      "encounter_subject": "등장 전 후보 판정과 등장 후 직접 접촉을 분리한다. 후보가 해당 장소·시간·실물·현재 상태를 갖추고, 세계 공통 해금 및 현행 출현·봉인·단일 본체 가용성이 허용할 때에만 기존 조우 확률을 판정한다. 성공하면 그 후보 플레이어를 주체로 등장하며 해금 달성자와 같을 필요는 없다. 아직 등장하지 않은 본체의 현장 체류·현재 응답 성공은 등장 전 필요조건이 아니다.",
+      "companions_and_personal_states": "세계에 풀려 실제 등장한 같은 NPC에 대해 동행자에게 개인 해금을 다시 요구하거나 해금 미달만으로 본체를 숨기지 않는다. 동행자의 목격·일반 대화를 개인 해금 부족으로 차단하지 않되 현재 안전·발화 모드·NPC 의사·별도의 사적 대화 허락은 유지한다. 개인 기여·인정·관계·MAIN·보상은 복제하지 않으며 추가 본체를 만들지 않는다.",
+      "existing_access_and_special_modes": "이 기준은 새 인물·새 봉인·새 필수 과제·새 확률값을 추가하지 않는다. 기존 조기 접근과 각 인물의 명시된 장소·봉인·사적 접견·비언어·꿈·기록·사망·조건부 탄생 제한을 그 기능대로 유지한다. 기록 전용 또는 현재 비활성 배역을 본체 출현으로 바꾸지 않는다. 이미 등장한 본체와의 대화는 새 출현을 매번 요구하지 않는다.",
+      "proposal_activation": "이 문서의 구체적인 신규 해금·장면 후보는 기존과 같이 미채택·미구현이다. 공통 해금의 의미가 확정되었다고 개별 후보가 자동 승인되지는 않는다.",
+      "appearance_and_contact_boundary": "본체가 이미 배치·등장해 있다면 같은 본체의 현재 위치·안전·발화 모드·응답 의사를 확인해 직접 접촉한다. 이 경로에 새 출현 추첨·개인 재해금·추가 본체를 요구하지 않는다. 현행 출현 경로가 확률 조우인 경우의 저술 구분이다. 이 항목이 기존 배치형을 무작위 풀로 바꾸거나, 미정 경로·신규 해금 후보를 활성화하거나, 정확 확률·새 좌표를 정하지 않는다."
+    },
+    "source_text_use_boundary": {
+      "untouched_original_quote_pointers": [],
+      "rule": "위 원문 인용과 source_anchors·source_references·sha256은 출처 보존 영역이다. 과거 해금·동행 문구나 옛 설정이 있더라도 현재 유효 요약으로 자동 적용하지 않는다. 그 밖의 이야기·말투·취향은 유지하며, 현행 조건은 이 인물의 수정된 해금·조우 항목과 current_unlock_scope를 따른다. 원문 파일·명부·기존 전달본 자체는 수정하지 않았다.",
+      "original_quote_status": "archived_source_text_not_current_runtime_or_unlock_rule",
+      "current_effective_summary_pointers": [
+        "/unlock_history",
+        "/encounter_now",
+        "/current_unlock_scope"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1421 @@
+{
+  "document_type": "authoring_policy_not_runtime_schema",
+  "policy_id": "GLOBAL_INITIAL_BALANCE_20261022",
+  "version": "1.0",
+  "status": "기획 결정 완료 / 실제 구현·등록·플레이 검증 전",
+  "scope": {
+    "new_authored_rewards": true,
+    "retroactive_nerf": false,
+    "change_character_ranks": false,
+    "change_existing_chapter_manuscripts": false,
+    "new_reward_definitions": 0,
+    "new_acquisition_rights": 0,
+    "existing_confirmed_exception_review": "원문 유지 후 구체적 초과값·보유권·지급경로를 예외검토에 기록, 자동 삭제/몰수 금지"
+  },
+  "fixed_principles": {
+    "player_base_hp": 20,
+    "base_mana": 200,
+    "regen_max_mana_per_second": 0.01,
+    "accessory_slots": 2,
+    "technical_effect_caps": {
+      "minecraft:resistance": 4,
+      "others": 17
+    },
+    "equipment_quality_names": [
+      "일반",
+      "고급",
+      "희귀",
+      "영웅",
+      "전설",
+      "신화",
+      "근원"
+    ],
+    "new_player_level_system": false,
+    "mandatory_jobs": false,
+    "power_hard_gate": false,
+    "new_weekly_chores": false,
+    "upgrade_failure_destruction": false,
+    "divine_equipment_default_durability": "unlimited_unless_explicit_finite_concept",
+    "human_tag_grants_divinity": false,
+    "blacksmith_exception": "본인 직접 제작 장비 종류만; 가호/독립습득/특수지원 자격 확대0"
+  },
+  "blessings": {
+    "rank_policies": [
+      {
+        "rank": "lowest",
+        "name": "최하급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 1,
+          "minecraft:speed": 1,
+          "minecraft:haste": 1,
+          "minecraft:jump_boost": 1,
+          "minecraft:health_boost": 1,
+          "minecraft:absorption": 1,
+          "minecraft:luck": 1,
+          "minecraft:hero_of_the_village": 1,
+          "minecraft:conduit_power": 1,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": [
+          "minecraft:regeneration",
+          "minecraft:resistance"
+        ]
+      },
+      {
+        "rank": "low",
+        "name": "하급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 1,
+          "minecraft:speed": 1,
+          "minecraft:haste": 1,
+          "minecraft:jump_boost": 1,
+          "minecraft:health_boost": 1,
+          "minecraft:absorption": 1,
+          "minecraft:luck": 2,
+          "minecraft:hero_of_the_village": 1,
+          "minecraft:conduit_power": 1,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": [
+          "minecraft:regeneration",
+          "minecraft:resistance"
+        ]
+      },
+      {
+        "rank": "middle",
+        "name": "중급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 2,
+          "minecraft:speed": 2,
+          "minecraft:haste": 2,
+          "minecraft:jump_boost": 2,
+          "minecraft:health_boost": 2,
+          "minecraft:regeneration": 1,
+          "minecraft:resistance": 1,
+          "minecraft:absorption": 2,
+          "minecraft:luck": 3,
+          "minecraft:hero_of_the_village": 2,
+          "minecraft:conduit_power": 1,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": []
+      },
+      {
+        "rank": "high",
+        "name": "상급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 3,
+          "minecraft:speed": 2,
+          "minecraft:haste": 2,
+          "minecraft:jump_boost": 2,
+          "minecraft:health_boost": 3,
+          "minecraft:regeneration": 1,
+          "minecraft:resistance": 1,
+          "minecraft:absorption": 3,
+          "minecraft:luck": 5,
+          "minecraft:hero_of_the_village": 2,
+          "minecraft:conduit_power": 2,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": []
+      },
+      {
+        "rank": "highest",
+        "name": "최상급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 4,
+          "minecraft:speed": 3,
+          "minecraft:haste": 3,
+          "minecraft:jump_boost": 3,
+          "minecraft:health_boost": 4,
+          "minecraft:regeneration": 1,
+          "minecraft:resistance": 2,
+          "minecraft:absorption": 4,
+          "minecraft:luck": 7,
+          "minecraft:hero_of_the_village": 3,
+          "minecraft:conduit_power": 2,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": []
+      },
+      {
+        "rank": "transcendent",
+        "name": "초월급",
+        "allowed_effect_caps": {
+          "minecraft:strength": 6,
+          "minecraft:speed": 4,
+          "minecraft:haste": 4,
+          "minecraft:jump_boost": 4,
+          "minecraft:health_boost": 6,
+          "minecraft:regeneration": 2,
+          "minecraft:resistance": 2,
+          "minecraft:absorption": 6,
+          "minecraft:luck": 10,
+          "minecraft:hero_of_the_village": 3,
+          "minecraft:conduit_power": 3,
+          "minecraft:fire_resistance": 1,
+          "minecraft:water_breathing": 1,
+          "minecraft:invisibility": 1,
+          "minecraft:night_vision": 1,
+          "minecraft:slow_falling": 1,
+          "minecraft:dolphins_grace": 1
+        },
+        "excluded_effects": []
+      }
+    ],
+    "authoring_zero_means_excluded_not_level_zero": true,
+    "effect_details": [
+      {
+        "effect": "minecraft:strength",
+        "name": "힘",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          6
+        ],
+        "note": "일반 직접 근접 +3L, 해당 레이드 직접 근접에 A×0.04L 추가. 발사체·스킬 자동 가산 없음."
+      },
+      {
+        "effect": "minecraft:speed",
+        "name": "신속",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          2,
+          3,
+          4
+        ],
+        "note": "단계당 이동 증가. 빠른 이동을 기믹 성공·벽통과로 취급하지 않음."
+      },
+      {
+        "effect": "minecraft:haste",
+        "name": "성급함",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          2,
+          3,
+          4
+        ],
+        "note": "실제 기본 공격/채굴과 평가계수 구별. 일반 스킬 쿨 자동 감소0."
+      },
+      {
+        "effect": "minecraft:jump_boost",
+        "name": "점프 강화",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          2,
+          3,
+          4
+        ],
+        "note": "맵 경계와 도달성 검증. 장신구 추가 점프와 함께 검사."
+      },
+      {
+        "effect": "minecraft:health_boost",
+        "name": "생명력 강화",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          6
+        ],
+        "note": "H0=20에 +4L. 신규 가호의 합산 최고 VI면 H44, HP4000 목표 없음."
+      },
+      {
+        "effect": "minecraft:regeneration",
+        "name": "재생",
+        "caps_in_rank_order": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          2
+        ],
+        "note": "영구 회복의 강력한 효용 때문에 늦게 개방. VI 이상 매tick 포화 및 명목 고레벨 보상 금지."
+      },
+      {
+        "effect": "minecraft:resistance",
+        "name": "저항",
+        "caps_in_rank_order": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2
+        ],
+        "note": "영구 IV=80%를 기본 출시 보상으로 사용하지 않음. 기존 확정 예외는 별도 검토."
+      },
+      {
+        "effect": "minecraft:absorption",
+        "name": "흡수",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          6
+        ],
+        "note": "최대 4L 흡수 HP. 소모량 원장 없이 우유·재접속·reapply·재지급으로 충전하는 지급 연결은 출시 금지."
+      },
+      {
+        "effect": "minecraft:luck",
+        "name": "행운",
+        "caps_in_rank_order": [
+          1,
+          2,
+          3,
+          5,
+          7,
+          10
+        ],
+        "note": "등록된 행운 풀만 영향. 장신구 포함 합산17. 영구 가호 신규 최대10."
+      },
+      {
+        "effect": "minecraft:hero_of_the_village",
+        "name": "마을의 영웅",
+        "caps_in_rank_order": [
+          1,
+          1,
+          2,
+          2,
+          3,
+          3
+        ],
+        "note": "바닐라 주민 거래만. RPG상점 자동 할인 아님. 할인·재판매 순환 점검."
+      },
+      {
+        "effect": "minecraft:conduit_power",
+        "name": "전달체의 힘",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          3
+        ],
+        "note": "호흡/시야는 단계 불변이지만 수중 채굴은 검증 대상. 상한을 무조건 I로 분류하지 않음."
+      },
+      {
+        "effect": "minecraft:fire_resistance",
+        "name": "화염 저항",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      },
+      {
+        "effect": "minecraft:water_breathing",
+        "name": "수중 호흡",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      },
+      {
+        "effect": "minecraft:invisibility",
+        "name": "투명화",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      },
+      {
+        "effect": "minecraft:night_vision",
+        "name": "야간 투시",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      },
+      {
+        "effect": "minecraft:slow_falling",
+        "name": "느린 낙하",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      },
+      {
+        "effect": "minecraft:dolphins_grace",
+        "name": "돌고래의 우아함",
+        "caps_in_rank_order": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "note": "핵심 효능이 단계 상승으로 커지지 않으므로 신규 영구 보상은 I만. II~XVII 업그레이드 후보 금지."
+      }
+    ],
+    "excluded_permanent_effects": [
+      "minecraft:instant_health",
+      "minecraft:saturation"
+    ],
+    "default_intrinsic_score": 0,
+    "exception_intrinsic_ceiling_by_budget": {
+      "B0": 0,
+      "B1": 0,
+      "B2": 2,
+      "B3": 4,
+      "B4": 6,
+      "B5": 8
+    },
+    "actual_cap_rule": "min(기술상한, 신규등급운영상한, 신별상한, 보상예산상한). 기존 확정 예외에는 소급 적용하지 않음.",
+    "god_policy_required": [
+      "원문 profile God ID",
+      "현재6등급",
+      "원문 권능/정체성 근거",
+      "명시 효과 허용목록",
+      "효과별 max_level",
+      "priority",
+      "후보 id/mode/level",
+      "획득퀘스트·출처",
+      "intrinsic_score",
+      "fallback",
+      "최초권리·기존권리 연결"
+    ],
+    "god_policy_default": "주 정체성1효과, 보조0~2효과. 후보2~3개를 권장하되 실제 근거 없는 후보를 채우지 않음. 최고등급도 모든 효과 허용0.",
+    "candidate_selection": {
+      "count": 1,
+      "basis": "현재 유효한 영구 보유 최고단계. 임시효과 제외",
+      "floor": "target=L; 현재 영구최고>=L이면 무효",
+      "upgrade": "target=현재 영구최고+L; 상한초과는 후보거절, 상승폭 축소0",
+      "order": [
+        "priority 오름차순",
+        "예상 전투력 높은 순",
+        "후보 ID 오름차순"
+      ],
+      "freeze": "최초 수령 가능 상태에서 실제 선택한 결과를 claim에 저장. 지급재시도·정의변경·임시물약으로 재선택0"
+    },
+    "fallback": {
+      "default": "none",
+      "none_semantics": "가호 지급 보류. 완료사건과 별도로 보류claim 유지; 동일클리어 재청구 새권리0. 효과/보유권/intrinsic 모두0. 수령 가능한 조건이 달라져 유효후보가 생길 때 아직 미선택claim에만 최초선택 가능.",
+      "only_ownership_exception": "해당 이름 있는 보유권 자체의 독립 서사/접근 가치가 원문 또는 개별 채택안에 명시되고 효과 없음이 고지된 경우에만 허용. 동일정의1회, 기본intrinsic0. 인간루트 제한 발생을 수락 전에 안내.",
+      "no_silent_substitution": "효과없음 상태를 강력한 효과로 묘사하거나 보류를 임의 재료/다른 신 가호로 치환하지 않음"
+    },
+    "budget_caps": {
+      "minecraft_namespace_applies": true,
+      "B2": {
+        "strength": 1,
+        "speed": 1,
+        "haste": 1,
+        "jump_boost": 1,
+        "health_boost": 1,
+        "absorption": 1,
+        "luck": 1,
+        "hero_of_the_village": 1,
+        "conduit_power": 1,
+        "fire_resistance": 1,
+        "water_breathing": 1,
+        "invisibility": 1,
+        "night_vision": 1,
+        "slow_falling": 1,
+        "dolphins_grace": 1
+      },
+      "B3": {
+        "strength": 2,
+        "speed": 2,
+        "haste": 2,
+        "jump_boost": 2,
+        "health_boost": 2,
+        "resistance": 1,
+        "absorption": 2,
+        "luck": 2,
+        "hero_of_the_village": 2,
+        "conduit_power": 1,
+        "fire_resistance": 1,
+        "water_breathing": 1,
+        "invisibility": 1,
+        "night_vision": 1,
+        "slow_falling": 1,
+        "dolphins_grace": 1
+      },
+      "B4": {
+        "strength": 3,
+        "speed": 2,
+        "haste": 2,
+        "jump_boost": 2,
+        "health_boost": 3,
+        "regeneration": 1,
+        "resistance": 1,
+        "absorption": 3,
+        "luck": 5,
+        "hero_of_the_village": 2,
+        "conduit_power": 2,
+        "fire_resistance": 1,
+        "water_breathing": 1,
+        "invisibility": 1,
+        "night_vision": 1,
+        "slow_falling": 1,
+        "dolphins_grace": 1
+      },
+      "B5": {
+        "strength": 6,
+        "speed": 4,
+        "haste": 4,
+        "jump_boost": 4,
+        "health_boost": 6,
+        "regeneration": 2,
+        "resistance": 2,
+        "absorption": 6,
+        "luck": 10,
+        "hero_of_the_village": 3,
+        "conduit_power": 3,
+        "fire_resistance": 1,
+        "water_breathing": 1,
+        "invisibility": 1,
+        "night_vision": 1,
+        "slow_falling": 1,
+        "dolphins_grace": 1
+      }
+    },
+    "duplicate_rules": [
+      "같은 효과는 최고 하나, 가산0",
+      "같은 명명 가호/보상 정의/최초권리 재수령 점수0",
+      "한 가호 정의의 개정/효과교체로 새intrinsic0",
+      "기존 이름 없는 고정 가호에 새 이름·등급·intrinsic 소급 생성0",
+      "순수 수집용 신규 이름은 intrinsic0; 점수 증폭용 이름 쪼개기0"
+    ]
+  },
+  "reward_budgets": [
+    {
+      "id": "B0",
+      "name": "기록·반환·원래 무보상 결말",
+      "active_minutes_reference": [
+        0,
+        10
+      ],
+      "primary_rewards": 0,
+      "permanent_rewards_max": 0,
+      "default_bundle": "NONE",
+      "repeat": "새 물품·전투점수0. 허락받은 반환물과 원래 서비스는 포상과 구분.",
+      "eligibility": "원문 무보상·기록 전용·비언어·미탄생 범위가 우선"
+    },
+    {
+      "id": "B1",
+      "name": "짧은 실제 도움",
+      "active_minutes_reference": [
+        2,
+        8
+      ],
+      "primary_rewards": 1,
+      "permanent_rewards_max": 0,
+      "default_bundle": "SUPPLY_SMALL",
+      "repeat": "같은 완료 보상0. 반복 가능 별도 필요·새 task_instance·실제 재고를 작성한 경우만 소모품1묶음.",
+      "eligibility": "실제 배달·설치·운반·회피 등 한 완결 행동"
+    },
+    {
+      "id": "B2",
+      "name": "완결 의뢰·실습",
+      "active_minutes_reference": [
+        8,
+        25
+      ],
+      "primary_rewards": 1,
+      "permanent_rewards_max": 1,
+      "default_bundle": "SUPPLY_STANDARD",
+      "quality_reference": [
+        "고급",
+        "희귀 조건부"
+      ],
+      "blessing_budget_cap": "B2",
+      "eligibility": "최소2종 실제 행동 또는 뚜렷한 위험/선택 비용. 기술 실습이면 독립 기술1개 또는 고급 도구1개로 기본묶음을 대체 가능",
+      "repeat": "새 영구권리·intrinsic0. 반복 공급은 저가 소모품과 실제 재고로 제한"
+    },
+    {
+      "id": "B3",
+      "name": "챕터·첫 보스·개인 사건의 실질 완결",
+      "active_minutes_reference": [
+        30,
+        90
+      ],
+      "primary_rewards": 1,
+      "permanent_rewards_max": 2,
+      "default_bundle": "SUPPLY_STANDARD",
+      "quality_reference": [
+        "희귀",
+        "영웅 조건부"
+      ],
+      "blessing_budget_cap": "B3",
+      "eligibility": "준비/실습/결정적 수행의 연결 또는 동급 난도 한 사건. 주 보상1개, 별도 교육용 낮은 강도 기술·생활도구 최대1개만 추가 가능",
+      "repeat": "초회 선택1권리와 재도전 소모품 원장 분리. 기존 공방/관우 반복 한도 보존"
+    },
+    {
+      "id": "B4",
+      "name": "전쟁 국면의 결정적 기여·깊은 개인 MAIN",
+      "active_minutes_reference": [
+        60,
+        180
+      ],
+      "primary_rewards": 1,
+      "permanent_rewards_max": 2,
+      "default_bundle": "SUPPLY_LARGE",
+      "quality_reference": [
+        "영웅",
+        "전설"
+      ],
+      "blessing_budget_cap": "B4",
+      "eligibility": "실제 세계 또는 관계 결과+여러 선행/위험/비가역 선택 중1개 이상. 플레이시간만으로 승급 불가",
+      "repeat": "영구 추가0. 조건업적·기록·외형 또는 고정 재고 소모품. 반복 성장재화 새로 만들지 않음"
+    },
+    {
+      "id": "B5",
+      "name": "희소한 시대 결말·원전상 유일한 업적",
+      "active_minutes_reference": null,
+      "primary_rewards": 1,
+      "permanent_rewards_max": 1,
+      "default_bundle": "NONE",
+      "quality_reference": [
+        "전설",
+        "신화",
+        "근원"
+      ],
+      "blessing_budget_cap": "B5",
+      "eligibility": "기존 세계 전쟁/원전 사건의 실질 변화와 인물 제공 의사·소유 근거가 모두 명시된 한정 사건. 최고등급 NPC 접촉·오랜 대기만으로 불가",
+      "repeat": "같은 정의의 영구권리1회. 보유자에게 점수만 주는 새 이름 복제0"
+    }
+  ],
+  "consumable_bundles": [
+    {
+      "id": "NONE",
+      "items": [],
+      "gold": 0
+    },
+    {
+      "id": "SUPPLY_SMALL",
+      "items": [
+        {
+          "item": "minecraft:bread",
+          "count": 2
+        }
+      ],
+      "gold": 0,
+      "alternatives_choose_one": [
+        {
+          "item": "minecraft:torch",
+          "count": 8
+        },
+        {
+          "item": "minecraft:oak_planks",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "SUPPLY_STANDARD",
+      "items": [
+        {
+          "item": "minecraft:baked_potato",
+          "count": 8
+        }
+      ],
+      "gold": 0,
+      "alternatives_choose_one": [
+        {
+          "item": "minecraft:iron_ingot",
+          "count": 2
+        },
+        {
+          "item": "minecraft:bread",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "SUPPLY_LARGE",
+      "items": [
+        {
+          "item": "minecraft:bread",
+          "count": 8
+        },
+        {
+          "item": "minecraft:torch",
+          "count": 16
+        }
+      ],
+      "gold": 0,
+      "alternatives_choose_one": [
+        {
+          "item": "minecraft:iron_ingot",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "budget_application": {
+    "time_not_price": true,
+    "wait_hours_not_active_minutes": true,
+    "budget_and_runtime_tier_distinct": true,
+    "maximum_one_primary_choice": true,
+    "ordinary_actions_default": "B1~B2. 제공자의 실제 식량·재료·수리·지도와 연결. 모든 행동을 가호로 포상하지 않음.",
+    "short_conditional_event_default": "B0 또는 B1, 실제 위험·희소성 있으면 B2. 단순 조우/확률/밤/현실48h 대기만으로 등급 상향0.",
+    "personal_main_default": "원문 보상부터 유지. B3~B5 자동배정 아님. 무보상 결말은 B0; 새 별도 보상사건은 별도정의·선후행.",
+    "raid_default": "초회1선택 또는 명시 고정1권리. 보스 처치와 QUEST/RAID_DIRECT 경로를 각각 의도 작성하지 않으면 이중지급0.",
+    "no_reward_chains": "신규 초반 성장용 체인에서 2개 연속 무보상 수행을 기본으로 만들지 않음. 필요한 선행의 직접 접근권·소량보급·실습기술을 미리 명시. 기존 무보상 작품에는 소급 보상추가0."
+  },
+  "equipment_quality_reference": [
+    {
+      "name": "일반",
+      "ordinal_authoring_only": 1,
+      "plain_melee_nominal_dps_range": [
+        6,
+        10
+      ],
+      "reference_full_set": {
+        "armor": 7,
+        "toughness": 0,
+        "registered_protection_sum": 0
+      },
+      "sharpness_new_item_cap": 0,
+      "equipment_intrinsic_new_item_ceiling": 0,
+      "skill_intrinsic_new_item_ceiling": 0,
+      "accessory_fixed_power_reference": 0,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "고급",
+      "ordinal_authoring_only": 2,
+      "plain_melee_nominal_dps_range": [
+        8,
+        12
+      ],
+      "reference_full_set": {
+        "armor": 12,
+        "toughness": 0,
+        "registered_protection_sum": 4
+      },
+      "sharpness_new_item_cap": 1,
+      "equipment_intrinsic_new_item_ceiling": 4,
+      "skill_intrinsic_new_item_ceiling": 8,
+      "accessory_fixed_power_reference": 8,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "희귀",
+      "ordinal_authoring_only": 3,
+      "plain_melee_nominal_dps_range": [
+        10,
+        15
+      ],
+      "reference_full_set": {
+        "armor": 15,
+        "toughness": 0,
+        "registered_protection_sum": 8
+      },
+      "sharpness_new_item_cap": 2,
+      "equipment_intrinsic_new_item_ceiling": 10,
+      "skill_intrinsic_new_item_ceiling": 18,
+      "accessory_fixed_power_reference": 14,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "영웅",
+      "ordinal_authoring_only": 4,
+      "plain_melee_nominal_dps_range": [
+        12,
+        18
+      ],
+      "reference_full_set": {
+        "armor": 18,
+        "toughness": 4,
+        "registered_protection_sum": 12
+      },
+      "sharpness_new_item_cap": 3,
+      "equipment_intrinsic_new_item_ceiling": 14,
+      "skill_intrinsic_new_item_ceiling": 24,
+      "accessory_fixed_power_reference": 24,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "전설",
+      "ordinal_authoring_only": 5,
+      "plain_melee_nominal_dps_range": [
+        14,
+        21
+      ],
+      "reference_full_set": {
+        "armor": 20,
+        "toughness": 8,
+        "registered_protection_sum": 16
+      },
+      "sharpness_new_item_cap": 4,
+      "equipment_intrinsic_new_item_ceiling": 18,
+      "skill_intrinsic_new_item_ceiling": 32,
+      "accessory_fixed_power_reference": 32,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "신화",
+      "ordinal_authoring_only": 6,
+      "plain_melee_nominal_dps_range": [
+        16,
+        24
+      ],
+      "reference_full_set": {
+        "armor": 20,
+        "toughness": 8,
+        "registered_protection_sum": 20
+      },
+      "sharpness_new_item_cap": 5,
+      "equipment_intrinsic_new_item_ceiling": 24,
+      "skill_intrinsic_new_item_ceiling": 40,
+      "accessory_fixed_power_reference": 40,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    },
+    {
+      "name": "근원",
+      "ordinal_authoring_only": 7,
+      "plain_melee_nominal_dps_range": [
+        18,
+        27
+      ],
+      "reference_full_set": {
+        "armor": 20,
+        "toughness": 12,
+        "registered_protection_sum": 24
+      },
+      "sharpness_new_item_cap": 5,
+      "equipment_intrinsic_new_item_ceiling": 30,
+      "skill_intrinsic_new_item_ceiling": 48,
+      "accessory_fixed_power_reference": 48,
+      "automatic_minimum_stats": false,
+      "notes": "전체 갑옷 비교세트 값이며 한 보상에 세트 전체 지급하지 않음. 부위·역할·스킬을 함께 비교하는 저술 범위, 등급 자동 속성 아님."
+    }
+  ],
+  "equipment_rules": {
+    "nominal_dps": "완충 단일 총타격(기본1 포함·날카로움 포함)×실제 공격속도. 치명/힘/보스방어/기믹/실제명중을 제외한 비교값.",
+    "power_weapon_W": "총 기본공격에서 플레이어 기본1을 뺀 무기기여. 날카로움별도. 공격속도는 현재 CP공식에 없음.",
+    "weapon_roles": [
+      {
+        "role": "단일 무스킬",
+        "budget": "동품질 명목DPS 범위 중앙~상단; 추가무적/범위/이동0"
+      },
+      {
+        "role": "느린 강타",
+        "budget": "비슷한 명목DPS, 0.8~1.25회/초·긴선후딜·큰1타. 같은 고DPS와 기동성/범위 모두최상 금지"
+      },
+      {
+        "role": "원거리·강한유틸",
+        "budget": "평타 명목DPS는 동품질 기준55~85% 가능, 거리·CC·방어·순스킬DPS를 합해 역할가치 검증"
+      },
+      {
+        "role": "장병기·다수",
+        "budget": "단일DPS 기준75~100%, 범위보조타는 단일보스에 합산0, 공간/방향/후딜 제약 명시"
+      },
+      {
+        "role": "생활 도구",
+        "budget": "채굴범위/효율/loot/보호룰로 평가. IGNORE이고 전투력0이어도 보상가치는 존재"
+      }
+    ],
+    "durability": "신제 무한내구는 품질별 유지비 차등 없음. 용암·소실·재발급은 별도. 관우/무사시의 인간 기반 내구는 원문 유지.",
+    "crafting_stage_names": {
+      "adopted_display": [
+        "시험작",
+        "개량작",
+        "완성작",
+        "명작"
+      ],
+      "status": "기획 표시명 선택; 사용자 확정이라고 표기하지 않음",
+      "separate_from_quality": true,
+      "automatic_upgrade": false
+    },
+    "pickaxe_reference": [
+      {
+        "quality": "일반",
+        "efficiency": 0,
+        "fortune": 0,
+        "area": "단일"
+      },
+      {
+        "quality": "고급",
+        "efficiency": 3,
+        "fortune": 1,
+        "area": "단일",
+        "exception": "공방 시험작은 기존 효율III·행운0 유지"
+      },
+      {
+        "quality": "희귀",
+        "efficiency": 4,
+        "fortune": 2,
+        "area": "단일"
+      },
+      {
+        "quality": "영웅",
+        "efficiency": 5,
+        "fortune": 3,
+        "area": "단일"
+      },
+      {
+        "quality": "전설",
+        "efficiency": 5,
+        "fortune": 3,
+        "area": "허용 암석 5종3×3 최대9, 광물은 일반단일",
+        "adopted_id": "mythictrpg:greek_olympus_hephaestus_tunnel_pickaxe"
+      },
+      {
+        "quality": "신화",
+        "efficiency": 5,
+        "fortune": 3,
+        "area": "자동 확대0, 별도 생활역할 설계시에만"
+      },
+      {
+        "quality": "근원",
+        "efficiency": 5,
+        "fortune": 3,
+        "area": "자동 확대0, 별도 생활역할 설계시에만"
+      }
+    ],
+    "pickaxe_adoption": "너른굴 동일ID 전설·효율V·행운III 채택. 철 티어 유지, 단일/3×3 마나0·내구0. 새 저등급도구 정의·획득권리 생성0. 신화/근원 자동출시0."
+  },
+  "skills": {
+    "default_basis": "H20 / mana200 / regen2 per second / 20TPS",
+    "ordinary_not_raid_only": true,
+    "intrinsic_is_not_damage": true,
+    "no_strength_auto_on_skill": true,
+    "no_haste_auto_cooldown": true,
+    "profiles": [
+      {
+        "id": "SK_ATTACK_BASIC",
+        "mana": 24,
+        "cooldown_seconds": 12,
+        "damage": 8,
+        "range_blocks": 8,
+        "intrinsic": 12,
+        "role": "단일 조준공격, 원시피해8·1회, 선딜0.3초/후딜0.3초. 실제 행동이 투사체면 별도 구현 요구."
+      },
+      {
+        "id": "SK_ATTACK_BURST",
+        "mana": 40,
+        "cooldown_seconds": 16,
+        "damage": 14,
+        "range_blocks": 10,
+        "intrinsic": 20,
+        "role": "순간공격·원시14·1회. 최대쿨 연속은2.5마나/초로 기본회복 초과."
+      },
+      {
+        "id": "SK_AREA",
+        "mana": 36,
+        "cooldown_seconds": 18,
+        "damage": 6,
+        "radius_blocks": 3,
+        "target_cap": 4,
+        "intrinsic": 20,
+        "role": "동일시전 각대상1회. 보스1체에24로 합산0. 선딜0.6초/후딜0.4초."
+      },
+      {
+        "id": "SK_SELF_HEAL",
+        "mana": 30,
+        "cooldown_seconds": 20,
+        "heal_hp": 4,
+        "intrinsic": 15,
+        "role": "자가회복1회. 초과회복 소실, 부활0, 선딜0.6초/후딜0.4초."
+      },
+      {
+        "id": "SK_DEFENSE_REFERENCE_H02",
+        "mana": 24,
+        "cooldown_seconds": 12,
+        "intrinsic": 15,
+        "role": "기존 H02: 준비0.2초/조건방어1초/후딜0.3초, 적격 전방근접만 일반방어후×0.70. 기존 ID 재사용, 신규보상0."
+      },
+      {
+        "id": "SK_MOVE_NEW",
+        "mana": 30,
+        "cooldown_seconds": 10,
+        "distance_blocks": 3,
+        "intrinsic": 18,
+        "role": "신규 이동기 기본안. 짧은3블록, 충돌/보호경계 존중, 기본무적0. 기존 시제품 회피/대시의 개별 무적을 소급 제거하지 않음. 새 구현 필요."
+      }
+    ],
+    "profile_is_not_new_definition": true,
+    "new_ids_required_per_actual_character": true,
+    "sustained_budget": "기본200에서 장기 합계 비용/주기≤2마나/초는 수지상 지속 가능. 2초과는 초기200을 쓰는 폭발형. 개별 쿨·공통입력잠금·마나 이산 검산을 함께 수행.",
+    "lock_default": "동일tick 상충 입력은 1개만 승인, 거절은 무소모. 각 기술 선후딜 중 잠금 대상을 명시하고 이동/시점까지 일괄 봉쇄하지 않음.",
+    "miss_policy": "승인후 헛침은 비용·쿨 유지. 승인전 권한/기절/마나/목표상태 실패 무소모. 취소와 대상무적을 환급 성공으로 바꾸지 않음.",
+    "no_duplicate_growth": "반복 보상으로 같은 기능의 새ID를 발행하지 않음. 동일ID 개정/재학습/복구는 K추가0. 실제 새 독립 기술만 개별 정의로 평가하며 수집한 기술의 무제한 동시사용을 허용하지 않음."
+  },
+  "accessories": {
+    "slots": 2,
+    "duplicate_distinct_rights_allowed": true,
+    "same_right_two_slots": false,
+    "stack_numeric": true,
+    "in_combat_swap": true,
+    "default_one_primary_effect": true,
+    "multi_effect_budget": "첫 주효과100%에 추가효과를 무료로 얹지 않음. 두 효능을 섞으면 각각 해당 품질 수치60% 이하로 시작하여 조합검증. 횟수형/정화의 쿨을 마음대로 짧게 줄이지 않음.",
+    "effect_reference": [
+      {
+        "effect": "MAX_MANA",
+        "name": "최대 마나",
+        "rare": 20,
+        "epic": 40,
+        "legendary": 60,
+        "mythic": 80,
+        "origin": 100,
+        "unit": "mana",
+        "two_origin": 200,
+        "note": "최대400/회복4초당. 장착 즉시 현재량 충전0. 다른 장신구 효과를 포기하는 2칸 기회비용."
+      },
+      {
+        "effect": "CHAIN",
+        "name": "연계의 매듭",
+        "rare": null,
+        "epic": 0.1,
+        "legendary": 0.1,
+        "mythic": 0.1,
+        "origin": 0.1,
+        "unit": "지정 습득기본쿨 비율/유효 무기시전",
+        "two_origin": 0.2,
+        "note": "등급 상승으로 비율 증가하지 않음. 시전당1회, 광역/다단/도트로 추가0. 특수/장신구 제외."
+      },
+      {
+        "effect": "CLEANSE",
+        "name": "정화",
+        "rare": null,
+        "epic": 300,
+        "legendary": 300,
+        "mythic": 300,
+        "origin": 300,
+        "unit": "server_seconds_cooldown",
+        "two_origin": "각 권리 1회 준비, 같은 CC중복 소비0",
+        "note": "일반 CC1개. 기믹·공허·사망 제외. 전투중 준비품 교체 발동은 합법이며 재발급 쿨복제 금지."
+      },
+      {
+        "effect": "EMERGENCY",
+        "name": "응급 회복",
+        "rare": null,
+        "epic": 0.15,
+        "legendary": 0.2,
+        "mythic": 0.25,
+        "origin": 0.3,
+        "unit": "최대HP 비율/5초",
+        "two_origin": 0.6,
+        "note": "적 공격 후 생존·25% 경계 하향 통과. 현실86400초/획득권리, 즉시부활0. 5초 균등회복. 두 권리 합산 인정."
+      },
+      {
+        "effect": "MISS_REFUND",
+        "name": "재정비",
+        "rare": 0.15,
+        "epic": 0.2,
+        "legendary": 0.25,
+        "mythic": 0.3,
+        "origin": 0.35,
+        "unit": "지불 마나 비율",
+        "two_origin": 0.7,
+        "note": "전체 공격시전 종료 적중0일 때1회. 비용0/일부적중/특수스킬 환급0. 쿨환급0. 엔진 공통상한100% 유지."
+      },
+      {
+        "effect": "LUCK",
+        "name": "행운",
+        "rare": 1,
+        "epic": 1,
+        "legendary": 2,
+        "mythic": 2,
+        "origin": 3,
+        "unit": "luck_level",
+        "two_origin": 6,
+        "note": "영구효과와 합산 최대17. 고유 장비/토큰/진행키 quantity_bonus_allowed false."
+      },
+      {
+        "effect": "FLAT_ATTACK",
+        "name": "공격",
+        "rare": 0.15,
+        "epic": 0.2,
+        "legendary": 0.3,
+        "mythic": 0.4,
+        "origin": 0.6,
+        "unit": "최종피해 HP/적격 피해사건",
+        "two_origin": 1.2,
+        "note": "빠른 기본공격·다단·도트에 적용되는 실제 피해사건 수까지 예산에 넣음. 현재 구현에 없는 proc쿨을 있다고 가정하지 않음."
+      },
+      {
+        "effect": "SPEED",
+        "name": "속도",
+        "rare": 0.005,
+        "epic": 0.008,
+        "legendary": 0.01,
+        "mythic": 0.012,
+        "origin": 0.015,
+        "unit": "이동속도 attribute ADD_VALUE",
+        "two_origin": 0.03,
+        "note": "신속과 중첩·기믹 도달성 점검. 숫자를 블록/초로 표시하지 않음."
+      },
+      {
+        "effect": "AIR_JUMP",
+        "name": "추가 점프",
+        "rare": null,
+        "epic": 1,
+        "legendary": 1,
+        "mythic": 1,
+        "origin": 1,
+        "unit": "추가 점프/착지 충전",
+        "two_origin": 2,
+        "note": "상위품질도 단품1회. 이동권 자체가 주효과이며 공격스탯 추가0. 공중교체·재접속 충전0."
+      },
+      {
+        "effect": "FLAT_REDUCTION",
+        "name": "강인",
+        "rare": 0.15,
+        "epic": 0.2,
+        "legendary": 0.3,
+        "mythic": 0.4,
+        "origin": 0.5,
+        "unit": "최종피해 HP/적격 피해사건",
+        "two_origin": 1.0,
+        "note": "작은 피해0 허용. 기믹 성공을 대신하지 않음. 무적우회 피해 제외. 상시 고정감소가 저항과 곱중첩 아님."
+      },
+      {
+        "effect": "REGEN",
+        "name": "재생",
+        "rare": 0.03,
+        "epic": 0.05,
+        "legendary": 0.08,
+        "mythic": 0.1,
+        "origin": 0.12,
+        "unit": "HP/second",
+        "two_origin": 0.24,
+        "note": "전투중 실제 회복+영구 재생+음식 모두 합산 검증. 회복량을 CP에 다시 자동 환산하지 않음."
+      },
+      {
+        "effect": "BONUS_GOLD",
+        "name": "골드",
+        "rare": 0.02,
+        "epic": 0.03,
+        "legendary": 0.04,
+        "mythic": 0.05,
+        "origin": 0.05,
+        "unit": "확정 보상 골드 비율",
+        "two_origin": 0.1,
+        "note": "보상 영수증만. 환불/송금/상점 정산 제외, 소수점버림·확정1회. 새 기준 묶음의 기본 gold=0."
+      }
+    ],
+    "power": "보유권 중 fixedPower 상위2 합; 실제효과는 착용2개. 중복권리 원장과 쿨은 별개지만 재지급은 같은권리.",
+    "quality_not_sufficient_to_increase": "정화·연계·추가점프는 상위품질이라고 자동강화하지 않음. 새 고품질품은 독립 콘셉트 없으면 제작하지 않음.",
+    "dionysus_exception": "중급 디오니소스 BGM장신구는 실제1슬롯, 전투효과0, 첫획득1회·동일권리복구. 일반중급 장신구허용으로 확대0."
+  },
+  "special_support": {
+    "provider_min_rank": "highest",
+    "default_limit": {
+      "uses_per_raid": 1,
+      "real_time_cooldown_seconds": null,
+      "consumable_items": [],
+      "mana_cost": 60
+    },
+    "at_least_one_nonmana_limit": true,
+    "selected_limits_AND": true,
+    "npc_action_count": 1,
+    "ordinary_skill_not_restricted": true,
+    "relation_random_help_is_separate": true,
+    "profiles": [
+      {
+        "id": "SUPPORT_ATTACK",
+        "amount": 18,
+        "radius_blocks": 3.5,
+        "enemy_target_cap": 5,
+        "stun_general_seconds": 0.5,
+        "intrinsic": 45,
+        "note": "기존 토르 초기안과 같은 규모. 보스 일반스턴은 보스허용표가 없으면0. 페이즈/무적/기믹우회0."
+      },
+      {
+        "id": "SUPPORT_HEAL",
+        "amount_hp": 6,
+        "radius_blocks": 6,
+        "participant_target_cap": 5,
+        "intrinsic": 40,
+        "note": "현재 생존 적격 레이드 참가자 각6HP 한 번. 부활·전면정화·보호막 추가0."
+      }
+    ],
+    "new_high_power_exception": "더 큰 단일기술은 HP비례 즉사 대신 고정피해·대상수·마나·선택제한을 작성. 별도 전투모델 없이 기준보스 총HP의10%를 넘는 팀전체 지원조합은 출시 검토대상. 자동 스케일링 하드캡이 아님.",
+    "rights_and_body": "한 실제 NPC의 가용성·동의·현재상태·예약·안전등장/복귀를 확인. 일반 친분을 습득권으로 바꾸지 않음."
+  },
+  "human_route": {
+    "ability_ownership_distinction": [
+      "장비",
+      "습득스킬",
+      "장신구",
+      "특수스킬은 가호와 자동동일시하지 않음"
+    ],
+    "blocked_by": "현재 레이드직접 예외 및 기존 초기여신 예외를 제외한 신가호 보유권",
+    "not_historical_lifetime_ban": true,
+    "milk_or_death_not_relinquishment": true,
+    "raid_direct_exception": true,
+    "raid_kill_quest_not_direct": true,
+    "initial_goddess_exception": "원문에 정의된 초기여신 축복의 실제 정의/획득증거만; 모든 STORY_DIRECT/NPC_DIRECT를 초기축복으로 간주하지 않음.",
+    "loot_exception": "정당한 전리품/제압한 힘의 기존 허용 보존. 임의 신가호를 전리품으로 다시 라벨링0.",
+    "unknown_legacy_source": "LEGACY_UNSPECIFIED를 임의 RAID_DIRECT/초기축복으로 추정하지 않음. 기록 확인 전 새 인간경로 수행 자격판정만 보류, 일반대화·이미보유능력 사용을 봉쇄하지 않음.",
+    "check_at": "인간경로 수락·수행·수강 단계. 이미 배운 일반기술 매 사용을 새 수강으로 검사하지 않음.",
+    "source_condition_limit": "has_non_raid_blessing만으로 초기여신 개별예외까지 구현됐다고 주장하지 않음. 개별 예외 정의를 확인하는 연결 구현이 필요. 가호 포기/루트복귀 기능 신설0."
+  },
+  "claim_and_inventory": {
+    "first_right_key": "player_uuid + canonical_reward_definition + first_acquisition_scope",
+    "repeat_key": "player_uuid + reward_id + successful_task_or_attempt_uuid",
+    "delivery_states": [
+      "AVAILABLE",
+      "DELIVERY_PENDING",
+      "DELIVERED"
+    ],
+    "completion_and_claim_separate": true,
+    "source_required": [
+      "QUEST",
+      "RAID_DIRECT",
+      "NPC_DIRECT",
+      "STORY_DIRECT",
+      "LEGACY_UNSPECIFIED"
+    ],
+    "choice": "주보상 목록의1개를 고른 뒤 고정. 인벤부족/재로그인/정의개정으로 재선택0. 같은claim에 처음부터 확정한 선택과 수량을 복구.",
+    "stock_default": "반복가능·비독점 제작의뢰는 첫5명+후발5명=10인분 계획재고를 제공자 실제 제작/보급근거와 함께 명시. 희소 실물은 원문 수량 우선. 없는 재고를 인물별로 자동복제하지 않음.",
+    "stock_fields": [
+      "제공자·소유근거",
+      "정확한 item/variant",
+      "초기수량",
+      "예약수량",
+      "소모시점",
+      "보충근거와 수량",
+      "개인/서버 공유 여부",
+      "후발권리",
+      "재고부족대기",
+      "미수령복구"
+    ],
+    "repeat_default": "신규 영구 보상은 반복0. 반복소모품은 정확한 새 필요·시도·참가증거·개별 한도·제공자 재고가 있는 정의에만 지급. 새 전역 주간/일일 의무·로그인 출석 성장0.",
+    "finite_repeat_stock_example": {
+      "small_jobs_initial_reward_bundles": 10,
+      "supply_small_total_bread": 20,
+      "after_exhaustion": "새 보급/기부/제작 근거와 명시 수량으로만 보충. 기다림만으로 무한충전0."
+    },
+    "no_room": "바닥드롭 금지, AVAILABLE 또는 명시 미수령권 유지. 슬롯 확보 후 누락라인만 전달.",
+    "uncertain": "인벤·실물claim식별·지급원장·재고예약 대조 전 재지급0. 일괄 DB/인벤 write를 원자적이라 사칭하지 않음.",
+    "first_reward_stock_not_griefable": "이미 권리발생한 사람이 다른 수령자의 수령으로 영구권리를 잃지 않음. 실제희소한 유일물은 수락 전에 대상/서버수량 고지."
+  },
+  "power_policy": {
+    "preserve_source_v2_coefficients": true,
+    "aggregation": "SUM_SLOT_BEST",
+    "recommendations_initial": [],
+    "recommendation_decision": "세계진행 ID의 배타구간 연결을 새로 발명하지 않음. 초기 정책은 권장표 빈 배열을 의도채택, catchUp=0. 장비/행동 설명으로 진입안내하고 전투력 하드컷0.",
+    "world_contribution_coefficient": 0,
+    "CP_not_DPS": true,
+    "no_automatic_intrinsic_by_NPC_rank": true,
+    "no_retroactive_intrinsic_for_unnamed_blessings": true,
+    "model_equation": "10*(A+3*S+0.04*A*S)*(1+0.02*T)+(H0+4*B)*(1+0.02*G)*sqrt((1+P/40)/(1-0.2*R))+other+E+O+K+J",
+    "actual_damage_not_CP": "실제 방어/강인함/공격속도/충전/사거리/피해억제/보스접근시간은 별도 모델. 스킬·장신구 효과는 자동 CP재환산0."
+  },
+  "boss_reference": {
+    "first_raid_minutes": [
+      4,
+      6
+    ],
+    "party_sizes": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "base_hp": 20,
+    "base_mana": 200,
+    "baseline_attack_total_range": [
+      7,
+      9
+    ],
+    "reference_attack_total": 8,
+    "reference_attack_speed": 1.6,
+    "baseline_blessings": 0,
+    "baseline_accessories": 0,
+    "not_player_stat_normalization": true,
+    "damage_models": [
+      "실제 명중/충전 효율",
+      "이동/접근시간",
+      "공격자별 피해 처리",
+      "강제 기믹정지",
+      "마나·시전잠금",
+      "일반 갑옷·강인함·등록보호·저항"
+    ],
+    "chapter2_reference": {
+      "hp_per_player": 1800,
+      "active_fraction": 0.5472222222222222,
+      "hit_efficiency": 0.9,
+      "fixed_pause_seconds": 24,
+      "nominal_member_effective_dps": 6.304,
+      "predicted_seconds": 309.53299492385787
+    },
+    "no_universal_stun_or_invulnerability_bypass": true,
+    "no_HP_scale_for_progressed_players": true,
+    "late_content": "실제 신규 보스마다 기준로드아웃·일반 피해·위험빈도·허용실수·효과조합을 따로 계산. 4~6분 초기목표를 전 보스/모든성장자에게 강제하지 않음."
+  },
+  "compatibility": [
+    {
+      "subject": "공방 챕터1",
+      "decision": "그대로 유지",
+      "facts": "시험작 고급 효율III/행운0; 희귀 선택1권리, 검7.5×1.6/망치12×1.0·각 명목DPS12, 반복철2·rolling24h2회. 기존 E=0 유지."
+    },
+    {
+      "subject": "관우 챕터2",
+      "decision": "그대로 유지",
+      "facts": "H01 9/1.25·16tick·보조4.5·4블록70도최대3·내구1561·E10·무스킬; H02 24/12초·K15·전방조건30%감쇠1초; 반복빵4+횃불8·24h2회."
+    },
+    {
+      "subject": "너른굴4차",
+      "decision": "본 전역안으로 초기안 채택",
+      "facts": "전설·효율V·행운III·철티어·3×3허용암석·무한내구. 동일ID/권리 유지. 기타 신제6종 무한내구 정정 유지."
+    },
+    {
+      "subject": "제작 단계 표시",
+      "decision": "개량작 유지 채택",
+      "facts": "시험작/개량작/완성작/명작은 품질7등급과 별도. 현재 공방 개량작을 수작으로 자동개명하지 않음."
+    },
+    {
+      "subject": "개별 가호 원문 상한 초과",
+      "decision": "소급변경하지 않음",
+      "facts": "초기 전역상한은 새 지급 설계에 적용. 원문확정 효과/기술/권리의 초과는 예외검토 목록으로 올리고 해당 원문을 보존."
+    }
+  ],
+  "implementation_requirements": [
+    "신별정체성/허용목록과 등급/예산상한 결합 검증",
+    "흡수 소모량 보존·재적용 무충전 연결",
+    "초기여신 실제 정의 기반 인간루트 예외 연결",
+    "전투효과/고유점수/획득권리/착용값 별도 원장",
+    "부품·등록변형·지급형식 일치",
+    "선택결과·다중라인 영수증·재고예약 복구",
+    "보스피해억제와 공격자별처리·기믹피해 분류",
+    "신규 돌진/투사체/변신/패링 각각 구현요구 표시",
+    "장비7등급은저술메타데이터. 현행엄격파서에 미지원grade필드삽입금지"
+  ],
+  "source_titles": [
+    "가호·보상 기획 전달자료 2026-10-21 개정본",
+    "스킬·장신구·특수스킬 기획 전달서 2026-10-22",
+    "실제 전투력 계산 자료 01-combat-power",
+    "장비·스킬·장신구 작성 규격 보완 02-equipment-skills-accessories",
+    "combat_power/default.json schemaVersion2",
+    "신제 장비 무한내구와 도구성장4차",
+    "공방의 시험 통합챕터1",
+    "약속한 끝에서 돌아오는 칼 통합챕터2",
+    "5인 Minecraft 레이드에 적용할 유명 게임의 설계 원리",
+    "각 인물 원문 profile 및 기존 accepted_scope"
+  ],
+  "official_design_references": [
+    {
+      "title": "ArenaNet: Making the Most of Maguuma",
+      "url": "https://www.guildwars2.com/en/news/gameplay-features-making-the-most-of-maguuma/",
+      "used_for": "탐험접근권·재플레이·분기·조건업적 원리만, 숫자복사0"
+    },
+    {
+      "title": "ArenaNet Support: Legendary Armory",
+      "url": "https://help.guildwars2.com/hc/en-us/articles/4403435663635-Legendary-Armory",
+      "used_for": "슬롯에 맞는 중복권리 관리 원리. 이 게임의 자동드롭교환 증거로 사용0"
+    },
+    {
+      "title": "Square Enix: FFXIV Job Guide",
+      "url": "https://eu.finalfantasyxiv.com/jobguide/battle",
+      "used_for": "공격·방어·회복·유틸리티 역할의 기회비용만. 필수직업/파티구성/실제계수 복사0"
+    }
+  ],
+  "static_validation_summary": {
+    "assertions": 171,
+    "runtime_tests": 0,
+    "server_deployment": 0,
+    "mode": "Decimal20TPS·기획계약 assertion; 실제게임시험 아님",
+    "mana_example_24_per_8_seconds": [
+      {
+        "max_mana": 200,
+        "success_300": 33,
+        "attempts_300": 38,
+        "success_600": 57,
+        "attempts_600": 75,
+        "first_failure_seconds": 184
+      },
+      {
+        "max_mana": 240,
+        "success_300": 38,
+        "attempts_300": 38,
+        "success_600": 69,
+        "attempts_600": 75,
+        "first_failure_seconds": 368
+      },
+      {
+        "max_mana": 280,
+        "success_300": 38,
+        "attempts_300": 38,
+        "success_600": 75,
+        "attempts_600": 75,
+        "first_failure_seconds_in_window": null,
+        "sustainable_forever": false
+      },
+      {
+        "max_mana": 400,
+        "success_300": 38,
+        "attempts_300": 38,
+        "success_600": 75,
+        "attempts_600": 75,
+        "first_failure_seconds_in_window": null,
+        "sustainable_forever_for_this_skill_alone": true
+      }
+    ]
+  }
+}

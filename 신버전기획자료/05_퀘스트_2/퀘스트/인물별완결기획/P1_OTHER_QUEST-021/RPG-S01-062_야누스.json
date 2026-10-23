@@ -1,0 +1,67 @@
+{
+  "record_key": "RPG-S01-062",
+  "name": "야누스",
+  "definition_id": "GR021-062-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_roman_janus",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-062/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-062/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P04_stage2.json#/records/21",
+    "accepted_episodes": [
+      "EP007A-RPG-S01-062"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "최상급",
+    "identity_boundary": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음"
+  },
+  "title": "문 밖보다 돌아온 말",
+  "site": "권한 있는 기존 공용 출입문 JA-DOOR-01과 바깥 안전쉼터 JA-WAIT-01(문에서4블록), 왕복 종점 JA-TURN-01(최대24블록). 문을 잠그는 원래 관리권이 확인된 경우만.",
+  "objectives": [
+    "현재 문 양쪽을 실제 걸어 사각지대와 맞은편 통행을 확인하고 자기 짐이 문 회전을 막으면 허락된 자리로 실제 치운다. 실제 맞은편 통행자가 있으면 먼저 통과하게 하되 없는 사람을 생성하지 않는다. 이번 통행의 귀환 시각은 수락 후180초로 정하고 출발/연락 방법을 실제 합의. 원래 출입허가 없는 문은 대상제외. 통행1회 후 귀환위치/시각 기록.",
+    "첫 통행에서는 합의 경계24블록에서 실제 돌아와 문앞신호와 귀환이야기 수신으로 종료. 다음 통행에 실제 늦을 사정이 있을 때만 별도 예외를 요청한다. 그 다음 통행의 폐문30초 전까지 직접 문앞 또는 동의한 현장전달자에게 사정·대기요청을 전하고 실제 야누스 수신을 확인한다. 다음 통행은 별도 통행UUID·실제 수락시각+180초의 새 마감으로 기록하며 첫 귀환의 완료를 다시 요구하지 않는다.",
+    "야누스가 안전·관리권을 확인하고 수락한 경우만 이번1회 최대60초 연장. 플레이어가 문으로 실제 귀환해 출입을 마치고 실제 지연사유와 남겨진 영향을 설명한다."
+  ],
+  "branches": "요청 미수신/거절/반복남용이면 원래180초 폐문, 안전쉼터에서 기존 다음 개방을 기다린다. 문을 닫을 때 통과중 몸체는 밀어내지 않고 현재 통과 완료까지만 대기. 실패가 감금·새 차원잠금·순간이동을 만들지 않는다. 귀환 약속거절은 자유통행 원래권한만 유지. 단순 요청거절/미수신을 반복남용으로 기록하지 않는다. 둘째 통행을 하지 않아도 첫 왕복·귀환이야기 수신 완료는 유지한다.",
+  "reward": null,
+  "expected_minutes": [
+    3,
+    10
+  ],
+  "acceptance_tests": [
+    "닫힌 문/봉인 해제권 생성0",
+    "30초 전 발신만으로 수신성공0",
+    "같은통행 두번연장0"
+  ],
+  "special": "",
+  "reward_status_source": "NOT_APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 귀환을 지키면 그 통행에만 기다릴 여유를 주고 반복 남용하면 제때 닫는다. 다른 문·봉인·차원의 잠금을 해제하지 않는다.",
+  "source_outcome": "문 밖보다 돌아온 말에서 실제 선택한 행동과 결과: 귀환을 지키면 그 통행에만 기다릴 여유를 주고 반복 남용하면 제때 닫는다. 다른 문·봉인·차원의 잠금을 해제하지 않는다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR021-062-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "야누스와 플레이어 각각이 직접 관측하거나 허락된 보고를 실제 받은 범위만. 참가명부만으로 지식이 생기지 않으며 실제 청취/목격/열람 UUID별로 기록한다. 외부 상대는 counterpart_delivery의 실제 수신완료 내용만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다. 기본 첫 통행은3~6분, 실제 지연 사정으로 둘째 통행을 별도 수락하면 추가3~4분이며 합계6~10분 예상이다.",
+  "runtime_ready": false
+}

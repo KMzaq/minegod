@@ -24,9 +24,11 @@ public final class CourierRumorService {
     private static final Map<MinecraftServer,CourierRumorService> INSTANCES=new IdentityHashMap<>();
     private record DeathAttempt(LivingDeathEvent event,long tick) {}
     private final MinecraftServer server;private final RumorSavedData data;private final CourierSettings settings;private final CourierEngine engine;
+    private final String memoryMode;
     private final Map<UUID,DeathAttempt> deaths=new LinkedHashMap<>();private long nextWarning;
     private CourierRumorService(MinecraftServer server,CourierSettings settings,RumorSavedData data) {
         this.server=server;this.settings=settings;this.data=data;
+        memoryMode=MemoryFoundationSettings.mode().name();
         engine=data.access(server,ledger->new CourierEngine(ledger,settings,new CourierEngine.Probe(){
             public boolean available(UUID courier,UUID subject){return liveCourier(courier)!=null;}
             public boolean receiverAvailable(String god){return GodDefinitionManager.INSTANCE.definitions().containsKey(ResourceLocation.parse(god));}
@@ -39,18 +41,18 @@ public final class CourierRumorService {
                 return unobstructed(level,bird.getEyePosition(),player.getEyePosition(),bird)
                         &&unobstructed(level,bird.getEyePosition(),point,bird);
             }
-        },()->server.overworld().getGameTime()));
+        },()->server.overworld().getGameTime(),memoryMode));
     }
     public static void started(ServerStartedEvent event) {
         var server=event.getServer();requireThread(server);INSTANCES.remove(server);
         var settings=CourierSettings.load(server.getServerDirectory().resolve("config/mythictrpg/rumor-courier.json"));
-        if(!settings.enabled()||MemoryFoundationSettings.mode()!=MemoryFoundationSettings.Mode.RUMOR_TEST)return;
+        if(!settings.enabled()||!MemoryFoundationSettings.supportsRumors())return;
         var data=RumorSavedData.get(server);if(data.ready())INSTANCES.put(server,new CourierRumorService(server,settings,data));
     }
     public static void stopped(ServerStoppedEvent event){requireThread(event.getServer());INSTANCES.remove(event.getServer());}
     private static void requireThread(MinecraftServer server){if(!server.isSameThread())throw new IllegalStateException("courier game operation requires server thread");}
     private static CourierRumorService current(MinecraftServer server){requireThread(server);var r=INSTANCES.get(server);return r!=null&&r.data.ready()
-            &&MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST?r:null;}
+            &&MemoryFoundationSettings.supportsRumors()&&r.memoryMode.equals(MemoryFoundationSettings.mode().name())?r:null;}
     private LivingEntity liveCourier(UUID id) {
         for(var level:server.getAllLevels()){
             var entity=level.getEntity(id);
@@ -161,13 +163,15 @@ public final class CourierRumorService {
     }
     static List<RumorLedger.HeardRumor> heard(MinecraftServer server,RumorLedger ledger,UUID subject,String god,Set<UUID> audience) {
         var r=current(server);if(r!=null)return r.engine.heard(subject,god,audience);
-        return ledger.heard(subject,god,audience).stream().filter(h->ledger.evidence(h.rootId()).proof()==null).toList();
+        if(!MemoryFoundationSettings.supportsRumors())return List.of();
+        return ledger.heard(subject,god,audience,MemoryFoundationSettings.mode().name()).stream()
+                .filter(h->ledger.evidence(h.rootId()).proof()==null).toList();
     }
     static Optional<RumorLedger.HeardRumor> heardOne(MinecraftServer server,UUID subject,String god,UUID root,Set<UUID> audience) {
         var r=current(server);return r==null?Optional.empty():r.engine.heardOne(subject,god,root,audience);
     }
     public static String status(MinecraftServer server) {
-        var r=current(server);if(r==null)return "Courier rumors OFF (explicit rules/types and RUMOR_TEST required; automatic spawn/respawn unsupported)";
+        var r=current(server);if(r==null)return "Courier rumors OFF (explicit rules/types and PERSONAL or RUMOR_TEST required; automatic spawn/respawn unsupported)";
         var state=r.data.snapshot();return "couriers="+state.couriers().size()+", evidence="+state.evidence().size()+", pending="+state.pending().size()+", receipts="+state.receipts().size()+"; automaticSpawn=false; automaticRespawn=false";
     }
 }

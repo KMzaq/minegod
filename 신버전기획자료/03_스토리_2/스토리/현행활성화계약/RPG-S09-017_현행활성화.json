@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S09-017",
+  "name": "야카테쿠틀리",
+  "definition_id": "ACTIVATION-RPG-S09-017",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 사막 공용길 A→서로 다른 귀환확인 B→A 실제 왕복1회. 동료 필요 없음.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "정확 원문 encounter의 허용 지형·공간에 현재 실제 도달. 현재 통행권·안전·배치공간·귀환로를 확인한 공개 방문. 별도 소지품·과거 개인행동·선행 NPC응답·수주 조건 없음.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-042/RPG-S09-017.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "현재 명부·정체·성별·종족·신격·전투등급·정치 미정 값과 접근 제한을 바꾸지 않는다. / 옛 인연·원전 참고를 현재 전쟁 소속이나 현재 생사·소재의 자동 지식으로 바꾸지 않는다. / 신화의 고향·명계 명칭은 새 플레이 차원을 뜻하지 않는다. 현재 Minecraft 세계·네더·엔드만 사용한다. / 아래 활동은 현재 목표를 보여 주는 작은 저술안이다. 필수 새 건축·강제 퀘스트·보상·새 능력·런타임 완료가 아니다. / 등급·장 번호만으로 일반 조우를 새로 잠그지 않으며 실제 위치·의사·접근 조건은 보존한다. 제외된 마야·잉카 인물을 현재 배우로 되살리지 않는다. 현재 정체·등급·신격·미정 소속과 봉인·실제 세계/네더/엔드 접근은 결속 원문 그대로다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-042/RPG-S09-017.json",
+      "record_key": "RPG-S09-017",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "0a21bc7e946457322b80126dc154416900db9905ab79d903125fb37a0b9b7def"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-042/08_RPG-S09-017_야카테쿠틀리_완결기획.json",
+      "record_key": "RPG-S09-017",
+      "pointers": [
+        "/world_unlock_and_encounter"
+      ],
+      "sha256": "cd5ad7e648e574623233ebb423a27a66e4e8a2733b82988052e1cc9714e25551"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

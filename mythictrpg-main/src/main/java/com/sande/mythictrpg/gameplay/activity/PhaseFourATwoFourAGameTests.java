@@ -183,7 +183,9 @@ public final class PhaseFourATwoFourAGameTests {
         helper.succeed();
     }
 
-    @GameTest(templateNamespace = "minecraft", template = TEMPLATE)
+    // This fixture requires an empty server player list and resets server-wide activity/ingress state.
+    // Run in its own process; other GameTests legitimately keep connected players across ticks.
+    @GameTest(templateNamespace = "mythictrpg_activity_lifecycle", template = "empty")
     public static void lifecycleCleanupIsRuntimeOnlyWithoutObservation(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         PlayerActivityRuntimeState.discard(server);

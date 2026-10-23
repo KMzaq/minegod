@@ -1,0 +1,3597 @@
+{
+  "packet_id": "P2_NONQUEST-070",
+  "category": "지식",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. 실제 구현·게임/API/LLM/영상/5인 시험 0. runtime_ready=false.",
+    "원문보존": "source_contract·retained_profile·source_episode는 정확한 원문이다. adopted_detail은 별도 현행 보강이며 과거 미채택 상태를 소급 수정하지 않는다.",
+    "조우운영": {
+      "참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#general_encounter 및 #atomic_contract",
+      "현재채택": "일반 후보를 아래 인물별 실제 접근 범위 안에서만 등록한다. 세계 해금은 한 명 달성 시 전역영구, 현재 개인조건 맞는 실제 한 명이 조우주체. 해금자/주체/MAIN/보상 수혜자는 별개.",
+      "확률": "공통 300 활동초 창·서버25%·실제 등장 후1800 가동초 쿨·등급가중치 그대로. 인물별 추가 추첨0.",
+      "단일본체": "canonical_actor CAS, 저장된 window/후보/난수/결과 재사용. 미배치와 미로드를 구별하며 기존본체는 재추첨 없이 접촉. 사망·완전봉인·잔여봉인은 원문대로, 해금은 부활/해제 아님.",
+      "복구": "재시작 후 entity/journal/receipt 대조, 불확실하면 대기하고 재생성0. 동행자는 재해금 없이 현장 접근하되 사적 권한 복제0."
+    },
+    "현장": "대화는 실제 동일 공간의 시야·청취 기본8블록, 집기·인수·수선만2블록. 관측·이동에 손2블록을 강제하지 않는다. 실제 허용 접촉모드가 우선.",
+    "정산": "합의에는 품목·정수량·대체재·행동 대가·수혜자·회차를 실제 확정한다. 기본 제안은 다른 유효 합의를 금지하지 않는다. 수행/권리/예약재고/인도/실제 소비는 별도. 미수령 보존, 같은 회차 수혜자 receipt로 누락분만 복구; 불확실 인도 중 재지급0.",
+    "기록": "event_id, actual_actor, object_before_after, action_receipt, consent_scope, receiver_uuid, audience, received_at를 분리한다. 미래 계획·소문 수신·사실 검증은 다르다.",
+    "중단": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0.",
+    "범위": "새 퀘스트0, 개인MAIN0, 추가 성장보상0. 기존 생활지도·허락현물 유지."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S04-045",
+      "name": "닌카시",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-045/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-045/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-045/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "닌카시의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "루갈반다의 산길 잔치에 보낼 음료를 고름; 선택한 제조법이 장터에 남음. 같이 마실 사람 없는 풍요를 낭비로 봄.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "루갈반다의 산길 잔치에 어울릴 음료의 향과 목넘김을 작은 양으로 비교한다. 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "잔을 따른 뒤 자기 잔보다 남의 표정을 먼저 본다. 곡물 볶는 냄새가 달라지는 순간 맞히기.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 양조 찬가의 여신. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "닌카시 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "루갈반다의 산길 잔치에 어울릴 음료의 향과 목넘김을 작은 양으로 비교한다. 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "잔을 따른 뒤 자기 잔보다 남의 표정을 먼저 본다. 곡물 볶는 냄새가 달라지는 순간 맞히기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "닌카시의 함께 마시는 소리를 좋아하는 까다로운 양조자이며 칭찬만 하는 손님에게는 시큰둥하다라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "닌카시가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "닌카시의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "닌카시가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "닌카시의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "루갈반다가 마시지 않는 동행의 몫도 따로 마련해 잔치에 포함한다는 일이 실제로 있었는가?",
+                "acquisition_event": "닌카시가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "닌카시 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음에는 한 종류를 밀지 않고 모임에 맞는 향 두 가지를 함께 고른다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "루갈반다의 산길 잔치에 어울릴 음료의 향과 목넘김을 작은 양으로 비교한다. 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "잔을 따른 뒤 자기 잔보다 남의 표정을 먼저 본다. 곡물 볶는 냄새가 달라지는 순간 맞히기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "닌카시의 함께 마시는 소리를 좋아하는 까다로운 양조자이며 칭찬만 하는 손님에게는 시큰둥하다라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "닌카시가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "닌카시의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "루갈반다가 마시지 않는 동행의 몫도 따로 마련해 잔치에 포함한다는 일이 실제로 있었는가?",
+                  "acquisition_event": "닌카시가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "닌카시 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음에는 한 종류를 밀지 않고 모임에 맞는 향 두 가지를 함께 고른다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "닌카시가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "닌카시의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "닌카시의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "루갈반다의 산길 잔치에 보낼 음료를 고름; 선택한 제조법이 장터에 남음. 같이 마실 사람 없는 풍요를 낭비로 봄.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "루갈반다의 산길 잔치에 어울릴 음료의 향과 목넘김을 작은 양으로 비교한다. 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "잔을 따른 뒤 자기 잔보다 남의 표정을 먼저 본다. 곡물 볶는 냄새가 달라지는 순간 맞히기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 양조 찬가의 여신. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "service/NONE. 현재 성분·대가·허락·참여 방식 동의. 양조 도움 OR 시음 실제 참여와 닌카시 확인이면 사전 합의 권리. 준비 노동과 시음을 AND로 요구하지 않는다.",
+            "향 관찰만은 시음/도움 아님. 별도 합의 없는 물품권 없음. 향 관찰자는 마시지 않음. 상대 성분/음용 거절 존중.",
+            "현재 실제 잔치 요청이면 합의 인도/인수, 잔치가 실제 없으면 현재 소량 비교로 서비스. 존재 미확인을 잔치 없음으로 단정하지 않는다.",
+            "권리 발생에 잔치 개최·후기 응답·MAIN·퀘스트 수락 불필요. 음료 한 몫 OR 배합 지도 하나. 선택/인계/실습 구분·같은 회차 재접속 중복0."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "현재 요청의 재료·동의·비용을 확인해 소량 비교와 술 없는 별도 음료를 실제 준비한다. 실제 잔치가 있으면 합의분을 인도하고 없으면 현재 소규모 시음으로 마친다. 실제 이용자의 답과 남은 잔을 확인해 다음 배합 선택을 남기는 서비스 처리이며 별도 퀘스트 완료·MAIN 없음. 추가 음료 수령/지도는 선택이고 같은 회차 재접속은 새 회차가 아니다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "닌카시는 칭찬을 따라 외치다 조용한 사람의 답을 듣기 위해 목소리를 낮춘다. 다음 잔을 이미 모두 좋아할 것이라고 말하지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "남은 잔을 보는 사람: 실제 동의한 사람·마신 양·향만 본 사람·술 없는 재료의 출처. 침묵이나 잔을 든 동작은 음주 동의 아님. → 다음 요청에 쓸 서로 다른 배합 선택이 남고 닌카시는 실제 들은 이유만 기억한다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "퀘스트·MAIN 없음. 손님은 각자 자기 음료와 참여를 고르며 음료 거절이 자리 거절이 아니다. 도와준 사람과 실제 시음한 사람의 회차별 몫만 따로 확인한다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "신규 저술안: 실제 양조 도움·시음 참여자에게 합의한 보통 음료 한 몫 또는 배합 지도. 만취 강제·미등록 포션 능력·무한 반복 보상 없음.",
+              "earned_condition": "현재 서비스 회차에서 실제 양조 도움 또는 시음에 참여하고 닌카시가 그 참여를 확인한 사람에게 사전 합의한 보통 음료 한 몫 또는 배합 지도 중 하나의 기회. 퀘스트 수락·독점 MAIN·잔치 개최·후기 응답을 요구하지 않는다. 향 관찰만 하고 도움/시음 모두 하지 않았다면 물품 지급권은 별도 합의 없이는 없다.",
+              "beneficiary_and_claim_right": "해당 회차 실제 도움·시음 참여자 자신의 합의 몫만. 친구 참여·재접속·남은 잔 반복 클릭으로 권리 없음. 술을 원치 않으면 합의한 술 없는 음료를 고를 수 있다.",
+              "actual_grant_and_consumption": "보통 음료 한 몫 실제 인수 또는 별도 동의한 실제 배합 지도 중 하나. 서비스 처리·참여 확인·선택·실지급을 구분하고 소비 재료는 실제 사용량만. 능력 포션·신 보상·MAIN 없음.",
+              "unclaimed_retry_no_duplicate": "회차·참여자·선택한 몫·실제 지급/수강을 대조한다. 가방 부족·부재·미지급은 미정산 권리만 보존하고 누락만 복구한다. 후기 거절은 권리를 지우지 않으며 선택 지도 미수강은 서비스 미완료가 아니다. 같은 회차 반복 클릭으로 두 몫 지급0. 새 회차는 새로운 요청·재료·실제 참여를 확인한 경우만.",
+              "distinct_recognition_main_blessing_gaze_equipment": "현재 생활 서비스와 보통 음료/지도만. 퀘스트 수락·완료·MAIN·인정·축복·가호·주시·포션 효과는 발생하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "시음만 택한 손님에게 준비 노동 강제0. 향 관찰자는 술 마심0. 향만 본 사람의 지급권은 별도 합의 없으면0. 후기·잔치 개최·루갈반다 수신은 현장 서비스 성과의 필수 아님.",
+        "routes": [
+          {
+            "event_id": "EP015B-RPG-S04-045",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "루갈반다의 산길 잔치에 어울릴 음료의 향과 목넘김을 작은 양으로 비교한다. 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다.\n잔을 따른 뒤 자기 잔보다 남의 표정을 먼저 본다. 곡물 볶는 냄새가 달라지는 순간 맞히기.\n루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 닌카시도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 닌카시가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 닌카시의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-047",
+      "name": "아드가르키두그",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-047/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-047/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-047/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "아드가르키두그의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "마르투와 이동·정착 규칙을 합의; 선수 편들기보다 선택 존중을 기억. 다른 이의 평판으로 자신의 결정을 대신하지 못하게 함.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "마르투와 함께 머무를 때 필요한 시간과 혼자 움직일 시간을 구분해 제안한다. 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "여러 물건을 고를 때 남이 추천한 것부터 잠시 내려놓는다. 작은 장신구를 서로 다른 방식으로 엮어 착용하기.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 누무쉬다의 딸로 마르투와 결혼을 선택. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "마르투와 결혼을 선택한 자기 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "아드가르키두그 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "마르투와 함께 머무를 때 필요한 시간과 혼자 움직일 시간을 구분해 제안한다. 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "여러 물건을 고를 때 남이 추천한 것부터 잠시 내려놓는다. 작은 장신구를 서로 다른 방식으로 엮어 착용하기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 딸로 마르투와 결혼을 선택. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "마르투와 결혼을 선택한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "아드가르키두그의 좋아하는 것을 스스로 고르며 남의 찬반을 구경하는 데도 제법 배짱이 있는 신이라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "아드가르키두그가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "아드가르키두그의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "아드가르키두그가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "아드가르키두그의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "마르투가 자신과 다른 거처 선호를 듣고 실제 생활 몫을 맞춘다는 일이 실제로 있었는가?",
+                "acquisition_event": "아드가르키두그가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "아드가르키두그 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음에는 선택을 지키기 위한 설명을 줄이고 같이 바꿀 수 있는 작은 편의부터 의논한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "마르투와 함께 머무를 때 필요한 시간과 혼자 움직일 시간을 구분해 제안한다. 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "여러 물건을 고를 때 남이 추천한 것부터 잠시 내려놓는다. 작은 장신구를 서로 다른 방식으로 엮어 착용하기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-PAST",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 딸로 마르투와 결혼을 선택. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "마르투와 결혼을 선택한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "아드가르키두그의 좋아하는 것을 스스로 고르며 남의 찬반을 구경하는 데도 제법 배짱이 있는 신이라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "아드가르키두그가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "아드가르키두그의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "마르투가 자신과 다른 거처 선호를 듣고 실제 생활 몫을 맞춘다는 일이 실제로 있었는가?",
+                  "acquisition_event": "아드가르키두그가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "아드가르키두그 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음에는 선택을 지키기 위한 설명을 줄이고 같이 바꿀 수 있는 작은 편의부터 의논한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "아드가르키두그가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "아드가르키두그의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "아드가르키두그의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "마르투와 이동·정착 규칙을 합의; 선수 편들기보다 선택 존중을 기억. 다른 이의 평판으로 자신의 결정을 대신하지 못하게 함.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "마르투와 함께 머무를 때 필요한 시간과 혼자 움직일 시간을 구분해 제안한다. 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "여러 물건을 고를 때 남이 추천한 것부터 잠시 내려놓는다. 작은 장신구를 서로 다른 방식으로 엮어 착용하기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 누무쉬다의 딸로 마르투와 결혼을 선택. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "마르투와 결혼을 선택한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "event/NONE. 퀘스트 수락·MAIN·실물 보상·호감/연애 보상 없음. 현재 당사자 생활 선택과 현물 허락은 유지.",
+            "혼자 시간 실제 시험과 공동 시간 실제 시험은 서로 필요한 별개 활동. 현재 대면만으로 공동 시험 완료 아님. 마르투 부재에는 마친 혼자 활동/작업 보존·공동 시험 대기.",
+            "두 시험 완료와 본인 공개 동의 뒤 직접 불편 전달/마르투 실제 응답. 사적 후기를 거절하면 공개/만족 고백을 강제하지 않는다.",
+            "B3의 허락 정리는 후기를 요구하지 않음. 앞 필수 시험/응답 미완료라면 실제 정리만 보존하고 전체 생활 시험 결말로 확대하지 않는다. 자기 물건 변경은 상대 전체 합의가 아님."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "아드가르키두그가 고른 혼자 있는 때와 함께 보내는 때를 각각 실제 시험하고 요청한 생활 일 하나를 처리한다. 본인이 실제 겪은 불편을 마르투에게 직접 전해 현재 응답을 듣고 자기 변경 몫을 고른 결과만 남기는 event다. 상대 부재면 실제 마친 혼자 시간과 현재 작업은 유지하며 아직 하지 못한 함께하는 시험 및 전달·응답만 대기한다. 현재 만남 자체를 함께하는 시험의 완료로 바꾸지 않는다. 선택 수정은 혼인·이주를 새 확정하는 일이 아니다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "그녀는 선택한 장신구를 다시 엮듯 물건 자리도 바꿔 본다. 다음에 손님이 와도 지난번 선택을 설명하느라 하루를 쓰지 않고 지금의 자리를 보여 주려 한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "비워 둔 시간도 내 것: 요청한 일·실제 정리·누가 현재 함께 있었는지·본인이 말한 만족/불편. 관측하지 않은 사적 시간의 내용은 추측하지 않는다. → 다음 방문에는 현재 남은 자리부터 볼 수 있고 옛 칭찬에 맞춘 일정을 되살리지 않는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "퀘스트·MAIN·보상 없음. 플레이어는 실제 요청받은 일 하나만 돕고 두 사람의 시간을 대신 정하지 않는다. 다른 개인 퀘스트에서 끝난 공용 물 긷기는 그대로 확인하고 복제하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "실물 보상 없음. 자기 시간을 결정하고 수정한 당사자의 변화가 핵심이며 연애·혼인 호감 수치를 지급하지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 그릇·물·자리의 실제 주인 허락을 따른다. 이미 마르투의 장면에서 처리한 동일 물·짐을 다시 생성·소비하지 않는다.\nB2: 자기 물건은 자기 허락으로 이동, 상대 물건은 실제 동의한 범위만. 실물 보상 없음.\nB3: 실물·호감·연애 보상 없음. 실제 맡은 물건이 있다면 그 물건만 주인에게 인계한다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "혼인식·새 집·새 이주·미래 만족을 생성하지 않는다. 마르투의 기존 동일 짐·물을 재생성하거나 이중소비0. 사적 고백이 없어도 실제 정돈은 완료.",
+        "routes": [
+          {
+            "event_id": "EP015B-RPG-S04-047",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "마르투와 함께 머무를 때 필요한 시간과 혼자 움직일 시간을 구분해 제안한다. 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다.\n여러 물건을 고를 때 남이 추천한 것부터 잠시 내려놓는다. 작은 장신구를 서로 다른 방식으로 엮어 착용하기.\n자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 딸로 마르투와 결혼을 선택. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.\n마르투와 결혼을 선택한 자기 인연을 기억한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 아드가르키두그도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 아드가르키두그가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 아드가르키두그의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-048",
+      "name": "남라트",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-048/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-048/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-048/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "남라트의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "아드가르키두그의 손님들을 맞음; 숙소 배분이 이후 가문 관계를 바꿈. 성대한 행사 뒤 남겨진 일을 보이지 않게 두지 않음.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "아드가르키두그의 손님이 머물 자리와 떠난 뒤 정돈할 몫을 따로 살핀다. 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "손님이 간 뒤 빈 자리의 잔을 하나씩 세운다. 접어 놓은 천의 각이 반듯한 것을 보는 만족.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 누무쉬다의 배우자로 축제에 참여. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "남라트 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "아드가르키두그의 손님이 머물 자리와 떠난 뒤 정돈할 몫을 따로 살핀다. 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "손님이 간 뒤 빈 자리의 잔을 하나씩 세운다. 접어 놓은 천의 각이 반듯한 것을 보는 만족.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 배우자로 축제에 참여. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "남라트의 성대한 환대의 겉모습보다 마지막까지 치울 일을 기억하며, 자기 손맛을 알아주는 손님을 좋아하는 신이라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "남라트가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "남라트의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "남라트가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "남라트의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "아드가르키두그가 손님의 숙박만이 아니라 정리할 사람의 시간도 함께 정한다는 일이 실제로 있었는가?",
+                "acquisition_event": "남라트가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "남라트 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음 모임에는 혼자 뒤를 챙기지 않고 먼저 맡길 일을 직접 의논한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "아드가르키두그의 손님이 머물 자리와 떠난 뒤 정돈할 몫을 따로 살핀다. 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "손님이 간 뒤 빈 자리의 잔을 하나씩 세운다. 접어 놓은 천의 각이 반듯한 것을 보는 만족.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-PAST",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 배우자로 축제에 참여. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "남라트의 성대한 환대의 겉모습보다 마지막까지 치울 일을 기억하며, 자기 손맛을 알아주는 손님을 좋아하는 신이라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "남라트가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "남라트의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "아드가르키두그가 손님의 숙박만이 아니라 정리할 사람의 시간도 함께 정한다는 일이 실제로 있었는가?",
+                  "acquisition_event": "남라트가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "남라트 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음 모임에는 혼자 뒤를 챙기지 않고 먼저 맡길 일을 직접 의논한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "남라트가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "남라트의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "남라트의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "아드가르키두그의 손님들을 맞음; 숙소 배분이 이후 가문 관계를 바꿈. 성대한 행사 뒤 남겨진 일을 보이지 않게 두지 않음.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "아드가르키두그의 손님이 머물 자리와 떠난 뒤 정돈할 몫을 따로 살핀다. 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "손님이 간 뒤 빈 자리의 잔을 하나씩 세운다. 접어 놓은 천의 각이 반듯한 것을 보는 만족.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 누무쉬다의 배우자로 축제에 참여. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "event/NONE. 별도 수주·MAIN·배지 없음. 초대·손님 의사·재산 이동 허락은 실제 확인.",
+            "앞 환영 OR 뒤 침상. 실제 해당 도움만·양쪽 AND 아님. 손님 답은 취침 성공 아님.",
+            "합의한 준비 OR 정리 실제 수행자 사전 약속 음식 한 몫 권리. 전체 잔치·주최자 회신·후기 불필요. 권리와 실제 인수/섭취량 분리.",
+            "주최자 부재면 미인계 보존·쉼 가능. 자기 작은 몫 뒤 떠나기 유효·추가 전달 빚 없음."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "선택한 준비를 실제 하고 합의한 작은 정리를 끝내거나 남은 몫을 실제 주최자에게 인계한 결과가 남는다. 인계 미수신이면 그 부분만 남으며 끝난 정리·남라트의 다음 환대 준비를 지우지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "남라트는 자기 몫의 천을 접고 각을 만져 본다. 다음 환대를 말할 때는 손님 숫자보다 함께 끝낼 시간을 먼저 입에 올린다. 주최자 미응답을 동의로 대신 말하지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "마지막 손님의 자리: 쟁반을 받은 사람, 옮긴 짐의 현보관, 천을 편 침상, 실제 쉬기를 택한 손님을 구분한다. 준비했다고 잠든 것으로 쓰지 않는다. → 다음 실제 환대 준비에서 남라트는 마무리 시간부터 묻는다. 같은 방문자에게 자기 도움을 기억하되 처음 온 사람에게 그 공로를 옮기지 않는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "수주 없는 환대 사건이다. 초대받은 현재 손님과 허락된 준비·정리만 다루며 누구의 MAIN 소유도 요구하지 않는다. 방문자는 자기 음식·도움의 실제 몫만 가진다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "새 저술안: 실제 준비·정리 수행자에게 남라트가 남긴 보통 음식 한 몫. 손님용 물자를 무단 지급하지 않고 실제 여유분만 정산.",
+              "earned_condition": "남라트가 현재 여유 음식 한 몫을 정리 도움의 답례로 미리 제시하고, 해당 참여자가 합의한 준비 또는 정리 몫을 실제 끝낸 때 그 몫의 권리를 확인한다. 전체 잔치 종료·주최자 회신·별도 퀘스트 완료를 요구하지 않는다.",
+              "beneficiary_and_claim_right": "실제 합의한 도움을 마친 사람의 이번 음식 한 몫. 손님 접대용 몫과 다른 도움자의 권리는 합치지 않는다.",
+              "actual_grant_and_consumption": "남라트가 자기 제공 가능 여유분을 따로 담아 실제 수령한 사람에게 인도한다. 먹은 분량만 소비되며 손님 그릇을 빼앗아 정산하지 않는다.",
+              "unclaimed_retry_no_duplicate": "제공권·재고·수용능력·실물/효과 확인을 분리한다. 가득 참·부재·미지급은 권리 보존, 실물과 거래/정산 근거 대조 후 누락만 복구. 선택 지도/수령 거절은 이미 끝난 행동을 취소하지 않는다. 반복 클릭·팀 완료·재시작으로 중복 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "현재 잔치가 없는 날 과거 혼인·환대 잔치를 재연하지 않는다. 일상 잡담만 가능. 앞쪽 환영만 돕고 뒤 침상까지 완료로 쓰지 않는다. 전체 잔여 노동·주최자 회신을 남라트의 쉼에 강제하지 않는다.",
+        "routes": [
+          {
+            "event_id": "EP016-RPG-S04-048",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "아드가르키두그의 손님이 머물 자리와 떠난 뒤 정돈할 몫을 따로 살핀다. 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다.\n손님이 간 뒤 빈 자리의 잔을 하나씩 세운다. 접어 놓은 천의 각이 반듯한 것을 보는 만족.\n자기 전승상의 과거를 다음처럼 기억한다: 누무쉬다의 배우자로 축제에 참여. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.\n아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 남라트도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 남라트가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 남라트의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-054",
+      "name": "엔수흐기라나",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-054/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-054/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-054/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "엔수흐기라나의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "엔메르카르에게 보낼 답을 선택; 사절들의 태도가 후속 교역에 남음. 패배를 인정해도 도시의 존엄은 지키려 함.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "엔메르카르의 요구에 답할 때 받아들일 교류와 지울 수 없는 도시의 이름을 구분한다. 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "서신을 읽고 바로 답하지 않고 한 번 접었다 편다. 흔들리지 않게 놓인 그릇의 균형.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 아라타의 통치자로 엔메르카르와 경쟁. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "엔수흐기라나 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "엔메르카르의 요구에 답할 때 받아들일 교류와 지울 수 없는 도시의 이름을 구분한다. 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "서신을 읽고 바로 답하지 않고 한 번 접었다 편다. 흔들리지 않게 놓인 그릇의 균형.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 아라타의 통치자로 엔메르카르와 경쟁. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "엔수흐기라나의 패배의 맛을 오래 기억해도 자기 도시를 승자의 장식으로 내주지 않는 경쟁자라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "엔수흐기라나가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "엔수흐기라나의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "엔수흐기라나가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "엔수흐기라나의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "엔메르카르가 조롱을 빼고 약속한 자원 교류의 몫을 지킨다는 일이 실제로 있었는가?",
+                "acquisition_event": "엔수흐기라나가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "엔수흐기라나 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음 답에는 방어적인 수사를 줄이고 먼저 보낼 수 있는 자원을 밝힌다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "엔메르카르의 요구에 답할 때 받아들일 교류와 지울 수 없는 도시의 이름을 구분한다. 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "서신을 읽고 바로 답하지 않고 한 번 접었다 편다. 흔들리지 않게 놓인 그릇의 균형.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-PAST",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 아라타의 통치자로 엔메르카르와 경쟁. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "엔수흐기라나의 패배의 맛을 오래 기억해도 자기 도시를 승자의 장식으로 내주지 않는 경쟁자라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "엔수흐기라나가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "엔수흐기라나의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "엔메르카르가 조롱을 빼고 약속한 자원 교류의 몫을 지킨다는 일이 실제로 있었는가?",
+                  "acquisition_event": "엔수흐기라나가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "엔수흐기라나 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음 답에는 방어적인 수사를 줄이고 먼저 보낼 수 있는 자원을 밝힌다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "엔수흐기라나가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "엔수흐기라나의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "엔수흐기라나의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "엔메르카르에게 보낼 답을 선택; 사절들의 태도가 후속 교역에 남음. 패배를 인정해도 도시의 존엄은 지키려 함.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "엔메르카르의 요구에 답할 때 받아들일 교류와 지울 수 없는 도시의 이름을 구분한다. 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "서신을 읽고 바로 답하지 않고 한 번 접었다 편다. 흔들리지 않게 놓인 그릇의 균형.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 아라타의 통치자로 엔메르카르와 경쟁. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "dialogue_only/NONE. 퀘스트·MAIN·숨은 전달 의뢰·보상 없음. 현재 질문과 허락 전달은 각각 본인이 선택.",
+            "현재 원문 공개 허락·실제 읽기. 받는 물건과 호칭 조건 따로 질문. 원문에 모욕 문구가 없는 경우 실제 모욕이라 말하지 않음.",
+            "B2 실제 상대 회신 수신 후 현재 적격·의사 있는 청중에 본인 선택 설명. 명시 거절이어도 설명 가능·교역/화해 자동 없음.",
+            "미전달/미회신 대기 OR 회신 받은 뒤 공개 사양 구별. 이미 받은 답은 삭제하지 않음. 일반 잡담/퇴장에 회신·MAIN gate 없음. 교역은 엔메르카르 측 동일 실상태 참조·재정산0."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "엔수흐기라나가 현재 받은 안에서 받아들일 물건과 거절할 호칭을 자기 말로 구분한 답을 남긴다. 실제 회신 뒤 허락된 현재 청중 앞에서 선택 이유를 설명하면 그 발언 결과만 남는다. 회신 미수신이면 후반 대화는 보류하고 첫 대화의 선택을 보존한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "엔수흐기라나는 회신을 기다릴 때 손에 쥔 그릇을 흔들리지 않게 놓는다. 거절을 받아도 자기 도시 이름을 부르는 목소리를 줄이지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "지워지지 않는 도시 이름: 현재 받은 원문의 허락 구절과 엔수흐기라나의 실제 답. 도시 이름을 지우는 문구가 실제 없으면 있다고 가정하지 않고 그런 조건에 대한 일반 원칙만 묻는다. → 실제 설명이 있었으면 그 청중에게 자기 조건이 알려진다. 전달·회신 대기에는 실제 미수신 단계가 남고, 회신을 받은 뒤 비공개를 택한 경우에는 받은 답과 공개 사양만 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "대화만의 사건으로 수락·개인 MAIN·숨은 심부름 완료 없음. 플레이어는 자기 질문과 허락된 전달 여부만 고르고 엔수흐기라나의 도시 결정은 대신하지 않는다. 같은 교류안은 엔메르카르 편과 한 실제 전달 상태를 공유한다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "실물 보상 없음. 자기 도시 이름을 말할 자리와 실제 답변의 변화가 개인 결과다. 교역 물자는 별도 거래다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 문서는 원소유자에게. 대화에 실물 보상·소모 없음. 전달을 수락하지 않으면 플레이어에게 미완료 퀘스트가 붙지 않는다.\nB2: 실물 보상 없음. 교역 물자의 실제 교환은 별도 거래이며 이 대화에서 재정산하지 않는다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "과거 패배는 원문 자기 지식과 본인 공개범위만. 오늘 새로운 패배·자동 화해·교역 성공·부재 주민 청취를 만들지 않는다. 전달 거절은 미완료 퀘스트가 아니다.",
+        "routes": [
+          {
+            "event_id": "EP016-RPG-S04-054",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "엔메르카르의 요구에 답할 때 받아들일 교류와 지울 수 없는 도시의 이름을 구분한다. 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다.\n서신을 읽고 바로 답하지 않고 한 번 접었다 편다. 흔들리지 않게 놓인 그릇의 균형.\n자기 전승상의 과거를 다음처럼 기억한다: 아라타의 통치자로 엔메르카르와 경쟁. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.\n엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 엔수흐기라나도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 엔수흐기라나가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 엔수흐기라나의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-064",
+      "name": "빌룰루",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-064/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-064/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-064/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "빌룰루의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "두무지의 추모와 여행자 급수를 조정; 사과·거부에 따라 물을 내줌. 자신의 처벌이 끝없는 면죄 없는 노역이 되길 거부.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "두무지의 추모와 여행자에게 내줄 물의 몫을 구분하고 자신이 감당할 범위를 정한다. 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "물을 내주기 전 입구에 묻은 모래부터 턴다. 젖은 모래와 마른 모래가 손끝에서 달라지는 감각.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 이난나에게 사막의 물 가죽부대로 변화당함. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0",
+                "counterpart_1"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "빌룰루 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "두무지의 추모와 여행자에게 내줄 물의 몫을 구분하고 자신이 감당할 범위를 정한다. 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "물을 내주기 전 입구에 묻은 모래부터 턴다. 젖은 모래와 마른 모래가 손끝에서 달라지는 감각.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 이난나에게 사막의 물 가죽부대로 변화당함. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0",
+                  "counterpart_1"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0",
+                  "counterpart_1"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "빌룰루의 자기 책임을 지워 달라고 빌지는 않지만 처벌이 영원한 소유권이 되는 데는 맞서는 존재라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "빌룰루가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "빌룰루의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "빌룰루가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "빌룰루의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "피해를 말하는 상대가 사과와 현재 급수의 몫을 구분해 구체적인 끝을 정한다는 일이 실제로 있었는가?",
+                "acquisition_event": "빌룰루가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "빌룰루 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음 방문에는 처음부터 물을 감추지 않고 합의한 몫을 자기 판단으로 내놓는다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "두무지의 추모와 여행자에게 내줄 물의 몫을 구분하고 자신이 감당할 범위를 정한다. 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "물을 내주기 전 입구에 묻은 모래부터 턴다. 젖은 모래와 마른 모래가 손끝에서 달라지는 감각.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-PAST",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 이난나에게 사막의 물 가죽부대로 변화당함. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0",
+                  "counterpart_1"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0",
+                  "counterpart_1"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "빌룰루의 자기 책임을 지워 달라고 빌지는 않지만 처벌이 영원한 소유권이 되는 데는 맞서는 존재라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "빌룰루가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "빌룰루의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "피해를 말하는 상대가 사과와 현재 급수의 몫을 구분해 구체적인 끝을 정한다는 일이 실제로 있었는가?",
+                  "acquisition_event": "빌룰루가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "빌룰루 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음 방문에는 처음부터 물을 감추지 않고 합의한 몫을 자기 판단으로 내놓는다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "빌룰루가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "빌룰루의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "빌룰루의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "두무지의 추모와 여행자 급수를 조정; 사과·거부에 따라 물을 내줌. 자신의 처벌이 끝없는 면죄 없는 노역이 되길 거부.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "두무지의 추모와 여행자에게 내줄 물의 몫을 구분하고 자신이 감당할 범위를 정한다. 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "물을 내주기 전 입구에 묻은 모래부터 턴다. 젖은 모래와 마른 모래가 손끝에서 달라지는 감각.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 이난나에게 사막의 물 가죽부대로 변화당함. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0",
+                  "counterpart_1"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": "일반 급수와 사전 합의 보조 답례를 분리. 합의 보조 몫의 실수행이면 자기 용기 한 몫 권리이며 전체 줄 해소·추모·용서·퀘스트 불필요. 재고·용기 부족에는 미급수권 보존. 같은 물의 중복 계산 금지. 맡은 빈 용기가 있을 때만 세척·반환·인수 조건 적용.",
+          "exact_endings": [
+            {
+              "observable_personal_change": "빌룰루가 지금 허용한 물량과 보조 범위 안에서 실제 급수·용기 정리·휴식 선언이 이루어진 만큼 회차가 닫힌다. 아직 필요한 사람과 남은 물은 현실 상태로 남고 과거 피해가 면책되거나 무한 노동이 생기지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "빌룰루는 거둔 용기 입구를 닫고 쉼터에 앉는다. 오늘 끝을 말했다는 이유로 과거까지 없어졌다고 하면 곧바로 그 부분만 부정한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "마르지 않는 책임의 끝: 원수량·채운 용기·실제 수령자·추모 잔여분. 무한 물이나 전승 변신을 새로 발생시키지 않는다. → 빈 용기 입구가 닫히고 실제 나눈 물만 다른 용기로 옮겨진다. 다음 급수는 그때의 실제 남은 물과 의사부터 묻는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "현재 물 요청·급수 보조·실제 수령으로 이루어지는 서비스다. MAIN 소유·퀘스트 수락·과거 죄 고백을 이용 자격으로 요구하지 않는다. 타인의 물·끝난 회차 권리를 상속하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "급수는 실제 여행자에게 필요한 물을 제공하는 서비스다. 새 저술안: 합의한 급수 보조자에게 자기 용기에 정한 물 한 몫, 무한 반복 보상·면죄 증표 없음.",
+              "earned_condition": "급수 보조 답례는 시작 전 빌룰루가 허용한 보조 몫을 실제 수행한 사람에게 자기 용기에 정한 물 한 몫이다. 전체 줄 해소·두무지 추모 참여·죄의 용서·퀘스트 완료는 요구하지 않는다. 일반 여행자 급수는 그때 실제 허용된 필요·차례에 따른 서비스다.",
+              "beneficiary_and_claim_right": "이번 실제 급수 수령자는 받은 물만, 보조자는 사전 합의한 별도 자기 물 몫만 가진다. 같은 용기의 같은 물을 일반 급수와 보조 답례 두 번으로 세지 않는다.",
+              "actual_grant_and_consumption": "실제 여유 물과 수령 가능한 자기 용기를 확인한 뒤 합의량을 채운다. 실제 채운 양만 원수량에서 차감하고 마신 물은 되돌리지 않는다. 추모에 남긴 물을 무단 전용하거나 없는 물을 생성하지 않는다.",
+              "unclaimed_retry_no_duplicate": "이번 회차·보조자·실제 급수량·용기 현보유를 대조한다. 가득 참·용기 부재·물 부족이면 미급수권을 보존하되 원수량이 마련되고 빌룰루가 실제 정산할 때만 남은 몫을 준다. 반복 대화·로그인으로 물을 재생하거나 새 회차를 자동 시작하지 않는다. 휴식 중에는 새 급수 행동을 만들지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "과거 죄·두무지 추모는 무한 노동·새 변신·면죄의 조건이 아니다. 현재 신체와 접촉모드가 허용할 때만 손끝·용기 행동. 존재하지 않는 용기·물·손을 연기하지 않는다. 종료 후 본인 새 동의 없이 공급0.",
+        "routes": [
+          {
+            "event_id": "EP016-RPG-S04-064",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "두무지의 추모와 여행자에게 내줄 물의 몫을 구분하고 자신이 감당할 범위를 정한다. 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다.\n물을 내주기 전 입구에 묻은 모래부터 턴다. 젖은 모래와 마른 모래가 손끝에서 달라지는 감각.\n자기 전승상의 과거를 다음처럼 기억한다: 이난나에게 사막의 물 가죽부대로 변화당함. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.\n기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 빌룰루도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 빌룰루가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 빌룰루의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-068",
+      "name": "안주·산의 아버지 새",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-068/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-068/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-068/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "안주·산의 아버지 새의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "access",
+                "global:CAST-757"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "루갈반다와 산길 비행 통행 협약; 재방문마다 둥지 신뢰 유지. 누가 둥지를 건드렸는지 먼저 확인하고 보답 선택.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "motive"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-SELF",
+            "statement": {
+              "text": "루갈반다가 머무는 동안 둥지에 손댄 범위와 산길에서 도울 수 있는 범위를 구분한다. 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TASTE",
+            "statement": {
+              "text": "돌아와 먼저 둥지 가장자리를 고르고 나서 말을 건다. 높은 곳에서 바람이 꺾이는 소리 듣기.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-TRADITION",
+            "statement": {
+              "text": "전승 참고에 보존된 내용: 새끼를 돌본 루갈반다에게 도움을 제안. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "source_fact",
+                "source_citation",
+                "global:WORLD-EXISTING"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T-RELATION",
+            "statement": {
+              "text": "루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "counterpart_0"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "안주·산의 아버지 새 본인과 현재 실제 만남이 성립한 시점. 기존 자기 인연과 아래의 자기 전승 기억은 남기되, 이번 의뢰·허가·상대의 현재 위치·본편 조사 결과는 아직 받지 않은 것으로 분리한다.",
+          "known_facts": [
+            {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "루갈반다가 머무는 동안 둥지에 손댄 범위와 산길에서 도울 수 있는 범위를 구분한다. 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "돌아와 먼저 둥지 가장자리를 고르고 나서 말을 건다. 높은 곳에서 바람이 꺾이는 소리 듣기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 새끼를 돌본 루갈반다에게 도움을 제안. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "안주·산의 아버지 새의 둥지의 흔적부터 확인하고 호의는 스스로 고른 방식으로 갚고 싶어 하는 존재라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "안주·산의 아버지 새가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "안주·산의 아버지 새의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "안주·산의 아버지 새가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+            "안주·산의 아버지 새의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "F-RELATION",
+                "fact_or_question": "루갈반다가 답을 재촉하지 않고 합의한 거리와 돌봄 범위를 지킨다는 일이 실제로 있었는가?",
+                "acquisition_event": "안주·산의 아버지 새가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                "eligible_audience": "안주·산의 아버지 새 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                "after_learning_change": "다음에는 경계 질문을 줄이고 허용한 산길 도움을 먼저 제안한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                "not_automatic_from": [
+                  "장 번호 진입",
+                  "다른 플레이어의 관계 상승",
+                  "상대와 같은 문화권",
+                  "공개 문서의 존재"
+                ],
+                "source_refs": [
+                  "role"
+                ]
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K-INTENT",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-INTENT",
+              "claim": {
+                "text": "루갈반다가 머무는 동안 둥지에 손댄 범위와 산길에서 도울 수 있는 범위를 구분한다. 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-SELF",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-TASTE",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-TASTE",
+              "claim": {
+                "text": "돌아와 먼저 둥지 가장자리를 고르고 나서 말을 건다. 높은 곳에서 바람이 꺾이는 소리 듣기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": "T-TASTE",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "자신의 지금 의향과 생활 경험",
+                "when_or_condition": "현재 대화를 시작하기 전부터 가진 자기 의향과 반복 습관",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-PAST",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-PAST",
+              "claim": {
+                "text": "자기 전승상의 과거를 다음처럼 기억한다: 새끼를 돌본 루갈반다에게 도움을 제안. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "fact_ref": "T-TRADITION",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "현행 source_fact에 남아 있는 자신의 참여 사건을 자기 전승 기억으로 보존",
+                "when_or_condition": "현재 만남 이전의 전승상 자기 경험. 현재 시공간의 새 사건·새 부활·새 변신 시점은 만들지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K-RELATION",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K-RELATION",
+              "claim": {
+                "text": "루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "fact_ref": "T-RELATION",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에 보존된 당사자 인연. 새 만남의 발생을 추가하지 않는 자기 관계 기억",
+                "when_or_condition": "현재 대화 이전부터 이어진 명시된 관계. 새 협의의 성립·상대의 응답·진행 상황은 실제 접촉 뒤에만 배운다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "직접 대화하는 상대",
+                "condition": "자기 경험 범위에서만 답하고 상대의 새 상태를 대신 말하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "안주·산의 아버지 새의 둥지의 흔적부터 확인하고 호의는 스스로 고른 방식으로 갚고 싶어 하는 존재라는 태도만으로 특정 방문자의 속임수나 숨은 사정을 추측하지 않는다. 이번 상대의 말·행동 관측이 아직 없다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "안주·산의 아버지 새가 현재 붙잡고 있는 판단 중 저자 기준으로 거짓임이 확정된 것은 없다. 미완료 협의와 사적 자부심을 거짓 믿음으로 만들지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "안주·산의 아버지 새의 생활 습관과 현재 업무에는 별도 은폐를 설정하지 않았다. 상대에게서 듣지 않은 정보를 비밀인 척하지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "F-RELATION",
+                  "fact_or_question": "루갈반다가 답을 재촉하지 않고 합의한 거리와 돌봄 범위를 지킨다는 일이 실제로 있었는가?",
+                  "acquisition_event": "안주·산의 아버지 새가 해당 행동의 현장을 직접 보거나 당사자가 자신에게 설명하는 자리에서 구체 내용을 듣는다.",
+                  "required_evidence": "직접 본 행위와 들은 보고를 구분한다. 말뿐인 의향이면 이행으로 기록하지 않고, 보고라면 화자와 아직 확인 못 한 부분을 남긴다.",
+                  "eligible_audience": "안주·산의 아버지 새 및 그 설명을 실제 함께 들은 상대. 부재한 동료에게 기억을 복사하지 않는다.",
+                  "after_learning_change": "다음에는 경계 질문을 줄이고 허용한 산길 도움을 먼저 제안한다. 보고만 들었다면 먼저 그 보고의 범위를 되묻고 실제 이행을 확인한 부분부터 바꾼다.",
+                  "not_automatic_from": [
+                    "장 번호 진입",
+                    "다른 플레이어의 관계 상승",
+                    "상대와 같은 문화권",
+                    "공개 문서의 존재"
+                  ],
+                  "source_refs": [
+                    "role"
+                  ]
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "안주·산의 아버지 새가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정.",
+              "안주·산의 아버지 새의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다."
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-IDENTITY",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-IDENTITY",
+              "statement": {
+                "text": "안주·산의 아버지 새의 현행 정체·등급·소속 미정값과 실제 접근 범위는 스냅샷에 결속한다. 전승의 역할로 정체를 새로 덮어쓰지 않는다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "access",
+                  "global:CAST-757"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-ROLE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-ROLE",
+              "statement": {
+                "text": "루갈반다와 산길 비행 통행 협약; 재방문마다 둥지 신뢰 유지. 누가 둥지를 건드렸는지 먼저 확인하고 보답 선택.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "motive"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-SELF",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-SELF",
+              "statement": {
+                "text": "루갈반다가 머무는 동안 둥지에 손댄 범위와 산길에서 도울 수 있는 범위를 구분한다. 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TASTE",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TASTE",
+              "statement": {
+                "text": "돌아와 먼저 둥지 가장자리를 고르고 나서 말을 건다. 높은 곳에서 바람이 꺾이는 소리 듣기.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "status": "minor_creative_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-TRADITION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-TRADITION",
+              "statement": {
+                "text": "전승 참고에 보존된 내용: 새끼를 돌본 루갈반다에게 도움을 제안. 그 전승의 귀환·변신·애도·거주를 현재 진행의 새 사건으로 재실행하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "source_fact",
+                  "source_citation",
+                  "global:WORLD-EXISTING"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T-RELATION",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T-RELATION",
+              "statement": {
+                "text": "루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "counterpart_0"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": "event/NONE. 외곽 먹이 인도 또는 빈 용기 회수 중 실제 요청 몫만. 동일 공용 돌봄이 끝났다면 현재 흔적 확인만, 재급식·새 공로 없음. 보답은 실제 제안 대상+동의+실제 구간 도착. 사양/대상 밖/미응답은 각기 다른 도보 경로 근거. 루갈반다 MAIN 소유 불필요. 동일 구간 재비행 금지.",
+          "exact_endings": [
+            {
+              "observable_personal_change": "현재 남은 외곽 돌봄을 실제 돕거나 이미 끝난 동일 공용 돌봄의 현재 상태만 확인한 뒤, 안주가 스스로 고른 한정 도움의 실제 이행 또는 자기 도보 대안 준비 결과만 남긴다. 상태만 확인한 사람에게 새 돌봄 공로·보상권을 만들지 않으며 도움은 안주가 실제 포함한 대상에게만 이행한다. 루갈반다의 MAIN 완료·아이템·영구 비행권은 부여하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "안주는 바람 소리를 듣다가 도울 구간을 시선과 짧은 말로 정한다. 더 멀리 데려다 달라는 요구를 들어도 자기 경계는 스스로 유지한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "날개가 고른 보답: 실제 흔적·남은 요청·플레이어 수행·안주의 직접 확인. 다른 안주 형상의 기억이나 루갈반다의 과거 전승 공로를 플레이어에게 주지 않는다. → 도움을 받은 실제 사람은 그 구간에 도착하고 도보 준비자는 자기 짐 앞에 남는다. 안주는 다음 만남에 실제 지킨 경계와 이행한 도움만 기억한다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "MAIN 없는 안주의 사건이다. 루갈반다 개인 MAIN 소유와 별개로 현재 허락된 외곽 돌봄·자기 이동을 할 수 있다. 같은 돌봄·도움이면 하나의 공용 실제 상태를 참조하고 먹이·비행·보답을 중복 실행하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "신규 저술안: 안주가 실제 제안하고 이행한 한정 산길 도움 자체. 아이템·능력치 지급 없음. 수행자가 아닌 친구에게 이동·인연을 복제하지 않는다.",
+              "earned_condition": "안주의 보답은 해당 실제 돌봄을 확인한 안주가 자기 의사로 현재 제안한 대상·한정 구간에만 성립한다. 돌봄은 자동 탑승권이 아니며 제안·동의만으로 실제 도움 지급을 기록하지 않는다. 안주가 도움을 제안하지 않으면 미지급 아이템 권리를 만들지 않는다.",
+              "beneficiary_and_claim_right": "안주가 실제 제안한 루갈반다와 명시적으로 포함한 현재 참여자만. 플레이어가 대상 밖이면 자기 도보 경로만 있으며 친구·팀원에게 이동·인연을 복제하지 않는다.",
+              "actual_grant_and_consumption": "실제 안주 본체가 정한 방식의 한정 이동을 수행해 대상이 목적 구간에 도달한 때만 도움 이행. 도보 대안은 플레이어 자신의 준비·이동이며 안주가 날려 주었다고 쓰지 않는다. 아이템·스탯·능력·소환권 지급 없음.",
+              "unclaimed_retry_no_duplicate": "제안·대상·동의·출발·현재 위치·도착을 따로 보존한다. 미출발은 당시 제안을 현재 안주 의사·안전으로 다시 확인하고, 중도 중단은 실제 현재 위치에서 안전하게 회복한다. 이미 도착한 구간을 다시 보상 비행하지 않는다. 약속 미실행을 아이템 채무·영구 탑승권으로 바꾸지 않으며 물품 가방 부족 복구는 해당 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "current_fact": "이번 실제 수행·관측·허락된 응답이 생긴 뒤에만 사건 사실 생성. 계획은 현재 NPC 기억이 아니다.",
+        "actor_specific_limit": "이 관리키는 루갈반다 이야기의 특정 비신격 비인간 존재. 다른 안주 전승과 합치거나 다른 전승 기억·권능을 수입0. 둥지 안 강제출현·인간형 본체·원격분신0. 관측은 안전한 시야 거리에서, 인도물 접촉만 손2블록.",
+        "routes": [
+          {
+            "event_id": "EP016-RPG-S04-068",
+            "source_information": {
+              "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.",
+              "speaker_knowledge_and_source": "루갈반다가 머무는 동안 둥지에 손댄 범위와 산길에서 도울 수 있는 범위를 구분한다. 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다.\n돌아와 먼저 둥지 가장자리를 고르고 나서 말을 건다. 높은 곳에서 바람이 꺾이는 소리 듣기.\n자기 전승상의 과거를 다음처럼 기억한다: 새끼를 돌본 루갈반다에게 도움을 제안. 당시의 자기 경험만이며, 관련자의 현재 상태를 뜻하지 않는다.\n루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+              "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 안주·산의 아버지 새도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+              "disclosure_condition": "미확인 경계: 안주·산의 아버지 새가 실제 전달받지 않은 현재 전쟁의 작전, 여신의 동일성과 장치의 내부 사정. / 안주·산의 아버지 새의 기존 인연이 아직 전하지 않은 현재 위치·동의·사적 고백. 전승을 기억한다는 것만으로 이번 재회와 허가가 성립하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·봉투 내부·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+              "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+              "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+            },
+            "actual_delivery": "대면 발화는 실제 발화자·수신자·청중과 내용별 공개 권한을 확인한다. 허락된 기존 기록의 열람은 작성자 본체의 현재 출석 없이도 실제 열람자·자료 출처·허용 범위로 처리하며 새 응답을 만들지 않는다. 일반 인사와 본인이 자발적으로 말하는 취향에는 기록 열람권이나 사건 완료를 요구하지 않는다. 미전달·미열람은 그대로 두며 친구·파티·세계 해금으로 지식을 공유하지 않는다."
+          }
+        ]
+      }
+    }
+  ]
+}

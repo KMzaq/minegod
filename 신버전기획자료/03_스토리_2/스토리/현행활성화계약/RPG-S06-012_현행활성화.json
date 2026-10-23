@@ -1,0 +1,87 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S06-012",
+  "name": "예",
+  "definition_id": "ACTIVATION-RPG-S06-012",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "활1개와 화살1개 이상 직접 제작 AND 본인이 허용 안전 표적에 발사하여 실제 명중1회. 기존 비생물 블록 표적 허용, 사람/동물 처치 불필요.",
+      "completion_count": 1,
+      "initial_value": false,
+      "scope": "누구 실제1명 달성시 세계영구; 동일 world_uuid",
+      "event_contract": "01_A1_실행보강계약.json#/world_commit",
+      "evidence_contract": "01_A1_실행보강계약.json#/receipt_requirements",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "minecraft:overworld의 시야가 열린 기존 빈터. 현재 접근 가능한 기존 장소를 쓰며 새 건축·차원을 만들지 않는다.에 현재 직접 도달하고, 원문 지리·현재 통행권·안전한 접근/귀환로가 유효한 실제 온라인 생존 플레이어. 첫 후보에 새 소지품·제작/납품·개인 과거 수행·SIDE 수락·NPC 선행 응답은 요구하지 않는다.",
+      "dimension": "minecraft:overworld",
+      "exact_site": "시야가 열린 기존 빈터. 현재 접근 가능한 기존 장소를 쓰며 새 건축·차원을 만들지 않는다.",
+      "site_source_ref": "02_A1_최초접촉_원문근거.json#/records/RPG-S06-012",
+      "terrain_options": {
+        "preferred_biome_id": "terralith:forested_highlands",
+        "alternative_biome_ids": "terralith:cloud_forest;minecraft:forest;minecraft:birch_forest",
+        "vanilla_fallback_ids": "minecraft:forest;minecraft:birch_forest",
+        "placement_anchor": "실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음",
+        "structure_dependency": "구조물 경로를 우선 조사. 후보는 모두 배포파일 확인 ID이며 실제 생성·좌표는 미검증. 선호 바이옴 AND 특정 구조물을 동시에 요구하지 않음. 실제 발견된 적합 구조물 OR 표기 바이옴의 안전한 기존 자연 부지. 지리적 조건(강변/해안 등)은 현장 확인. 구조물 부재 때문에 새 건물·접수원·표지·작업대를 만들지 않음",
+        "exploration_cap_fallback": "희귀 후보 구조물 탐색을 무기한 강제하지 않음. 서버가 이미 조사한 같은 생활권의 일반 구조물 또는 안전한 자연 부지로 공용 사이트를 등록. 새 건축 없이 장소 적합성 유지; 보장되지 않은 생성/좌표/거리 수치는 쓰지 않음"
+      },
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "current_item_decision": "exact 최초접촉의 현재 도달·접근 조건을 채택한다. 장면의 작업 소품과 선택 작업을 일반 인사의 필수로 올리지 않는다.",
+      "mode": "기존 조우 경로 보존. 전용계약이 있으면 전용만, 나머지 일반 무작위 경로는 공통 전역계약. 배치형·기록·꿈을 일반풀로 전환하지 않음.",
+      "scheduling_refs": [
+        "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter"
+      ],
+      "subject": "현재 조건을 실제 충족한 온라인 player_uuid 1명. 해금자와 다를 수 있고 현재 적격0명은 발생0. 선택은 원래 정책의 가중·확률·CAS·동시출현·쿨/재시작을 따른다.",
+      "time": "원문 현재접촉에 명시된 별도 시각 없음. 세계해금의 야간 이력을 현재 인사의 밤 전용 문턱으로 복제하지 않는다. 네더에 Overworld 낮밤을 추가하지 않는다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "personal_and_knowledge_ref": "01_A1_실행보강계약.json#/knowledge",
+    "preserve": "정체·등급·종족·소속·기존 초기접근·실제 생사/봉인·기록/발화모드·개인 MAIN/보상/기여/수신권은 변경0. 해금은 봉인해제·부활·분신·본체복제·새 차원 허가가 아니다. 친구 일반 인사와 개인후속 권리를 분리한다.",
+    "new_implementation": "실제 행동/제작/소유/위치/수신 receipt 검출·저장·CAS 및 부지/본체 바인딩은 구현 요구. 코드지원·등록ID·서버시험을 확인했다고 주장하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S06-012.json",
+      "record_key": "RPG-S06-012",
+      "pointers": [
+        "/connection_manuscript/stage2_proposal/separate_access_states/world_unlock/candidate"
+      ],
+      "sha256": "6749a24ea91a67cf7903e3179f93bef6a49161ebb9cf90a360aac4ab9db5cefe"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S06-012.json",
+      "record_key": "RPG-S06-012",
+      "pointers": [
+        "/original_profile",
+        "/current_access",
+        "/current_identity"
+      ],
+      "sha256": "984e8c1542ff91306936e993e1c43fd192de8f0505d31590e73ffc92ee13aeb5"
+    },
+    {
+      "logical_file": "02_A1_최초접촉_원문근거.json",
+      "record_key": "RPG-S06-012",
+      "pointers": [
+        "/records/RPG-S06-012"
+      ],
+      "source_kind": "동일 최초접촉 원문의 좁은 보존 발췌; 채택값 아님",
+      "sha256": "9b6f9466f7ebbb42a5edaa9381adc8bb6eb000b8e15c1357412e7e68ec1b83af"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-032/RPG-S06-012_예.json",
+      "record_key": "RPG-S06-012",
+      "pointers": [
+        ""
+      ],
+      "sha256": "ae79fbdcc966d78d285a5efd70b83986e82a86ec53ff3243aa6813d90bb99d6d"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "supplement_ref": "01_A1_실행보강계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

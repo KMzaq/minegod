@@ -35,7 +35,8 @@ public record RaidChoiceEvidence(UUID decisionId, Kind kind, Result result, Stri
         }
         for (var r : latest.values()) {
             var c = parse(r.event().payload());
-            if (c.result()==Result.CANCELLED || c.result()==Result.UNAVAILABLE) continue;
+            // This is a support system. Missed choices may be AFK/unknown availability, never a negative denominator.
+            if (c.result()!=Result.CHOSEN) continue;
             String partition=r.event().subject().typeId()+"/"+c.encounterVersion()+"/"+c.kind();
             groups.computeIfAbsent(partition,k->new ArrayList<>()).add(r);
         }
@@ -58,8 +59,8 @@ public record RaidChoiceEvidence(UUID decisionId, Kind kind, Result result, Stri
             boolean disputed=feedback.containsKey(key)&&"DISPUTE".equals(feedback.get(key).event().payload().get("operation"));
             String title=switch(kind){case MECHANIC->"레이드 기믹 참여 선택";case SUPPORT->"레이드 동료 지원 선택";case RISK_RESPONSE->"레이드 위험 대응 선택";};
             String assessment=total==0?"유효한 선택 기회 근거 부족":runs.size()<3||total<8?"제한적 선택 관측":"반복 선택 관측 · 상황 한정";
-            String details="같은 레이드·기믹 버전의 기록 창: 선택 "+chosen+" / 유효 기회 "+total+". 독립 run "+runs.size()
-                    +"개. 최근 최대 10 run: "+recentChosen+" / "+recentTotal+". run당 최신 4기회까지만 반영합니다. 성공률·실력·인격 평가가 아닙니다.";
+            String details="같은 레이드·기믹 버전에서 실제 선택 "+chosen+"건. 독립 run "+runs.size()
+                    +"개. 최근 최대 10 run: 선택 "+recentChosen+"건. run당 최신 4선택까지만 반영합니다. 미참여·AFK는 감점이나 비율의 분모가 아닙니다. 성공률·실력·인격 평가가 아닙니다.";
             cards.add(new PlayerUnderstanding.Card(key,title,disputed?"본인 이의 제기됨":assessment,details,
                     relevant.stream().sorted(Comparator.comparingLong(ActionRecord::sequence).reversed()).limit(3)
                             .map(r->"기회 "+parse(r.event().payload()).decisionId().toString().substring(0,8)+" · "+

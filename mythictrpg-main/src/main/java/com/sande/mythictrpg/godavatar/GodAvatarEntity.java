@@ -3,6 +3,7 @@ package com.sande.mythictrpg.godavatar;
 import com.sande.mythictrpg.data.god.GodDefinitionManager;
 import com.sande.mythictrpg.godavatar.activity.NpcActivityRuntime;
 import com.sande.mythictrpg.godavatar.activity.NpcSparring;
+import com.sande.mythictrpg.godavatar.directive.NpcDirectiveRuntime;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -95,6 +96,7 @@ public final class GodAvatarEntity extends PathfinderMob {
                 return activityPose().equals("NONE") && !NpcActivityRuntime.active(GodAvatarEntity.this)
                         && !NpcSparring.INSTANCE.active(GodAvatarEntity.this)
                         && !NpcSparring.INSTANCE.awaiting(GodAvatarEntity.this)
+                        && !NpcDirectiveRuntime.INSTANCE.active(GodAvatarEntity.this)
                         && moveTarget == null && visitTarget == null && currentDefinition()
                         .map(value -> value.movement().wander()).orElse(false) && super.canUse();
             }
@@ -103,7 +105,8 @@ public final class GodAvatarEntity extends PathfinderMob {
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this) {
             @Override public boolean canUse() {
-                return !NpcSparring.INSTANCE.active(GodAvatarEntity.this) && currentDefinition().map(value -> value.combat().enabled()
+                return !NpcDirectiveRuntime.INSTANCE.active(GodAvatarEntity.this)
+                        && !NpcSparring.INSTANCE.active(GodAvatarEntity.this) && currentDefinition().map(value -> value.combat().enabled()
                         && value.combat().retaliate()).orElse(false) && super.canUse();
             }
         });
@@ -191,6 +194,7 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     @Override public void remove(Entity.RemovalReason reason) {
+        if (!level().isClientSide) NpcDirectiveRuntime.INSTANCE.cancel(this);
         if (!level().isClientSide) interruptActivity(reason == RemovalReason.UNLOADED_TO_CHUNK
                 || reason == RemovalReason.UNLOADED_WITH_PLAYER ? "UNLOADED" : "REMOVED");
         if (reason == Entity.RemovalReason.KILLED || reason == Entity.RemovalReason.DISCARDED)
@@ -204,6 +208,8 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     @Override public void tick() {
+        // Validate before vanilla goals can deliver a melee hit or advance an old path.
+        if (!level().isClientSide) NpcDirectiveRuntime.INSTANCE.tick(this);
         super.tick();
         if (!(level() instanceof ServerLevel serverLevel)) return;
         if (tickCount % 20 != 0) return;
@@ -267,11 +273,13 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     private boolean canFight() {
-        return !NpcSparring.INSTANCE.active(this) && hasAuthoritativeBinding() && currentDefinition()
+        return NpcDirectiveRuntime.INSTANCE.combatAllowed(this, getTarget())
+                && !NpcSparring.INSTANCE.active(this) && hasAuthoritativeBinding() && currentDefinition()
                 .map(value -> value.combat().enabled()).orElse(false);
     }
 
     void moveTo(BlockPos target) {
+        NpcDirectiveRuntime.INSTANCE.cancel(this);
         interruptActivity("MOVE_ORDER");
         abandonHomeVisit(); orderRevision++;
         moveTarget = target.immutable();
@@ -279,6 +287,7 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     void visit(UUID playerId) {
+        NpcDirectiveRuntime.INSTANCE.cancel(this);
         interruptActivity("VISIT_ORDER");
         abandonHomeVisit(); orderRevision++;
         visitTarget = playerId;
@@ -286,6 +295,7 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     void directRaidTarget(ServerPlayer player, UUID attemptId) {
+        NpcDirectiveRuntime.INSTANCE.cancel(this);
         interruptActivity("RAID_ORDER");
         if (homeStructure != null) finishHomeVisit("CANCELLED");
         orderRevision++;
@@ -299,6 +309,7 @@ public final class GodAvatarEntity extends PathfinderMob {
     }
 
     void clearOrder() {
+        NpcDirectiveRuntime.INSTANCE.cancel(this);
         interruptActivity("CLEAR_ORDER");
         if (moveTarget != null || visitTarget != null) orderRevision++;
         abandonHomeVisit();
@@ -307,9 +318,31 @@ public final class GodAvatarEntity extends PathfinderMob {
         getNavigation().stop();
     }
 
-    public boolean busyForVisit() { return moveTarget != null || visitTarget != null || getTarget() != null || raidTargetOwner != null
+    public boolean busyForVisit() { return NpcDirectiveRuntime.INSTANCE.active(this)
+            || moveTarget != null || visitTarget != null || getTarget() != null || raidTargetOwner != null
             || NpcActivityRuntime.active(this) || NpcSparring.INSTANCE.active(this) || NpcSparring.INSTANCE.awaiting(this); }
+    @Override public void setTarget(net.minecraft.world.entity.LivingEntity target) {
+        if(getTarget()!=target&&getTarget() instanceof ServerPlayer player)
+            com.sande.mythictrpg.ai.action.protection.AiDeathLossGuard.combatEnded(this,player);
+        super.setTarget(target);
+    }
+
     public long orderRevision() { return orderRevision; }
+    /** Only the game directive service acquires an idle or already-owned physical order. */
+    long beginConversationDirective() {
+        requireActivityServer();
+        interruptActivity("CONVERSATION_DIRECTIVE");
+        abandonHomeVisit();
+        moveTarget = null; visitTarget = null;
+        getNavigation().stop(); setTarget(null);
+        return ++orderRevision;
+    }
+    void stopConversationDirective(long expectedOrder) {
+        requireActivityServer();
+        if (orderRevision != expectedOrder) return;
+        getNavigation().stop(); setTarget(null);
+        orderRevision++;
+    }
     public long nextVisitDecision() { return nextVisitDecision; }
     void deferVisitDecision(long until) { nextVisitDecision = Math.max(nextVisitDecision, until); }
     UUID homeStructure() { return homeStructure; }
@@ -332,6 +365,11 @@ public final class GodAvatarEntity extends PathfinderMob {
         clearOrder(); homeVisitStatus = status;
         if (owner != null && getServer() != null)
             GodHomeVisitService.INSTANCE.notifyOutcome(this, owner, status);
+        if (owner != null && getServer() != null && status.equals("ARRIVED") && godId().isPresent())
+            com.sande.mythictrpg.story.runtime.StoryEventService.INSTANCE.submit(getServer(),
+                    com.sande.mythictrpg.story.signal.StorySignal.of(
+                            com.sande.mythictrpg.story.signal.StorySignalTypes.HOME_VISIT_ARRIVED,
+                            java.util.Optional.of(owner), godId(), getServer().overworld().getGameTime()));
     }
 
     private void followOrder(ServerLevel level, GodAvatarDefinition definition) {

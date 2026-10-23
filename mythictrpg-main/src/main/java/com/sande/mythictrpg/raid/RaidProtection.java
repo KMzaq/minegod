@@ -89,7 +89,7 @@ public final class RaidProtection {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
         BlockPos pos = event.getPos();
         for (RaidState.Attempt attempt : RaidState.get(level.getServer()).attempts()) {
-            if (attempt.status == RaidState.Status.ACTIVE && attempt.arena != null
+            if ((attempt.status == RaidState.Status.ACTIVE || attempt.status == RaidState.Status.STARTING) && attempt.arena != null
                     && attempt.arena.dimension().equals(level.dimension().location())
                     && attempt.arena.bounds().inflate(2).contains(Vec3.atCenterOf(pos))) {
                 event.setCanceled(true); return;

@@ -1,0 +1,720 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S01-160",
+  "name": "에키드나",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "에키드나",
+    "canonical_name": "에키드나",
+    "mythology": "그리스·로마",
+    "tier": "최상급",
+    "combat_tier": "최상급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-160",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-160",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-160",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "독립 개체; 이명·재출현은 한 명으로 집계",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-160",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/85/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S01-160/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "케르베로스와 오르트로스 등 자녀가 서로 다른 일을 하고 선택한다는 기존 관계를 안다. 자녀 전체의 현재 위치와 사건을 아는 것은 아니다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role",
+            "identity"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S01-160:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "자녀마다 다른 선택과 이름이 한 장의 토벌 목록에 눌리지 않게 하고 싶다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S01-160:SELF:002"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "뱀의 아래몸이 놓일 자리를 꼬리 끝으로 먼저 쓸어 본다. 햇볕에 데워진 돌과 그늘진 돌의 감촉 차이를 좋아한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S01-160:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S01-160:EVENT:001"
+      },
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/1",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S01-160:EVENT:002"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-160:EVENT:003"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known",
+      "authoring_item_key": "RPG-S01-160:BOUNDARY:001"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown",
+      "authoring_item_key": "RPG-S01-160:BOUNDARY:002"
+    },
+    {
+      "category": "조건부 신규 습득 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/learning",
+      "authoring_item_key": "RPG-S01-160:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/distinction",
+      "authoring_item_key": "RPG-S01-160:BOUNDARY:004"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-FAMILIAR",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "fact": {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "케르베로스와 오르트로스 등 자녀가 서로 다른 일을 하고 선택한다는 기존 관계를 안다. 자녀 전체의 현재 위치와 사건을 아는 것은 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "K-INTENT",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "자녀마다 다른 선택과 이름이 한 장의 토벌 목록에 눌리지 않게 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "K-TEXTURE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "뱀의 아래몸이 놓일 자리를 꼬리 끝으로 먼저 쓸어 본다. 햇볕에 데워진 돌과 그늘진 돌의 감촉 차이를 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "T-IDENTITY",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ROLE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ACTION",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-HISTORY-SOURCE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-FAMILIAR",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "케르베로스와 오르트로스 등 자녀가 서로 다른 일을 하고 선택한다는 기존 관계를 안다. 자녀 전체의 현재 위치와 사건을 아는 것은 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "자녀마다 다른 선택과 이름이 한 장의 토벌 목록에 눌리지 않게 하고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "뱀의 아래몸이 놓일 자리를 꼬리 끝으로 먼저 쓸어 본다. 햇볕에 데워진 돌과 그늘진 돌의 감촉 차이를 좋아한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "에키드나의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "에키드나의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "에키드나에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "F-REL-065",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 동일한 토벌 대상으로 취급하지 말고 직접 조건을 확인하도록 권함",
+              "acquisition_event": "자녀의 개별 의사와 실제 통행 문제 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "케르베로스가 실제로 보인 출입 판단을 듣거나 본 범위에서 기억한다. 다음 방문자에게 자신의 호의 대신 케르베로스가 정한 통과 범위를 직접 따르라고 말한다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-065"
+              ]
+            },
+            {
+              "id": "F-REL-066",
+              "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 자녀의 다른 선택을 듣게 하는 선택 소개",
+              "acquisition_event": "실제 접촉 의사와 보호 영역 확인 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+              "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+              "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+              "after_learning_change": "오르트로스가 실제로 받아들인 접촉 거리와 지킬 영역을 안다. 다음 소개에서도 자녀를 부르거나 동행시키겠다고 약속하지 않고 그 거리 바깥에서 기다린다.",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "동료의 사적 경험",
+                "친족 관계",
+                "관계 간선이 저술 자료에 존재함"
+              ],
+              "source_refs": [
+                "REL-066"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "author_truth는 NPC 앎을 부여하지 않는다. 직접 관측·실제 수신 주장·추론·오해·미정·미래 학습을 원문대로 구별한다.",
+        "audience": "중요 비밀은 CONDITIONAL Story 정책과 실제 Fact level 범위를 함께 검사. PRIVATE_ROOM은 방 전원이며 자격 A와 미자격 B가 섞이면 제외한다. 공개방은 온라인 전원, OWNER_ONLY는 특정 UUID 지정이 아니다.",
+        "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 각자 자격 확인. 존재 암시와 제목·거절문 누출도 금지.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+        "memory": "친구·파티·공동 완료·후발은 개인 기억을 복사하지 않음. 새 보고는 발신자 주장으로 기록. 상세 자기 기억도 공급 미연결이면 외부 원전으로 채우지 않는다."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-160/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "뱀의 아래몸을 지닌 괴수들의 어머니 에키드나.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-160/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 접촉·허용 모드·실제 청중이 없으면 새 발화나 대역을 생성하지 않는다.",
+        "확인되지 않은 과거 경험·상대 의사·현재 소재를 사실처럼 말하지 않는다.",
+        "정적 성격은 실제 물품 지급·통과·계약·완료·권능 실행을 대신하지 않는다.",
+        "친밀함·감정·전투력·후원·수락·개인 소유를 구분한다.",
+        "실제 알지 못하거나 청중에게 허용되지 않은 내용은 존재 암시까지 덧붙이지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S01-160/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "한 장의 토벌표를 접다에서 플레이어가 실제 선택한 행동과 그에게 나타난 반응",
+            "truth_status": "미래 저술 사건. 실행 뒤 관측/전언/주장을 구분하고 아직 발생한 사실로 쓰지 않는다.",
+            "who_learns": "에키드나와 실제 행동·발언을 접한 참여자만",
+            "from_whom_or_source": "위 두 단계의 실제 발언·관측·허락된 결과 전달. CORE의 저자 사실과 관계 목록은 획득 사건이 아니다.",
+            "actual_event": "무차별 토벌 요청이 실제 제시된 경우 플레이어가 대상과 근거를 분리해 거절하거나 해당 실제 위협만 다룬 결과를 전한다.",
+            "actual_audience_and_disclosure": "현장 공개 행동의 실제 목격자와 사적 대화에 실제 참여한 사람을 따로 기록한다. 개인 이유·타인 발언은 당사자가 허락한 수신자에게 실제 전달한 범위만 공개한다. 후발자·팀은 자동 청중이 아니다.",
+            "before_after_change": "에키드나는 무차별 토벌을 거부한 실제 행위가 확인되면 현재 자신이 허락할 수 있는 은신로의 범위를 설명한다. 자녀의 통행·소유 권한은 대신 주지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/85/outline/knowledge"
+      },
+      "verbatim": {
+        "known": "자녀와 직접 맺은 관계와 자기 의향.",
+        "unknown": "각 자녀의 현재 위치·전투·가해자 명단을 자동 수신하지 않음.",
+        "learning": "생존·토벌의 권위 있는 세계 상태는 시스템이 검사하지만, 에키드나의 추궁 내용은 목격·검증된 전달 등 인지 근거 필요.",
+        "distinction": "실제 범인에 대한 적대와 당장 알아본다는 전지적 감지는 별개다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S01-160/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S01-160:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "RPG-S01-160:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "document_type": "CONDITIONAL_KNOWLEDGE_AUTHORING_NOT_PRELOADED_FACTS",
+  "record_key": "RPG-S01-012",
+  "runtime_ready": false,
+  "quest_ref": {
+    "relative_file": "../퀘스트/공방/후속제작과훈련.json",
+    "json_pointer": "/story_facts"
+  },
+  "rules": "아래6개는 실제 발생과 본체의 관찰·수신 뒤에만 개인 지식으로 생성한다. 미리 발생한 정사·전원 공유 기억·MAIN 권리로 적재하지 않는다.",
+  "facts": [
+    {
+      "fact_id": "HEP-AQ-W-ORDER",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_measured_impact_commission",
+      "trigger_objective": "W-COMMISSION",
+      "statement_after_trigger": "플레이어가 별도 전투망치 제작을 수락하고 자기 손잡이 홈을 실제 맞췄다.",
+      "required_evidence": "본체의 제작 현장 관찰과 주문 영수증",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "실제 공정 참여자만; 공개는 제작 사실·품목까지만",
+      "behavior_after_learning": "손잡이 조정 근거를 기억하며 원래 MAIN의 무강화 손질과 구별한다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    },
+    {
+      "fact_id": "HEP-AQ-W-COUNTER",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_measured_impact_commission",
+      "trigger_objective": "W-REVIEW-CLAIM",
+      "statement_after_trigger": "플레이어가 수호체의 공격을 비켜난 뒤 두 번 반격하고 압력선을 피한 승리 기록을 제시했다.",
+      "required_evidence": "서명된 개인 시도 기록의 실제 수신; 레이드 목격자에게는 자기 관찰만",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "본체·제출자 및 해당 기록 열람을 허락받은 청중",
+      "behavior_after_learning": "헤파이스토스는 전투를 직접 보았다고 하지 않고 기록에서 확인한 사용 선택만 인정한다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    },
+    {
+      "fact_id": "HEP-AQ-L-LEARN",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_yielding_grip_lesson",
+      "trigger_objective": "L-LEARN",
+      "statement_after_trigger": "플레이어가 일반 충격을 흘리고 기믹 밀판에서는 걸어서 빠져나온 뒤 충격 흘리기를 배웠다.",
+      "required_evidence": "개인 실습 단계 완료 + 본체 관찰 또는 실제 장치기록 수신 + 정식 학습영수증",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "실제 실습 관찰자와 지도 당사자; 신체 불편에 대한 사적 발언은 별도 허락",
+      "behavior_after_learning": "일반 넉백과 강제 이동을 구별해 설명하되 상시 강인함·신체 회복을 주장하지 않는다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    },
+    {
+      "fact_id": "HEP-AQ-T-STOP",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_tunnel_pickaxe_commission",
+      "trigger_objective": "T-STOP-AND-ROUTE",
+      "statement_after_trigger": "플레이어가 너른굴의 세로·가로 면을 사용하고 남은 세 칸 앞에서 멈춰 옆길을 열었다.",
+      "required_evidence": "현재 개인 부지의 좌표·입력·보호 판정 기록과 실제 수신",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "그 행동을 본 사람만 관찰 기억; 후발자/파티 자동 공유0",
+      "behavior_after_learning": "장인의 이름보다 사용자의 멈춤을 신뢰할 구체 근거가 생긴다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    },
+    {
+      "fact_id": "HEP-AQ-W-DELIVERED",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_measured_impact_commission",
+      "trigger_objective": "W-REVIEW-CLAIM",
+      "statement_after_trigger": "별도 손맞춤 망치1개가 해당 개인에게 실제 인도되었다.",
+      "required_evidence": "DELIVERED+serial 소유 이전",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "제공자·수령자·실제 인도 목격자",
+      "behavior_after_learning": "그 개인에게 또 같은 최초품을 약속하지 않는다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    },
+    {
+      "fact_id": "HEP-AQ-T-DELIVERED",
+      "scope": "PLAYER",
+      "player_key": "실제 수행자 UUID",
+      "quest_id": "mythictrpg:hephaestus_tunnel_pickaxe_commission",
+      "trigger_objective": "T-RESTORE-AND-CLAIM",
+      "statement_after_trigger": "너른굴 곡괭이1개가 해당 개인에게 실제 인도되었다.",
+      "required_evidence": "DELIVERED+serial 소유 이전",
+      "npc_learning_condition": "현재 본체가 실제로 관찰하거나 해당 기록/당사자 발언을 수신한 범위만. 로그가 존재하지만 읽지 않았다면 아직 본체의 앎 아님.",
+      "audience": "제공자·수령자·실제 인도 목격자",
+      "behavior_after_learning": "높은 단계 도구의 인수를 기억하지만 기존 시험작/선택품을 잃었다고 말하지 않는다.",
+      "before_trigger": "미발생 계획. 저자 사실을 기본 loreKnowledge로 미리 적재하지 않음.",
+      "rumor": "남의 주장은 주장으로만 남기고 완료/지급/친밀도 증거와 분리.",
+      "automatic_grants": {
+        "blessing": 0,
+        "watch": 0,
+        "main_ownership": 0,
+        "world_unlock": 0,
+        "new_relationship_event": 0
+      }
+    }
+  ]
+}

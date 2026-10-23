@@ -1,0 +1,525 @@
+{
+  "document_kind": "채택된 기획 계약 / 실행 스키마 아님",
+  "packet": "CAMPAIGN-07",
+  "runtime_ready": false,
+  "actual_game_tests": "NOT_RUN",
+  "records": [
+    "RPG-S01-152",
+    "RPG-S01-160"
+  ],
+  "production_profile_ids": [
+    "mythictrpg:greek_unassigned_chimera",
+    "mythictrpg:greek_unassigned_echidna"
+  ],
+  "activities": {
+    "encounter": "CHIMERA-ACCESS-01",
+    "raid": "CHIMERA-RAID-01",
+    "relationship_preparation": "ECHIDNA-TRUST-01",
+    "final_quest": "mythictrpg:echidna_chimera_entrust",
+    "support": "mythictrpg:chimera_bound_intervention"
+  },
+  "source_refs": [
+    "페르소나/인물/RPG-S01-152.json#current_identity,current_access",
+    "페르소나/인물/RPG-S01-160.json#current_identity",
+    "스토리/인물별연결/RPG-S01-152.json#connection_manuscript",
+    "스토리/인물별연결/RPG-S01-160.json#connection_manuscript",
+    "본편/08_관계와_경로_장면연결안.md#에키드나·괴물의 독립 선택",
+    "퀘스트/인물별범위/RPG-S01-152.json#contract",
+    "퀘스트/인물별범위/RPG-S01-160.json#contract"
+  ],
+  "state_transition_columns": [
+    "from",
+    "event",
+    "guard",
+    "to",
+    "atomic_effect"
+  ],
+  "state_transitions": [
+    [
+      "ALIVE_FREE",
+      "레이드 시작",
+      "생존·미결속·final_owner 없음·다른잠금0·정원1~5·참가동의",
+      "RAID_ACTIVE",
+      "attemptId와 roster,N,maxHP,체력비율,보상지정자 고정"
+    ],
+    [
+      "ALIVE_FREE",
+      "최종 수주",
+      "개인 자격·현재 에키드나 승인·명시수락·본체 생존·미결속",
+      "FINAL_ACTIVE",
+      "first valid owner와 finalQuestInstanceId 잠금 원자 저장"
+    ],
+    [
+      "RAID_ACTIVE",
+      "최종 수주 요청",
+      "진행중",
+      "RAID_ACTIVE",
+      "수주 미성립, 비용0·잠금0. 현재 전투 종료 후 재문의. 대기예약도 소유권아님"
+    ],
+    [
+      "FINAL_ACTIVE",
+      "레이드 시작/피해 요청",
+      "최종 수주잠금",
+      "FINAL_ACTIVE",
+      "레이드 생성0,레이드피해0. 우발접촉을 별도 토벌 우회로 열지 않음"
+    ],
+    [
+      "FINAL_ACTIVE",
+      "명시 포기 또는 입증된 실패",
+      "동일 questInstanceId",
+      "ALIVE_FREE",
+      "그 잠금원인만 삭제,다른잠금·상처·기억 유지"
+    ],
+    [
+      "FINAL_ACTIVE",
+      "로그아웃/장기부재/재시작",
+      "시간경과만",
+      "FINAL_ACTIVE",
+      "소유·잠금 유지,자동 양도·실패 없음"
+    ],
+    [
+      "FINAL_ACTIVE",
+      "마지막 실제 수행+위탁확인",
+      "살아있는 같은 본체+owner",
+      "BONDED",
+      "결속·quest완료·조건부지원권리1 원자 확정,raidClosed영구"
+    ],
+    [
+      "RAID_ACTIVE",
+      "유효치명피해",
+      "체력0 및 유효attempt",
+      "DEAD",
+      "생명종료·raidClosed·승리·참가근거·전리품원장 같은commit"
+    ],
+    [
+      "RAID_ACTIVE",
+      "전멸/전원철수",
+      "생존참가0 후100tick",
+      "ALIVE_FREE",
+      "승리0·보상0,본체 실제 잔여상처 유지; 새시도 가능"
+    ],
+    [
+      "DEAD",
+      "수주/결속/재시도",
+      "모든 경우",
+      "DEAD",
+      "거절,부활/복제/대체결속0"
+    ],
+    [
+      "BONDED",
+      "새수주/레이드/새소유자",
+      "모든 경우",
+      "BONDED",
+      "거절,기존결속유지;지원은 별도 실행조건"
+    ],
+    [
+      "BONDED",
+      "지원중실제생명종료",
+      "같은본체유효피해,대본강제사망아님",
+      "DEAD_BOUND",
+      "기존owner와결속역사보존,지원중지,새레이드/부활0"
+    ]
+  ],
+  "raid": {
+    "id": "CHIMERA-RAID-01",
+    "single_body": true,
+    "divinity": "non_divine",
+    "tier": "초월급",
+    "victory": "same_body_health_zero_permanent_death",
+    "subdual_reward": false,
+    "base_hp": 3000,
+    "hp_by_players": [
+      3000,
+      4950,
+      6900,
+      8850,
+      10800
+    ],
+    "scaling": "3000*(1+0.65*(N-1)); N는 시작명부 고정",
+    "canonical_health": "체력비율 w in [0,1]를 단일본체에 보존. 표시HP=w*이번maxHP,피해/maxHP만큼 w차감. N변경이 상처를 치유하지 않음. w=0 영구사망",
+    "armor": 8,
+    "toughness": 4,
+    "resistance_level": 0,
+    "regeneration_in_combat": 0,
+    "rest_healing": "비전투·실제 휴식자리·1200tick 연속 피격없음 뒤 20tick당 최대체력의1%; 생존한 본체만. 휴식중 공격이면 중단",
+    "phases": [
+      {
+        "hp_fraction": [
+          1,
+          0.65
+        ],
+        "cycle": [
+          "CH-A1",
+          "CH-A2",
+          "CH-A3"
+        ],
+        "idle_ticks": 30
+      },
+      {
+        "hp_fraction": [
+          0.65,
+          0.3
+        ],
+        "cycle": [
+          "CH-A4",
+          "CH-A1",
+          "CH-A3",
+          "CH-A2"
+        ],
+        "idle_ticks": 20
+      },
+      {
+        "hp_fraction": [
+          0.3,
+          0
+        ],
+        "cycle": [
+          "CH-A5",
+          "CH-A1",
+          "CH-A3",
+          "CH-A4",
+          "CH-A2"
+        ],
+        "idle_ticks": 16
+      }
+    ],
+    "phase_boundary": "현재 동작과 잔여펄스 종료 후 다음 cycle첫패턴부터. 임계HP에서 무적·회복·추가본체0",
+    "hard_enrage": false,
+    "target": "현재 피격기여 최근200tick 최대값, 동률 entity UUID순; 표적은패턴별고정. 도발은허용된기술만,투명화로현재인식삭제0; 가시대상 없으면 마지막위치 이동 후 재탐색",
+    "hurt_suppression": "공격자별 직접공격10tick 공유,다부위 동일본체1타. 지속기 개별 명시 pulse간격과중복키 존중; vanilla 전역hurtTime으로5인피해를1인화하지 않도록 새 controller 필요",
+    "cc": {
+      "slow": "보스에 명시허용,강도최대20%,지속원문×0.5 최대40tick. 같은 family최강만",
+      "stun": "스턴·강제이동·발사·구속0,피해별도. CC로예고/페이즈 취소0",
+      "parry": "CH-A1,CH-A4만 H03. 자동응수피해·경직0",
+      "h02": "CH-A1,CH-A4만 기존×0.7와방향·거리검사"
+    },
+    "patterns": [
+      {
+        "id": "CH-A1",
+        "name": "빈틈을 찢는 앞발",
+        "ticks": {
+          "prepare": [
+            0,
+            28
+          ],
+          "execute": [
+            28,
+            34
+          ],
+          "recover": [
+            34,
+            58
+          ]
+        },
+        "damage": 18,
+        "category": "direct_melee",
+        "defense": "H02·H03 적격, 타격시 근접 앞끝 원점/거리4/각도 재검사",
+        "geometry": "본체 전방 앞끝을 중심으로 길이4, 반경0.55의 발 capsule을 수평 -55°→+55°로 6tick 회전. 높이0.4~2.2, 틱 사이 회전 swept capsule. 최대폭 약7.65. 대상 AABB 교차, 같은 대상1회. 발 단면은수평반경0.55·수직반높이0.9의타원단면,중심높이1.3. 예고외곽은선분스윕의수평Minkowski합외피(끝반경포함)다.",
+        "motion": "발을 어깨 높이3까지 올린 뒤 앞끝에서 원호를 그린다. 끝점속도 최대1.28블록/tick. 몸 전진0.",
+        "telegraph": "바닥에 동일110° 부채꼴의 테두리와 세 발톱표 28tick. 20tick에 자세 고정. 안쪽은 투명, 명중위치에서 짧은 세 갈래 접촉선.",
+        "wall": "각 스윕점까지 고체 시야와 발 이동경로 검사. 벽 뒤 타격0. 발이 벽에 닿은 뒤 그 방향 스윕 종료.",
+        "cc": "명중시 수평0.5블록 밀침, 별도 스턴0",
+        "finish": "후딜24tick 발을 딛고 낮은 숨; 잔상6tick 이내 소멸. 패링은 해당 피해·밀침만 취소하며 다음 동작 유지."
+      },
+      {
+        "id": "CH-A2",
+        "name": "퇴로 돌파",
+        "ticks": {
+          "prepare": [
+            0,
+            40
+          ],
+          "execute": [
+            40,
+            60
+          ],
+          "recover": [
+            60,
+            100
+          ]
+        },
+        "damage": 24,
+        "category": "charge_contact",
+        "defense": "H02·H03 불가; 횡이동·실물 엄폐",
+        "geometry": "몸 앞 충돌상자 폭4.8 높이3.2 깊이2.0을 직선 최대16블록 이동. 매tick swept OBB, 접촉 대상당1회. 본체 몸통은 동일 entity, 중복 접촉피해0. 시작 전면 socket을 O, 고정 수평 진행단위벡터 F, 오른쪽 R, 위 U로 둔다. 피해 OBB 중심은 O+sF, R±2.4/U[0,3.2]/F±1.0, s=0~16이다. 따라서 전체 예고 외피는 R±2.4, F[-1,17]로 길이18이며 이동거리16과 구별한다. 실제 몸 충돌은 5×3.5×7 본체 OBB 전체를 검사하되 피해 OBB를 추가 확대하지 않는다.",
+        "motion": "0~24tick 표적 방향으로 천천히 몸을 낮춤,24tick 방향고정. 실행속도0.8블록/tick, 20tick. 수직점프/유도회전0.",
+        "telegraph": "폭4.8 길이18의 빈 내부 직사각 외피(F[-1,17])와 중심 이동거리16 화살표. 24tick 고정후 점선→실선. 32tick에 낮은 두 박자 울음. 본체 고체충돌로 실제 도달할 수 없는 구간은 clip한다.",
+        "wall": "실제 본체 OBB의 가장 이른 고체 충돌에서 정지. 벽 파괴0, 뒤쪽 관통0. 벽 충돌시 회복40tick을 바로 시작하되 원래 종료100tick보다 빨리 다음 공격하지 않음.",
+        "cc": "수평1블록 밀침, 스턴0. 벽에 막힌 밀침은 중단하고 압사 추가피해0",
+        "finish": "발톱 바닥 긁힘과 몸 방향 유지. 벽 충돌은 먼지20개 이하,후방 보스 약점배율 없음. 모든 후딜은 정상 피해 허용."
+      },
+      {
+        "id": "CH-A3",
+        "name": "갈라지는 열숨",
+        "ticks": {
+          "prepare": [
+            0,
+            44
+          ],
+          "execute": [
+            44,
+            68
+          ],
+          "recover": [
+            68,
+            104
+          ]
+        },
+        "damage": 8,
+        "category": "fire_breath",
+        "defense": "H02·H03 불가; 화염저항 적용, 임의 관통 화염으로 바꾸지 않음",
+        "geometry": "전방60° 부채,범위12,높이0.3~3.0. 틱44/52/60 각1펄스, 대상 최대3회. 원점→각 대상의 고체선 검사. 바닥 장판/지속발화 없음.",
+        "motion": "44tick에 고정된 방향. 목부위 높이2.5에서 면을 가진 세 겹 리본이0.75블록/tick으로 뻗어 16tick에12블록. 판정은 각 펄스시 반경 min(12,(tick-44+1)*0.75), 각각0.75/6.75/12.",
+        "telegraph": "44tick 전부터 최대12블록60° 테두리와 목 앞 부채 맥동. 실제 도달선은 이동하는 0.2폭 열윤곽. 경고 최대면과 현재피해면 구별.",
+        "wall": "고체 충돌면까지만 리본 clip. 물·풀 통과, 고체 뒤·다른층 피해0, 블록에 불 붙이지 않음.",
+        "cc": "CC0, 넉백0. 화염저항 보유자는 이 패턴 피해0; 물리 공격은 그대로.",
+        "finish": "실행끝 목광원8tick 감소, 리본은4tick 소멸. 고통 소리/몸 경직으로 후딜36tick을 표시."
+      },
+      {
+        "id": "CH-A4",
+        "name": "등 뒤를 쓸다",
+        "ticks": {
+          "prepare": [
+            0,
+            32
+          ],
+          "execute": [
+            32,
+            40
+          ],
+          "recover": [
+            40,
+            72
+          ]
+        },
+        "damage": 16,
+        "category": "direct_melee",
+        "defense": "H02·H03 적격, 원점은 접촉시 몸 뒤끝. 중앙 pivot가 아님",
+        "geometry": "후방 중심 반경1.5~6.0,220° 부채,높이0.25~1.5. 길이4.5 반경0.45의 후방 부속 capsule이 -110°→+110° 8tick 스윕, 대상당1회. 수직점프로 실제 AABB가 위를 벗어나면 회피. 수평끝반경0.45포함실외피는반경1.05~6.45까지. 수직반높이0.625·중심0.875. 예고선은220도중심선의끝capsule까지포함한다.",
+        "motion": "뒤쪽 부속을 치켜올리고 돌린다. 끝점최대2.88블록/tick, swept 충돌 필수. 뒤쪽 몸전체 순간 회전0.",
+        "telegraph": "후방220° 중심선 스윕에 capsule 반경0.45를 더한 실제 외피 전체를 경고한다. 긴 갈고리 표식3개. 정면140°는 중심선 각도상 빈틈일 뿐 전체 안전보장이 아니며 끝캡 외피와 자기 AABB가 교차하지 않는 틈으로 피한다. 소리없이도 위로 들린 부속과 지면해칭으로 판독.",
+        "wall": "실제 고체와 스윕부피 충돌검사. 벽 뒤 관통0,중단된 부속 잔상이 벽을 넘지 않음.",
+        "cc": "수평0.8블록 밀침, 스턴0",
+        "finish": "8tick 시각잔상중 피해0, 후딜32tick 뒤끝 내려놓음. 여러 부위 동시 접촉에도1타."
+      },
+      {
+        "id": "CH-A5",
+        "name": "돌바닥에 내려앉다",
+        "ticks": {
+          "prepare": [
+            0,
+            50
+          ],
+          "execute": [
+            50,
+            56
+          ],
+          "recover": [
+            56,
+            100
+          ]
+        },
+        "damage": 26,
+        "category": "ground_impact",
+        "defense": "H02·H03 불가; 실제 범위 밖 이동 또는 엄폐",
+        "geometry": "예고시 고정된 지면점 중심 반경4.5 원기둥, 높이0~2.5. tick50에1회. 낙하 몸 OBB와 원기둥 피해를 중복하지 않음.",
+        "motion": "가장 먼 가시 참가자 발아래를 tick20에 고정(거리최대14). 몸이 tick36~50에 최대높이4 포물선 이동. 고체충돌 시 가장 이른 합법 착지 위치에서 이동을 끝내고 실제 착지 tick을 b로 저장한다. 그 지점에 [b,b+50) 새 예고1회, b+50 단발26, [b+50,b+56) 실행 마무리, [b+56,b+100) 회복. 다음 패턴은 b+100+현 단계 idle_ticks 이후만 시작한다. 재예고 중 이동/재도약/추가 재예고0. 원래 tick50 타격은 취소한다. 합법 착지점이 없으면 피해0으로 원래 종료시각까지 회복하고 재탐색한다.",
+        "telegraph": "반경4.5 이중 원테두리+바닥 균열4갈래.20tick 고정 후 남은30tick 충분한 회피. 공중 본체 그림자만, 화면 흔들림0.",
+        "wall": "몸통이 고체를 통과하지 않음. 타점→대상 고체차폐면 피해0. 보호 바닥 파괴·강제 낙사0.",
+        "cc": "수직0.2 수평0.6블록 밀침, 스턴0; 느린낙하/점프는 실제 높이만 바꿈",
+        "finish": "반경4.5 외피 내부는 빈 균열메시, 먼지24개이하8tick. 후딜44tick 어깨를 낮추고 숨고름."
+      }
+    ],
+    "participation": {
+      "roster_size": [
+        1,
+        5
+      ],
+      "N_frozen": true,
+      "late_join": "관전만,다음시도부터새명부",
+      "death": "관전연결,동일시도재입장0,이미유효기여보존",
+      "logout_reentry_ticks": 1200,
+      "wipe_detection_ticks": 100,
+      "contribution": "damage>0 또는실제회복/방지>0 최소1,생존접속시간>=max(20초,전투시간20%);전체20초미만이면80%",
+      "quit": "실제퇴로철수,비활성처리,남은참가전투는계속",
+      "afk": "단순현장체류만으로기여0"
+    },
+    "action_schedule": "한 번에 패턴1개만 실행하고 현재 패턴의 prepare→execute→recover→단계 idle 순서 후 다음 패턴을 시작한다. 통상 순환길이1단계352tick,2단계414tick,3단계514tick. 몸 F는 수평전방, R은오른쪽, U는위; A1 전방 socket에서 tick20 방향 고정, A4 후방 socket에서 tick0 방향 고정, A2 tick24/A3 tick44/A5 tick20 고정. 고정 전 경고는 현재방향과 함께 갱신하고 고정 후 표적 추적 회전0. 이동 AI는 패턴중 임의로 socket/판정을 옮기지 않는다. 벽/중단은 각 패턴 종료규칙만 적용. 임계단계 전환은 현재패턴의 회복과 idle 이후 새cycle처음부터.",
+    "athena_interaction": "OLY-ATH-W01은 CH-A1/CH-A4 직접근접1건만 적격, 다른3패턴 부적격. 승인방향 고정 정면100도·[2,6)·28마나/200tick 유지. 성공 시 t6 원공격자 본체의 현재 AABB가2.5블록/시야/각도 안일 때만 원시물리6 응수1회; 힘/치명/인챈트 가산·보스CC0. H03의 자동반격0을ATH에 덮어쓰지 않는다. OLY-ATH-L01은20마나/160tick·2.4블록/4tick·무적0·고체/지지면 sweep과공통잠금 유지. H01은9/1.25·16tick·보조4.5를 같은본체에 추가합산하지 않는다. 60행은 특정 named무기성능이라고 주장하지 않는 일반감도이다.",
+    "damage_pipeline": "패링/기존무적으로취소된사건은0으로종료. 그밖의보스피해는armor/toughness→프로젝트보호나눗셈→저항→적격H02×0.7→기존최종고정장신구증감→max(0,D)→남은흡수HP차감→잔여실HP차감. 고정감소는저항배율로곱하지않고원시값에서빼지않는다. 이순서는채택저술이며실엔진태그검증전. 산술60행은장신구공격고정0,수신45행은고정감소0·흡수0을가정. 흡수소모원장보존·재적용충전0. 화염저항의열숨0은최종증감으로되살리지않는다."
+  },
+  "reward": {
+    "raid_item": {
+      "id": "mythictrpg:chimera_layered_cuirass",
+      "name": "겹비늘 흉갑",
+      "kind": "armor",
+      "quality": "전설",
+      "base": "netherite_chestplate_variant",
+      "armor": 8,
+      "toughness": 3,
+      "knockback_resistance": 0.1,
+      "durability": 592,
+      "skills": [],
+      "new_blessing": false,
+      "intrinsic_E": 18,
+      "max_world_rights": 1,
+      "recipient": "시작전 명부 전원의 명시 합의로 지정한1명.최종 유효기여 미충족시 자동 양도하지 않고 명부의 실제 유효기여자 전원 합의로 다시지정",
+      "source": "실제토벌로회수한같은본체의겹비늘1몫을흉갑형으로수습. 추가시체/신적무한내구 없음",
+      "claim": "사망commit의unique corpseClaimId. 흉갑인수 전엔 비거래원장권리,실물지급1개 확인후닫음",
+      "recovery": "공간부족/오프라인은미수령보존. 영수증대조누락만복구. 분실·소모·정상파괴는자동재지급0",
+      "ownership": "최종 지정 수령 UUID 귀속. 실물 인수 뒤에도 타인의 사용·장비점수·양도·판매 불가. 상자 보관/회수는 권리 이전 아님. 동일 corpseClaimId의 유효 실물 최대1; 중복 검출본은 사용 차단 후 원장 대조. 인챈트·모루 수리는 일반 서버 규칙만 허용하며 새 흉갑/권리를 복제하지 않는다."
+    },
+    "raid_repeat": 0,
+    "ordinary_events": 0,
+    "bond": "서버1명에게 살아있는 동일본체의결속+조건부지원1권리.가호/장비/스킬목록중복등록0"
+  },
+  "support": {
+    "id": "mythictrpg:chimera_bound_intervention",
+    "max_uses_per_raid_attempt": 1,
+    "real_cooldown_seconds": 86400,
+    "combined_limits": "AND; raid밖위기는동일24h공유",
+    "mana": 0,
+    "material_cost": 0,
+    "action": "CH-A2와같은몸통돌파1회,적대대상당원시물리80HP,다부위합산1회. 플레이어/아군0,보스CC0,일반적1블록밀침",
+    "conditions": "결속수령자 요청·같은차원32블록이내 실제본체·폭5높이4길이16 접근가능통로·살아있음·현재가용·위기 또는 raid active.위기=실제적대피해를최근100tick안에받고적대대상이16블록이내",
+    "arrival": "본체가 실제 이동해 시작점 도착 후 승인. 소환/순간이동/복제0. 이동중 실패는횟수소모0",
+    "approve": "대상과실체도착확인후쿨/시도사용원자저장. 승인후헛침/벽/취소비용유지; 환급0",
+    "timing": "준비40,돌파최대20,회복40tick;그뒤전투개입종료하고실제귀환.파티인원피해배율0",
+    "willingness": "결속후친근하게따르는설정유지,임의확률거절없음.부상/다른현장/경로막힘은가용성실패이며결속취소가아님",
+    "not_pet": "자율연속전투/탈것/상시탱커/영구무적0. 개입중생명피해는동일본체상태에기록하며죽음시지원불가,부활0",
+    "health_basis": "레이드 밖 및 결속 후 본체 최대HP는3000, 현재HP=3000w. 지원받는 레이드 인원수로HP를 확대하지 않는다. 방어8·강인함4·보호0·저항0, 유효 피해/3000만큼 동일w차감. w<=0이면 DEAD_BOUND. 요청자 사망/로그아웃/차원이동/해당시도종료 시 잔여 공격을 취소하고 실제 귀환하며 승인된 쿨/횟수 유지. 부재·죽음·미로드 경계에 원격 대역0."
+  },
+  "implementation_requirements": [
+    "단일본체생명·위치·결속·상처와원자상태저장",
+    "최종수주-레이드시작-치명피해 직렬화",
+    "공격자별피해억제·다부위중복방지·정밀sweep",
+    "보스CC허용표·H02/H03정확원점",
+    "현재실제청중과NPC인지근거",
+    "인벤토리영수증·시체권리unique키",
+    "애니메이션/메시/음원/경고선과서버tick동기화"
+  ],
+  "reading_companion": "01_키메라_전투와위탁.md",
+  "access": {
+    "id": "CHIMERA-ACCESS-01",
+    "world_unlock": "누군가 정규소개 또는고유흔적3 관찰을성립시키면공통발견상태",
+    "regular": "ECHIDNA-TRUST-01의R1/R2 바깥길확인·횃불설치·귀환후에키드나소개승인·세지점왕복최소48블록. R3/R4완료를소개선행으로요구하지않음",
+    "trace": "실제본체UUID 흔적3곳,간격12~24블록,각2블록이내40tick가시관찰",
+    "spawn": "서버동일본체1. 이패킷경로는추가확률추첨없음,해당조건성립주체의현재위치에서실체접촉.일반랜덤풀0",
+    "late": "이미등장한본체목격에동행자재해금0",
+    "arena": {
+      "radius": 24,
+      "height": 8,
+      "floor_delta_max": 2,
+      "exit_width": 5,
+      "exit_count": 2,
+      "rest": [
+        0,
+        0,
+        -18
+      ],
+      "staging": [
+        0,
+        0,
+        22
+      ],
+      "cover_centers": [
+        [
+          -12,
+          0,
+          0
+        ],
+        [
+          12,
+          0,
+          0
+        ]
+      ],
+      "cover_size": [
+        3,
+        4,
+        3
+      ]
+    }
+  },
+  "relationship_event": {
+    "id": "ECHIDNA-TRUST-01",
+    "mode": "event_not_MAIN",
+    "accept": "현재에키드나부탁을자발적으로맡음,친구가호와타인신뢰복제0",
+    "goals": [
+      {
+        "id": "R1",
+        "action": "24블록바깥길시작중간끝왕복,각반경2도착",
+        "count": 3
+      },
+      {
+        "id": "R2",
+        "action": "허락한두칸에자기횃불설치후귀환",
+        "item": "minecraft:torch",
+        "count": 2
+      },
+      {
+        "id": "R3",
+        "action": "정규소개후본체6~10블록에서60tick비포위관찰;위협이면8밖40tick",
+        "count": 1
+      },
+      {
+        "id": "R4",
+        "action": "귀환을사이에두고다음현재방문24블록왕복,현재에키드나확인",
+        "count": 1
+      }
+    ],
+    "reward": 0,
+    "failure": "실제행동/소비보존,부재·로그아웃·사망은미완료만재개",
+    "elapsed_minutes": [
+      12,
+      20
+    ]
+  },
+  "final_quest": {
+    "id": "mythictrpg:echidna_chimera_entrust",
+    "owner": "최초유효명시수락자1",
+    "prerequisites": [
+      "ECHIDNA-TRUST-01완료",
+      "에키드나현재위탁제안",
+      "같은본체생존미결속",
+      "레이드비진행",
+      "최종소유자없음"
+    ],
+    "goals": [
+      {
+        "id": "F1",
+        "action": "폭5높이4길이16통로양끝도착,각반경2이내40tick관찰",
+        "count": 2
+      },
+      {
+        "id": "F2",
+        "action": "20블록길을6~10거리로본체와동행,속도0.12블록/tick,본체와수주자경계점통과",
+        "count": 2
+      },
+      {
+        "id": "F3",
+        "action": "휴식자리실제귀환,수주자4~6거리100tick비공격머묾,본체친근접근과에키드나위탁확인",
+        "count": 1
+      }
+    ],
+    "cost": 0,
+    "reward": "single_world_bond_and_conditional_support_right",
+    "elapsed_minutes": [
+      8,
+      12
+    ],
+    "failure": "수주자실제공격시도/강제구속설치입증만명시실패.잠금중레이드피해0,실패뒤새레이드절차.타인행위자동귀속0",
+    "pause": "거리실수/부재/수주자사망/로그아웃/경로막힘은중단.오프라인자동실패0",
+    "retry": "실패자는두번비포위왕복과새제안후재수락,친구진행복제0"
+  },
+  "life_after_bond": "결속후새사망사건을대본으로추가하지않는다.지원중실제생명피해가발생하면동일상처원장을쓴다.실제생명이끝난경우지원만불가하며기존결속귀속·기억은역사로보존,재결속/부활/레이드재개0.",
+  "invariants": [
+    "single_body_count<=1",
+    "alive_bonded와dead동시참0;dead_bound는생명종료+기존귀속역사",
+    "dead이면새토벌/결속보상0",
+    "final_active이면raid_active0",
+    "corpse_reward_world_rights<=1",
+    "bond_world_owner_count<=1",
+    "불명확한원장상태를새생존으로초기화0"
+  ]
+}

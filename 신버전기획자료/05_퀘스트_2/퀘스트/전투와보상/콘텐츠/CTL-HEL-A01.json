@@ -1,0 +1,41 @@
+{
+  "content_id": "CTL-HEL-A01",
+  "record_key": "RPG-S02-027",
+  "definition_id": "mythictrpg:norse_unassigned_hela_reserved_place_charm",
+  "name": "남겨 둔 자리의 패",
+  "runtime_ready": false,
+  "policy_ref": "../../공통설계/전역기준.json",
+  "details": {
+    "key": "CTL-HEL-A01",
+    "name": "남겨 둔 자리의 패",
+    "kind": "accessory",
+    "proposal_status": "별도 획득 저술 채택 완료; 실행·등록·플레이 검증 전",
+    "proposed_id": "mythictrpg:norse_unassigned_hela_reserved_place_charm",
+    "registered_id": null,
+    "runtime_ready": false,
+    "획득맥락": "별도 획득 사건 mythictrpg:norse_unassigned_hela_charm_handover 「빈 패를 받는 손」 채택 완료. 개인 최초1회, 기존 MAIN/무보상 결말과 독립. 퀘스트/인물별완결기획/P0_SCOPE_DECISION-095/095_획득연결4종.json의 해당 content_id 참조. 실습·동의·실물재고/권리·수령 확인 전 실지급0.",
+    "역할": "자기 행동권 회복용 일반 CC 정화. 타인의 선택을 지배하는 기술이나 죽음 취소가 아님.",
+    "조작과수치": "장신구 자유 슬롯 착용 중 자동. 영웅 등급 제안, 고정점수24, 마나0. 일반 CC1회 해제, 개별 획득품 쿨6000tick(5분). 현재 일반 CC 상태에서 준비된 패를 새로 착용해도1회.",
+    "선후딜": "자동 판정으로 선후딜0. 서버 CC 등록 뒤 같은 tick 정화. 쿨은 공통 장신구 사용기록으로 보존, 서버 가동 시간 기준 초기안.",
+    "대상과사거리": "착용자 자신, 사거리0. 정화 목록=명시 general_cleanseable로 분류된 일반 스턴/이동속도 감속. 복합 효과면 CC component 하나만, 피해/도트는 남음.",
+    "실패": "기믹 속박·보스 전용 명령·사망·공허·미분류 상태는 대상 제외/쿨 무소모. 해제 가능한 상태가 없으면 발동 안 함. 실제 제거 성공1건 뒤에만 쿨 확정.",
+    "아군과지형": "아군에 자동 전파 없음. 충돌/낭떠러지/이동 제한 지형을 제거하지 않으며 안전지대로 옮기지 않음.",
+    "보스": "보스가 건 일반 감속이라도 일반 정화 태그면 허용, 기믹 전용 CC는 불가. 보스 자신에게 정화/스턴/디버프 없음. 공격자 명성/등급만으로 면역을 무시하지 않는다.",
+    "중첩과교체": "별도 획득2개는 준비된 하나씩 사용, 같은 CC 한 건에 둘 다 낭비하지 않음. 동시 여러 CC는 일반 스턴 우선 후 감속, 같은 분류는 적용시각 빠른 순·상태ID 순. 두 개 준비면 서로 다른 CC에 각1회 가능. 벗어도 쿨 유지, 재지급 복사로 리셋 금지.",
+    "상태정리": "장착 해제 시 대기 감시만 제거. 이미 완료된 정화는 되돌리지 않고 제거된 CC가 재활성화되지 않음. 로그아웃/부활도 사용기록 유지.",
+    "연출": "작은 패의 회청빛1회와 짧은 숨소리. 영혼이 몸으로 돌아오는 부활 연출 없음.",
+    "현재지원": "정화의 부적 효과·자유2칸·쿨 및 교체 원칙은 공통 가이드 지원.",
+    "추가필요": "신규 두 기술의 CC 태그 연결·복합CC 단위·동시 우선순위·표시 모델 및 실제 장신구 ID 등록. 정의되지 않은 상태를 일반 CC로 추측하지 않는다.",
+    "전투력": {
+      "accessory_fixed_score": 24
+    },
+    "acquisition_authoring_ref": "../../인물별완결기획/P0_SCOPE_DECISION-095/095_획득연결4종.json#/acquisitions/3"
+  },
+  "common_execution_ref": "../공통실행.json",
+  "authoring_presentation_contract": {
+    "relative_file": "../../스킬연출/효과별/CTL-HEL-A01.json",
+    "status": "채택된 연출·판정 상세 저술. 런타임 필드가 아님.",
+    "precedence": "외형·시각 피드백과 명시된 기하 상세는 이 참조를 적용한다. 원시 피해·마나·쿨·장비값·권리·획득 조건은 기존 카드 유지. prototype 검기 개정은 별도 시험 시편이며 이 콘텐츠에 자동 적용하지 않는다.",
+    "actual_game_validation": "NOT_RUN"
+  }
+}

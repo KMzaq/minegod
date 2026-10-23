@@ -33,7 +33,7 @@ final class LegacyRoomEvidence {
         if (turn.hasRumors()) {
             var c = Objects.requireNonNull(turn.context());
             for (var rumor : turn.rumors()) refs.add(new RoomEvidenceReference(RUMOR, JSON.toJson(new Source(c.worldId(), c.godId(),
-                    c.playerId(), "RUMOR_TEST", rumor.rootId(), DerivedMemory.hash(JSON.toJson(rumor))))));
+                    c.playerId(), MemoryFoundationSettings.mode().name(), rumor.rootId(), DerivedMemory.hash(JSON.toJson(rumor))))));
         }
         if (!turn.inherited().isEmpty()) {
             var evidence = List.copyOf(turn.inherited());

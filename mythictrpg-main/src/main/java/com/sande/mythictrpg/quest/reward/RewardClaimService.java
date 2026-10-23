@@ -39,7 +39,25 @@ public final class RewardClaimService {
 
     public Result issue(ServerPlayer player, ResourceLocation godId, ResourceLocation sourceId,
             ResolvedQuestReward reward) {
+        return issue(player, godId, sourceId, reward, RewardOrigin.QUEST);
+    }
+
+    public Result issue(ServerPlayer player, ResourceLocation godId, ResourceLocation sourceId,
+            ResolvedQuestReward reward, RewardOrigin origin) {
         requireServerThread(player);
+        RewardClaimState state = RewardClaimState.get(player.server);
+        if (!state.isWritable()) return Result.reject(state.rejectionReason().orElse("Reward claim state is unavailable"));
+        var existing = state.findBySource(player.getUUID(), sourceId).orElse(null);
+        if (existing != null) {
+            if (!existing.godId().equals(godId)) return Result.reject("Reward source belongs to another God");
+            if (existing.origin() != origin && existing.origin() != RewardOrigin.LEGACY_UNSPECIFIED)
+                return Result.reject("Reward source origin cannot be changed");
+            origin = existing.origin(); // Never relabel old uncertain acquisitions as raid-exempt.
+            if (existing.fullyClaimed()) return Result.alreadyClaimed(existing.claimId());
+            reward = new ResolvedQuestReward(existing.selectionTitle(), existing.automaticRewards(), existing.choices());
+        }
+        String invalidGod = invalidGodReferences(godId, reward);
+        if (invalidGod != null) return Result.reject(invalidGod);
         Validation validation = validate(reward);
         if (!validation.allowed()) {
             return Result.reject(validation.reason());
@@ -47,20 +65,22 @@ public final class RewardClaimService {
         String invalidItems = invalidItemComponents(player.registryAccess(), reward);
         if (invalidItems != null) return Result.reject(invalidItems);
 
-        RewardClaimState state = RewardClaimState.get(player.server);
-        if (!state.isWritable()) {
-            return Result.reject(state.rejectionReason().orElse("Reward claim state is unavailable"));
-        }
         RewardClaim claim;
         try {
             claim = state.create(new RewardClaim(UUID.randomUUID(), player.getUUID(), godId, sourceId,
                     reward.selectionTitle(), reward.automaticRewards(), reward.choices(), false,
-                    java.util.Optional.empty(), player.server.overworld().getGameTime()));
+                    java.util.Optional.empty(), player.server.overworld().getGameTime(), origin));
         } catch (RuntimeException exception) {
             return Result.reject(exception.getMessage());
         }
         if (claim.fullyClaimed()) {
             return Result.alreadyClaimed(claim.claimId());
+        }
+        var offer = new ResolvedQuestReward(claim.selectionTitle(), claim.automaticRewards(), claim.choices());
+        if (RewardResolutionService.unresolved(offer) || !claim.automaticGranted() && RewardResolutionService.hasCurrency(offer)) {
+            try {
+                claim = state.freezeAdaptiveRewards(claim.claimId(), RewardResolutionService.resolve(player, claim.godId(), claim.sourceId(), offer));
+            } catch (RuntimeException invalid) { return Result.reject(invalid.getMessage()); }
         }
         if (!claim.automaticGranted()) {
             if (!claim.automaticRewards().isEmpty()) {
@@ -71,6 +91,7 @@ public final class RewardClaimService {
             try {
                 state.markAutomaticGranted(claim.claimId(), player.server.overworld().getGameTime());
             } catch (RuntimeException unavailable) { return Result.reject(unavailable.getMessage()); }
+            BlessingProgressionEvents.acquired(player, claim.automaticRewards());
             if (!claim.automaticRewards().isEmpty()) {
                 RewardExecutionService.Result grant = RewardExecutionService.grant(player, claim.godId(),
                         claim.automaticRewards(), RewardGrantPurpose.QUEST);
@@ -96,19 +117,32 @@ public final class RewardClaimService {
     /** Validate the entire roster and freeze all payouts before completing a multiplayer quest. */
     public Result queueBatch(net.minecraft.server.MinecraftServer server, ResourceLocation godId,
             ResourceLocation sourceId, java.util.Map<UUID, ResolvedQuestReward> rewards) {
+        return queueBatch(server, godId, sourceId, rewards, RewardOrigin.QUEST);
+    }
+
+    public Result queueBatch(net.minecraft.server.MinecraftServer server, ResourceLocation godId,
+            ResourceLocation sourceId, java.util.Map<UUID, ResolvedQuestReward> rewards, RewardOrigin origin) {
         if (!server.isSameThread()) throw new IllegalStateException("Reward queue requires server thread");
         RewardClaimState state = RewardClaimState.get(server);
         if (!state.canCreateBatch(rewards.keySet(), sourceId)) return Result.reject("Reward claim storage unavailable");
         var claims = new java.util.ArrayList<RewardClaim>();
         for (var entry : rewards.entrySet()) {
+            var existing = state.findBySource(entry.getKey(), sourceId).orElse(null);
+            if (existing != null && (!existing.godId().equals(godId)
+                    || existing.origin() != origin && existing.origin() != RewardOrigin.LEGACY_UNSPECIFIED))
+                return Result.reject("Reward source authority cannot be changed");
             var reward = entry.getValue();
+            String invalidGod = invalidGodReferences(godId, reward);
+            if (invalidGod != null) return Result.reject(invalidGod);
             Validation validation = validate(reward);
             if (!validation.allowed()) return Result.reject(validation.reason());
             String invalidItems = invalidItemComponents(server.registryAccess(), reward);
             if (invalidItems != null) return Result.reject(invalidItems);
+            try { reward = RewardResolutionService.freezeEquipment(reward); }
+            catch (RuntimeException invalid) { return Result.reject(invalid.getMessage()); }
             claims.add(new RewardClaim(UUID.randomUUID(), entry.getKey(), godId, sourceId,
                     reward.selectionTitle(), reward.automaticRewards(), reward.choices(), false,
-                    java.util.Optional.empty(), server.overworld().getGameTime()));
+                    java.util.Optional.empty(), server.overworld().getGameTime(), origin));
         }
         try {
             state.createBatch(claims);
@@ -119,7 +153,7 @@ public final class RewardClaimService {
     public void deliverQueued(ServerPlayer player) {
         for (RewardClaim claim : RewardClaimState.get(player.server).undeliveredFor(player.getUUID())) {
             Result result = issue(player, claim.godId(), claim.sourceId(), new ResolvedQuestReward(claim.selectionTitle(),
-                    claim.automaticRewards(), claim.choices()));
+                    claim.automaticRewards(), claim.choices()), claim.origin());
             if (!result.succeeded()) player.sendSystemMessage(Component.literal("[보상 수령 보류] " + claim.sourceId()
                     + ": " + result.reason() + " — 조건 해결 후 /mythquest rewards 로 다시 확인할 수 있습니다."));
         }
@@ -155,6 +189,7 @@ public final class RewardClaimService {
         } catch (RuntimeException exception) {
             return Result.reject(exception.getMessage());
         }
+        BlessingProgressionEvents.acquired(player, option.rewards());
         RewardExecutionService.Result grant = RewardExecutionService.grant(player, claim.godId(),
                 option.rewards(), RewardGrantPurpose.QUEST);
         if (!grant.granted()) {
@@ -210,6 +245,17 @@ public final class RewardClaimService {
         for (var choice : reward.choices()) all.addAll(choice.rewards());
         var validation = RewardExecutionService.validateItemComponents(registries, all);
         return validation.allowed() ? null : validation.reason();
+    }
+
+    private static String invalidGodReferences(ResourceLocation godId, ResolvedQuestReward reward) {
+        var bundles = new java.util.ArrayList<List<RewardEntry>>();
+        if (!reward.automaticRewards().isEmpty()) bundles.add(reward.automaticRewards());
+        reward.choices().forEach(choice -> bundles.add(choice.rewards()));
+        for (var bundle : bundles) {
+            var validation = RewardExecutionService.validateForGod(godId, bundle, RewardGrantPurpose.QUEST);
+            if (!validation.allowed()) return validation.reason();
+        }
+        return null;
     }
 
     private static void sendChoice(ServerPlayer player, RewardClaim claim) {

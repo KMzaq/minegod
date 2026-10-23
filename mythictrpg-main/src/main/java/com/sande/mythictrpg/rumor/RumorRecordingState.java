@@ -172,6 +172,13 @@ public final class RumorRecordingState {
     /** Collections here are game facts, not recency order. Canonical sorting avoids Set iteration changes on restart. */
     static String fingerprint(RumorLedger.Snapshot snapshot) {
         JsonObject tree = JSON.toJsonTree(snapshot).getAsJsonObject(); tree.remove("version");
+        // Before ordinary gameplay support, every source implicitly belonged to RUMOR_TEST.
+        // Preserve those existing metadata hashes, while binding new PERSONAL provenance explicitly.
+        for (var entry : tree.getAsJsonArray("evidence")) {
+            var evidence = entry.getAsJsonObject();
+            if (evidence.has("memoryMode") && "RUMOR_TEST".equals(evidence.get("memoryMode").getAsString()))
+                evidence.remove("memoryMode");
+        }
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                 .digest(canonical(tree).toString().getBytes(StandardCharsets.UTF_8))); }
         catch (NoSuchAlgorithmException impossible) { throw new IllegalStateException(impossible); }

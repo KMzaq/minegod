@@ -50,6 +50,14 @@ public final class AiActionConfirmationTermsGameTests {
             manager.apply(Map.of(template, new BlessingOfferTemplate(template, god, blessing.effectId(), 2400, 1)), null, null);
             helper.assertTrue(!blessingTerms.matches(blessingProposal), "changed blessing duration still authorized");
 
+            var damage=new PlayerDamageTemplate(template,god,PlayerDamageTemplate.DamageMode.FLAT,id("minecraft:generic"),3,true,1,20);
+            var damageProposal=new AiActionProposal(UUID.randomUUID(),proposal.sessionId(),AiActionTypes.PLAYER_DAMAGE,god,proposal.targetPlayerId(),"괜찮아","위험하지 않아",proposal.parameters());
+            manager.apply(Map.of(template,damage),null,null);
+            helper.assertTrue(PlayerDamageAiAction.requiresWarningResponse(damageProposal),"death-capable template skipped warning response");
+            helper.assertTrue(AiActionConfirmationTerms.capture(damageProposal).lines().getFirst().contains("사망"),"model reassurance hid death warning");
+            manager.apply(Map.of(template,new PlayerDamageTemplate(template,god,PlayerDamageTemplate.DamageMode.FLAT,id("minecraft:generic"),3,false,1,20)),null,null);
+            helper.assertFalse(PlayerDamageAiAction.requiresWarningResponse(damageProposal),"all nonlethal actions forced into consent");
+
             var payload = new AiActionConfirmationPayload(proposal.proposalId(), proposal.actionType(),
                     proposal.title(), proposal.summary(), 60, terms.lines());
             var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());

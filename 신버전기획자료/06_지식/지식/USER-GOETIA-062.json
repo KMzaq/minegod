@@ -1,0 +1,1006 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "USER-GOETIA-062",
+  "name": "발라크",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "발라크",
+    "canonical_name": "발라크",
+    "mythology": "솔로몬 72악마",
+    "tier": "중급",
+    "combat_tier": "중급",
+    "war_allegiance": {
+      "value": null,
+      "status": "unassigned",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "USER-GOETIA-062",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": null,
+      "status": "unassigned",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "USER-GOETIA-062",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": null,
+      "status": "unassigned",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "USER-GOETIA-062",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": null,
+      "status": "not_available",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "USER-GOETIA-062",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/729/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/USER-GOETIA-062/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "USER-GOETIA-062:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "탁자 위에서 빠진 작은 물건의 자리를 먼저 눈치채려 한다. 가느다란 선이 어떻게 이어져 전체 모양을 만드는지 보는 것을 즐긴다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "USER-GOETIA-062:SELF:002"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "USER-GOETIA-062:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "USER-GOETIA-062:EVENT:002"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/1",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "USER-GOETIA-062:EVENT:003"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/fact_or_claim",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/truth_status",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/who_learns",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/from_whom_or_source",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_event",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/actual_audience_and_disclosure",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/0/before_after_change",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:007"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/fact_or_claim",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/truth_status",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/who_learns",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:010"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/from_whom_or_source",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:011"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/actual_event",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:012"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/actual_audience_and_disclosure",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:013"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/items/1/before_after_change",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:014"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/fact_or_claim",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:015"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/truth_status",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:016"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/who_learns",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:017"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/from_whom_or_source",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:018"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/actual_event",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:019"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/actual_audience_and_disclosure",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:020"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/0/before_after_change",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:021"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/fact_or_claim",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:022"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/truth_status",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:023"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/who_learns",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:024"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/from_whom_or_source",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:025"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/actual_event",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:026"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/actual_audience_and_disclosure",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:027"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_2/verbatim/items/1/before_after_change",
+      "authoring_item_key": "USER-GOETIA-062:BOUNDARY:028"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-INTENT",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-INTENT",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+              "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 접촉에서 발언을 듣는 상대",
+              "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_id": "K-TEXTURE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_context_or_lore_plan",
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "탁자 위에서 빠진 작은 물건의 자리를 먼저 눈치채려 한다. 가느다란 선이 어떻게 이어져 전체 모양을 만드는지 보는 것을 즐긴다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-TEXTURE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+              "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 접촉에서 발언을 듣는 상대",
+              "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND"
+        },
+        {
+          "knowledge_group": "suspicions",
+          "classification": "suspected_not_confirmed",
+          "exact_group": {
+            "none_reason": "발라크에게 특정 상대의 숨은 의도를 이미 관찰했다는 근거가 없다. 성격상 경계·호기심은 남기되 실제 관찰 뒤의 가설은 future_learning에서 다룬다.",
+            "items": []
+          },
+          "destination": "author_only_or_future_binding",
+          "binding_status": "CLAIM_STATUS_PRESERVED_BINDING_UNBOUND"
+        },
+        {
+          "knowledge_group": "misbeliefs",
+          "classification": "misbelief_not_author_truth",
+          "exact_group": {
+            "none_reason": "발라크의 가치관·허영·경쟁심을 사실 오류로 판정하지 않는다. 현행 정사에 의해 반증된 구체 믿음을 빈칸 채우기로 추가하지 않았다.",
+            "items": []
+          },
+          "destination": "author_only_or_future_binding",
+          "binding_status": "CLAIM_STATUS_PRESERVED_BINDING_UNBOUND"
+        },
+        {
+          "knowledge_group": "deliberate_concealment",
+          "classification": "known_but_withheld",
+          "exact_group": {
+            "none_reason": "발라크에게 의무적인 새 비밀이나 트라우마를 만들지 않는다. 공개를 꺼리는 성향과 이미 보유한 특정 비밀은 구별한다.",
+            "items": []
+          },
+          "destination": "author_only_or_future_binding",
+          "binding_status": "KNOWN_BUT_WITHHELD_BINDING_UNBOUND"
+        },
+        {
+          "knowledge_group": "future_learning",
+          "classification": "not_yet_learned",
+          "exact_group": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L-PERSONAL",
+                "fact_or_question": "수색의 작은 흔적이 실제 목표 물건과 연결되는가",
+                "acquisition_event": "직접 관찰하거나 출처가 구분된 수색 보고를 받는다",
+                "required_evidence": "해당 물건을 가리키는 특징과 단순한 닮음의 구분",
+                "eligible_audience": "발라크 본인과 해당 전달·관찰에 실제 참여한 청중. 친구의 사적 경험은 그 친구의 전언을 받기 전까지 공유되지 않는다.",
+                "after_learning_change": "연결된 단서만 다음 탐색의 근거로 쓰고 무관한 흔적은 포기한다",
+                "not_automatic_from": [
+                  "장 번호 도달",
+                  "다른 플레이어의 수락·친분",
+                  "원전 참고나 저자용 코어가 존재함"
+                ],
+                "source_refs": [
+                  "global:MEMORY-SCOPE",
+                  "global:SOURCE-NOT-KNOWLEDGE"
+                ]
+              }
+            ]
+          },
+          "destination": "author_only_or_future_binding",
+          "binding_status": "NOT_YET_ACQUIRED"
+        },
+        {
+          "knowledge_group": "unknown_or_unavailable",
+          "classification": "unknown_not_secret_knowledge",
+          "exact_group": [
+            "발라크가 직접 듣거나 읽지 않은 타인의 현재 위치·속내·사적 계약과 공유 세계 변화의 경과.",
+            "원전 요약 밖의 상세 과거와 최신 전쟁 비밀은 해당 사실의 출처·입수 경위가 없으면 발화하지 않는다."
+          ],
+          "destination": "author_only",
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-IDENTITY",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "발라크의 현행 편성은 중급이며 신격 분류는 divinity_review이다. 성별·종족 세부·전쟁 소속을 포함한 정체값은 원본 그대로 보존한다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ROLE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "현재 원본의 주요 배역·개별 역할은 미작성이다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-ACCESS",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ACCESS",
+            "statement": {
+              "text": "솔로몬 72악마 전원 편입은 사용자 확정. 신규 편입 인물의 신격·개별 조우 시점·배역은 미정이며 전투등급은 현행 등급표에 배정됨이며 원전의 지위나 번호를 게임 등급으로 환산하지 않는다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-INTENT",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-INTENT",
+            "statement": {
+              "text": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-TEXTURE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-TEXTURE",
+            "statement": {
+              "text": "탁자 위에서 빠진 작은 물건의 자리를 먼저 눈치채려 한다. 가느다란 선이 어떻게 이어져 전체 모양을 만드는지 보는 것을 즐긴다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        },
+        {
+          "knowledge_id": "T-MOTIF",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-MOTIF",
+            "statement": {
+              "text": "현행 전투등급 배정 근거의 모티프: 보물 탐색과 뱀 모티프를 수색·제한적 생물 대응에 반영하며 용을 타는 형상만으로 용급 화력을 부여하지 않는다. 이 근거만으로 새 과거 사건·현재 능력 실행·전원 지식·정체 합일을 추가하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "tier_motif"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          "binding_status": "NOT_NPC_KNOWLEDGE"
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "발라크의 현재 자기 의향·일상과 자료에 남은 당사자 관계만 기본선으로 쓴다. 현재 사건의 성립과 원전 전부의 지식은 분리한다. 아래 창작 일상은 새 과거 가해나 정체 변경의 증거가 아니다. 관계 목록의 저술 제안은 이름을 아는 근거나 완료 기억이 아니다. 기본 기억에 따로 적은 자기 과거만 유지한다.",
+        "known_facts": [
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-INTENT",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+              "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 접촉에서 발언을 듣는 상대",
+              "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "탁자 위에서 빠진 작은 물건의 자리를 먼저 눈치채려 한다. 가느다란 선이 어떻게 이어져 전체 모양을 만드는지 보는 것을 즐긴다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-TEXTURE",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+              "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "실제 접촉에서 발언을 듣는 상대",
+              "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "발라크에게 특정 상대의 숨은 의도를 이미 관찰했다는 근거가 없다. 성격상 경계·호기심은 남기되 실제 관찰 뒤의 가설은 future_learning에서 다룬다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "발라크의 가치관·허영·경쟁심을 사실 오류로 판정하지 않는다. 현행 정사에 의해 반증된 구체 믿음을 빈칸 채우기로 추가하지 않았다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "발라크에게 의무적인 새 비밀이나 트라우마를 만들지 않는다. 공개를 꺼리는 성향과 이미 보유한 특정 비밀은 구별한다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "발라크가 직접 듣거나 읽지 않은 타인의 현재 위치·속내·사적 계약과 공유 세계 변화의 경과.",
+          "원전 요약 밖의 상세 과거와 최신 전쟁 비밀은 해당 사실의 출처·입수 경위가 없으면 발화하지 않는다."
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "L-PERSONAL",
+              "fact_or_question": "수색의 작은 흔적이 실제 목표 물건과 연결되는가",
+              "acquisition_event": "직접 관찰하거나 출처가 구분된 수색 보고를 받는다",
+              "required_evidence": "해당 물건을 가리키는 특징과 단순한 닮음의 구분",
+              "eligible_audience": "발라크 본인과 해당 전달·관찰에 실제 참여한 청중. 친구의 사적 경험은 그 친구의 전언을 받기 전까지 공유되지 않는다.",
+              "after_learning_change": "연결된 단서만 다음 탐색의 근거로 쓰고 무관한 흔적은 포기한다",
+              "not_automatic_from": [
+                "장 번호 도달",
+                "다른 플레이어의 수락·친분",
+                "원전 참고나 저자용 코어가 존재함"
+              ],
+              "source_refs": [
+                "global:MEMORY-SCOPE",
+                "global:SOURCE-NOT-KNOWLEDGE"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+        "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+        "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+        "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/USER-GOETIA-062/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "남이 지나친 자리에서 가치 있는 단서를 먼저 찾아 발견의 공을 갖고 싶어 하는 호기심 많은 탐색자다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/USER-GOETIA-062/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 같은 본체·접촉 모드·위치·잔여 봉인·실제 청중을 확인한다. 접촉 부재·미확인에는 말·몸짓·fallback을 생성하지 않는다. 말할 수 있음과 말할 의사는 발화에만 검사하고 유효한 침묵·감각 반응까지 막지 않는다.",
+        "질문 수신은 해당 질문의 답변에만 필요하다. 실제 행동·침묵·보고·요청·사과·먼저 하는 말도 계기가 된다. 일반 대화에 MAIN 소유나 퀘스트 수락을 요구하지 않는다. 협력·현물 사용·공개에는 필요한 당사자 허락을 확인한다.",
+        "의향·농담·추론·선택 클릭은 수락·수행·완료가 아니다. 안내·현재 경고·중단 요청을 완료 뒤로 미루지 않는다. 완료형 발언은 실제 결과가 확인될 때만 하며 다른 대안·선택 후기를 필수로 더하지 않는다.",
+        "직접 본 일과 실제 전달받은 주장을 구별한다. 부재한 상대의 새 답·모르는 속마음·타인의 사적 경험·과거 동행·현재 도구·소유물·피해를 꾸미지 않는다. 기억은 그 당사자와 실제 겪거나 출처 있는 보고를 받은 범위만 유지한다.",
+        "현재 청중 전원에게 허용된 자기 지식만 말한다. 공개방·사적 방 이름만으로 개인 자격을 대신하지 않는다. 비공개 내용을 제목·농담·거절 이유로 암시하지 않는다. 친구·파티·후발 합류로 경험·공로·보상권을 복사하지 않는다.",
+        "친분·감정·현재 힘·소속·동의는 별개다. 실제 이동·수령·소비·지급·가호·주시·공격 결과를 대사로 확정하지 않는다. 미확인 상태는 그 상태에 의존하는 표현만 보류하며 무관한 잡담·퇴장을 막지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/USER-GOETIA-062/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+            "truth_status": "기존 자기 기억 또는 현재 의향. 의향 문장은 사건 실행·완료 사실이 아니다. 다른 사람의 현재 의사·위치로 확대하지 않는다.",
+            "who_learns": "발라크는 원래의 좁은 자기 앎을 유지한다. 실제 허락된 말을 들은 플레이어만 그 발화 범위를 배운다.",
+            "from_whom_or_source": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+            "actual_event": "「보물 상자 밖의 흔적」의 행동 이유를 설명할 때 발라크가 직접 허용해 말한 부분만 전한다. 말하지 않은 전승은 플레이어에게 적재하지 않는다.",
+            "actual_audience_and_disclosure": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다. 실제 시야·청취·열람이 확인된 사람만이다. 사적인 메시지·의료 내용·소재는 허가된 수신자에게만, 파티·후발자 자동 복사 없음.",
+            "before_after_change": "듣기 전의 소문·추측과 직접 들은 자기 기억을 구별하고 이번 선택의 이유로만 쓴다. 현재 의향을 들었어도 행동 이행은 별도 확인한다."
+          },
+          {
+            "fact_or_claim": "「보물 상자 밖의 흔적」의 실제 결과: 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다.",
+            "truth_status": "신규 소규모 저술안이며 미발생. 실제 행위 후 관측한 부분은 확인 사실, 미수신·미확인 부분은 미지다.",
+            "who_learns": "발라크와 실제 그 행동을 수행·목격·수신한 사람",
+            "from_whom_or_source": "해당 플레이어의 현장 행동, 상대의 실제 응답, 남아 있는 물건과 변화",
+            "actual_event": "찾은 물건의 소유를 확인해 자기 몫만 챙기거나 반환하고 발견에 도움이 된 흔적을 발라크에게 직접 보여준다.",
+            "actual_audience_and_disclosure": "현장에 있었다는 이유로 비공개 대화까지 들은 것은 아니다. 실제 행동을 본 청중과 허가된 발화를 받은 수신자를 각각 남긴다. 후발자는 현재 현장·허가된 기록을 새로 보고 배우며 과거 목격·개인 MAIN·호감은 상속하지 않는다.",
+            "before_after_change": "계획만 알던 상태에서 실제 실행된 결과를 보고 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/exact_core_snapshot/knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/exact_encounter_snapshot/knowledge_boundaries/known_before/0/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/exact_encounter_snapshot/knowledge_boundaries/known_before/1/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/729/outline/source_reuse/retained_scope_contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+            "truth_status": "기존 자기 기억 또는 현재 의향. 의향 문장은 사건 실행·완료 사실이 아니다. 다른 사람의 현재 의사·위치로 확대하지 않는다.",
+            "who_learns": "발라크는 원래의 좁은 자기 앎을 유지한다. 실제 허락된 말을 들은 플레이어만 그 발화 범위를 배운다.",
+            "from_whom_or_source": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+            "actual_event": "「보물 상자 밖의 흔적」의 행동 이유를 설명할 때 발라크가 직접 허용해 말한 부분만 전한다. 말하지 않은 전승은 플레이어에게 적재하지 않는다.",
+            "actual_audience_and_disclosure": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다. 실제 시야·청취·열람이 확인된 사람만이다. 사적인 메시지·의료 내용·소재는 허가된 수신자에게만, 파티·후발자 자동 복사 없음.",
+            "before_after_change": "듣기 전의 소문·추측과 직접 들은 자기 기억을 구별하고 이번 선택의 이유로만 쓴다. 현재 의향을 들었어도 행동 이행은 별도 확인한다."
+          },
+          {
+            "fact_or_claim": "「보물 상자 밖의 흔적」의 실제 결과: 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다.",
+            "truth_status": "신규 소규모 저술안이며 미발생. 실제 행위 후 관측한 부분은 확인 사실, 미수신·미확인 부분은 미지다.",
+            "who_learns": "발라크와 실제 그 행동을 수행·목격·수신한 사람",
+            "from_whom_or_source": "해당 플레이어의 현장 행동, 상대의 실제 응답, 남아 있는 물건과 변화",
+            "actual_event": "찾은 물건의 소유를 확인해 자기 몫만 챙기거나 반환하고 발견에 도움이 된 흔적을 발라크에게 직접 보여준다.",
+            "actual_audience_and_disclosure": "현장에 있었다는 이유로 비공개 대화까지 들은 것은 아니다. 실제 행동을 본 청중과 허가된 발화를 받은 수신자를 각각 남긴다. 후발자는 현재 현장·허가된 기록을 새로 보고 배우며 과거 목격·개인 MAIN·호감은 상속하지 않는다.",
+            "before_after_change": "계획만 알던 상태에서 실제 실행된 결과를 보고 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다."
+          }
+        ],
+        "none_reason": null
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    },
+    "current_knowledge_2": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/729/outline/source_reuse/retained_all_scope_forms/exact_scope_contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "보물을 찾는 상대에게 마지막 물건보다 놓친 단서의 가치를 인정받고 싶다.",
+            "truth_status": "기존 자기 기억 또는 현재 의향. 의향 문장은 사건 실행·완료 사실이 아니다. 다른 사람의 현재 의사·위치로 확대하지 않는다.",
+            "who_learns": "발라크는 원래의 좁은 자기 앎을 유지한다. 실제 허락된 말을 들은 플레이어만 그 발화 범위를 배운다.",
+            "from_whom_or_source": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+            "actual_event": "「보물 상자 밖의 흔적」의 행동 이유를 설명할 때 발라크가 직접 허용해 말한 부분만 전한다. 말하지 않은 전승은 플레이어에게 적재하지 않는다.",
+            "actual_audience_and_disclosure": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다. 실제 시야·청취·열람이 확인된 사람만이다. 사적인 메시지·의료 내용·소재는 허가된 수신자에게만, 파티·후발자 자동 복사 없음.",
+            "before_after_change": "듣기 전의 소문·추측과 직접 들은 자기 기억을 구별하고 이번 선택의 이유로만 쓴다. 현재 의향을 들었어도 행동 이행은 별도 확인한다."
+          },
+          {
+            "fact_or_claim": "「보물 상자 밖의 흔적」의 실제 결과: 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다.",
+            "truth_status": "신규 소규모 저술안이며 미발생. 실제 행위 후 관측한 부분은 확인 사실, 미수신·미확인 부분은 미지다.",
+            "who_learns": "발라크와 실제 그 행동을 수행·목격·수신한 사람",
+            "from_whom_or_source": "해당 플레이어의 현장 행동, 상대의 실제 응답, 남아 있는 물건과 변화",
+            "actual_event": "찾은 물건의 소유를 확인해 자기 몫만 챙기거나 반환하고 발견에 도움이 된 흔적을 발라크에게 직접 보여준다.",
+            "actual_audience_and_disclosure": "현장에 있었다는 이유로 비공개 대화까지 들은 것은 아니다. 실제 행동을 본 청중과 허가된 발화를 받은 수신자를 각각 남긴다. 후발자는 현재 현장·허가된 기록을 새로 보고 배우며 과거 목격·개인 MAIN·호감은 상속하지 않는다.",
+            "before_after_change": "계획만 알던 상태에서 실제 실행된 결과를 보고 발라크는 알아본 흔적의 가치를 얻고 미발견이면 허풍의 비판도 받는다. 용 형상은 새 용종·혈연·화력으로 확대하지 않는다."
+          }
+        ],
+        "none_reason": null
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/USER-GOETIA-062/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_context_or_lore_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "suspected_not_confirmed",
+      "destination": "author_only_or_future_binding",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "CLAIM_STATUS_PRESERVED_BINDING_UNBOUND"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "misbelief_not_author_truth",
+      "destination": "author_only_or_future_binding",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "CLAIM_STATUS_PRESERVED_BINDING_UNBOUND"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "known_but_withheld",
+      "destination": "author_only_or_future_binding",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "KNOWN_BUT_WITHHELD_BINDING_UNBOUND"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "not_yet_learned",
+      "destination": "author_only_or_future_binding",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_YET_ACQUIRED"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "unknown_not_secret_knowledge",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0009",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/8",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0010",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/9",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0011",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/10",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0012",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/11",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    },
+    {
+      "route_key": "USER-GOETIA-062:ROUTE:0013",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/12",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지",
+      "binding_status": "NOT_NPC_KNOWLEDGE"
+    }
+  ]
+}

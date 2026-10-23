@@ -24,6 +24,39 @@ public final class RewardExecutionService {
     }
 
     public static Validation validate(List<RewardEntry> rewards, RewardGrantPurpose purpose) {
+        Validation authored = validateAuthored(rewards, purpose);
+        if (!authored.allowed()) return authored;
+        for (RewardEntry reward : rewards) {
+            if (reward instanceof EquipmentRewardEntry equipment) {
+                var definition=com.sande.mythictrpg.equipment.EquipmentCatalog.find(equipment.definitionId()).orElse(null);
+                if(definition==null) return Validation.reject("Equipment definition is missing: " + equipment.definitionId());
+                var skill=definition.rule().rightClickSkill();
+                if(skill!=null && com.sande.mythictrpg.weaponskill.WeaponSkillDefinitions.INSTANCE.find(skill).isEmpty())
+                    return Validation.reject("Equipment weapon skill is missing: " + skill);
+            }
+            if(reward instanceof ProgressionRewardEntry progression) {
+                boolean exists=switch(progression.kind()) {
+                    case LEARNED->com.sande.mythictrpg.skills.LearnedSkillDefinitions.INSTANCE.find(progression.definitionId()).isPresent();
+                    case ACCESSORY->com.sande.mythictrpg.accessory.AccessoryDefinitions.INSTANCE.find(progression.definitionId()).isPresent();
+                    case SPECIAL->com.sande.mythictrpg.specialskill.SpecialSkillDefinitions.INSTANCE.find(progression.definitionId()).isPresent();
+                };
+                if(!exists) return Validation.reject("Progression reward definition is missing: "+progression.definitionId());
+            }
+            if (reward instanceof AdaptiveBlessingRewardEntry adaptive
+                    && com.sande.mythictrpg.quest.reward.blessing.BlessingDefinitions.INSTANCE.find(adaptive.definitionId()).isEmpty())
+                return Validation.reject("Adaptive blessing definition is not registered: " + adaptive.definitionId());
+            if (reward instanceof LuckyRewardEntry lucky
+                    && com.sande.mythictrpg.quest.reward.luck.LuckDefinitions.INSTANCE.find(lucky.poolId()).isEmpty())
+                return Validation.reject("Luck reward pool is not registered: " + lucky.poolId());
+            if (reward instanceof WatchRewardEntry watch
+                    && com.sande.mythictrpg.data.god.GodDefinitionManager.INSTANCE.find(watch.godId()).isEmpty())
+                return Validation.reject("Watch god is not registered: " + watch.godId());
+        }
+        return Validation.allow();
+    }
+
+    /** Reload preparation must not consult another listener's not-yet-applied snapshot. */
+    public static Validation validateAuthored(List<RewardEntry> rewards, RewardGrantPurpose purpose) {
         if (rewards == null || rewards.isEmpty() || rewards.size() > 32) {
             return Validation.reject("Reward bundle must contain 1..32 entries");
         }
@@ -31,11 +64,15 @@ public final class RewardExecutionService {
             if (reward == null) {
                 return Validation.reject("Reward bundle contains a null entry");
             }
+            if (reward instanceof ResolvedLuckyRewardEntry lucky && !BuiltInRegistries.ITEM.containsKey(lucky.selection().reward().itemId()))
+                return Validation.reject("Resolved luck item is not registered");
+            if (reward instanceof ResolvedBlessingRewardEntry resolved && resolved.blessing().effectId().isPresent()) {
+                var effect = BuiltInRegistries.MOB_EFFECT.get(resolved.blessing().effectId().orElseThrow());
+                if (effect == null || effect.isInstantenous()) return Validation.reject("Invalid permanent blessing effect");
+            }
             if (reward instanceof WatchRewardEntry watch) {
                 if (purpose != RewardGrantPurpose.QUEST)
                     return Validation.reject("Watch entitlements require an authored quest reward claim");
-                if (com.sande.mythictrpg.data.god.GodDefinitionManager.INSTANCE.find(watch.godId()).isEmpty())
-                    return Validation.reject("Watch god is not registered: " + watch.godId());
             }
             if (reward instanceof NpcRewardEntry item
                     && !BuiltInRegistries.ITEM.containsKey(item.itemId())) {
@@ -56,10 +93,58 @@ public final class RewardExecutionService {
         return Validation.allow();
     }
 
+    /** Checks static God/policy references before quest settlement, without selecting for an offline player. */
+    public static Validation validateForGod(ResourceLocation godId, List<RewardEntry> rewards, RewardGrantPurpose purpose) {
+        Validation validation = validate(rewards, purpose);
+        if (!validation.allowed()) return validation;
+        for (var reward : rewards) {
+            String equipmentError=ProgressionRewards.equipmentError(godId,reward);
+            if(equipmentError!=null)return Validation.reject(equipmentError);
+            if(reward instanceof ProgressionRewardEntry progression) {
+                String error=ProgressionRewards.error(godId,progression); if(error!=null)return Validation.reject(error);
+            }
+            if (reward instanceof ResolvedBlessingRewardEntry resolved && !resolved.blessing().godId().equals(godId))
+                return Validation.reject("Resolved blessing belongs to another God");
+            if (!(reward instanceof AdaptiveBlessingRewardEntry adaptive)) continue;
+            var definitions = com.sande.mythictrpg.quest.reward.blessing.BlessingDefinitions.INSTANCE;
+            var definition = definitions.find(adaptive.definitionId()).orElseThrow();
+            if (!definition.godId().equals(godId)) return Validation.reject("Adaptive blessing belongs to another God");
+            var god = com.sande.mythictrpg.data.god.GodDefinitionManager.INSTANCE.find(godId).orElse(null);
+            if (god == null || god.rank().isEmpty()) return Validation.reject("Adaptive blessing God rank is not authored: " + godId);
+            var rank = definitions.rankPolicy(god.rank().orElseThrow()).orElse(null);
+            var godPolicy = definitions.godPolicy(godId).orElse(null);
+            if (rank == null || godPolicy == null) return Validation.reject("Adaptive blessing God/rank policy is not authored: " + godId);
+            boolean feasible = definition.candidates().stream().anyMatch(candidate -> {
+                var rule = godPolicy.effects().get(candidate.effectId());
+                Integer rankCap = rank.effectCaps().get(candidate.effectId());
+                return rule != null && rankCap != null && candidate.level() <= Math.min(rule.maxLevel(), rankCap);
+            });
+            if (!feasible && definition.fallback() == com.sande.mythictrpg.quest.reward.blessing.BlessingDefinition.Fallback.NONE)
+                return Validation.reject("Adaptive blessing has no candidate within its authored God/rank caps");
+        }
+        return Validation.allow();
+    }
+
     public static Result grant(ServerPlayer player, ResourceLocation godId,
             List<RewardEntry> rewards, RewardGrantPurpose purpose) {
         Validation preflight = validateGrant(player, rewards, purpose);
         if (!preflight.allowed()) return Result.reject(preflight.reason());
+        for (RewardEntry entry : rewards) {
+            if(entry instanceof ProgressionRewardEntry progression && !RewardClaimState.get(player.server)
+                    .ownsProgression(player.getUUID(),progression.kind(),progression.definitionId()))
+                return Result.reject("Progression reward has no committed personal acquisition");
+            if(entry instanceof ResolvedCurrencyRewardEntry currency && !RewardClaimState.get(player.server).hasGrantedCurrencyReward(player.getUUID(),currency))
+                return Result.reject("Gold bonus has no committed personal acquisition");
+            if (RewardResolutionService.requiresResolution(entry))
+                return Result.reject("Dynamic reward requires a frozen reward claim");
+            if (entry instanceof ResolvedLuckyRewardEntry lucky
+                    && !RewardClaimState.get(player.server).hasGrantedLuckyReward(player.getUUID(), lucky))
+                return Result.reject("Luck reward has no committed personal claim");
+            if (entry instanceof ResolvedBlessingRewardEntry resolved
+                    && (!resolved.blessing().godId().equals(godId)
+                    || !RewardClaimState.get(player.server).ownsResolvedBlessing(player.getUUID(), resolved.blessing())))
+                return Result.reject("Named blessing has no committed personal acquisition");
+        }
         // Watch ownership is committed together with the claim, never via this unreceipted API.
         for (RewardEntry entry : rewards) if (entry instanceof WatchRewardEntry watch
                 && !RewardClaimState.get(player.server).hasWatch(player.getUUID(), watch.godId()))
@@ -70,9 +155,20 @@ public final class RewardExecutionService {
         List<String> descriptions = new ArrayList<>();
         for (RewardEntry reward : rewards) {
             switch (reward) {
+                case EquipmentRewardEntry equipment -> throw new IllegalStateException("Unresolved equipment reward");
+                case ProgressionRewardEntry progression -> {
+                    if(progression.kind()==ProgressionRewardEntry.Kind.ACCESSORY)
+                        com.sande.mythictrpg.accessory.RewardAccessoryItems.restoreGranted(player,progression.definitionId());
+                }
+                case ResolvedCurrencyRewardEntry currency -> CurrencyService.INSTANCE.credit(player.server,player.getUUID(),currency.amount());
                 case NpcRewardEntry item -> grantItem(player, item);
                 case AffinityRewardEntry affinity -> grantAffinity(player, godId, affinity, purpose);
                 case BlessingRewardEntry blessing -> grantBlessing(player, blessing);
+                case AdaptiveBlessingRewardEntry adaptive -> throw new IllegalStateException("Unresolved blessing");
+                case LuckyRewardEntry lucky -> throw new IllegalStateException("Unresolved luck reward");
+                case ResolvedLuckyRewardEntry lucky -> grantItem(player, lucky.selection().reward());
+                case ResolvedBlessingRewardEntry resolved -> resolved.blessing().effectId()
+                        .ifPresent(effect -> PermanentBlessingRuntime.applyGranted(player, effect));
                 case TitleRewardEntry title -> PlayerMythDataService.get(player.server)
                         .unlockTitle(player.getUUID(), title.titleId());
                 case CurrencyRewardEntry currency -> CurrencyService.INSTANCE.credit(
@@ -97,11 +193,18 @@ public final class RewardExecutionService {
         if (rewards.stream().anyMatch(WatchRewardEntry.class::isInstance)
                 && !RewardClaimState.get(player.server).canGrantWatches(player.getUUID(), rewards))
             return Validation.reject("Watch entitlement storage unavailable; existing ownership is preserved");
-        if (rewards.stream().anyMatch(reward -> reward instanceof BlessingRewardEntry blessing && blessing.permanent())
+        if (rewards.stream().anyMatch(reward -> reward instanceof ResolvedBlessingRewardEntry
+                || reward instanceof BlessingRewardEntry blessing && blessing.permanent())
                 && !RewardClaimState.get(player.server).canGrantPermanentBlessings(player.getUUID(), rewards))
             return Validation.reject("Permanent blessing ownership storage unavailable");
         long currencyTotal = 0L;
+        if(rewards.stream().anyMatch(ProgressionRewardEntry.class::isInstance) && !RewardClaimState.get(player.server).isWritable())
+            return Validation.reject("Progression entitlement storage unavailable");
         for (RewardEntry reward : rewards) {
+            if(reward instanceof ResolvedCurrencyRewardEntry currency) {
+                try { currencyTotal=Math.addExact(currencyTotal,currency.amount()); }
+                catch(ArithmeticException overflow) { return Validation.reject("Currency reward total overflow"); }
+            }
             if (reward instanceof CurrencyRewardEntry currency) {
                 try {
                     currencyTotal = Math.addExact(currencyTotal, currency.amount());
@@ -158,8 +261,16 @@ public final class RewardExecutionService {
     public static Validation validateItemComponents(net.minecraft.core.HolderLookup.Provider registries,
             List<RewardEntry> rewards) {
         try {
-            for (RewardEntry reward : rewards) if (reward instanceof NpcRewardEntry item)
-                item.createStack(registries);
+            for (RewardEntry reward : rewards) {
+                if (reward instanceof EquipmentRewardEntry equipment) equipment.resolve().createStack(registries);
+                if (reward instanceof NpcRewardEntry item) item.createStack(registries);
+                if (reward instanceof ResolvedLuckyRewardEntry lucky) lucky.selection().reward().createStack(registries);
+                if (reward instanceof LuckyRewardEntry lucky) {
+                    var pool = com.sande.mythictrpg.quest.reward.luck.LuckDefinitions.INSTANCE.find(lucky.poolId())
+                            .orElseThrow(() -> new IllegalArgumentException("Luck reward pool is not registered"));
+                    for (var candidate : pool.candidates()) candidate.item().createStack(registries);
+                }
+            }
             return Validation.allow();
         } catch (RuntimeException invalid) {
             return Validation.reject("Invalid reward item components: " + invalid.getMessage());
@@ -183,14 +294,9 @@ public final class RewardExecutionService {
         }
         Holder.Reference<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(reward.effectId())
                 .orElseThrow(() -> new IllegalStateException("Reward effect disappeared after validation"));
-        MobEffectInstance current = player.getEffect(effect);
-        if (current != null && (current.getAmplifier() > reward.amplifier()
-                || current.getAmplifier() == reward.amplifier()
-                && (current.isInfiniteDuration() || current.getDuration() >= reward.durationTicks()))) {
-            return;
-        }
-        player.addEffect(new MobEffectInstance(effect, reward.durationTicks(), reward.amplifier(),
-                false, true, true));
+        // A lower, longer effect must remain behind the stronger one until its own expiry.
+        BlessingEffectApplication.apply(player, new MobEffectInstance(effect,
+                reward.durationTicks(), reward.amplifier(), false, true, true));
     }
 
     public record Validation(boolean allowed, String reason) {

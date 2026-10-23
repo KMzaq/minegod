@@ -37,23 +37,12 @@ final class AiActionCapabilityBridge {
         for (AiActionCapability capability : capabilities) {
             context.append("- ").append(capability.promptSummary()).append("\n");
         }
-        context.append("These are proposals, not completed facts. Use exactly the listed type and declared parameter keys. ")
-                .append("Do not invent an item, reward, effect, event, count, duration, or target. ")
-                .append("generated_quest_offer is always a SIDE quest: select only a listed template, use title and ")
-                .append("summary for fitting narration, and never alter or invent its objective, count, progress gate, or reward. ")
-                .append("For player_damage, never invent damage values and never select it merely because it is listed. ")
-                .append("Select an authored damage template only when the immediate scene and the NPC's established ")
-                .append("personality, relationship, motive, and recent dialogue make a physical hit narratively coherent. ")
-                .append("A playful non-lethal hit, an ominous encounter strike, and a lethal hostile act are distinct; ")
-                .append("use only a listed template whose damage_mode and allow_death match the intended scene. ")
-                .append("Do not claim the hit succeeded in speech; the server executes or rejects it. ")
-                .append("Do not introduce an item request merely because a capability is listed; request it only when the ")
-                .append("live dialogue, an authored quest, or the established relationship context gives a concrete reason. ")
-                .append("item_request is special: the NPC may verbally request an authored item when context warrants it, ")
-                .append("but proposals must remain empty until the player's CURRENT message clearly says the items are ")
-                .append("prepared, brought, placed in the container they are looking at, or otherwise ready to transfer. ")
-                .append("A question, negotiation, promise to get it later, or discussion of the item is not readiness. ")
-                .append("Confirmation-required actions are only offers until the server receives the player's UI choice.\n");
+        context.append("Proposals are not completed facts. Use exact listed types, keys, IDs and mechanics; invent no targets or values. ")
+                .append("generated_quest_offer is SIDE only: title/summary may vary, never its objective/count/gate/reward. ")
+                .append("player_damage needs a scene/persona/relationship motive and a matching damage_mode/allow_death template, not mere availability. ")
+                .append("item_request needs a concrete conversational reason AND the current player explicitly ready to transfer prepared/brought items or items in the viewed container. ")
+                .append("Questions, negotiation and future promises are not readiness. This gate applies ONLY to item_request; other actions remain independent. ")
+                .append("A spoken request is not consumption. Confirmation offers remain pending until the player's UI choice; report only game-confirmed results.\n");
         if (capabilities.stream().anyMatch(AiActionCapabilityBridge::isRelationTransition)) {
             context.append("god_relation_transition accepts only parameters={transition_id: one exact listed ID} ")
                     .append("and an empty targetParticipantIds list. Never substitute template_id or provide scores, tags, ")
@@ -62,6 +51,14 @@ final class AiActionCapabilityBridge {
         }
         if (capabilities.stream().anyMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:npc_activity_request"))))
             context.append(NpcActivityPrompt.policy());
+        if (capabilities.stream().anyMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:npc_directive"))))
+            context.append("npc_directive: parameters={choice_id: exact UUID from current NPC_DIRECTIVE_CONTEXT}, targetParticipantIds=[]. ")
+                    .append("No choices means no order. Scene/motives may justify acting without a request tag. STARTED does not prove arrival or victory. ")
+                    .append("Never invent targets/coordinates/commands; no bans, kicks or repeated spawn killing.\n");
+        if (capabilities.stream().anyMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:structure_evaluation_request"))))
+            context.append("structure_evaluation_request accepts only parameters={quest_id: one exact listed quest ID} ")
+                    .append("and empty targetParticipantIds. Request inspection when the player is submitting a finished build; ")
+                    .append("only the game computes the evaluation, completion and reward.\n");
     }
 
     static AiDialogueModels.Proposal normalize(AiDialogueModels.Proposal proposal,
@@ -96,6 +93,26 @@ final class AiActionCapabilityBridge {
             ResourceLocation godId, String playerText, List<AiActionCapability> capabilities,
             Function<ResourceLocation, Optional<GodRelationTransition>> transitions) {
         String type = canonicalType(proposal.type());
+        if ("npc_directive".equals(type)) {
+            if (!Set.of(type, "mythictrpg:" + type).contains(proposal.type().trim().toLowerCase(Locale.ROOT))
+                    || !proposal.targetParticipantIds().isEmpty() || !proposal.parameters().keySet().equals(Set.of("choice_id"))
+                    || capabilities.stream().noneMatch(c -> c.actionType().equals(ResourceLocation.parse("mythictrpg:" + type)))) return null;
+            String choice = proposal.parameters().get("choice_id");
+            try { if (choice == null || !java.util.UUID.fromString(choice).toString().equals(choice)) return null; }
+            catch (IllegalArgumentException malformed) { return null; }
+            // The game's choice registry validates room, revision, actor, player, target and freshness again.
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(), Map.of("choice_id", choice));
+        }
+        if ("structure_evaluation_request".equals(type)) {
+            if (!Set.of(type, "mythictrpg:" + type).contains(proposal.type().trim().toLowerCase(Locale.ROOT))
+                    || !proposal.targetParticipantIds().isEmpty() || !proposal.parameters().keySet().equals(Set.of("quest_id"))) return null;
+            String rawId = proposal.parameters().get("quest_id");
+            ResourceLocation id = rawId == null ? null : ResourceLocation.tryParse(rawId);
+            if (id == null || !id.toString().equals(rawId) || capabilities.stream().noneMatch(c ->
+                    c.actionType().equals(ResourceLocation.parse("mythictrpg:" + type))
+                            && c.templateId().filter(id::equals).isPresent())) return null;
+            return new AiDialogueModels.Proposal(type, proposal.title(), proposal.summary(), List.of(), Map.of("quest_id", rawId));
+        }
         if ("quest_roster_request".equals(type)) {
             if (!Set.of(type, "mythictrpg:" + type).contains(proposal.type().trim().toLowerCase(Locale.ROOT))
                     || !proposal.targetParticipantIds().isEmpty() || !proposal.parameters().keySet().equals(Set.of("quest_id"))

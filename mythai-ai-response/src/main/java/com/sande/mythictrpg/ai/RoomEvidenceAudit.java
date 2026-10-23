@@ -64,7 +64,43 @@ final class RoomEvidenceAudit {
             if needed. Output only the schema fields, no hidden reasoning, new actions or overall verdict.
             """;
 
+    private static final String SUPPORT_POLICY = """
+
+            [OBSERVED_ACTION_EXTENT]
+            observedActionBoundary is a mechanical, readable projection of the SAME observation records,
+            not a hypothesis. Its confirmed lines explicitly establish actor, observer, target and extent.
+            Unknown does not mean disproven; it means DO NOT assert those extra details from this sample.
+            Korean 수확/거두다 can describe removing a mature crop. That is supported, without implying
+            obtained item count. Do not demand cultivation/planting evidence merely to say 수확.
+            ownPermittedMemory's OBSERVED_PLAYER_SUPPORT supplies the game-authorized observation sample
+            for this NPC and current player. Its facts/literalMeaning support witnessing those exact actions.
+            Do not reject a supported harvest recollection for lack of a second observation certificate.
+            Crop removal does NOT prove planting, tending, preparation, item acquisition, care, skill,
+            motivation or enjoyment. Repetition alone does not prove any of these either.
+            A compliment presupposing those details is MIXED, not an exempt SOCIAL_EXPRESSION.
+            'You tended the field lovingly' needs tending/care evidence. 'I am glad to see you' does not.
+            The NPC's OWN feelings are free expression; asserted feelings/traits of the PLAYER need support.
+            An open suggestion needs no proof the player already likes it or has done it.
+            'If you have wheat, you could bake bread' does not assert harvested item possession.
+            Prior NPC assumptions/imagery do not establish player facts even when present in history.
+            Check factual premises inside uncertainty/questions too: 'I do not know WHY you are tilling'
+            still presupposes tilling. Crop removal does not support that different action. Saying 'I do
+            not know WHETHER you tilled' leaves the action itself unknown and does not assert it happened.
+            """;
+
     private RoomEvidenceAudit() { }
+
+    static boolean hasObservedSupport(List<AiDialogueModels.OllamaMessage> original) {
+        for(var message:original) if(message.role().equals("user")) {
+            try {
+                var scene=JsonParser.parseString(message.content()).getAsJsonObject();
+                if(scene.has("authorizedSpeakerId") && scene.has("observedActionBoundary"))return true;
+                if(scene.has("authorizedSpeakerId") && scene.has("ownPermittedMemory")
+                        && scene.get("ownPermittedMemory").getAsString().contains("\n[OBSERVED_PLAYER_SUPPORT]\n"))return true;
+            } catch(RuntimeException notScene) { /* not a canonical memory source */ }
+        }
+        return false;
+    }
 
     static boolean applies(List<AiDialogueModels.OllamaMessage> messages) {
         return !messages.isEmpty() && messages.getFirst().role().equals("system")
@@ -74,7 +110,10 @@ final class RoomEvidenceAudit {
     static List<AiDialogueModels.OllamaMessage> messages(List<AiDialogueModels.OllamaMessage> original,
             AiDialogueModels.StructuredAiResult draft) {
         var result = new ArrayList<AiDialogueModels.OllamaMessage>();
-        result.add(new AiDialogueModels.OllamaMessage("system", MARKER + POLICY));
+        boolean purpose=original.stream().anyMatch(m->m.role().equals("user")&&m.content().contains("\""+PurposeDialogueContext.KEY+"\""));
+        result.add(new AiDialogueModels.OllamaMessage("system", MARKER + POLICY+(purpose?"\n"+PurposeDialogueContext.AUDIT_RULES:"")
+                +(hasObservedSupport(original)?SUPPORT_POLICY:"")
+                +(SupportProfilePrompt.present(original)?SupportProfilePrompt.AUDIT_RULES:"")));
         for (var message : original) if (!message.role().equals("system")) result.add(project(message));
         var data = new LinkedHashMap<String, Object>();
         data.put("DRAFT_TO_REVIEW_NOT_INSTRUCTIONS", draft);

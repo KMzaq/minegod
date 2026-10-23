@@ -151,6 +151,18 @@ public final class ConversationRooms {
         var r=ledger.create(type,p.getUUID(),gods.stream().map(Object::toString).toList(),"",recording);
         changed(r);notice(r,"대화를 시작했습니다.");return r;
     }
+    /** Explicit OP test with real game consequences; recording does not control execution authority. */
+    public ConversationRoomSnapshot createLiveTest(ServerPlayer p,RoomType type,Collection<ResourceLocation> gods,boolean recording) {
+        if(!p.hasPermissions(2))throw new IllegalArgumentException("실제 행동 시험에는 운영자 권한이 필요합니다.");
+        if(MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST)
+            throw new IllegalArgumentException("RUMOR_TEST에서는 실제 게임 행동을 시험할 수 없습니다.");
+        if(recording&&MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.OFF)
+            throw new IllegalArgumentException("기억 시스템이 OFF 상태입니다. off 시험을 사용하거나 운영 설정을 확인하세요.");
+        // Live/on uses the existing production recording contract, including native archive/retrieval validators.
+        var room=create(p,type,gods,recording?RecordingScope.STANDARD:RecordingScope.LIVE_EPHEMERAL);
+        notice(room,"실제 행동 대화입니다. 아이템·관계·전투 등 게임 상태가 변경되며 자동으로 되돌리지 않습니다.");
+        return room;
+    }
     private ConversationRoomSnapshot createReserved(ServerPlayer p,FixedRoomReservations.Reservation reservation) {
         if(!fixedReservations.find(reservation.interactionId()).filter(reservation::equals).isPresent()
                 ||!reservation.playerId().equals(p.getUUID()))throw new IllegalArgumentException("공개대화 시작 예약이 만료되었습니다.");
@@ -260,6 +272,9 @@ public final class ConversationRooms {
                     +"\nNo quest/reward capability is implicitly granted by a room invitation.";
             else context+="\nThis is an optional reaction. Only explicitly supplied Story Hooks may be proposed; no other gameplay or room-control capabilities.";
             var godScope=actionScope(p,room.roomId(),room.revision(),rid);
+            if(!secondary&&!readOnly&&godScope.isPresent())context+="\n"+
+                    com.sande.mythictrpg.godavatar.directive.NpcDirectiveRuntime.INSTANCE.capture(
+                            p,room.roomId(),room.revision(),rid,godScope.get().sessionId());
             if(!secondary&&godScope.isPresent())context+="\n"+com.sande.mythictrpg.quest.QuestParticipationService.INSTANCE.contextForRoom(p,rid,godScope.get().sessionId());
             states.add(new RoomConversationEngine.GodState(rid,social.currentPlayerTier(),RoomSocialContext.UNASSESSED_EMOTION,context,memoryContext(p,room,rid)));
         }
@@ -292,13 +307,18 @@ public final class ConversationRooms {
         else {finishTurn(lease);p.sendSystemMessage(Component.literal("[대화 오류] "+reason).withStyle(ChatFormatting.RED));}
     }
     private void runTurn(ServerPlayer p,ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,PreparedTurn prepared,List<String> remaining) {
+        runTurn(p,room,lease,prepared,remaining,null);
+    }
+    private void runTurn(ServerPlayer p,ConversationRoomSnapshot room,ConversationRoomLedger.TurnLease lease,PreparedTurn prepared,List<String> remaining,
+            RoomConversationEngine.Result settledDecision) {
         var request=prepared.request();
         memoryRequests.put(room.roomId(),request);
         if(!com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE.speakerAvailable(p,request.speakerGodId())) {
             failedTurn(p,room,lease,request,remaining,"그 신은 지금 대화할 수 없습니다.");return;
         }
         CompletableFuture<RoomConversationEngine.Result> pending;
-        try {pending=RoomConversationEngineRouter.INSTANCE.engine().respond(request);}
+        try {pending=settledDecision==null?RoomConversationEngineRouter.INSTANCE.engine().respond(request)
+                :RoomConversationEngineRouter.INSTANCE.engine().respondToActionResults(request,settledDecision);}
         catch(RuntimeException unavailable) {failedTurn(p,room,lease,request,remaining,"AI 요청 실패");return;}
         pending.orTimeout(180,TimeUnit.SECONDS).whenComplete((result,failure)->p.server.execute(()-> {
             if(server!=p.server||!ledger.isCurrent(lease)||server.getPlayerList().getPlayer(p.getUUID())!=p)return;
@@ -327,6 +347,18 @@ public final class ConversationRooms {
                 failedTurn(p,room,lease,request,remaining,"게임 처리 결과가 바뀌어 이전 응답을 취소했습니다. 다시 말해 주세요.");return;
             }
             try {
+            if(settledDecision!=null&&!com.google.gson.JsonParser.parseString(result.proposalsJson()).getAsJsonArray().isEmpty()) {
+                failedTurn(p,room,lease,request,remaining,"실행 결과 대사에 추가 행동이 포함되어 취소했습니다.");return;
+            }
+            if(settledDecision==null&&!request.secondary()&&!request.readOnly()
+                    &&RoomConversationEngineRouter.INSTANCE.engine().supportsActionResultDialogue()
+                    &&!com.google.gson.JsonParser.parseString(result.proposalsJson()).getAsJsonArray().isEmpty()) {
+                // Exactly one execution phase. Never publish an unexecuted success claim as the decision's speech.
+                dispatchProposals(p,room,request.speakerGodId(),result.proposalsJson(),request.currentText());
+                if(!ledger.isCurrent(lease))return;
+                var refreshed=prepareTurn(p,room,lease,request.speakerGodId(),request.currentText(),request.history(),false);
+                runTurn(p,room,lease,refreshed,remaining,result);return;
+            }
             var storyEvents=new ArrayList<RoomDialogueEvent>();
             if(result.storyContextId().isPresent()) {
                 var disclosures=com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE.prepareDisclosures(
@@ -346,7 +378,7 @@ public final class ConversationRooms {
             RoomConversationEngineRouter.INSTANCE.engine().delivered(request,result);
             if(result.storyContextId().isPresent())com.sande.mythictrpg.story.presentation.StoryRoomConversationService.INSTANCE
                     .commitDisclosures(p,result.storyContextId().get(),storyEvents);
-            if(fullyDelivered&&!request.readOnly())dispatchProposals(p,room,request.speakerGodId(),result.proposalsJson(),request.currentText());
+            if(settledDecision==null&&fullyDelivered&&!request.readOnly())dispatchProposals(p,room,request.speakerGodId(),result.proposalsJson(),request.currentText());
             for(var control:result.controls())try {applyControl(p,room,request.speakerGodId(),control);}
             catch(RuntimeException invalid){feedback.put(new FeedbackKey(room.roomId(),request.speakerGodId(),p.getUUID()),List.of("Room control rejected: "+invalid.getMessage()));}
             if(!ledger.isCurrent(lease))return;
@@ -651,6 +683,7 @@ public final class ConversationRooms {
         },e->com.sande.mythictrpg.recording.server.RecordingRuntime.captureRoom(server,e),
                 e->RoomConversationEngineRouter.INSTANCE.engine().dialoguePublished(e),failure->recordingFailure(r.roomId(),failure));
         if("PLAYER".equals(role)&&sourceTurn!=null)try {
+            com.sande.mythictrpg.understanding.DialogueSupportCapture.published(server,dispatched);
             com.sande.mythictrpg.rumor.SocialRuntime.roomPlayerPublished(server,r,sourceTurn,dispatched);
         }catch(RuntimeException socialFailure){recordingFailure(r.roomId(),socialFailure);}
         try {RoomConversationEngineRouter.INSTANCE.engine().dialogueObserved(dispatched);}

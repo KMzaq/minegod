@@ -1,0 +1,83 @@
+{
+  "packet_id": "P1_OTHER_QUEST-028",
+  "runtime_ready": false,
+  "common_contract": {
+    "status": "채택된 구현용 기획. 실행 스키마 아님; 실제 구현/API·reload·게임 시험 미실시. runtime_ready=false.",
+    "scope": "기존 비독점 SIDE의 구체화이며 새로운 MAIN·세계 해금·별도 보상 사건을 만들지 않는다. 최초 명시 수락은 해당 참가자의 현재 업무 몫만 확정한다. 이미 있는 개인 MAIN과 그 첫 유효 소유자는 불변이다.",
+    "access": "세계 해금은 공통, 현재 조우 후보·기존 출현 확률과 단일 본체 가용성은 별도다. 본 패킷은 출현 정책을 새로 교체하지 않는다. 이미 있는 본체와 접촉하는 데 재추첨·개인 재해금0. 현재 허가된 현장·동일 본체·봉인 허용·의사 확인 후 수주한다. 등급·장 번호로 새 접촉 잠금0. 인사만으로 수락0.",
+    "site": "개별 장소의 기존 Overworld 부지를 선택하여 O를 고정하고 실제 walkable 경로를 지도에 등록한다. 상대 좌표는 자연 지형에 맞춰 회전 가능하다. 소유자 사용 허락, 너비2블록과 머리위2블록, 안전 퇴로를 확인한다. 보호 구역을 뚫거나 새 차원을 만들지 않는다. 부족하면 해당 작업 배치만 준비 대기하며 NPC 무지·봉인 설정으로 설명하지 않는다.",
+    "time": "별도 기재 없는 임무는 제한시간 없음. 예상 분은 설계 추정이며 기다림·이동 지연은 실패가 아니다. 20tick=1초는 연출 표시 기준일 뿐 현실 타이머를 대체하지 않는다.",
+    "evidence": "서버 권위 실제 위치/이동·아이템 uuid와 소유/수량 전후·NPC 동의·사용·수신을 evidence_event_id로 저장한다. 대화 정답·버튼·FTB 표시만으로 물리 목표 성공0. 모의 소품은 실거래 재고와 분리한다. 인수 완료와 NPC 보고 수신은 다른 이벤트다.",
+    "ledger": "canonical_episode_id는 원래 EP ID를 그대로 쓴다. 새 definition_id는 alias이며 (canonical_episode_id, source_case_id, beneficiary_uuid, entitlement_kind) 원장을 조회한다. 원래 사건의 기존 실지급 이력을 먼저 이전·대조하며 새 ID 때문에 두 번째 권리0. source_case_id는 현물/요청의 서버 단일 사건키로 고정해 복제 수락/이름변경으로 새 사건 생성0. 첫 보상은 개인·동일 에피소드 평생1회, 새로운 실무 반복은 새 합의가 있어도 추가 최초보상0. 원물반환은 보상이 아니고 원소유자별 실물수불이다.",
+    "settlement": "reward_earned→reserved_stock→delivered를 별도 원자상태로 저장. 가방 가득 참·NPC 부재는 earned를 보존한다. delivered 여부 불확실하면 아이템uuid와 거래로그 대조 후 누락분만 지급한다. 팀대표 클릭·사망·로그아웃·서버 재시작으로 추가 지급0. 재고는 실제 승인분만 예약, 필요생활재고 강탈/자동 생성0. 선택 훈련은 사양해도 실제 완료를 취소하지 않으며 훈련 선택과 실제 수강경험도 별개다.",
+    "failure": "거절은 미수행 상태로 끝나고 무관한 생활 대화·세계 해금 유지. 사망/접속종료는 현재 목표만 중단: 소모·위치·인수·수신 저장. 위탁품은 원래 drop 정책을 따르고 저장 uuid와 실제 위치를 대조해 회수, 소멸이면 손실 상태; 공짜 원물 재생0. 안전 확인 뒤 미완료 작업만 재개. NPC 부재는 해당 발화·인수 대기, 대역/원격 답 생성0. 원물 반환은 완료 여부와 무관하게 남은 현물을 돌려준다.",
+    "multiplayer": "동시5인까지 현장 참여 설계. 실제 수락자별 맡을 몫을 시작 전에 나누며 하나의 완료 동작을5회 세지 않는다. 부족한 업무를 보상용으로 생성하지 않는다. 후발자는 남은 일을 새로 맡거나 공개 결과를 확인할 수 있으나 이미 끝난 개인 공로·보상·사적 기억 상속0. 5인 군집에서도 작업면 외곽에 서며 타인/통로/상호작용 시야를 막지 않는다.",
+    "knowledge": "fact_definition_id의 발생과 knowledge_receipt_id의 실제 습득을 분리한다. 각 사실에 actor·object·source_event·truth_status·audience·disclosure_scope를 저장한다. NPC는 직접 목격 또는 허락된 보고를 실제 받은 내용만 기억하고 두 경로를 구별한다. 미수신 미래 결말·숨은 전투력·사생활 자동 앎0. 기존 자기 전승과 앎은 지우지 않는다. 공개 전 모든 실제 청중을 확인하며 사적 내용은 별도 허락 없으면 말하지 않는다.",
+    "implementation": "바닐라 물품·컨테이너·이동은 표현 수단으로 채택, 이 시스템과의 실제 연동은 미검증. 새 구현 요구: 작업면 slot 검사, 위탁 uuid/소유수불, NPC 자율동의·동행/작업 관측, 수신·청중 필터, alias 원장, 정산 트랜잭션과 재시작 복구. 제시한 기획 필드가 기존 엔진 API라고 주장하지 않는다. 능동 전투기술·전용 장비 신규0이므로 스킬 연출 시트 없음.",
+    "acceptance": [
+      "동시5인 중 실제 수행2인: 실제 공로만2인, 미수행3인 완료/지급0",
+      "동일 원물 인수 직후 접속종료: 재접속 후 원물1개와 인수1건만 존재",
+      "같은 EP에 새 definition alias로 재클릭: 기존 지급 대조, 추가 권리0",
+      "후발자가 파티 가입: 공개 현장만 보이고 사적 수신/기존 공로0",
+      "선택훈련 거절: 완료 보존·훈련경험0",
+      "관측/자료 있음 그러나 필수 실제 운반 없음: 목표 실패",
+      "NPC 부재/청중 불허: 새 발화/수신/완료0, 무관한 안전 작업은 계속"
+    ]
+  },
+  "records": [
+    {
+      "record_key": "RPG-S04-002",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-002",
+      "canonical_episode_id": "EP002B-RPG-S04-002-01",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-002-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-008",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-008",
+      "canonical_episode_id": "EP015A-RPG-S04-008",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-008-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-013",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-013",
+      "canonical_episode_id": "EP015A-RPG-S04-013",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-013-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-016",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-016",
+      "canonical_episode_id": "EP015A-RPG-S04-016",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-016-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-018",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-018",
+      "canonical_episode_id": "EP015A-RPG-S04-018",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-018-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-020",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020",
+      "canonical_episode_id": "EP015B-RPG-S04-020",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-020-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-024",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024",
+      "canonical_episode_id": "EP015B-RPG-S04-024",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-024-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-025",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025",
+      "canonical_episode_id": "EP015B-RPG-S04-025",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-025-FACT-RESULT"
+    },
+    {
+      "record_key": "RPG-S04-038",
+      "definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-038",
+      "canonical_episode_id": "EP015B-RPG-S04-038",
+      "knowledge_fact_definition_id": "Q-P1_OTHER_QUEST-028-RPG-S04-038-FACT-RESULT"
+    }
+  ]
+}

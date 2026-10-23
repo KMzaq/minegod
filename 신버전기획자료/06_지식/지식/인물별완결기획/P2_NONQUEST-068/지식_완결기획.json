@@ -1,0 +1,4226 @@
+{
+  "packet_id": "P2_NONQUEST-068",
+  "category": "지식",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택한 저술·구현 요구이며 실행 스키마가 아니다. 실제 API·게임·LLM·영상·5인 서버 시험은 하지 않았다. runtime_ready=false.",
+    "원문": "source_contract와 retained_profile은 지정 원문값의 동등 복사. 역사 제안의 미채택 표기를 고치지 않고 adopted_detail에서만 현재 채택을 명시한다. 원문 계약의 모든 선택·부분성과·기존 생활 권리를 보존한다.",
+    "조우": {
+      "참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter 및 /atomic_contract",
+      "운영": "일반풀 300 활동초 창·서버25%·등장 후 해당 인물1800 가동초 쿨과 현행 전투등급 가중치 재사용. 인물별 독립25% 추첨 아님. 정책의 후보/주체 선정·저널·CAS·재시작 규칙 그대로.",
+      "세계": "누구 한 명의 유효 달성으로 전역 영구 해금. 현재 조건을 맞춘 실제 1명이 조우 주체. 둘은 개인 MAIN·지식·보상 소유와 다르다. 기존 before 초기 접근을 새 조건으로 잠그지 않는다.",
+      "본체": "최초 미배치만 출현 후보. 미로드는 같은 entity 조회/로드, 다른 활동 중이면 대기, 실제 사망은 자동 부활0, 봉인은 실제 허용 모드만. 본체 가용의 불명확함은 새 신화차원·분신으로 해결0. 등장 후 일반 접촉에 새 추첨0.",
+      "채택": "개인별 adopted_detail.activation이 일반 조우의 현재 제작 결정이다. 실제 등록·배치·충돌·생사 상태 연결과 검증은 구현 작업이며 기획 채택과 구별한다."
+    },
+    "현재대화": "동일 실제 본체·접근·안전·의사→실제 수신자 공개권→관측/출처있는 전언→그 상대와의 기억→현재 말의 내용으로 판단. 일반 대화는 같은 공간 8블록 안 실제 청취, 손으로 집기·놓기·인수만2블록. 관측·이동에는2블록을 일괄 적용하지 않는다. 숨은 CP·공유 호감도·강함 자동 존댓말 없음.",
+    "실제수행": "interaction_id는 회차를 구분하는 설계 키이지 새 퀘스트 수락/완료 배지가 아니다. 원문 에피소드와 같은 사실 원장을 사용한다. 목표·정수량·현물 UUID·현재 위치·소유·허락·실제 응답을 따로 기록한다. 동의/설명 답안은 물리 수행을 대신하지 않는다.",
+    "중단복구": "거절은 미수행0, 부분성과·소비·손상·원소유·실제 수신 보존. 사망·로그아웃 때 현물/위탁/남은 위험과 마지막 실제 단계 저장, 새 완료·봉인·마감 생성0. 재회는 현재 의사·접근·같은 물건을 대조하고 미완 부분만 재개. 인수 불확실이면 receipt와 인벤/위치를 대조 전 재전달0.",
+    "관계와청중": "사실 발생과 실제 목격/허락된 수신은 별개. speaker/source·receiver_uuid·event_id·청중·허락범위·received_at 보존. 공동 발화는 현 청중 전원 공개권 확인, 미자격자가 있으면 비공개 전달 지원 전 보류. 후발은 현재 공개 결과만 새로 관측하고 옛 사적 기억을 상속하지 않는다.",
+    "정산": "원문 없는 성장보상·가호·주시·무기·스킬·NPC지원0. 원문 APPLICABLE 지도/현물/서비스 권리는 실제 조건 충족으로 성립, 수강·인수·서비스 수행을 별도 기록. 기본 제안 수량이 사전 합의한 품목·정수량·대체재·노동 대가를 지우지 않는다. 원소유물 반환은 보상이 아니다.",
+    "인수시험": "아래 acceptance_cases는 정적 설계 검토와 향후 구현 인수용이다. 실제 실행 통과를 주장하지 않는다."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S03-034",
+      "name": "민",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-034/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-034/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-034/outline",
+        "episode": "EP013A-RPG-S03-034"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 민, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 레네누테트에게 보낼 종자를 상단과 나눔; 복원한 재배지가 후속 거점",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "번영을 강요된 의무가 아닌 선택으로 보려 함",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "종자 분배와 실제 남길 몫을 레네누테트와 조율하는 기존 관계다. 본인은 이 관계에서 자기 역할과 이미 익숙한 당사자만 안다. 아직 전달받지 않은 새 계획이나 임무 완료를 안다고 하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "번영을 강요된 의무가 아닌 선택으로 보려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "열매와 씨앗의 모양을 비교하며 잘 큰 것을 자랑하는 일을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "레네누테트를 알고 있으며 나눌 종자와 다음에 남길 몫을 함께 다룰 수 있는 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "민의 현재 관심은 열매와 씨앗의 모양을 비교하며 잘 큰 것을 자랑하는 일을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "민에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "민의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 많이 거둘 자랑보다 자기가 기를 수 있는 몫과 원하는 방식을 분명히 말한다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "민와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 수확량부터 따지지 않고 그 사람이 고른 종자의 성장 모습을 함께 살펴보자고 먼저 말한다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-028",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "종자 분배와 실제 남길 몫을 레네누테트와 조율하는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "많이 거둘 자랑보다 자기가 기를 수 있는 몫과 원하는 방식을 분명히 말한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 수확량부터 따지지 않고 그 사람이 고른 종자의 성장 모습을 함께 살펴보자고 먼저 말한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "번영을 강요된 의무가 아닌 선택으로 보려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "열매와 씨앗의 모양을 비교하며 잘 큰 것을 자랑하는 일을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "레네누테트를 알고 있으며 나눌 종자와 다음에 남길 몫을 함께 다룰 수 있는 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "민의 현재 관심은 열매와 씨앗의 모양을 비교하며 잘 큰 것을 자랑하는 일을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "민에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "민의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 많이 거둘 자랑보다 자기가 기를 수 있는 몫과 원하는 방식을 분명히 말한다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "민와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 수확량부터 따지지 않고 그 사람이 고른 종자의 성장 모습을 함께 살펴보자고 먼저 말한다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 민, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 레네누테트에게 보낼 종자를 상단과 나눔; 복원한 재배지가 후속 거점",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "번영을 강요된 의무가 아닌 선택으로 보려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "종자 분배와 실제 남길 몫을 레네누테트와 조율하는 기존 관계다. 본인은 이 관계에서 자기 역할과 이미 익숙한 당사자만 안다. 아직 전달받지 않은 새 계획이나 임무 완료를 안다고 하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "event/NONE이다. 참가·씨앗과 자리의 허락·실제 재배를 각각 확인하며 MAIN이나 새 퀘스트를 만들지 않는다.",
+            "B1 자기 선택은 큰 작물도 허용한다. 강요 거절은 이미 실제 심은 자기 몫을 지우지 않고 아직 안 심은 몫을 생성하지도 않는다.",
+            "레네누테트 실제 응답, 보존 몫 분리, 성장·수확, 각 전시 동의를 구별한다. B2 대기 원인은 미응답/미성장/전시 사양 중 실제 원인만 말한다.",
+            "전시는 증여가 아니다. 자기 수확 반환은 참가·완료 보상이 아니며 맡긴 물건이 있을 때만 회수한다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "레네누테트의 실제 보존 몫 응답을 반영해 종자를 나누고 자기 선택으로 실제 재배한 수확물을 동의 아래 전시했을 때 민은 큰 것 옆에 작은 것도 놓는다. 재배 중·몫 미응답·전시 거절은 그 현재 단계로 남으며 풍작이나 참여자의 인생 결정을 대신 선언하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "민은 보존 접시를 손님 손이 닿지 않는 쪽으로 옮긴다. 작은 수확을 보이면 큰 것 옆의 천을 펴 자리를 내준다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "손바닥보다 작은 수확의 자리: 견본의 크기와 건조 상태, 심을 자리의 소유자 허락, 씨앗을 실제 놓고 흙을 덮은 흔적을 민과 참가자가 현장에서 본다. → 동의한 수확만 작은 잔치의 천 위에 놓이고, 미성장 자리와 보존 접시는 따로 남는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 소유자는 없다. 누구나 자기 몫의 선택을 말하거나 구경할 수 있으나 타인의 씨앗·수확·사연을 대신 내놓지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "참가자가 직접 기른 수확물의 원래 소유권 유지",
+              "earned_condition": "새 보상권을 획득하는 구조가 아니다. 실제 자신이 기른 수확물의 기존 소유권을 유지한다. 전시 수락·잔치 완료를 소유권의 조건으로 붙이지 않는다.",
+              "beneficiary_and_claim_right": "각 실제 수확물의 원소유자. 다른 참가자의 수확은 분배 보상이 아니다.",
+              "actual_grant_and_consumption": "새 실물 지급 없음. 실제 심은 자기 몫만 소비하며, 전시를 위해 맡긴 자기 수확물만 실물 대조 후 반환한다.",
+              "unclaimed_retry_no_duplicate": "전시 보관 중인 물건의 실제 보유·원소유를 대조해 미반환분만 돌려준다. 재접속으로 씨앗·수확물을 재생하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013A-RPG-S03-034-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "레네누테트의 실제 보존량 응답·분리와 자기 선택 재배·실제 수확·허락 전시가 모두 된 경우에만 크기 다른 수확을 함께 소개하는 결말. 재배 중·미응답·전시 사양은 부분결과로 유지하고 원소유권은 전시 완료와 무관.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "레네누테트의 종자 분배 SIDE와 민의 자기 재배는 별도 원장. 보존분을 보상 재고로 빼지 않고 성장 가속·번영 의무·농장 영구 버프0. 씨앗을 칭찬하는 대화만으로 수확물을 생성하지 않는다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-028",
+              "existing_edge_or_new_minor_basis": "종자 분배와 실제 남길 몫을 레네누테트와 조율하는 기존 관계다.",
+              "request_and_actual_response": "민가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 레네누테트가 남길 종자 몫을 실제 응답하면 그 몫을 먼저 분리한다. 이후 참가자가 실제 심고 거둔 것만 전시한다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 많이 거둘 자랑보다 자기가 기를 수 있는 몫과 원하는 방식을 분명히 말한다. 이를 실제로 확인한 경우: 다음에는 수확량부터 따지지 않고 그 사람이 고른 종자의 성장 모습을 함께 살펴보자고 먼저 말한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 민은 가장 큰 수확자만 치켜세우지 않고 각자가 무엇을 골랐는지 기억한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 민와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-040",
+      "name": "네므티",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-040/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-040/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-040/outline",
+        "episode": "EP013A-RPG-S03-040"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 네므티, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 세트와 호루스 양측의 검문 요구를 협상; 선표 약속 누적",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "값을 받되 약자를 마지막 배에 남기지는 않음",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "호루스와 세트 양쪽의 검문 요구를 다루는 나루의 기존 관계다. 본인은 이 관계에서 자기 역할과 이미 익숙한 당사자만 안다. 아직 전달받지 않은 새 계획이나 임무 완료를 안다고 하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "값을 받되 약자를 마지막 배에 남기지는 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "바닥이 고르게 닿는 좋은 상자와 싣기 편한 짐 모양을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "세트와 호루스 양쪽을 알고 있으며 그들의 검문 요구와 자신의 나룻배 일이 겹칠 수 있음을 안다. 새 명령은 실제로 들어야 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "네므티의 현재 관심은 바닥이 고르게 닿는 좋은 상자와 싣기 편한 짐 모양을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "네므티에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "네므티의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 자기 짐을 조금 줄여 다른 사람의 자리를 실제로 남긴다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "네므티와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 가격만 먼저 부르지 않고 그 사람의 짐을 어디 두면 덜 흔들리는지 먼저 말한다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-018",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "호루스와 세트 양쪽의 검문 요구를 다루는 나루의 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "호루스가 검문 요구 때문에 마지막 승객이 남게 되는 구간을 인정하고 꼭 필요한 확인부터 끝내는 방안을 내놓는다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "네므티는 호루스의 요구를 즉시 거부하기보다 실제 대기 인원과 출발 가능한 차례를 먼저 알려 협의한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "값을 받되 약자를 마지막 배에 남기지는 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "바닥이 고르게 닿는 좋은 상자와 싣기 편한 짐 모양을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "세트와 호루스 양쪽을 알고 있으며 그들의 검문 요구와 자신의 나룻배 일이 겹칠 수 있음을 안다. 새 명령은 실제로 들어야 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "네므티의 현재 관심은 바닥이 고르게 닿는 좋은 상자와 싣기 편한 짐 모양을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "네므티에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "네므티의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 자기 짐을 조금 줄여 다른 사람의 자리를 실제로 남긴다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "네므티와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 가격만 먼저 부르지 않고 그 사람의 짐을 어디 두면 덜 흔들리는지 먼저 말한다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 네므티, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 세트와 호루스 양측의 검문 요구를 협상; 선표 약속 누적",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "값을 받되 약자를 마지막 배에 남기지는 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "호루스와 세트 양쪽의 검문 요구를 다루는 나루의 기존 관계다. 본인은 이 관계에서 자기 역할과 이미 익숙한 당사자만 안다. 아직 전달받지 않은 새 계획이나 임무 완료를 안다고 하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "service/NONE. 이번 회차 합의·대가 또는 노동·적재·필요 검문·안전 운항·도착·하선·짐 인수를 구분한다. MAIN과 새 퀘스트 보상권 없음.",
+            "짐을 남기는 선택과 노동 대체는 대안이다. 실재 승객·도움 의사·실제 자리 마련 근거가 없으면 약한 승객을 창작하지 않는다. 일반 대가 이용은 남을 도운 공로가 아니다.",
+            "세트 미응답은 동의가 아니지만 해당 운항에 불필요한 새 양쪽 허가를 추가하지 않는다. 위험 수위/필수 응답/적재 불가의 각 이유만 말한다.",
+            "납부·노동·위탁 짐은 대기 중에도 보존한다. 실제 위탁하고 미회수한 사람에게만 남긴 상자를 언급. 재접속은 같은 노동·요금을 재청구하지 않는다. 다음 새 회차는 새 합의다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "현재 회차의 합의된 대가와 실제 적재·검문 적용·안전 출항·도착·하선 및 짐 인수가 충족된 승객에게만 운송 처리 완료. 위험 수위 대기·미합의 승선·미출항은 미완료 서비스다. 납부·실제 노동·남겨 둔 짐은 보존하고 다음 이용은 새 회차로 정산한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "네므티는 호루스가 실제 응답할 때 기다리는 인원과 마지막 자리가 막히는 지점을 설명한다. 꼭 필요한 확인부터 마치자는 실제 제안이 와야 차례 협의를 바꾼다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "마지막 자리를 남기는 뱃삯: 승객·네므티의 실제 동의, 현재 적재 균형, 납부 금액 또는 실제 끝낸 노동을 구분한다. 가상의 가난한 승객을 추가하지 않는다. → 운송 완료자의 짐은 건너편에 있고, 대기자의 짐은 육지에 있다. 다음 이용에서 실제 보탠 몫과 미회수 짐만 기억한다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "MAIN·퀘스트 소유 없음. 승객마다 현재 운임·노동 대체·짐 위탁·승선 동의를 따로 확인한다. 실제 태우지 않은 친구의 뱃삯이나 탑승 경험은 생성하지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "승선 서비스; 요금·노동 대체는 실제 합의, 중복 지불 복구",
+              "earned_condition": "서비스 처리 조건은 현재 회차 합의 대가·안전 적재·필요 검문·실제 운송이다. 별도 퀘스트 보상권 없음. 이미 낸 요금·실제 노동·자기 짐 권리는 운송 완료 전에도 보존된다.",
+              "beneficiary_and_claim_right": "실제 이용 승객 각자와 원래 짐 소유자. 대기자는 완료 경험을 얻지 않지만 납부·노동 기록을 잃지 않는다.",
+              "actual_grant_and_consumption": "요금 또는 노동 대체는 실제 합의·납부/실행한 몫만. 승선·도착·하선이 실제 이뤄져야 서비스 제공이다. 새 장비·무료 패스·능력 보상 없음.",
+              "unclaimed_retry_no_duplicate": "회차별 실제 납부와 수령·노동·운송 기록을 대조해 중복 지불을 복구한다. 미출항 대기는 합의한 대기/취소 조건으로 처리하고 이미 끝낸 노동을 다시 요구하지 않는다. 새 이용은 새 합의다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013A-RPG-S03-040-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "(해당 승객의 이번 회차 합의된 요금 실제 납부 OR 합의 노동 실제 완료) AND 실제 승선·적재 AND 필요한 검문·안전 출항 AND B 도착·하선 AND 실제 실은 짐 인수가 충족된 이용자만 이번 운송을 완료한다. 도움 제공자와 도움 받은 승객은 합의 manifest대로 별도 기록한다. B1-1의 큰 짐 위탁·자리 양보는 준비 부분성과이며 운임 충족 대안이 아니다. 타인이 해당 승객 몫의 합의 대가를 이미 이행한 receipt는 인정하고 같은 몫을 양쪽에 중복 요구하지 않는다. 짐 없는 승객에게 없는 짐 인수를 요구하지 않는다. 위험/미응답/미출항은 납부·노동·위탁을 보존한 대기. 본인 없는 배 도착을 이용 완료로 쓰지 않는다.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "호루스/세트의 실제 검문 합의를 단일 배 세계 통행권으로 확대하지 않는다. 사후 전승의 배를 새 명계 차원 이동으로 바꾸지 않고 무료 패스·짐 순간이동·두 번째 네므티0.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-018",
+              "existing_edge_or_new_minor_basis": "호루스와 세트 양쪽의 검문 요구를 다루는 나루의 기존 관계다.",
+              "request_and_actual_response": "네므티가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 호루스의 검문 응답이 실제 오면 적용 범위만 반영하고 세트가 답하지 않았는데 양쪽 합의라고 쓰지 않는다. 위험 수위면 운항을 미루고 모두 함께 기다린다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 호루스가 검문 요구 때문에 마지막 승객이 남게 되는 구간을 인정하고 꼭 필요한 확인부터 끝내는 방안을 내놓는다. 이를 실제로 확인한 경우: 네므티는 호루스의 요구를 즉시 거부하기보다 실제 대기 인원과 출발 가능한 차례를 먼저 알려 협의한다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 다음 이용에서 무조건 무료를 주는 대신 플레이어가 실제 보탠 몫과 남겨 둔 짐을 기억해 정산한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 네므티와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-044",
+      "name": "임세티",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-044/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-044/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-044/outline",
+        "episode": "EP013A-RPG-S03-044"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 임세티, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 아누비스에게 유족 인계 절차를 요구; 반환한 항아리 기억",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "오래 지켰다는 이유로 소유권을 주장하지 않음",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "호루스의 네 아들 가운데 하나라는 자기 전승의 인연과 아누비스에게 맡은 물건을 돌려줄 범위를 논의하는 기존 관계를 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "오래 지켰다는 이유로 소유권을 주장하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "안정된 받침에 물건이 곧게 놓이는 모양을 보는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "자신이 호루스의 네 아들 중 하나라는 인연과 아누비스에게 맡은 물건을 돌려줄 일을 논의하는 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "임세티의 현재 관심은 안정된 받침에 물건이 곧게 놓이는 모양을 보는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "임세티에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "임세티의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 돌려받는 사람의 말을 듣고 보관자의 수고도 가볍게 지우지 않는다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "임세티와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 항아리를 멀찍이 두고 설명만 하지 않고 안전하게 받을 자세를 직접 보여 준다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-021",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "아누비스에게 유족에게 돌려줄 순서를 확인하는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "돌려받는 사람의 말을 듣고 보관자의 수고도 가볍게 지우지 않는다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 항아리를 멀찍이 두고 설명만 하지 않고 안전하게 받을 자세를 직접 보여 준다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "오래 지켰다는 이유로 소유권을 주장하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "안정된 받침에 물건이 곧게 놓이는 모양을 보는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "자신이 호루스의 네 아들 중 하나라는 인연과 아누비스에게 맡은 물건을 돌려줄 일을 논의하는 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할에서 이미 전제로 둔 당사자 관계와 자신이 맡은 범위",
+                "when_or_condition": "기준 시점의 기존 친숙성만. 앞으로 할 협의·작업·보고·공개는 실제로 일어나야 추가한다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "임세티의 현재 관심은 안정된 받침에 물건이 곧게 놓이는 모양을 보는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "임세티에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "임세티의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 돌려받는 사람의 말을 듣고 보관자의 수고도 가볍게 지우지 않는다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "임세티와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 항아리를 멀찍이 두고 설명만 하지 않고 안전하게 받을 자세를 직접 보여 준다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 임세티, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 아누비스에게 유족 인계 절차를 요구; 반환한 항아리 기억",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "오래 지켰다는 이유로 소유권을 주장하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "호루스의 네 아들 가운데 하나라는 자기 전승의 인연과 아누비스에게 맡은 물건을 돌려줄 범위를 논의하는 기존 관계를 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "event/NONE. 실제 당사자의 포장·반환 의사·재료 허락을 먼저 확인한다. 행사 참가에 MAIN/퀘스트 소유를 추가하지 않는다.",
+            "아누비스는 신원 확인 역할이며 임의로 수령자가 아니다. 실제 응답 범위와 현재 수신자의 일치·받을 준비·인도·수령을 각각 확인한다.",
+            "미응답/불일치/부재/반환 의사 철회를 구별한다. 받을 사람을 알아도 현재 의사가 없으면 반환하지 않는다. 실제 반환 전에는 빈 선반·완료의 허전함을 만들어 내지 않는다.",
+            "반환은 보상 지급이 아니다. 실제 수신 뒤 정리한 빈 받침만 결말이며 인수 후 끊겨도 같은 항아리를 재생/재반환하지 않는다. 별도 보상 없음."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "반환받을 실제 당사자의 포장·반환 의사와 아누비스의 실제 신원 확인을 받은 수신자의 수령이 이루어진 뒤에만 빈 선반을 함께 정리하는 결말이다. 미확인·미수신은 안전 보관이며 실제 반환 전의 허전함을 완료 기억으로 만들지 않는다. 별도 보상 없음.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "임세티는 수신자가 실제 받는 순간 손을 천천히 놓고 빈 받침에 먼지가 묻은 자리를 쓸어낸다. 오래 지킨 자랑에 처음으로 돌려주었다는 끝을 덧붙인다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "돌려준 뒤의 빈 받침: 당사자의 실제 응답과 항아리 상태·포장 동의를 확인한다. 임세티의 희망을 수신자 의사로 대신하지 않는다. → 반환 뒤에만 선반이 실제 비고 닦인다. 미확인이면 포장된 항아리가 여전히 그 자리에 있다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "독점 MAIN·별도 수주 없음. 돕는 사람은 포장·실제 운반·관찰 범위만 남긴다. 수신자의 이름·유품 사연을 구경꾼에게 공개할 권한은 없다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "이 관계·돌봄·개인 선택의 결말에는 별도 성장 지급을 넣지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 항아리 소유는 원소유자에게 유지된다. 포장재는 허락된 실제 사용분만 소비하고 내부 유품은 보상 재고가 아니다.\nB2: 반환은 새 지급이 아니다. 실제 수신자에게 넘어간 항아리를 임세티 소유로 복구하지 않고 미인계 포장품만 보존한다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013A-RPG-S03-044-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "당사자 의사 AND 실제 포장·B1-1의 반환에 관한 자기 생각 발언 AND 아누비스 실제 신원 확인 AND 같은 항아리 수령 AND 실제 빈 선반 정리가 성립한 경우 반환 결말. 미확인·미수령은 안전 보관이며 완료 기억 없음.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "임세티는 보관자이지 유품 소유자가 아니다. 아누비스의 다른 유족/다른 항아리 확인을 재사용하지 않는다. 네 아들의 전승을 장기 획득·새 사망·부활 서비스로 바꾸지 않는다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-021",
+              "existing_edge_or_new_minor_basis": "아누비스에게 유족에게 돌려줄 순서를 확인하는 기존 관계다.",
+              "request_and_actual_response": "임세티가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 아누비스의 실제 신원 확인을 받은 수신자에게만 인계하고 응답이 없으면 안전 보관을 계속한다. 반환 뒤 빈 선반을 함께 정리한다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 돌려받는 사람의 말을 듣고 보관자의 수고도 가볍게 지우지 않는다. 이를 실제로 확인한 경우: 다음에는 항아리를 멀찍이 두고 설명만 하지 않고 안전하게 받을 자세를 직접 보여 준다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 다음 손님에게 오래 지켰다는 자랑과 함께 돌려주었다는 끝을 말한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 임세티와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-049",
+      "name": "메스케네트",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-049/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-049/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-049/outline",
+        "episode": "EP013B-RPG-S03-049"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 메스케네트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 루드디데트에게 장부 공개 범위를 묻고 답을 지킴",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "예언을 아이의 의무로 만드는 사람을 경계",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "루드디데트의 출생 이야기에서 도움을 준 자신의 전승 인연을 기억한다. 그 가족의 현재 거처나 아직 정하지 않은 미래까지 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "예언을 아이의 의무로 만드는 사람을 경계",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "천천히 변하는 그림자의 가장자리를 지켜보는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "루드디데트의 출산을 도운 자기 경험과 그 가족을 안다. 가족의 현재 거처와 아직 일어나지 않은 미래는 자동으로 알지 못한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "메스케네트의 현재 관심은 천천히 변하는 그림자의 가장자리를 지켜보는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "메스케네트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "메스케네트의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 아이의 미래보다 지금 필요한 일과 당사자가 원하는 공개 범위를 먼저 묻는다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "메스케네트와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 예언을 방어하듯 숨기지 않고 허락된 부분에서 자신의 말이 가진 한계도 함께 설명한다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-057",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "루드디데트가 정한 출생 기록 공개 범위를 지키려는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "루드디데트가 자신이 가족 이야기를 나눌 청중과 공개하지 않을 부분을 직접 정해 말한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "메스케네트는 그 범위를 기억하고 다음 전언에서 허락된 내용만 말한다. 아이의 미래 역할을 대신 정하지 않는다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "예언을 아이의 의무로 만드는 사람을 경계",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "천천히 변하는 그림자의 가장자리를 지켜보는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "루드디데트의 출산을 도운 자기 경험과 그 가족을 안다. 가족의 현재 거처와 아직 일어나지 않은 미래는 자동으로 알지 못한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "메스케네트의 현재 관심은 천천히 변하는 그림자의 가장자리를 지켜보는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "메스케네트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "메스케네트의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 아이의 미래보다 지금 필요한 일과 당사자가 원하는 공개 범위를 먼저 묻는다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "메스케네트와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 예언을 방어하듯 숨기지 않고 허락된 부분에서 자신의 말이 가진 한계도 함께 설명한다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 메스케네트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 루드디데트에게 장부 공개 범위를 묻고 답을 지킴",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "예언을 아이의 의무로 만드는 사람을 경계",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "루드디데트의 출생 이야기에서 도움을 준 자신의 전승 인연을 기억한다. 그 가족의 현재 거처나 아직 정하지 않은 미래까지 알지 못한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "dialogue_only/NONE. B1 자기 말의 한계를 실제 정정한 대화는 그 자체로 끝날 수 있으며 가족 응답·공동 공개는 별개다.",
+            "B2 공동 조정은 루드디데트의 현재 특정 문장·청중 허락을 실제 받고 메스케네트도 그 문장을 받은 뒤 양측이 줄인 내용을 확인할 때만.",
+            "부재·거절·미응답·청중 혼합은 해당 원인만 구별한다. 자기 일반 한계는 말할 수 있지만 비공개 내용·존재를 새 청중에게 암시하지 않는다.",
+            "과거 원문 부재/비허가에는 인용하지 않는다. 문서 열람·복사·전언·소유는 별개이며 새 예언·보상·퀘스트·가족 합의가 자동 생기지 않는다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "공동 응답이 있으면 줄인 문장이 실제 허용 청중에게만 남는다. 없으면 자기 말의 한계만 정정한 대화로 닫히며 가족 동의는 없다. 다음 청원에서도 허락되지 않은 가족 내용을 논거로 쓰지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "더 많은 설명을 하고 싶어 덧붙이던 손을 멈춘다. 가족의 말이 없으면 그 빈자리를 권위로 채우지 않고 다음 청원자를 부모에게 묻도록 돌려보낸다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "예언 뒤에 붙이는 문장: 실제 플레이어 질문과 그녀의 정정 발언. 예언의 새 세부·아이 미래 사건·루드디데트의 미수신 허락은 드러나지 않는다. → 공동 응답이 있으면 줄인 문장이 실제 허용 청중에게만 남는다. 없으면 자기 말의 한계만 정정한 대화로 닫히며 가족 동의는 없다. 다음 청원에서도 허락되지 않은 가족 내용을 논거로 쓰지 않는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "일반 대화에는 수주·MAIN 자격이 없다. 공개 가능한 자기 말의 한계를 누구나 실제 듣되 가족 내용은 허락된 모든 청중이 확인된 경우만 듣는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "이 관계·돌봄·개인 선택의 결말에는 별도 성장 지급을 넣지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 종이와 기록은 원소유자 것. 열람·복사·전언 권한은 각각 별도이며 대화가 문서 제공은 아니다.\nB2: 공개용 사본도 허락 없으면 만들지 않는다. 단순 대화에 위탁물·소비·성장 지급 없음. 실제 이미 받은 문서는 원소유자 지시에 따라 보관/반환한다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013B-RPG-S03-049-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "자기 말의 한계 설명은 그 실제 수신으로 대화 마침. 공동 문장 조정은 부모의 구체 허락·양쪽 응답·실제 수신 범위만 성립. 가족 부재/거절을 공동 동의로 세지 않는다.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "메스케네트가 기억하는 출산 도움은 과거 자기 경험이다. 현재 새 출산·자녀 왕위·아이의 미래 배역·플레이어 예언 능력·보호 버프를 만들지 않는다. 단순 대화를 새 퀘스트나 기록 제출로 바꾸지 않는다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-057",
+              "existing_edge_or_new_minor_basis": "루드디데트가 정한 출생 기록 공개 범위를 지키려는 기존 관계다.",
+              "request_and_actual_response": "메스케네트가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 루드디데트가 실제 응답하면 공개용 문장을 함께 줄이고 비공개 내용은 전달하지 않는다. 부재면 자기 말의 한계만 고쳐 말한다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 루드디데트가 자신이 가족 이야기를 나눌 청중과 공개하지 않을 부분을 직접 정해 말한다. 이를 실제로 확인한 경우: 메스케네트는 그 범위를 기억하고 다음 전언에서 허락된 내용만 말한다. 아이의 미래 역할을 대신 정하지 않는다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 메스케네트는 다음 청원에 즉답하는 권위 대신 부모에게 묻도록 돌려보내며 가족을 논거로 공개하지 않는다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 메스케네트와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-050",
+      "name": "헤케트",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-050/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-050/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-050/outline",
+        "episode": "EP013B-RPG-S03-050"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 헤케트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 메스케네트와 치료 순서를 조정; 도움받은 가족이 후속 방문",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "일의 공보다 필요한 손 하나가 되려 함",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "루드디데트의 출산을 도운 자기 전승의 인연과 메스케네트와 함께한 돌봄의 관계를 기억한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "일의 공보다 필요한 손 하나가 되려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "작은 일을 한 번에 끝내기보다 손이 덜 꼬이게 순서를 바꾸는 데 재미를 느낀다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "루드디데트의 출산을 도운 자기 경험과 메스케네트와 함께 손을 보탠 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "헤케트의 현재 관심은 작은 일을 한 번에 끝내기보다 손이 덜 꼬이게 순서를 바꾸는 데 재미를 느낀다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "헤케트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "헤케트의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 칭찬 경쟁보다 지금 비어 있는 일을 찾아 실제로 손을 보탠다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "헤케트와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 급한 심부름만 부탁하지 않고 다음에 필요한 것을 함께 예상해 보자고 말한다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-049",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "메스케네트와 돌봄의 실제 순서를 맞추는 기존 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "메스케네트가 예언 설명을 잠시 멈추고 지금 필요한 돌봄 순서를 헤케트와 함께 맞춘다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "헤케트는 급한 일을 혼자 낚아채기보다 메스케네트에게 맡길 손과 자기가 할 일을 짧게 나누어 움직인다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "일의 공보다 필요한 손 하나가 되려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "작은 일을 한 번에 끝내기보다 손이 덜 꼬이게 순서를 바꾸는 데 재미를 느낀다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "루드디데트의 출산을 도운 자기 경험과 메스케네트와 함께 손을 보탠 인연을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "헤케트의 현재 관심은 작은 일을 한 번에 끝내기보다 손이 덜 꼬이게 순서를 바꾸는 데 재미를 느낀다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "헤케트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "헤케트의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 칭찬 경쟁보다 지금 비어 있는 일을 찾아 실제로 손을 보탠다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "헤케트와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 급한 심부름만 부탁하지 않고 다음에 필요한 것을 함께 예상해 보자고 말한다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 헤케트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 메스케네트와 치료 순서를 조정; 도움받은 가족이 후속 방문",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "일의 공보다 필요한 손 하나가 되려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "루드디데트의 출산을 도운 자기 전승의 인연과 메스케네트와 함께한 돌봄의 관계를 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "service/NONE. 현재 요청자·이용자 동의와 물품 사용권이 있는 물 운반/천 정리/자리 비우기 중 실제 한 일만 수행한다. 세 작업 AND나 MAIN 조건 없음.",
+            "현재 선택 작업의 실제 이용 가능 상태만 확인한다. 천만 정리했으면 물·자리·치료 성과는 없다.",
+            "B2 메스케네트 실제 도움 동의·접근·담당 범위 확인 뒤 인계하거나 다음 일 거절/부재에 현재 요청자에게 상태를 알리고 정산한다. 메스케네트 인계는 완료의 유일 경로가 아니다.",
+            "실제 빌린 것만 반환·인계하고 사용 물량만 소비한다. 인계 대상 부재면 안전 보관·실제 보고부터; 중단은 벌금·공로 삭제·새 요청 자동 수락이 아니다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "인계 또는 이번 요청 정산이 끝나면 서비스 종료. 헤케트는 실제 물을 옮긴 사람에게는 “물그릇을 가까이 둬 줘서 덜 움직였어”, 실제 천을 정리한 사람에게는 “필요한 천을 바로 집을 수 있었어”, 실제 자리를 비운 사람에게는 “덕분에 바로 앉을 자리가 생겼어”라고 각각 한 일만 말하고 “이제 나도 잠깐 쉴게”라고 덧붙인다. 다음 이용은 현재 필요를 다시 묻는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "메스케네트가 예언 설명을 실제 멈추고 손을 보태면 “그 천은 네 쪽”이라고 나누고 혼자 낚아채지 않는다. 그녀가 없으면 없는 도움에 감사하지 않고 자기 휴식을 먼저 알린다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "손이 덜 꼬이는 순서: 실제 요청과 이용자 동의·급한 한 작업의 전후 물량/상태·쉬는 자리의 통로. 치료·출산·회복 효과를 이 일로 확정하지 않는다. → 인계 또는 이번 요청 정산이 끝나면 서비스 종료. 헤케트는 실제 물을 옮긴 사람에게는 “물그릇을 가까이 둬 줘서 덜 움직였어”, 실제 천을 정리한 사람에게는 “필요한 천을 바로 집을 수 있었어”, 실제 자리를 비운 사람에게는 “덕분에 바로 앉을 자리가 생겼어”라고 각각 한 일만 말하고 “이제 나도 잠깐 쉴게”라고 덧붙인다. 다음 이용은 현재 필요를 다시 묻는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "반복 가능한 현재 도움 서비스이며 MAIN·퀘스트 수주 없음. 요청자와 실제 돌봄 당사자의 이용 의사·물품 사용권을 확인하고 각자 동의한 일만 한다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "이 관계·돌봄·개인 선택의 결말에는 별도 성장 지급을 넣지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 물·천·짐의 원소유권을 확인한다. 자기 또는 허락 물자를 실제 쓴 몫만 소비하며 남은 대여물은 실제 맡은 사람만 반환한다.\nB2: 실제 빌린 통·남은 천만 원소유자에게 반환/인계한다. 물 사용량은 실제 소비로 남으며 돌봄 물자를 보상으로 떼지 않는다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013B-RPG-S03-050-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "선택한 한 일의 실제 이용 가능 확인 AND ((현재 메스케네트의 수락·실제 인계 AND 자기 사용량·대여물 정산) OR (요청자에게 끝난 것·남은 일의 실제 설명 AND 자기 사용량·대여물 정산))으로 서비스를 종료한다. 메스케네트 부재는 완료를 막지 않으며 다음 요청은 새 의사로 받는다.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "과거 루드디데트 출산 도움을 현재 플레이어 치료 능력이나 출산 성공 보장으로 바꾸지 않는다. 도움받는 사람의 현재 건강·가족 사정은 실제 허락한 수신자만 알고 HP/재생/보호 버프0.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-049",
+              "existing_edge_or_new_minor_basis": "메스케네트와 돌봄의 실제 순서를 맞추는 기존 관계다.",
+              "request_and_actual_response": "헤케트가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 메스케네트가 실제 도울 수 있을 때만 순서를 나누며 끝난 일을 추가로 붙잡지 않는다. 다음 요청은 새로운 의사로 받는다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 메스케네트가 예언 설명을 잠시 멈추고 지금 필요한 돌봄 순서를 헤케트와 함께 맞춘다. 이를 실제로 확인한 경우: 헤케트는 급한 일을 혼자 낚아채기보다 메스케네트에게 맡길 손과 자기가 할 일을 짧게 나누어 움직인다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 헤케트가 플레이어의 수고를 당연시하지 않고 구체적으로 고마워하며 자기 휴식도 먼저 알린다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 헤케트와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-053",
+      "name": "아무넨시",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-053/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-053/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-053/outline",
+        "episode": "EP013B-RPG-S03-053"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 아무넨시, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 시누헤 귀환 전 보호 계약을 고침; 이후 새 망명자 수용 기준 변화",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "손님이 떠나는 일을 배신으로 보지 않으려 함",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "시누헤를 손님으로 받아들였던 자기 전승의 경험을 기억한다. 현재 모든 망명자의 사연은 직접 들어야 안다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "손님이 떠나는 일을 배신으로 보지 않으려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "손님이 어느 음식부터 손대는지 보며 취향을 기억하는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "시누헤를 받아들여 함께 지냈던 자기 인연을 기억한다. 그가 아직 말하지 않은 현재 속마음은 모른다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "아무넨시의 현재 관심은 손님이 어느 음식부터 손대는지 보며 취향을 기억하는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "아무넨시에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "아무넨시의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 머물렀던 시간을 가볍게 버리지 않고 떠나는 이유와 남길 책임을 직접 말한다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "아무넨시와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 배신을 먼저 묻기보다 실제 출발 때 필요한 범위를 협의하고 다시 소식을 들을 여지를 남긴다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-052",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "시누헤를 받아들였던 전승의 인연과 귀환을 두고 생길 서운함을 다루는 관계다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "머물렀던 시간을 가볍게 버리지 않고 떠나는 이유와 남길 책임을 직접 말한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 배신을 먼저 묻기보다 실제 출발 때 필요한 범위를 협의하고 다시 소식을 들을 여지를 남긴다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "손님이 떠나는 일을 배신으로 보지 않으려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "손님이 어느 음식부터 손대는지 보며 취향을 기억하는 것을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "시누헤를 받아들여 함께 지냈던 자기 인연을 기억한다. 그가 아직 말하지 않은 현재 속마음은 모른다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "아무넨시의 현재 관심은 손님이 어느 음식부터 손대는지 보며 취향을 기억하는 것을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "아무넨시에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "아무넨시의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 머물렀던 시간을 가볍게 버리지 않고 떠나는 이유와 남길 책임을 직접 말한다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "아무넨시와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 배신을 먼저 묻기보다 실제 출발 때 필요한 범위를 협의하고 다시 소식을 들을 여지를 남긴다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 아무넨시, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 시누헤 귀환 전 보호 계약을 고침; 이후 새 망명자 수용 기준 변화",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "손님이 떠나는 일을 배신으로 보지 않으려 함",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "시누헤를 손님으로 받아들였던 자기 전승의 경험을 기억한다. 현재 모든 망명자의 사연은 직접 들어야 안다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "욕구·현재 행동: 서운함을 인정하면서 환대의 빚으로 붙잡지 않으려 한다. 시누헤가 실제 말할 때만 떠날 이유와 책임을 듣는다. 짐 숨김·잔 생성·새 식사는 자동 행동이 아니다.",
+            "event/NONE. 실제 자발 참석/발언/수신과 식사 준비는 다르다. 퀘스트 수락·MAIN·성장 보상 없음. 식기/음식은 현재 소유자 허락만 사용한다.",
+            "B1-1 직접 시누헤에게 하는 너/네 짐은 실제 시누헤를 청자로 한다. 플레이어에게 시누헤의 삶·귀환 의사를 부여하지 않는다.",
+            "B1-3의 부재와 현장 대화 거절을 나눈다. 식사 준비만으로 작별·시누헤 출발·공동 합의는 생기지 않는다.",
+            "B2는 실제 출발 목격 또는 신뢰 가능한 출처/시점/대상 보고 수신 뒤. 직접 목격과 보고를 말투에서 구분하고 아직 떠나지 않은 자리를 떠난 자리로 치우지 않는다.",
+            "잔을 치우기와 잠시 잔 자리 남기기는 각각 유효 대안. 음식과 통로의 허락된 정리는 실제 수행하며 둘을 동시에 요구하지 않는다. 영구 예약·다음 손님 참석·먼 귀향 완료 없음.",
+            "현재 음식/식기와 손님 짐을 분리한다. 남의 물건을 식사 대금/보상으로 지급하거나 이미 끝난 시누헤 출발을 다시 재생하지 않는다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "선택한 정리 뒤 실제 쓸 수 있는 자리가 남는다. 아무넨시는 다음 실제 방문자에게 머무는 동안의 약속을 먼저 말하고 떠날 때의 빚을 내세우지 않는다. 출발을 되풀이하지 않는다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "남겨 둔 잔을 새 손님에게 빚의 증거로 보여 주지 않는다. 실제 치운 경우에는 서운한 표정 그대로 깨끗한 잔을 다음 자리에 놓는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "떠난 자리의 잔: 실제 식사 준비·참석자·시누헤의 발언과 아무넨시의 현재 응답. 부재자의 속마음은 추정하지 않는다. → 선택한 정리 뒤 실제 쓸 수 있는 자리가 남는다. 아무넨시는 다음 실제 방문자에게 머무는 동안의 약속을 먼저 말하고 떠날 때의 빚을 내세우지 않는다. 출발을 되풀이하지 않는다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "작별 식사 event이며 수주·MAIN 없음. 시누헤 SIDE의 실제 작별·출발이 이미 있었으면 재공연하지 않고 현재 남은 자리만 다룬다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "이 관계·돌봄·개인 선택의 결말에는 별도 성장 지급을 넣지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 식기·음식은 주인 허락 범위만 사용·소비. 손님의 짐·여행 물자는 식사 대금이나 환대 빚으로 잡지 않는다.\nB2: 남은 음식과 식기는 주인 것이며 폐기·나눔은 실제 허락대로만. 손님 짐이 남았으면 별도 보관하고 함부로 치우지 않는다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013B-RPG-S03-053-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "실제 작별/출발과 선택한 식탁 정리가 성립한 부분만 마침. 시누헤 부재·미출발은 식사 준비까지이며 귀향 완료0. 식탁을 비우는 선택과 잔을 남기는 선택은 대안이다.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "시누헤 mythictrpg:side_rpg_s03_052의 실제 출발과 짐 권리를 참조한다. 작별 식사를 그 SIDE의 새 필수 선행으로 붙이지 않고 과거 환대를 현재 채무·소유권으로 소급하지 않는다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-052",
+              "existing_edge_or_new_minor_basis": "시누헤를 받아들였던 전승의 인연과 귀환을 두고 생길 서운함을 다루는 관계다.",
+              "request_and_actual_response": "아무넨시가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 실제 출발 뒤 남은 자리를 치우거나 비워 두는 선택을 하고 새 손님을 받을 준비를 한다. 시누헤가 떠나지 않았다면 출발 완료로 처리하지 않는다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 머물렀던 시간을 가볍게 버리지 않고 떠나는 이유와 남길 책임을 직접 말한다. 이를 실제로 확인한 경우: 다음에는 배신을 먼저 묻기보다 실제 출발 때 필요한 범위를 협의하고 다시 소식을 들을 여지를 남긴다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 그는 다음 방문자에게 떠날 때 갚아야 할 빚 대신 머무는 동안의 약속을 먼저 말한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 아무넨시와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-054",
+      "name": "제디",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-054/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-054/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-054/outline",
+        "episode": "EP013B-RPG-S03-054"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 제디, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 호르데데프의 초청을 받아 안전한 실험을 설계; 거절을 존중하면 교육 지속",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "재주를 보이기 위해 남을 희생하지 않음",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "호르데데프의 초청과 쿠푸 앞에서 재주를 보이되 인간을 해치는 실험을 거절한 자기 전승의 일을 기억한다. 두 미출연자의 현재 행방·생사는 새로 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "재주를 보이기 위해 남을 희생하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "손가락 사이에서 작은 물건을 재빠르게 바꾸는 재주를 즐긴다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "호르데데프의 초청을 받아 쿠푸 앞에서 재주를 보이며 사람을 해치는 실험은 거절했던 일을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "제디의 현재 관심은 손가락 사이에서 작은 물건을 재빠르게 바꾸는 재주를 즐긴다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "제디에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "제디의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 거절을 겁이나 무능으로 몰지 않고 안전한 실연의 원리를 끝까지 보려 한다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "제디와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 구경만 시키지 않고 해를 끼치지 않는 연습의 준비 단계부터 함께 설명한다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": null,
+              "historical_name_if_not_current": "호르데데프",
+              "status": "historical_offstage_relation",
+              "baseline": {
+                "text": "자기 전승의 궁정 초청과 연결된 인물이다. 현재 출연 제외자의 새 만남·통신·의뢰를 만들지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "호르데데프의 옛 초청 이야기를 들은 현재 대화 상대가 인간을 해치는 실연을 거절한 선택을 존중한다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "제디는 그 과거 초청에서 거절과 실력 과시를 함께 지킬 수 있었다는 자기 판단을 더 자세히 설명한다. 호르데데프의 새 응답·현재 출연은 만들지 않는다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "재주를 보이기 위해 남을 희생하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "손가락 사이에서 작은 물건을 재빠르게 바꾸는 재주를 즐긴다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "호르데데프의 초청을 받아 쿠푸 앞에서 재주를 보이며 사람을 해치는 실험은 거절했던 일을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "제디의 현재 관심은 손가락 사이에서 작은 물건을 재빠르게 바꾸는 재주를 즐긴다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "제디에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "제디의 이 코어에는 숨겨야 할 별도 사적 사실을 추가하지 않았다. 부탁 거절은 비밀을 안다는 뜻이 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 거절을 겁이나 무능으로 몰지 않고 안전한 실연의 원리를 끝까지 보려 한다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "제디와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 구경만 시키지 않고 해를 끼치지 않는 연습의 준비 단계부터 함께 설명한다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 제디, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 호르데데프의 초청을 받아 안전한 실험을 설계; 거절을 존중하면 교육 지속",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "재주를 보이기 위해 남을 희생하지 않음",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "호르데데프의 초청과 쿠푸 앞에서 재주를 보이되 인간을 해치는 실험을 거절한 자기 전승의 일을 기억한다. 두 미출연자의 현재 행방·생사는 새로 알지 못한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "욕구·현재 행동: 놀라는 얼굴을 즐기면서 잔혹한 요구를 먼저 잘라낸다. 실제 소도구가 없으면 이야기는 가능하지만 천·그릇·물건 실연을 만들지 않는다.",
+            "event/NONE. 실제 조수/제디 동의·소도구/천 허락·안전 공간을 실연에만 확인한다. 관람/잡담에 퀘스트 수락/MAIN 소유를 요구하지 않는다.",
+            "안내는 실제 천과 준비가 있을 때 실연 전. 드러남 뒤 반응은 실제 손동작/천 결과에만. 일찍 보인 첫 시도는 그대로 남고 은폐 성공으로 덮지 않는다.",
+            "B2의 한 부분 공개/두 번째 실연은 실제 별도 허락·시도. 첫 결과를 새 최초 성공으로 다시 세지 않는다. 관객 없으면 둘의 연습만, 질문 없으면 답할 질문을 새로 만들지 않는다.",
+            "두 번째 사양/중단에도 첫 결과 보존. 실제 빌린 도구만 반환하며 미인수/소유 상태는 확인한 만큼 저장한다. 말만으로 반환하지 않는다.",
+            "선택 지도는 실제 적격 조수의 동의와 연습/피드백으로만. 관람자는 실제 관람 기억뿐이며 조수 기여·수업 경험을 복제하지 않는다.",
+            "호르데데프의 역사적 초청 기억은 현재 새 초대/통신/등장을 만들지 않는다. 현재 작은 실연은 부활·새 초자연 권능의 증거가 아니다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "실제 두 번째 실연과 정리 뒤 제디는 위험한 요구를 먼저 잘라 내면서 다음 작은 장난을 제안한다. 조수의 기여·관객의 실제 수신만 남고 새 권능·공연 명성 수치는 없다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "비밀 일부를 보여 줘도 재능이 사라지지 않자 어깨를 펴고 손을 느리게 펼친다. 웃지 않는 관객에게 억지 감탄을 강요하지 않는다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "보여 준 손에서도 남는 놀라움: 실제 물건의 처음·나중 위치·가림천 움직임·실제 관객 반응. 생명 희생·부활·새 권능의 증거로 부르지 않는다. → 실제 두 번째 실연과 정리 뒤 제디는 위험한 요구를 먼저 잘라 내면서 다음 작은 장난을 제안한다. 조수의 기여·관객의 실제 수신만 남고 새 권능·공연 명성 수치는 없다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "관객·조수 event이며 퀘스트 수락·MAIN 없음. 본 사람은 실연 관람, 실제 조수는 자기 손의 기여만 남기며 미참석 궁정 인물을 부르지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "PROPOSED",
+              "reason_and_source": "안전한 소도구 실연 지도",
+              "earned_condition": "신규 저술안: 안전한 소도구 실연 지도. 제디가 실제 수행을 확인한 해당 행위자에게만 제안한다. 지도는 실제 수업 참가로, 실물은 소유자 동의·등록된 재고·실제 인계로 지급을 확인한다. 남의 유품·원본·돌려줄 물자는 보상 재고가 아니다. 소비는 선택한 재료·서비스를 실제 사용한 몫만 기록한다. 지급권과 지급을 분리해 최초 완료 정산을 중복하지 않고 미수령은 실제 권리 증거로 복구한다. 아이템 ID·능력 수치·포션 효과는 등록 자료 대조 전 확정하지 않는다. 가호·주시·축복·MAIN·인정은 별개이며 자동 지급하지 않는다. 인간 루트 가호 제한을 우회하지 않는다. 실제 성장·실물 지급 직전 현재 세계의 지급 가능 창구와 수혜자의 수행·수용 능력을 다시 확인한다. 부족하면 이미 입증한 지급권을 보존하되 실제 지급·효과는 보류하며, 단순 인사나 초반 예외로 이후 장비·권능 수용을 충족시키지 않는다. 개인 MAIN의 완료 보상권은 적법 소유자의 해당 수행에만 결속하고 동행자는 자기 독립 지도·기여만 남긴다. 미확정 효과를 대신 발명해 지급하지 않는다. 실제 선택 경로의 필수 행동·접수·유효 완료 확인과 보상별 조건을 모두 만족한 경우만 해당 권리 발생. 단순 대화 마침·부분 결과·첫 수락만으로 지급권 없음.\n각 분기의 관찰 결과에 적힌 완료·부분 결과와 보상별 자격을 별도로 확인한다. 선택 지도·수령은 본편 완료의 추가 필수 단계가 아니다.",
+              "beneficiary_and_claim_right": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+              "actual_grant_and_consumption": "신규 저술안: 안전한 소도구 실연 지도. 제디가 실제 수행을 확인한 해당 행위자에게만 제안한다. 지도는 실제 수업 참가로, 실물은 소유자 동의·등록된 재고·실제 인계로 지급을 확인한다. 남의 유품·원본·돌려줄 물자는 보상 재고가 아니다. 소비는 선택한 재료·서비스를 실제 사용한 몫만 기록한다. 지급권과 지급을 분리해 최초 완료 정산을 중복하지 않고 미수령은 실제 권리 증거로 복구한다. 아이템 ID·능력 수치·포션 효과는 등록 자료 대조 전 확정하지 않는다. 가호·주시·축복·MAIN·인정은 별개이며 자동 지급하지 않는다. 인간 루트 가호 제한을 우회하지 않는다. 실제 성장·실물 지급 직전 현재 세계의 지급 가능 창구와 수혜자의 수행·수용 능력을 다시 확인한다. 부족하면 이미 입증한 지급권을 보존하되 실제 지급·효과는 보류하며, 단순 인사나 초반 예외로 이후 장비·권능 수용을 충족시키지 않는다. 개인 MAIN의 완료 보상권은 적법 소유자의 해당 수행에만 결속하고 동행자는 자기 독립 지도·기여만 남긴다. 미확정 효과를 대신 발명해 지급하지 않는다.\n실제 소도구를 원소유자에게 돌려준다. 공개 허락은 도구 획득·전 도안 복제 허락이 아니다. 선택 지도는 실제 참여로만 남는다.\n선택 수령 장면: 실제 안전 실연에 참여한 조수에게 제디가 선택 지도를 제안한다. 현재 안전 소도구를 허락받아 가렸다 드러내는 한 동작을 직접 연습하고 실제 타이밍 피드백을 받는다. 관람만 한 사람에게 조수 공로·수강 경험을 복제하지 않는다. 소도구는 반환하며 지도 거절은 이미 한 실연을 지우지 않는다.",
+              "unclaimed_retry_no_duplicate": "제공권·재고·수용능력·실물/효과 확인을 분리한다. 가득 참·부재·미지급은 권리 보존, 실물과 거래/정산 근거 대조 후 누락만 복구. 선택 지도/수령 거절은 이미 끝난 행동을 취소하지 않는다. 반복 클릭·팀 완료·재시작으로 중복 없음.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013B-RPG-S03-054-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "안전한 첫 실제 시도(일찍 드러난 결과 포함) AND 허락 부분 공개 후 두 번째 실제 실연 AND 자기 눈으로 본 범위의 실제 발언·도구 정리로 공연을 마친다. 실제 관측한 범위만 말하면 되며 숨은 원리 정답을 요구하지 않는다. 잔혹한 요구 거절/두 번째 미수행은 그 부분결과만. 지도는 공연 완료의 추가 필수 단계가 아니다.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "호르데데프의 초청과 쿠푸 앞 실연은 제디 자기 과거 기억일 뿐 현 청중/승인자가 아니다. 원전의 기적을 현재 플레이어의 부활·물체복제·은신 스킬로 자동 지급하지 않는다. 시야 가림은 천 모델/애니 구현 요구이며 공격·시야 판정 우회 능력이 아니다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [],
+          "none_reason": "현재 관계는 과거·미출연 인연 또는 관계 없음이다. 새 만남·통신·요청을 발명하지 않고 이 현장 당사자와 플레이어의 관계를 다룬다."
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    },
+    {
+      "record_key": "RPG-S03-057",
+      "name": "루드디데트",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S03-057/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S03-057/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S03-057/outline",
+        "episode": "EP013B-RPG-S03-057"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "author_truth": [
+          {
+            "id": "T1",
+            "statement": {
+              "text": "표시 이름 루드디데트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+              "basis": "confirmed_current_canon",
+              "source_refs": [
+                "identity",
+                "scope",
+                "access"
+              ]
+            },
+            "status": "confirmed_canon",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T2",
+            "statement": {
+              "text": "창작: 메스케네트의 예언 기록 공개 여부를 결정; 가족의 거처가 달라짐",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T3",
+            "statement": {
+              "text": "아이들의 미래를 권력자의 소문에서 지킴",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          },
+          {
+            "id": "T4",
+            "statement": {
+              "text": "메스케네트와 헤케트가 출산을 도운 자기 전승의 경험과 가족에 대한 자기 뜻을 기억한다. 자녀의 새 생사·현재 정치 역할은 추가하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "history",
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        ],
+        "baseline_knowledge": {
+          "baseline_context": "첫 유효 접촉 이전의 인물 코어 기준. 아래 현재 행동은 개인 역할을 구체화한 저술 제안이며 장소·날짜·완료된 새 사건을 확정하지 않는다. 원전 이력은 자기 역사 범위에서만 연결하며 현재 세계 창조·전쟁 참가·타인의 현재 행방 지식과 분리한다.",
+          "known_facts": [
+            {
+              "id": "K1",
+              "claim": {
+                "text": "아이들의 미래를 권력자의 소문에서 지킴",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K2",
+              "claim": {
+                "text": "가족이 함께 쓰는 작은 물건을 알맞게 정리하는 시간을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            {
+              "id": "K3",
+              "claim": {
+                "text": "메스케네트와 헤케트가 자신의 출산을 도운 일과 가족에 대한 자신의 뜻을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            }
+          ],
+          "suspicions": {
+            "none_reason": "루드디데트의 현재 관심은 가족이 함께 쓰는 작은 물건을 알맞게 정리하는 시간을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+            "items": []
+          },
+          "misbeliefs": {
+            "none_reason": "루드디데트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+            "items": []
+          },
+          "deliberate_concealment": {
+            "none_reason": "가족 정보의 공개 범위를 스스로 정한다는 성격은 있지만 현행 자료가 정하지 않은 비밀 내용이나 자녀의 새 운명을 만들지 않았다. 현재 QA의 답변 거절은 새로운 비밀을 창작하는 행위가 아니다.",
+            "items": []
+          },
+          "unknown_or_unavailable": [
+            "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+            "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+          ],
+          "future_learning": {
+            "none_reason": null,
+            "items": [
+              {
+                "id": "L1",
+                "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 예언을 캐묻기 전에 가족이 불편하다고 한 질문을 멈춘다.",
+                "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                "eligible_audience": "루드디데트와 그 자리의 실제 청중",
+                "after_learning_change": "다음에는 전부 경계하기보다 본인이 정한 일상 이야기 한 가지를 자발적으로 나눈다.",
+                "not_automatic_from": [
+                  "장 번호·공유 세계 완료",
+                  "파티 가입·후발 합류",
+                  "다른 사람의 사적 대화"
+                ],
+                "source_refs": []
+              }
+            ]
+          },
+          "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+        },
+        "baseline_relationships": {
+          "none_reason": null,
+          "items": [
+            {
+              "target_record_key": "RPG-S03-049",
+              "historical_name_if_not_current": null,
+              "status": "retained_design_relation",
+              "baseline": {
+                "text": "출생 예언을 말한 메스케네트와 공개 범위를 논의하는 기존 인연이다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role",
+                  "history"
+                ]
+              },
+              "change": {
+                "trigger": {
+                  "text": "예언을 캐묻기 전에 가족이 불편하다고 한 질문을 멈춘다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "observable_consequence": {
+                  "text": "다음에는 전부 경계하기보다 본인이 정한 일상 이야기 한 가지를 자발적으로 나눈다.",
+                  "basis": "new_minor_creative",
+                  "source_refs": []
+                },
+                "limits": [
+                  "실제로 본 행동과 그 당사자에 대한 변화만 적용한다.",
+                  "친분은 자동 연애·복종·진영 변경·개인 MAIN 양도가 아니다."
+                ]
+              },
+              "knowledge_limit": "옛 인연과 본인이 함께한 범위만 기억한다. 이 관계 문장만으로 상대의 현재 속마음·행방·비공개 대화를 알지 않는다."
+            }
+          ]
+        },
+        "knowledge_routes": [
+          {
+            "knowledge_id": "K1",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K1",
+              "claim": {
+                "text": "아이들의 미래를 권력자의 소문에서 지킴",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "fact_ref": "T3",
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K2",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K2",
+              "claim": {
+                "text": "가족이 함께 쓰는 작은 물건을 알맞게 정리하는 시간을 좋아한다.",
+                "basis": "new_minor_creative",
+                "source_refs": []
+              },
+              "fact_ref": null,
+              "acquisition": {
+                "mode": "self_experience",
+                "from_whom_or_what": "본인의 현재 의향과 작은 일상 습관",
+                "when_or_condition": "해당 의향·취향을 가진 본인으로서 인지하는 기준 시점",
+                "evidence_status": "minor_self_knowledge_design",
+                "source_refs": []
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_id": "K3",
+            "classification": "baseline_self_knowledge",
+            "destination": "verified_context_or_lore_plan",
+            "fact": {
+              "id": "K3",
+              "claim": {
+                "text": "메스케네트와 헤케트가 자신의 출산을 도운 일과 가족에 대한 자신의 뜻을 기억한다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "fact_ref": "T4",
+              "acquisition": {
+                "mode": "adopted_relationship_memory",
+                "from_whom_or_what": "현행 개인 역할과 연결된 본인 전승 이력·인연의 기억",
+                "when_or_condition": "저술 기준의 자기 과거 기억. 현재 마인크래프트 세계 전쟁의 참가·목격이나 전승의 미래 예언 성취로 옮기지 않는다.",
+                "evidence_status": "explicit_in_current_source",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "memory_scope": "npc_private",
+              "disclosure": {
+                "default": "ordinary",
+                "audience": "실제 대화에 참여한 청중",
+                "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+              }
+            },
+            "individual_eligibility_required": false,
+            "disclosure_policy_mode": null,
+            "binding_status": "UNBOUND"
+          },
+          {
+            "knowledge_group": "suspicions",
+            "classification": "suspected_not_confirmed",
+            "exact_group": {
+              "none_reason": "루드디데트의 현재 관심은 가족이 함께 쓰는 작은 물건을 알맞게 정리하는 시간을 좋아한다. 아직 특정 타인의 숨은 동기를 사실처럼 추정할 단서를 부여하지 않았다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "misbeliefs",
+            "classification": "misbelief_not_author_truth",
+            "exact_group": {
+              "none_reason": "루드디데트에게 확정 사실과 반대되는 믿음을 배정한 근거가 없다. 희망이나 불쾌감은 틀린 지식으로 바꾸지 않는다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "deliberate_concealment",
+            "classification": "known_but_withheld",
+            "exact_group": {
+              "none_reason": "가족 정보의 공개 범위를 스스로 정한다는 성격은 있지만 현행 자료가 정하지 않은 비밀 내용이나 자녀의 새 운명을 만들지 않았다. 현재 QA의 답변 거절은 새로운 비밀을 창작하는 행위가 아니다.",
+              "items": []
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "future_learning",
+            "classification": "not_yet_learned",
+            "exact_group": {
+              "none_reason": null,
+              "items": [
+                {
+                  "id": "L1",
+                  "fact_or_question": "이 사람이 다음 행동을 실제로 했는가: 예언을 캐묻기 전에 가족이 불편하다고 한 질문을 멈춘다.",
+                  "acquisition_event": "해당 행동을 직접 보거나 당사자가 구체적으로 설명하는 실제 대화를 한다. 전언이면 보고를 들었다는 수준으로만 기억한다.",
+                  "required_evidence": "무엇을 누가 했는지 구별할 수 있는 직접 관찰·당사자의 설명. 이 코어의 가정문이나 친분 점수는 실행 증거가 아니다.",
+                  "eligible_audience": "루드디데트와 그 자리의 실제 청중",
+                  "after_learning_change": "다음에는 전부 경계하기보다 본인이 정한 일상 이야기 한 가지를 자발적으로 나눈다.",
+                  "not_automatic_from": [
+                    "장 번호·공유 세계 완료",
+                    "파티 가입·후발 합류",
+                    "다른 사람의 사적 대화"
+                  ],
+                  "source_refs": []
+                }
+              ]
+            },
+            "destination": "author_only_or_future_binding",
+            "binding_status": "UNBOUND_NOT_ACQUIRED"
+          },
+          {
+            "knowledge_group": "unknown_or_unavailable",
+            "classification": "unknown_not_secret_knowledge",
+            "exact_group": [
+              "직접 보거나 전달받지 않은 현재 세계 전쟁의 개별 경위, 여신의 숨은 정체와 종말핵 내부",
+              "현재 만나지 못한 옛 인연의 행방·생사와 다른 플레이어의 사적 대화·성취"
+            ],
+            "destination": "author_only",
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T1",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T1",
+              "statement": {
+                "text": "표시 이름 루드디데트, 정체·등급·소속 미정값·현재 접근은 결속된 현행 원본 그대로다.",
+                "basis": "confirmed_current_canon",
+                "source_refs": [
+                  "identity",
+                  "scope",
+                  "access"
+                ]
+              },
+              "status": "confirmed_canon",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T2",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T2",
+              "statement": {
+                "text": "창작: 메스케네트의 예언 기록 공개 여부를 결정; 가족의 거처가 달라짐",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T3",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T3",
+              "statement": {
+                "text": "아이들의 미래를 권력자의 소문에서 지킴",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          },
+          {
+            "knowledge_id": "T4",
+            "classification": "author_truth",
+            "destination": "author_only",
+            "fact": {
+              "id": "T4",
+              "statement": {
+                "text": "메스케네트와 헤케트가 출산을 도운 자기 전승의 경험과 가족에 대한 자기 뜻을 기억한다. 자녀의 새 생사·현재 정치 역할은 추가하지 않는다.",
+                "basis": "retained_current_design",
+                "source_refs": [
+                  "history",
+                  "role"
+                ]
+              },
+              "status": "current_design",
+              "default_npc_access": "none_by_this_entry_alone"
+            },
+            "binding_status": "NOT_NPC_KNOWLEDGE"
+          }
+        ],
+        "story_delivery_contract": {
+          "separation": "저자 진실은 NPC 앎이 아니다. 직접 관측·실제 출처 있는 수신·주장·가설·오해·미정·미래 학습을 분리한다.",
+          "audience": "PRIVATE_ROOM은 방 전원이며 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 해당 중요 비밀과 존재를 제외. 공개방은 온라인 전원. OWNER_ONLY는 특정 UUID 지정을 뜻하지 않는다.",
+          "layers": "화자 실제 앎 상한·연속 하위 단계·정책 최대 단계·청중 전원 자격을 함께 검사. 거절문·태그·제목의 존재 암시도 금지.",
+          "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어와 실제 청취 신만 Knowledge. 자유 의역·조회·정적 lore·Cover Story·TEST/RUMOR_TEST·화면 ACK는 정식 획득 아님.",
+          "memory": "친구·파티·단체 완료·후발로 개인 경험을 복사하지 않는다. 보고 수신은 보고자의 주장 기억이며 직접 목격으로 승격하지 않는다."
+        },
+        "event_state_contract": {
+          "authored_rules": [
+            "욕구·현재 행동: 가족의 오늘과 공개 선택권을 지키며 메스케네트에게 앞으로 전할 범위를 묻고 싶어 한다. 그 의향이 현재 공동 응답이나 새 예언 내용이 되지 않는다.",
+            "dialogue_only/NONE. 현재 한 일상 화제는 본인이 고른 말과 전원 허락 청중에만. 새 퀘스트·성장 지급·물건 제공·열람 권한 없음.",
+            "B1-1의 이걸 가까이 두니라는 문장은 실제 해당 물건/본인 배치/본인 경험이 있는 변형에서만. 없으면 일반 정리 취향에 관해 새 과거 없이 답한다.",
+            "B2-1은 본인의 구체 문장·수신자·청중·철회 범위 허락, 실제 전달/메스케네트 수신·응답/루드디데트 수신이 있어야 공동 조정. 같은 조정이 이미 있으면 근거만 확인한다.",
+            "부재·미수신·수신 뒤 침묵·명시 거절·불허 청중 혼합을 나눈다. 각각 실제 상태에 맞는 말만 하고 새 청중에게 제한된 내용/존재/거절 사유를 흘리지 않는다.",
+            "본인의 현재 앞으로 전달 철회는 상대가 동의하지 않아도 자기 의사로 남는다. 이것을 공동 합의나 이미 들은 사람의 기억 삭제/세계 소문 삭제로 바꾸지 않는다.",
+            "다음 일상 선제 발언은 실제 그 상대가 질문을 멈추고 경계를 지킨 경험 및 현재 공개 의사에만. 미응답은 공동 조정만 막고 일반 취향 대화를 막지 않는다.",
+            "원문에 남은 성별 대명사/출산 이력은 frozen gender 미지정의 변경 근거가 아니다. 새 서술은 루드디데트·본인·주어 생략을 쓴다. 아이의 이름/왕위/미래 역할을 새로 만들지 않는다."
+          ],
+          "exact_endings": [
+            {
+              "observable_personal_change": "실제 수신·응답이 있으면 앞으로 허락된 짧은 문장만 남는다. 부재면 자기 공개 결정과 전달 보류만 남는다. 다음 만남의 일상 선제 발언은 해당 상대와 실제 경계 존중 경험이 있을 때만 한다.",
+              "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+              "next_encounter_memory": "허락을 먼저 묻는 사람에게는 경계 문장만 되풀이하지 않고 자기 고른 일상을 먼저 말할 여유가 생긴다. 그 변화는 실제 질문을 멈추고 범위를 지킨 당사자에 한한다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+              "playfeel_and_difference": "오늘 이야기로 남길 것: 실제 허락한 일상 발언·정리된 생활 물건·현재 청중. 아이의 새 이름·왕위·성취·새 행동을 창작하지 않는다. → 실제 수신·응답이 있으면 앞으로 허락된 짧은 문장만 남는다. 부재면 자기 공개 결정과 전달 보류만 남는다. 다음 만남의 일상 선제 발언은 해당 상대와 실제 경계 존중 경험이 있을 때만 한다."
+            }
+          ],
+          "exact_participation": [
+            {
+              "offer_accept_owner_progress_complete": "실제 요청·현재 행동·확인·마침만 남긴다. 별도 퀘스트 수락·MAIN 소유·완료 배지·숨은 의뢰를 만들지 않는다.",
+              "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+              "nonowner_route": "일상 대화이며 퀘스트·MAIN·보상 없음. 현재 허락된 청중이면 듣되 친구의 친분이나 다른 사람의 도움을 비공개 열람권으로 삼지 않는다.",
+              "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+              "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+            }
+          ],
+          "exact_rewards": [
+            {
+              "status": "NONE",
+              "reason_and_source": "이 관계·돌봄·개인 선택의 결말에는 별도 성장 지급을 넣지 않는다.",
+              "earned_condition": "별도 물품·효과 지급권 없음. 실제 현장·대화·관계 결과만 남는다.",
+              "beneficiary_and_claim_right": "실제 당사자의 관계와 관측 결과만. 별도 실물 수혜자·미수령 보상권 없음.",
+              "actual_grant_and_consumption": "별도 보상 지급·소비 없음. B1: 생활 물건은 가족 소유. 대화는 물건 제공·열람·이동 허가가 아니다. 별도 소비·보상 없음.\nB2: 말만 조정하며 기록 사본은 별도 허락 없이는 만들지 않는다. 실제 맡은 원본이 없다면 반환을 요구하지 않는다.",
+              "unclaimed_retry_no_duplicate": "보상이 없으므로 미수령 보상 복구 없음. 실제 맡긴 물건·미수신 설명이 있는 경우 그 부분만 복구하며 없던 위탁물 반환을 요구하지 않는다.",
+              "distinct_recognition_main_blessing_gaze_equipment": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다."
+            }
+          ]
+        }
+      },
+      "adopted_detail": {
+        "fact_definition_id": "EP013B-RPG-S03-057-ACTUAL",
+        "when_created": "원문 각 선택의 실제 행동·당사자 응답이 일어난 부분만. 미실행·반대·부분결과 각각 구분.",
+        "scope": "실제 허락한 일상 수신으로 현재 대화 마침. 공동 전언 조정은 구체 문장·청중 허락과 양쪽 실제 수신/응답이 있어야 한다. 부재면 전달 보류이며 가족 동의·세계 소문 삭제 없음.",
+        "observation": "현재 물체 상태·실제 동작·실제 들은 말만 직접 관측. 감정·불편·의향은 당사자가 말한 주장으로 출처 보존.",
+        "audience": "실제 본 사람/들은 사람/허락 기록을 실제 읽은 사람별. NPC도 직접 보지 않았다면 수신 전 모름.",
+        "private_boundary": "메스케네트·헤케트의 출산 도움은 자기 과거다. 현재 아이의 왕위·생사·정치 역할·새 신격·플레이어 보호 능력은 추가하지 않는다. 도움받은 감사가 가족 비밀 공개 대가는 아니다.",
+        "late_join": "현재 공개 부분을 새로 읽어 배움. 예전 참여·사적 대화·기여·완료·신뢰를 받지 않음.",
+        "handoffs": {
+          "items": [
+            {
+              "counterpart_record_key": "RPG-S03-049",
+              "existing_edge_or_new_minor_basis": "출생 예언을 말한 메스케네트와 공개 범위를 논의하는 기존 인연이다.",
+              "request_and_actual_response": "루드디데트가 기존 관계 범위의 실제 요청을 할 때만 플레이어가 전달할 내용·대상·공개 범위를 먼저 받는다. 메스케네트가 실제 응답하면 앞으로 전할 문장을 줄이고 공개 철회할 내용은 전달을 멈춘다. 아이의 새 배역·왕위·미래 성취를 만들지 않는다. 관계 상대가 현장에 있거나 실제 전달 뒤 수락·거절·수정한 응답을 준 경우에만 인계를 성립시킨다.",
+              "what_changes_for_each_side": "관계 변화의 별도 원인 행동: 예언을 캐묻기 전에 가족이 불편하다고 한 질문을 멈춘다. 이를 실제로 확인한 경우: 다음에는 전부 경계하기보다 본인이 정한 일상 이야기 한 가지를 자발적으로 나눈다. 이는 실제 원인 행동과 응답이 일어난 경우의 후속 변화이며 자동 실행 아님. 이번 개인 결말은 앞 단계의 분기를 보존하고 아래 결과의 원인 행동·실제 응답을 충족한 경우에만 적용한다. 루드디데트는 다음에 플레이어를 만났을 때 경계의 말만 하지 않고 공개하기로 고른 일상을 먼저 이야기한다. 반대 선택·중단의 실제 제한·미완료·손실도 남긴다. 수행하지 않은 협력 공로는 부여하지 않는다.",
+              "absence_refusal_alternative": "부재·거절이면 상대의 협력·합의·현재 지식을 만들지 않는다. 루드디데트와 가능한 준비·대화·보관까지만 수행하고 실제 인계는 남긴다. 공용 C 완료나 친구의 친분을 응답으로 대체하지 않는다."
+            }
+          ],
+          "none_reason": null
+        },
+        "retrospective_rule": "전승의 자기 경험은 baseline_knowledge 범위에 한정. 미래 저술 장면·현재 상대 위치·미응답 허락을 과거 사실로 소급하지 않는다."
+      }
+    }
+  ]
+}

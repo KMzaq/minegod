@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.*;
 
 public record UnderstandingRequest(UUID token, long sequence, Action action, String key, String text) implements CustomPacketPayload {
-    public enum Action { REFRESH, START, PAUSE, DISPUTE, RESTORE, DECLARE, RETRACT, CLOSE }
+    public enum Action { REFRESH, START, PAUSE, DISPUTE, RESTORE, DECLARE, RETRACT, CLOSE, ADVICE, SHARING }
     public static final Type<UnderstandingRequest> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MythicTrpg.MOD_ID, "understanding_request"));
     public static final StreamCodec<RegistryFriendlyByteBuf, UnderstandingRequest> CODEC = StreamCodec.ofMember(UnderstandingRequest::write, UnderstandingRequest::read);
     public UnderstandingRequest {

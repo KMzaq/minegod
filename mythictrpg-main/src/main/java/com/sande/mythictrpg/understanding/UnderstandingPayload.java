@@ -10,11 +10,12 @@ import java.util.*;
 /** Only redacted self-view cards cross the wire. Never raw ledger payloads or NPC-private beliefs. */
 public record UnderstandingPayload(UUID token, boolean open, boolean active, boolean pending,
                                    String notice, List<PlayerUnderstanding.Card> cards) implements CustomPacketPayload {
+    public static final int MAX_CARDS=96;
     public static final Type<UnderstandingPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MythicTrpg.MOD_ID, "understanding_page"));
     public static final StreamCodec<RegistryFriendlyByteBuf, UnderstandingPayload> CODEC = StreamCodec.ofMember(UnderstandingPayload::write, UnderstandingPayload::read);
     public UnderstandingPayload {
         Objects.requireNonNull(token); cards = List.copyOf(cards); bound(notice, 1024);
-        if (cards.size() > 16) throw new IllegalArgumentException("card budget");
+        if (cards.size() > MAX_CARDS) throw new IllegalArgumentException("card budget");
         for (var c : cards) {
             bound(c.key(), 64); bound(c.title(), 128); bound(c.assessment(), 128); bound(c.explanation(), 1024);
             if (c.evidence().size() > 3) throw new IllegalArgumentException("evidence budget");
@@ -33,7 +34,7 @@ public record UnderstandingPayload(UUID token, boolean open, boolean active, boo
     private static UnderstandingPayload read(RegistryFriendlyByteBuf b) {
         UUID token = b.readUUID(); boolean open = b.readBoolean(), active = b.readBoolean(), pending = b.readBoolean();
         String notice = b.readUtf(1024); int count = b.readVarInt();
-        if (count < 0 || count > 16) throw new IllegalArgumentException("card budget");
+        if (count < 0 || count > MAX_CARDS) throw new IllegalArgumentException("card budget");
         var cards = new ArrayList<PlayerUnderstanding.Card>();
         for (int i = 0; i < count; i++) {
             String key = b.readUtf(64), title = b.readUtf(128), assessment = b.readUtf(128), explanation = b.readUtf(1024);

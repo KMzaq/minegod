@@ -13,7 +13,7 @@ public final class UnderstandingNetwork {
     private UnderstandingNetwork() { }
     public static void receiver(Consumer<UnderstandingPayload> value) { receiver = java.util.Objects.requireNonNull(value); }
     @SubscribeEvent public static void register(RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("understanding-1");
+        var registrar = event.registrar("understanding-2");
         registrar.playToClient(UnderstandingPayload.TYPE, UnderstandingPayload.CODEC,
                 (p, c) -> c.enqueueWork(() -> receiver.accept(p)));
         registrar.playToServer(UnderstandingRequest.TYPE, UnderstandingRequest.CODEC,

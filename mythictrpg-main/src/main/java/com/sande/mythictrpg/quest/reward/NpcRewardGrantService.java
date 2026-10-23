@@ -26,8 +26,8 @@ public final class NpcRewardGrantService {
         if (selected == null) {
             return Validation.reject("Reward tier is not registered in the God reward table");
         }
-        RewardExecutionService.Validation execution = RewardExecutionService.validate(
-                selected.rewards(), purpose);
+        RewardExecutionService.Validation execution = RewardExecutionService.validateForGod(
+                npcId, selected.rewards(), purpose);
         return execution.allowed() ? Validation.allow() : Validation.reject(execution.reason());
     }
 
@@ -44,6 +44,18 @@ public final class NpcRewardGrantService {
         }
         NpcRewardTier selected = NpcRewardTableManager.INSTANCE.find(tableId).orElseThrow()
                 .tier(tier).orElseThrow();
+        if (selected.rewards().stream().anyMatch(reward -> RewardResolutionService.requiresResolution(reward)
+                || reward instanceof ProgressionRewardEntry)) {
+            // Named permanent rewards use the existing personal claim receipt. Repeating this table/tier
+            // cannot select a stronger outcome or duplicate accompanying items/currency.
+            var source = ResourceLocation.fromNamespaceAndPath(tableId.getNamespace(),
+                    "adaptive_table/" + tableId.getPath() + "/tier_" + tier);
+            var result = RewardClaimService.INSTANCE.issue(player, npcId, source,
+                    new ResolvedQuestReward("신의 가호", selected.rewards(), List.of()), RewardOrigin.NPC_DIRECT);
+            if (result.status() == RewardClaimService.Status.ALREADY_CLAIMED)
+                return Result.reject("이미 수령한 보상입니다. 이번 요청으로 새 보상을 지급하지 않았습니다.");
+            return result.succeeded() ? Result.granted(List.of("신의 가호 보상 처리: " + result.status())) : Result.reject(result.reason());
+        }
         // Preserve the existing table/God/tier and AI_ACTION checks before committing permanent ownership.
         // Repeated authorized table grants retain one source per effect; unrelated temporary/item rewards keep their behavior.
         if (selected.rewards().stream().anyMatch(reward -> reward instanceof BlessingRewardEntry blessing && blessing.permanent())) {
@@ -54,6 +66,7 @@ public final class NpcRewardGrantService {
                 RewardClaimState.get(player.server).acquireTableBlessings(player.getUUID(), npcId, tableId, tier,
                         selected.rewards(), player.server.overworld().getGameTime());
             } catch (RuntimeException invalid) { return Result.reject(invalid.getMessage()); }
+            BlessingProgressionEvents.acquired(player, selected.rewards());
         }
         RewardExecutionService.Result result = RewardExecutionService.grant(
                 player, npcId, selected.rewards(), purpose);

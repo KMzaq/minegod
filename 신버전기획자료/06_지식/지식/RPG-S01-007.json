@@ -1,0 +1,601 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S01-007",
+  "name": "아테나",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "아테나",
+    "canonical_name": "아테나",
+    "mythology": "그리스·로마",
+    "tier": "최상급",
+    "combat_tier": "최상급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "올림포스",
+      "status": "기존 분류 제안",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "아테나·미네르바 대응을 한 게임 개체로 제안",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-007",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/6/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S01-007/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "나는 설명이 아름다운 계획보다 실패를 인정한 뒤에도 고칠 수 있는 계획에 마음이 간다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S01-007:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "매듭의 짜임과 직물의 반복무늬를 살핀다. 복잡함보다 한 가닥이 끊겨도 전체가 풀리지 않는 구성이 마음에 든다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S01-007:SELF:002"
+      },
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "헤라클레스와 힘·계획을 연결할 수 있는 기존 관계와 다이달로스와의 과거 기술 관계를 기억한다. 다이달로스의 현재 소재·설계·수리·승인을 알고 있거나 받을 수 있다는 뜻은 아니다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "personal_relation"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S01-007:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "미래 습득 계획",
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/future_learning/items/0",
+        "occurred": false,
+        "unlock": [
+          "원문 acquisition_event 실제 성립",
+          "required_evidence 확보",
+          "화자 실제 수신·관측",
+          "eligible_audience 및 공개허락 확인"
+        ],
+        "authoring_item_key": "RPG-S01-007:EVENT:001"
+      },
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-007:EVENT:002"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "현행 자기 앎 또는 앎의 상한; 제안·조건과 원문 공개 제한 보존",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known",
+      "authoring_item_key": "RPG-S01-007:BOUNDARY:001"
+    },
+    {
+      "category": "미지·미확인; 새 사실 생성 금지",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown",
+      "authoring_item_key": "RPG-S01-007:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/acquisition",
+      "authoring_item_key": "RPG-S01-007:BOUNDARY:003"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-intent",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-intent",
+            "claim": {
+              "text": "나는 설명이 아름다운 계획보다 실패를 인정한 뒤에도 고칠 수 있는 계획에 마음이 간다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-intent",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자기 현재 의향과 일상 취향",
+              "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        },
+        {
+          "knowledge_id": "K-interest",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-interest",
+            "claim": {
+              "text": "매듭의 짜임과 직물의 반복무늬를 살핀다. 복잡함보다 한 가닥이 끊겨도 전체가 풀리지 않는 구성이 마음에 든다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-interest",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자기 현재 의향과 일상 취향",
+              "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        },
+        {
+          "knowledge_id": "K-history",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-history",
+            "claim": {
+              "text": "헤라클레스와 힘·계획을 연결할 수 있는 기존 관계와 다이달로스와의 과거 기술 관계를 기억한다. 다이달로스의 현재 소재·설계·수리·승인을 알고 있거나 받을 수 있다는 뜻은 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "personal_relation"
+              ]
+            },
+            "fact_ref": "T-history",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "헤라클레스와의 기존 협력 관계 및 다이달로스와의 과거 기술 관계",
+              "when_or_condition": "현행 개인 역할에 유지된 기존 관계의 자기 기억. 구체 새 사건·현재 소재·미수신 기록은 추가하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "personal_relation"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 앎 상한·현재 허용 범위·청중 전원 자격을 함께 확인; 존재 공개도 별도."
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "플레이어의 새 선택·조사·사적 대화를 아직 자동 수신하지 않은 저술 기준. 기존 자기 역사·관계의 기억과 채택한 현재 자기 의향은 유지한다. 본편의 시점별 관측·전달은 실제 사건과 청중이 성립할 때만 더한다. 현재 행동을 쓰는 것은 기존 접근·봉인을 넘어 본체가 출현했다는 뜻이 아니다.",
+        "known_facts": [
+          {
+            "id": "K-intent",
+            "claim": {
+              "text": "나는 설명이 아름다운 계획보다 실패를 인정한 뒤에도 고칠 수 있는 계획에 마음이 간다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-intent",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자기 현재 의향과 일상 취향",
+              "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+            }
+          },
+          {
+            "id": "K-interest",
+            "claim": {
+              "text": "매듭의 짜임과 직물의 반복무늬를 살핀다. 복잡함보다 한 가닥이 끊겨도 전체가 풀리지 않는 구성이 마음에 든다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": "T-interest",
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자기 현재 의향과 일상 취향",
+              "when_or_condition": "이 코어에서 채택한 현재 자기 의향·일상 성격. 발생하지 않은 사건의 완료 기억은 아님.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다."
+            }
+          },
+          {
+            "id": "K-history",
+            "claim": {
+              "text": "헤라클레스와 힘·계획을 연결할 수 있는 기존 관계와 다이달로스와의 과거 기술 관계를 기억한다. 다이달로스의 현재 소재·설계·수리·승인을 알고 있거나 받을 수 있다는 뜻은 아니다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "personal_relation"
+              ]
+            },
+            "fact_ref": "T-history",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "헤라클레스와의 기존 협력 관계 및 다이달로스와의 과거 기술 관계",
+              "when_or_condition": "현행 개인 역할에 유지된 기존 관계의 자기 기억. 구체 새 사건·현재 소재·미수신 기록은 추가하지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "personal_relation"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 이 말을 직접 듣는 대화 상대",
+              "condition": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "현재 미확인 쟁점은 “이 계획의 실제 기술·퇴로·민간 비용이 작성자의 설명과 일치하는가.”이다. 상대의 거짓말이나 세계 비밀을 이미 의심하는 새 가설로 채우지 않고 실제 확인 전에는 열린 질문으로 둔다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "퇴로를 중시하는 판단과 새로운 계획의 미확인은 사실 오해가 아니다. 현존 여부를 모르는 설계를 보유했다고 믿게 만들지 않았다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "다이달로스와의 과거 기술 관계는 은닉할 비밀로 설정하지 않았다. 현재 설계와 동료의 사적 자료를 미리 보유한 것도 아니다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "보유·권한이 확인되지 않은 다이달로스의 현존 설계와 현재 협력 의사.",
+          "헤라클레스의 아직 받지 않은 동의, 타 신의 사적 전쟁 기억, 플레이어의 숨긴 능력.",
+          "만난 적 없는 플레이어의 사적 대화·이전 신뢰·MAIN 소유를 친구나 장 번호만으로 안다고 하지 않는다.",
+          "14개 관계 경로는 비배타이며 그 경로의 소개·친분으로 정식 진영·집단 적대가 정해지지 않는다."
+        ],
+        "future_learning": {
+          "none_reason": null,
+          "items": [
+            {
+              "id": "FL-01",
+              "fact_or_question": "이 계획의 실제 기술·퇴로·민간 비용이 작성자의 설명과 일치하는가.",
+              "acquisition_event": "허락된 현장과 사용 가능한 설계를 직접 살피고 협력 당사자에게 수락 여부를 듣는다.",
+              "required_evidence": "실재하는 도면이나 작동 예, 당사자 답변, 실패 때 이동 가능한 통로.",
+              "eligible_audience": "해당 계획에 참여하고 자료 열람 권한을 가진 사람.",
+              "after_learning_change": "확인한 기술만 배치하고 빠진 퇴로를 보완한다. 다른 문화권의 힘까지 통제하는 총설계자로 확대하지 않는다.",
+              "not_automatic_from": [
+                "장 번호 통과",
+                "자료가 공개되어 있다는 사실만",
+                "친구의 열람·수락·MAIN",
+                "공유 세계의 변화만"
+              ],
+              "source_refs": [
+                "active"
+              ]
+            }
+          ]
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "author_truth는 NPC 지식이 아니다. 사실 상태, 직접 관측, 출처 있는 주장, 추측, 오해, 의도적 비공개, 미정, 미래 습득을 원 CORE대로 분리.",
+        "routing": "중요 비밀·개인 인정은 Story Fact/Actor/Policy/Event와 Knowledge의 검증된 연결 필요. 현재 sidecar는 그 문서 계획이며 실행 필드가 아니다.",
+        "audience": "PRIVATE_ROOM은 방 전원이고 개인 자격이 아니다. A만 적격이고 B가 함께 있으면 중요한 비밀 제외. 공개방은 온라인 전체 청중. OWNER_ONLY도 특정 UUID 소유자를 자동 지정하지 않는다.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE 별개. 등록 canonical 정식 발언을 실제 완전히 전달받은 플레이어·청취 신만 해당 Knowledge. 조회·자유 의역·정적 lore·Cover Story·TEST/RUMOR_TEST·미열람 메모는 정식 획득 아님.",
+        "layers": "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·청중별 자격 모두 확인. 이름/태그/거절문에도 비밀의 존재를 새로 유출하지 않음.",
+        "late_join": "친구·파티·세계 공용 완료·후발 참가로 개인 기억 복사 없음. 새 보고는 지금 받은 그 보고자의 주장으로 기록.",
+        "unbound_behavior": "검증된 공급이 없으면 상세 자기 기억도 발화하지 않으며 일반 공개 성격으로만 응답. 현재 접촉 없으면 그 일반 fallback도 발화 없음."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-007/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "그리스·로마 전승의 올림포스 여신 아테나. 실제로 쓸 수 있는 계획과 기술을 중히 여긴다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-007/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "현재 같은 본체의 유효 접촉·의사·허용된 발화 모드·실제 청중이 없거나 미확인이면 새 발화를 만들지 않는다. 이는 모든 대체 응답보다 먼저 적용한다.",
+        "게임이 확인하지 않은 공격·이동·물건 지급·지원·수주·완료·소유권 변경을 말만으로 실행하지 않는다.",
+        "추론·전언·직접 관측을 구별한다. 저자 정보와 미래 결과를 자기 앎으로 옮기지 않으며 친구·파티·공용 결과로 개인 기억을 복사하지 않는다.",
+        "화자가 아는 범위와 현재 청중 전원의 공개 자격을 함께 확인한다. 알려지지 않은 사적 내용의 존재도 거절문으로 암시하지 않는다.",
+        "기술 식별자와 전투등급으로 성별·신격·혈연·정치 소속·현재 전력을 새로 정하지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S01-007/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "이번 실제 개인 선택과 결과: 추격 성공은 현존 위협 제거, 철수 성공은 사람·짐 보존으로 각각 판정한다. 아테나는 어느 손실을 택했는지 공개하고 자기 계획의 실패 책임을 받는다. 둘 다 못 했으면 실패이며 입으로 전술 승리를 주지 않는다.",
+            "truth_status": "새 소규모 장면의 저술 계획. 실제 관측·응답 전에는 미래 의향이며 완료 사실이 아니다.",
+            "who_learns": "아테나와 해당 행동을 실제 보고 듣거나 허락된 기록을 읽은 플레이어·당사자만.",
+            "from_whom_or_source": "위 마지막 단계(2단계)의 실제 수행·당사자 발언 및 그 결과를 담아 공개가 허락된 기록. 준비 단계 자료는 배경 근거만 제공하며 최종 선택의 목격을 대신하지 않는다. 관계 상대에게 전한 내용은 실제 수신·응답한 범위만 추가한다.",
+            "actual_event": "새 작은 전투안으로 기존 폐허의 약탈 위협을 상정한다. 플레이어는 실제 배치·검증된 적의 사선을 끊고 후미 동행자가 안전선에 닿을 때까지 엄폐를 바꿔 가며 버틴다. 아테나는 자기가 제안한 공격 수가 막힌 순간 철수 신호를 보내며 헤라클레스는 동의한 장애물 제거만 한다.",
+            "actual_audience_and_disclosure": "공개 물건 상태는 현장에서 확인 가능하다. 사적 발언은 실제 청취자에게만, 외부 전달은 당사자가 허락한 범위·출처만 제공한다. 후발자는 현재 결과와 공개 가능한 기록을 새로 읽어 배우며 친구의 기억은 받지 않는다.",
+            "before_after_change": "기존 자기 역사·관계·욕구는 원래 앎으로 유지한다. 이번 실제 행동 뒤에는 추격 성공은 현존 위협 제거, 철수 성공은 사람·짐 보존으로 각각 판정한다. 아테나는 어느 손실을 택했는지 공개하고 자기 계획의 실패 책임을 받는다. 둘 다 못 했으면 실패이며 입으로 전술 승리를 주지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "관련 질문을 받으면 자기 의향·취향으로 말한다. 세계의 확정 사실이나 타인의 동의로 바꾸지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "기존 인연과 자기가 맺어 온 관계의 범위만 말한다. 상대의 현재 소재·의사·새 자료를 알고 있다는 뜻으로 확대하지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/6/outline/knowledge"
+      },
+      "verbatim": {
+        "known": "자기 기술·과거 협력 경험·실제 확인한 현장 및 전달받은 계획.",
+        "unknown": "동료의 미수락 지원, 미확보 설계, 플레이어 미공유 탐험 이력. 아라크네 저주 가해자의 정체는 작가 미정이며 아테나가 알고 숨기는지/모르는지도 미확정이다. 아테나 자신이 가해자가 아니라는 현행 정사는 유지한다.",
+        "acquisition": "답사 보고가 오면 보고자의 주장으로 기록하고 직접 관측·실증과 구분한다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S01-007/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S01-007:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-007:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-007:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    }
+  ]
+}

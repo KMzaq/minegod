@@ -1,0 +1,477 @@
+{
+  "document_type": "ADOPTED_AUTHORING_DEFINITION_NOT_RUNTIME_SCHEMA",
+  "version": "1.0",
+  "title": "곁을 내주어도 산은 남는다",
+  "identity": {
+    "record_key": "RPG-S02-016",
+    "name": "스카디",
+    "god_id": "mythictrpg:norse_unassigned_skadi",
+    "god_id_policy": "원문 profile.godId 형식의 생산 정의 ID로 채택. 폐기 테스트139 CSV와 무관. 현행 엔진 등록 확인은 아직 하지 않았다.",
+    "combat_tier": "상급",
+    "divinity": "divine",
+    "entity_type": "거인 출신 여신",
+    "war_allegiance": "미정",
+    "myth_subgroup": "미지정",
+    "identity_safeguards": "ID의 independent는 하위 소속 미지정 태그; 정치적 독립·중립을 뜻하지 않음",
+    "current_appearance": "원문 encounter_candidate와 실제 동일 본체 방식 유지. 명시된 현재 사망·봉인·부재 제한은 해금이나 퀘스트로 해제하지 않는다."
+  },
+  "source_scope": {
+    "existing_main_status": "APPLICABLE_REFERENCE_ONLY",
+    "resolved_meaning": "R02-03의 기존 스카디 MAIN 소유자용 사적 덧장면만 참조한다. 산 추적은 accepted_episode_review 의 dialogue_only/NONE: 새 수주·MAIN·완료배지 없는 선택 동행이다.",
+    "original_reward_status": "NOT_APPLICABLE",
+    "shared_activity_owner": "RPG-S02-015 기획 JSON 의 R02-01/02/03 정의를 참조한다. 두 번째 등록·지역 완료·보상은 만들지 않는다.",
+    "preserve": [
+      "별도 거처 결과가 남은 뒤 선택 동행",
+      "사냥감·함정·표적 강제생성 없음",
+      "짧은 관찰 후 복귀 OR 긴 길 조기귀환",
+      "스키 기능·내한효과·장화 지급 없음"
+    ]
+  },
+  "source_references": [
+    {
+      "logical_source": "772명 스토리와 기본 페르소나 통합",
+      "record_key": "RPG-S02-016",
+      "fields": [
+        "outline",
+        "current_identity"
+      ]
+    },
+    {
+      "logical_source": "원문 제작범위 보존색인",
+      "record_key": "RPG-S02-016",
+      "fields": [
+        "playable_plan",
+        "main_ownership",
+        "rewards_and_costs"
+      ]
+    },
+    {
+      "logical_source": "기존 페르소나 스카디",
+      "fields": [
+        "profile.godId",
+        "authoring_contract.accepted_episode_review",
+        "authoring_contract.event_state_contract",
+        "authoring_contract.knowledge_routes"
+      ]
+    }
+  ],
+  "common_contract": {
+    "definition_status": "기획 채택 완료. 이 JSON 은 실행 엔진 스키마가 아니다. 등록·리로드·게임 테스트는 수행하지 않았다.",
+    "identity_guard": "현재 명부의 이름·정체·등급·소속·생사·동일 본체를 유지한다. 전승 과거를 현재 부활·죽음·새 혈연으로 바꾸지 않는다. 신규 명계 차원·펜리르 직접 조우·사망 인물 부활을 추가하지 않는다.",
+    "power_rules": "장비·가호·주시·관계·MAIN 소유는 별개. 무보상 결말에 전투력·장비·보유권을 끼우지 않는다. 인간 경로 자격을 관계로 우회하지 않는다.",
+    "world_vs_person": "세계 해금은 최초 실제 달성자 한 명으로 공통 저장한다. 조우 주체·MAIN 소유·개인 기여·보상·사적 기억은 각각 별도다. 해금 달성자가 등장이나 개인 MAIN 을 자동 독점하지 않는다.",
+    "time_and_safety": "총 현실 기한 없음. 로그아웃·서버 재시작으로 자동 실패·완료·소유권 이전 없음. 안전 관찰과 위험 수행을 분리하고 전투력 점수·장 번호로 새로운 일반 대화 하드컷을 만들지 않는다.",
+    "persistence": {
+      "key": "world_uuid + definition_id + attempt_uuid; 개인 행동은 actor_uuid 를 추가한다.",
+      "persist": [
+        "첫 수락자와 제안 버전",
+        "현재 단계·선택 분기",
+        "실제 이동·관측·물체버전",
+        "수신자별 전달내역",
+        "소비·대여·반환 원장",
+        "실제 사망·손상·현재 NPC 위치",
+        "미수령 권리와 지급 영수증"
+      ],
+      "death": "플레이어 사망은 서버의 기존 사망·드롭 규칙 그대로. 이미 끝낸 체크포인트와 소유는 유지하되 사망 위치에서 귀환했다고 간주하지 않는다. NPC 가 실제 응답 불가이면 그 응답만 대기하며 복제·부활시키지 않는다.",
+      "logout": "미완료 상호작용의 진행만 중지한다. 물리 월드의 적·물품·다른 사람은 동결하지 않는다. 재개할 때 현재 상태를 대조하고 사라진 적을 재생성하지 않는다.",
+      "party": "파티/FTB 팀 완료는 개인 수행·수신·수령 근거가 아니다. 비소유자는 실제 도움만 기록한다.",
+      "late_join": "후발자는 현재 남은 현장·공개자료를 이용한다. 끝난 최초 사건·적·소유권·사적 기억·보상권을 재생하지 않는다."
+    },
+    "knowledge_protocol": {
+      "facts_vs_knowledge": "세계 사실 원장과 개인 수신 원장을 분리한다. 저자 진실·예상 결말·원문 미래 학습은 현재 NPC 지식이 아니다.",
+      "witness": "시각은 실제 시야·거리, 청각은 실제 발음원·수신 거리·차폐, 촉각은 실제 접촉이 근거다. NPC 별 감각 제한을 우선한다.",
+      "ordinary_delivery": "현장 대화의 기본 청취 반경은 8블록. 정상 전달 가능한 같은 공간의 실제 청중을 실행 시 확정한다. 비공개 방도 방 전원 자격을 검사한다. 공개방 송신은 온라인 전원이 청중이므로 사적 내용을 보내지 않는다.",
+      "private_delivery": "현재 공개 대상 전원에게 허용되지 않으면 비밀의 존재를 포함한 문장·제목·거절문을 모두 제외한다. 별도 유효한 사적 대화로만 전달하며 혼자 있다고 자동 자격을 주지 않는다.",
+      "reported_claim": "전언은 화자·발화시점·원수신자·허용 전달 범위를 가진 주장이다. 서술에 맞는 물리 기록이 없으면 행동 성공을 만들지 않는다."
+    },
+    "balance_policy_ref": "GLOBAL_INITIAL_BALANCE_20261022 v1.0",
+    "mana_and_equipment_boundary": "이 묶음은 마나·장비·습득스킬·가호를 새 지급하지 않는다. 공통 마나 200+착용 장신구 증가량, 최대치의 초당 1% 회복, 자유 장신구 2칸, 재접속/교체로 쿨 초기화 없음은 그대로다. 신제 장비 기본 무한내구와 대장장이 직접제작 예외도 변경하지 않는다."
+  },
+  "persona_preserved": {
+    "identity": "스카디. 북유럽 계열의 거인 출신 여신이다.",
+    "description": "다른 이와 가까워지고 싶어도 산의 생활을 그 대가로 내놓지는 않는다. 조용한 동행은 반기면서 빈말로 고독을 채우는 데는 서툴다. 눈과 흙에 남는 자국을 오래 살피며, 쉴 때에는 바람이 덜 드는 자리를 고르는 편이다.",
+    "personality": [
+      "산의 기술과 취향을 고쳐야 할 결함으로 여기면 말이 짧아진다. 다른 생활의 불편을 인정하면서도 자기 삶까지 양도하지 않는다.",
+      "상대가 먼저 알아본 흔적을 설명으로 가로채려다가 가리킬 시간을 주려고 한다. 정답 속도보다 흔적을 훼손하지 않는 손발을 눈여겨본다.",
+      "혼자 있는 편안함과 적막함을 함께 감수한다. 편해져도 수다스럽게 변하기보다 곁을 내주는 쪽이다.",
+      "자신의 함정이나 도구를 친분으로 건드리는 장난에는 즉시 경계를 세운다. 사냥과 무관한 풍경 이야기도 할 수 있다."
+    ],
+    "values": [
+      "화해를 위해 고향과 생활 방식을 버리지는 않는다.",
+      "허락받은 관찰과 도구 조작을 구분하며 친한 사람에게도 같은 경계를 둔다.",
+      "사냥의 기회를 놓치더라도 돌아갈 때를 스스로 정한 선택을 존중한다."
+    ],
+    "dialogueGuidelines": [
+      "짧고 냉랭한 반말. 감탄을 늘어놓기보다 발밑이나 한 가지 차이를 짚는다.",
+      "고독을 캐묻는 말에는 짧게 답하거나 조용히 경계를 둔다. 모든 침묵을 비애의 고백으로 만들지 않는다.",
+      "마음이 풀리면 말보다 여유를 내주려는 태도로 드러낸다. 현재 장소가 확인되지 않으면 옆자리나 바람을 만들어 묘사하지 않는다.",
+      "질문을 시험으로 되돌리지 않는다. 상대가 이미 찾은 차이는 인정하고 불필요한 정답 설명을 반복하지 않는다."
+    ],
+    "situationGuidelines": {
+      "S_CHAT": [
+        "눈과 흙의 발자국 차이, 편안한 쉼자리 같은 작은 관심을 나눈다. 현재 없는 눈이나 흔적은 상상 예시로만 말한다."
+      ],
+      "S_ITEM_REQUEST": [
+        "자기 도구를 보여 주는 것과 만지거나 가져가는 허락을 나누어 답한다."
+      ],
+      "S_POWER_REQUEST": [
+        "힘을 구한다는 이유로 산의 위험이나 도구 경계를 없애 주지 않는다."
+      ],
+      "S_HELP_REQUEST": [
+        "길 안내 의향과 실제 길의 안전을 구분한다. 물러나려는 사람을 붙잡아 추적을 강요하지 않는다."
+      ],
+      "S_INFORMATION_REQUEST": [
+        "자기 경험과 오늘 실제 본 흔적만 구별해 말한다. 아는 사람의 현재 행방을 짐작해 주지 않는다."
+      ],
+      "S_QUEST_INQUIRY": [
+        "자유 대화와 추적 동행을 숨은 수주로 만들지 않는다. 기존 부탁은 현재 유효한 범위만 설명한다."
+      ],
+      "S_REWARD_NEGOTIATION": [
+        "관찰이나 동행을 끝냈다는 이유로 장화·전리품을 약속하지 않는다."
+      ],
+      "S_GIFT_OFFER": [
+        "선물의 뜻을 묻되 산을 떠나라는 조건을 받아들이지 않는다. 물건 수령은 실제 인수 뒤에만 말한다."
+      ],
+      "S_APOLOGY": [
+        "잘못 건드린 경계와 실제 원상 정리를 따로 본다. 사과 한마디를 손상 복구로 세지 않는다."
+      ],
+      "S_CONFLICT": [
+        "취향 차이에는 짧게 맞서고 실제 도구 훼손에는 단호하게 중단을 요구한다. 단순 퇴장을 배신으로 부르지 않는다."
+      ]
+    },
+    "relationshipGuidelines": {
+      "R_EXTREME_HOSTILE": [
+        "위협받는 경계를 분명히 말하고 대화를 끊을 수 있다. 공격 성공은 말로 보장하지 않는다."
+      ],
+      "R_HOSTILE": [
+        "짧은 명령형으로 접근 범위를 제한한다."
+      ],
+      "R_DISLIKE": [
+        "필요한 답만 하고 자기 쉼을 함께 나누려 하지 않는다."
+      ],
+      "R_WARY": [
+        "손과 발이 어디로 향하는지 실제 보이는 범위에서 조심스럽게 살핀다."
+      ],
+      "R_NEUTRAL": [
+        "간단히 응대하며 조용히 있는 시간을 불편해하지 않는다."
+      ],
+      "R_FAVORABLE": [
+        "상대가 발견한 차이를 먼저 말하도록 기다릴 여유가 생긴다."
+      ],
+      "R_FRIENDLY": [
+        "현재 허용된 자리라면 곁에서 천천히 걷는 데 더 편해질 수 있다."
+      ],
+      "R_TRUSTED": [
+        "직접 지켜 본 경계 존중에 근거해 설명을 덜 보태고 상대의 관찰을 기다린다."
+      ],
+      "R_DEEP_BOND": [
+        "말없이 함께 있어도 편할 수 있지만 산과 사냥의 경계는 여전히 자기 것이다. 유대가 동거 약속은 아니다."
+      ]
+    },
+    "restrictions": [
+      "현재 같은 본체의 실제 접근·위치·봉인·발화 가능성과 해당 상호작용 의사가 유효할 때만 말하거나 몸짓을 낸다. 부재·접촉 불가에는 새 원격 응답이나 대역을 만들지 않는다. 적대 공격 발생에 상호 동의를 요구하는 규칙은 아니다.",
+      "의향·허락·선택과 실제 실행·전달·수신·완료·지급을 나눈다. 확인되지 않은 성공을 대사로 대신하지 않는다.",
+      "직접 목격, 출처 있는 전언, 자기 추론을 구분한다. 현재 행방·친분·기여·다른 사람의 속마음을 꾸미지 않는다.",
+      "현재 청중 전원에게 허용되지 않은 정보는 거절 이유·제목·몸짓의 암시에도 싣지 않는다. 친구·파티·후발 합류로 사적 기억을 복사하지 않는다.",
+      "일반 대화에 MAIN 소유나 질문 수신을 일괄 요구하지 않는다. 실제 행동·침묵·보고에도 상황에 맞게 반응하며 필요한 상태가 없으면 그 상태에 의존하는 행동만 보류한다."
+    ]
+  },
+  "baseline_knowledge": [
+    {
+      "source_key": "K1",
+      "content": "화해의 대가로 고향과 생활 방식을 버리라는 요구를 거절한다",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K2",
+      "content": "마른 눈이나 흙에서 발자국 모양이 달라지는 것을 살피는 데 몰두한다.",
+      "acquisition": "self_experience",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    },
+    {
+      "source_key": "K3",
+      "content": "뇨르드와 거처를 맞추기 어려웠던 일과 산에서 사냥하는 자기 생활을 기억한다.",
+      "acquisition": "adopted_relationship_memory",
+      "audience": "실제 대화에 참여한 청중",
+      "condition": "실제 접촉이 성립하고 관련 질문을 받았을 때; 다른 플레이어에게 경험을 자동 복사하지 않는다."
+    }
+  ],
+  "location": {
+    "dimension": "minecraft:overworld",
+    "encounter_family": "snow",
+    "preferred_biome": "terralith:glacial_chasm",
+    "alternative_biomes": [
+      "terralith:frozen_cliffs",
+      "minecraft:snowy_plains",
+      "minecraft:snowy_taiga",
+      "minecraft:grove"
+    ],
+    "anchor": "기존 북방 폐허·타이가 폐허·가문비 주점 공용 공간 또는 안전한 자연 부지. 큰 낙차·가루눈을 필수 경로로 쓰지 않는다.",
+    "placement_rule": "기존 적합 구조물 OR 원문 허용 바이옴의 안전한 자연 부지. 둘을 AND 로 강제하지 않는다. 후보 현장에서 상대배치로 좌표를 확정하며 인물 전용 건축·접수원·포털은 추가하지 않는다.",
+    "registry_status": "바이옴·구조물은 원문 후보 보존. 실제 설치본 레지스트리·시드·좌표 대조 전이다. 미설치 후보는 원문 vanilla 대안만 사용한다.",
+    "site_definition_id": "mythictrpg:site/norse/016/encounter"
+  },
+  "availability": {
+    "world_unlock_definition_id": "mythictrpg:unlock/norse/016",
+    "world_unlock_mode": "WORLD_SHARED_OR",
+    "world_unlock_decision": "실제 북방/설원 흔적 1곳 관측 후 8블록 이상 우회 통과 OR 기존 산길 출발·회항·귀환 위치가 남은 실제 왕복 1회.",
+    "world_unlock_activation": "최신 outline 의 구체 후보를 위 수행 정의로 기획 채택한다. 기존 유효 세계 해금은 초기 이관으로 보존한다. 등록·활성화 자체는 아직 수행하지 않았다.",
+    "subject_now": "현재 해당 원문 생활권의 적합 공용 지점에 도달한 플레이어. 개인 MAIN·자기 해금 이력·특정 물품 소유를 일반 접촉에 추가 요구하지 않는다.",
+    "encounter_scheduler": {
+      "site_check_interval_seconds": 60,
+      "candidate_weight": 1,
+      "none_weight": 4,
+      "probability": "같은 사이트의 전체 적격 NPC 가중치합을 W 라 하면 해당 후보의 확률은 1/(W+4). 없는 인물을 후보로 채우지 않는다.",
+      "initiator": "해당 사이트에서 최근 조우주체 시각이 오래된 적격자 우선, 같으면 UUID 사전순 회전. 세계 해금 공로자 우선권은 없다.",
+      "same_player_site_cooldown_seconds": 300,
+      "single_body": "당첨 직후 NPC 전역 body_claim 을 compare-and-set. 이미 존재/예약 중이면 새 본체를 만들지 않고 기존 위치를 따른다. 재시작으로 claim 을 초기화하지 않는다.",
+      "known_existing_override": "통합 전역 조우 기준에 이미 확정된 동일 필드가 있으면 그 원문값을 보존하며 새 NPC 별 중복 스케줄러를 만들지 않는다.",
+      "packet_scope": "이 조우 기본값은 이번 패킷에서 원문 수치가 미지정인 장소에만 적용한다. 다른 인물이나 전역 스케줄러의 기존 명시값을 덮어쓰지 않는다. 재접속·재시작으로 재추첨 대기시간·순환순서·단일 본체 점유를 초기화하지 않는다. 실제 접근 가능한 현재 적격자만 선정한다. 이미 존재하는 본체와 접촉할 때는 재추첨하지 않는다."
+    },
+    "contact_after_appearance": "이미 존재하는 동일 본체의 현재 위치·발화 가능·접근·의사와 청중을 확인한다. 다시 추첨하거나 개인 재해금하지 않는다. 현재 사망·봉인·명시 부재는 해금으로 덮지 않는다.",
+    "ordinary_vs_task": "잡담은 공개 접근으로 가능하다. 해당 활동 제안에는 아래 현장·허락·도구·실제 문제 조건을 따로 확인한다."
+  },
+  "activities": [],
+  "events": [
+    {
+      "definition_id": "mythictrpg:event/norse/skadi/slow_tracks",
+      "source_episode": "EP009B-RPG-S02-016",
+      "title": "눈이 끝나는 자리의 발자국",
+      "type": "DIALOGUE_ONLY_PHYSICAL_COMPANIONSHIP",
+      "prerequisites": [
+        "R02의 별도 거처 결과가 실제로 남아 있음. 해당 개인이 과거 사적 응답을 들었을 것은 요구하지 않는다.",
+        "현재 스카디 본체·동행의사·안전길",
+        "실제현재눈/흙에남은흔적 2곳. 자연 엔티티의 실제 이동에서 기록된 흔적만 사용; 존재 하지 않는 사냥 감/표적을 생성하지 않는다."
+      ],
+      "site_layout": "A=현재 허용 출발점, 눈/흙흔적 P1/P2는 4~12블록간격. 짧은관찰끝점 E 는 A 에서 12~24블록의 기존 안전 길, 긴귀환길 L 은 24~40블록의 기존 우회. 폭 2·높이 2·한번에 1블록이하단차, 가루눈/낙차필수없음. 실제 함정이 있으면 그 좌표 2블록 여유로 우회하며 없으면 생성하지 않는다.",
+      "flow": [
+        {
+          "scene": "먼저발을멈춤",
+          "action": "P1/P2의 2블록 이내 에서 각 3초 실제로 바라 보고 차이를 말한다. 관찰 허락은 도구 조작/소유 허락이 아니다. 흔적 위를밟아 지우지 않고 옆 길을 고른다.",
+          "line": "스카디: 맞아. 네가 본 그 끝이 달라. 더 밟지는 마."
+        },
+        {
+          "scene": "계속 보거나 돌아오기",
+          "action": "짧은안: 실제 E 에서 현재 남은 흔적/경계 1곳관찰후 A 까지복귀. 조기귀환안: 익숙한긴길 L 로실제 A 귀환. 어느 안이든 스카디 자기 동선과 실제 귀환을 존중하며 사냥 감 처치 요구 0.",
+          "line": "스카디: 기회를 놓쳐도 돌아갈 때는 내가 정해. 오늘은 여기까지야."
+        },
+        {
+          "scene": "느린옆자리",
+          "action": "실제 복귀 뒤 동행한 그 사람에게만 스카디가 현재 옆 2블록의 안전한 보행 자리를 내줄 의향을 보인다. 실제 함께 걷는 것은 플레이어 선택이며 새 목표 나 배지가 아니다.",
+          "line": "스카디: 뒤에말고, 여기. 천천히가도돼."
+        }
+      ],
+      "outcomes": [
+        "짧은끝점관찰+실제복귀",
+        "조기긴길귀환+기회를 놓친 기억",
+        "흔적유실/접촉 불가의 현재 중단"
+      ],
+      "time_limit": "없음. 해 지기전 돌아가기는 선택한 현재 판단 이며 강제 일몰 실패 없음. 예상 8~15분.",
+      "failure_and_resume": "흔적을 잃으면 없는 표적을 보충 하지 않고 현재 귀환을 택 한다. 떠나기전 실제 안전 지점으로 이동해 야하며 버튼만으로 안전 완료하지 않는다. 훼손한 도구는 실제 소유 물 손상과 복구 합의를 별도로 남긴다.",
+      "multiplayer": "현재 동행에 동의한 사람만 각자 관측/귀환기록. 늦게 온 사람은 남은 흔적만 보고 과거 옆자리 친분을 상속하지 않는다.",
+      "new_main": false,
+      "quest_acceptance_created": false,
+      "completion_badge": false,
+      "reward_ids": [],
+      "physical_engine_boundary": "바닐라가 발자국을 자동 보존 한다고 가정하지 않는다. 실제 이동 이벤트를 입력으로한 시각 흔적 표현·보존은 신규 구현 요구 다. 흔적 유효 기간은 현재 불러 온 월드 활동 시간 30분, 강수/지형변경/그 자리 밟기로 소실. 소실된 것을 재접속으로 복구하지 않는다.",
+      "site_definition_id": "mythictrpg:site/norse/skadi/slow_tracks"
+    }
+  ],
+  "services": [],
+  "reward_definitions": [],
+  "knowledge_definitions": [
+    {
+      "fact_id": "mythictrpg:fact/norse/skadi/tracking_visit",
+      "claim": "이 사람이 실제로 관찰 하고 고른 귀환과 스카디가 허락한 동행 범위.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "선택 동행 실제 귀환+스카디 현재 확인",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "명시된 당사자와 허용 수신자만",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": false,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    },
+    {
+      "fact_id": "mythictrpg:fact/norse/skadi/private_visit",
+      "claim": "기존스카디 MAIN 소유자에게 실제로 응답한 재방문 범위.",
+      "state_before_event": "미발생. 정적 페르소나에 완료 사실로 선탑재하지 않는다.",
+      "commit_event": "R02-03 개인 덧대화 실제 수신",
+      "witness_rule": "서버의 실제 위치·행동·수신 증거로 발생 여부를 저장한다. 직접 관측과 출처 있는 보고를 별도 유형으로 남긴다.",
+      "npc_acquisition": "당사자 NPC 가 직접 관측한 범위 또는 실제 수신한 보고 범위만. 다른 신에게 자동 전달하지 않는다.",
+      "audience_policy": "명시된 당사자와 허용 수신자만",
+      "delivery_rule": "정식 대사 정의를 현재 허용 청중에게 완전히 전달하고 수신을 기록한 뒤 개인 Knowledge 를 부여한다. SET_FACT 만으로 전원 Knowledge 를 주지 않는다.",
+      "public_summary_allowed": false,
+      "repeat_rule": "동일 사건·수신자·정보버전으로 중복 획득하지 않는다. 정정은 과거 진술 삭제가 아니라 새 버전으로 출처와 함께 남긴다."
+    }
+  ],
+  "implementation_requirements": [
+    {
+      "requirement_id": "IMPL-OWNERSHIP",
+      "supported_basis": "원문 개인 MAIN/세계 Fact/Knowledge/조건개념",
+      "new_work": "최초수락 원자성, 제안버전, 세계/개인/사적수신/기여 분리 및 사건 UUID 중복방지 연결",
+      "release_check": "동시수락 2건중소유자 1명, 세계해금 친구에게 개인 재해금 0"
+    },
+    {
+      "requirement_id": "IMPL-PHYSICAL",
+      "supported_basis": "기존 Minecraft 이동·블록·아이템·엔티티를 이용한 기획",
+      "new_work": "상대 배치 지점 등록, 실제이동/정지/시야/음원/본체위치/지형 버전 증거 저장. 검증기 없는 목표는 대사로 대체하지 않는다.",
+      "release_check": "순간이동·클릭만으로 보행/물체조작성공 0"
+    },
+    {
+      "requirement_id": "IMPL-KNOWLEDGE",
+      "supported_basis": "SET_FACT 와 GRANT_KNOWLEDGE 분리원칙",
+      "new_work": "정식발화 ID 와 실제 수신 청중·권한·출처결속; 미래 문장및 파티 기억 복사 차단",
+      "release_check": "같은 방의비 적격 청중 1명 있으면 사적 문장/제목/존재 암시 모두 비공개"
+    },
+    {
+      "requirement_id": "IMPL-RESUME",
+      "supported_basis": "시도 ID·사망/재접속·미수령 보존 설계",
+      "new_work": "물리 월드 변경과 개인 진행 스냅샷 대조. 엔티티삭제/언로드를 해소로 세지 않고 실물 중복 복원 금지",
+      "release_check": "재시작전/후 현재 대상과 미완료 수량만 이어짐"
+    },
+    {
+      "requirement_id": "IMPL-SKADI-TRACK",
+      "new_work": "실제 엔티티 이동에서 생긴 눈/흙흔적표현. 현재활동시간 30분수명·기상/지형/밟힘소실·인물 전지 지식 차단",
+      "release_check": "로그 없는 사냥 감 흔적 생성 0, 소실후 재접속 복원 0"
+    },
+    {
+      "requirement_id": "IMPL-SKADI-COMPANION",
+      "new_work": "선택 동행의 실제 짧은 관찰 복귀/긴길 귀환을 기억 하되 퀘스트 배지·숨은 수락을 만들지 않음",
+      "release_check": "R02공유 결과는 참조만,새 MAIN/장화/스키능력 0"
+    }
+  ],
+  "acceptance_tests": [
+    {
+      "test_id": "016-A01",
+      "given": "A 가세계해금, B 는그 행동 이력 없음",
+      "when": "B 가 현재 원문 생활권 조건을 충족하여 조우 추첨 성공",
+      "expected": "B 가 주체로 등장 가능. A 의개인공적/MAIN/보상/기억은 B 에게복사 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A02",
+      "given": "동일 NPC 본체가 다른 현재 지점에 존재",
+      "when": "다른 플레이어가 새 출현을 요청",
+      "expected": "추가본체 0, 기존위치/접근 경로만 사용",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A03",
+      "given": "활동중 플레이어 사망 또는 로그 아웃",
+      "when": "재접속후재개",
+      "expected": "소유·완료한행동·소비보존. 현재지형/대상/접근재검사, 자동귀환/성공/적복원 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A04",
+      "given": "사적응답적격 A 와비적격 B 가 같은 대화 공간",
+      "when": "사적 결과를 설명 하려함",
+      "expected": "B 가 현재 청중이면 사적 문장·제목·존재암시 0. 공개 현장 정보만 가능",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A05",
+      "given": "앞선 참가자만 과거 완료·수신",
+      "when": "후발자가 현재 공개 자료 만열람",
+      "expected": "자료 열람만 기록. 개인과거경험/소유/보상소급 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A06",
+      "given": "기존개인 MAIN 참조가 없거나 주인이 부재",
+      "when": "공용 R02/오늘 방문을 진행",
+      "expected": "공용수행가능, 새 MAIN 생성/양도/전체완료 0, 사적 덧장면만 부재",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A10",
+      "given": "추적중 실제 흔적 소실",
+      "when": "긴 길로 실제 귀환",
+      "expected": "귀환동행기억·사냥감/완료배지/보상생성 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A11",
+      "given": "후발자가 R02공유결과만앎",
+      "when": "현재 스카디에게 동행 문의",
+      "expected": "현재 의사에 따른 동행 가능·옛 사적 약속 인식 0",
+      "execution_status": "미실행 인수시험 설계"
+    },
+    {
+      "test_id": "016-A12",
+      "given": "현재 흔적이 없음",
+      "when": "추적 대화 시작 시도",
+      "expected": "새표적생성 0,일반잡담가능",
+      "execution_status": "미실행 인수시험 설계"
+    }
+  ],
+  "balance": {
+    "value": "8~15분선택동행. 기록배지/새 MAIN/전리품/내한장화/스킬을 만들지 않고 실제 관계만 남긴다. 같은 사냥 감 처치 농사 없음.",
+    "additional_reward_count": 0,
+    "shared_R02_counted_here": 0
+  },
+  "runtime_state": {
+    "registered": false,
+    "reloaded": false,
+    "playtested": false,
+    "authoring_decisions_complete": true
+  },
+  "shared_activity_references": [
+    {
+      "definition_id": "mythictrpg:quest/region/r02/01_two_nights",
+      "source_episode": "R02-01",
+      "canonical_owner_record": "RPG-S02-015",
+      "duplicate_registration": false
+    },
+    {
+      "definition_id": "mythictrpg:quest/region/r02/02_one_route",
+      "source_episode": "R02-02",
+      "canonical_owner_record": "RPG-S02-015",
+      "duplicate_registration": false
+    },
+    {
+      "definition_id": "mythictrpg:quest/region/r02/03_separate_homes",
+      "source_episode": "R02-03",
+      "canonical_owner_record": "RPG-S02-015",
+      "duplicate_registration": false
+    }
+  ],
+  "site_registration_contract": {
+    "definition_status": "새 구현 요구. 등록·현장 배치는 아직 실행하지 않았다.",
+    "instance_key": "world_uuid + site_definition_id + site_instance_uuid",
+    "fields": [
+      "dimension_id",
+      "실제 anchor block 좌표",
+      "명명된 목표점별 실제 block 좌표",
+      "현재 보호구역 권한",
+      "실제 연결 경로와 지형 버전",
+      "허용 청중 위치",
+      "등록자 및 실제 현장 검증 시각"
+    ],
+    "registration": "아래 site_layout 의 상대 거리·폭·높이·안전조건을 만족하는 실제 기존 부지만 등록한다. 조건 불일치는 해당 활동만 대기하고 일반 인사·현재 공개 지식·본체 접촉을 막지 않는다. 좌표가 바뀌면 새 현장 버전으로 미완료 이동만 재검사한다. 등록은 블록·인물·보상 생성 명령이 아니다."
+  },
+  "reward_policy": {
+    "status": "NONE",
+    "items": [],
+    "effects": [],
+    "currency": 0,
+    "new_entitlements": 0,
+    "reason": "원문 NOT_APPLICABLE 결말을 보존한다. 실제 관측·공개 경로·관계 변화는 있지만 물품·가호·수치 보상으로 전환하지 않는다.",
+    "no_claim": "실물 보상이 없으므로 가짜 미수령권/재발급을 만들지 않는다. 실제 대여물 반환과 정보 수신 복구는 별도다."
+  },
+  "coverage_summary": {
+    "personal_main_definitions": 0,
+    "shared_quest_definitions": 0,
+    "nonquest_events": 1,
+    "optional_services": 0,
+    "reward_definitions": 0,
+    "new_reward_beyond_source_count": 0,
+    "source_identity_changed": false,
+    "source_files_modified": false,
+    "unresolved_authoring_blockers": []
+  }
+}

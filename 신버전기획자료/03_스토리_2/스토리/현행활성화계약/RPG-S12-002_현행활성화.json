@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S12-002",
+  "name": "미트라",
+  "definition_id": "ACTIVATION-RPG-S12-002",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 사막 생활권 공개 쉼터 A→서로 다른 쉼터 B→A 왕복1회. 휴전 계약·충성 없음.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "현재 두 손(주손/보조손) 빈손 AND 사용중 공격/조준/시전 없음 AND NPC에 대한 현재 공격행위 없음. 인벤토리/갑옷/숨은 성향·충성 검사0. 칼을 넣고 접근 가능; 평화 계약 수락 없음.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-045/RPG-S12-002.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "원문 정체·전투등급·소속·생사·봉인·기존 개인범위와 명시 전후시점을 보존. 최초조우 공란만 이번 계약으로 연결.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-045/RPG-S12-002.json",
+      "record_key": "RPG-S12-002",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "c5e969e9bc261ce743bb999054f51c8f4fd874d81295ef6d9d4a0ae95c4b0885"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-045/01_RPG-S12-002_미트라_완결기획.json",
+      "record_key": "RPG-S12-002",
+      "pointers": [
+        "/world_unlock_and_encounter"
+      ],
+      "sha256": "bdcf2d5abda0f96d9e827b96b5d93ddd81f55787515256ff649c7557daff5407"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

@@ -1,0 +1,637 @@
+{
+  "document_type": "AUTHORING_SPEC_NOT_RUNTIME_SCHEMA",
+  "version": "1.1-review-candidate",
+  "chapter": "C05",
+  "title": "문을 닫는 자 — 강화 엔더드래곤 첫 토벌",
+  "status": {
+    "design": "INITIAL_DESIGN_DECIDED",
+    "arithmetic": "EXECUTED",
+    "implementation": "NOT_IMPLEMENTED",
+    "playtest": "NOT_EXECUTED",
+    "deployment": "NOT_EXECUTED"
+  },
+  "units": {
+    "time": "server tick; 20TPS에서20tick=1초",
+    "distance": "block",
+    "damage": "HP point; 하트1=HP2"
+  },
+  "identity": {
+    "existing_first_dragon_only": true,
+    "new_character_count": 0,
+    "free_dialogue": false,
+    "returned_dragon_same_entity": false,
+    "first_death_is_real": true,
+    "story_source_remains_authoritative": true
+  },
+  "access": {
+    "world": "기존 엔드 중심섬, 실제 요새 포탈",
+    "story_predecessor": "C04; 조기 실제처치 예외는 과거체험 소급 없이 현재 사실 복구",
+    "minimum_players_gate": null,
+    "recommended_test_party": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "solo": "허용, 별도 동시발판/역할 잠금 없음",
+    "six_or_more": "합류 차단 없음. 최초 설정 n에 따라1400*n, 6인 초기표 포함. 7인 이상 성능/시인성 별도시험",
+    "power_gate": false,
+    "mandatory_skill": null,
+    "mandatory_divinity": null,
+    "new_dimension": false
+  },
+  "boss": {
+    "entity_binding": "기존 최초 minecraft:ender_dragon UUID에 전용 컨트롤러 결합; 새 복제 엔티티 아님",
+    "max_hp_per_initial_participant": 1400,
+    "hp_by_initial_n": {
+      "1": 1400,
+      "2": 2800,
+      "3": 4200,
+      "4": 5600,
+      "5": 7000,
+      "6": 8400
+    },
+    "armor": 0,
+    "toughness": 0,
+    "registered_protection": 0,
+    "resistance": 0,
+    "cc_policy": "이동강제/기절/끌기 면역. 해당 기술의 적격 피해까지 면역시키지 않음",
+    "difficulty_damage_multiplier": 1,
+    "rank": "최상급; 전투력 합격선 또는 동일등급 신의 DPS와 무관",
+    "health_lock": "C04 의사 명부는 안내이며 입장·보상 게이트가 아니다. 최초 유효 용피해, 원래 수정의 실제파괴, 최초 보스시전 승인 중 가장 이른 사건 직전, 실제 중심섬 전투구역에 접속·생존한 비관전자 고유 UUID 집합을 한 번 스냅샷하고 N=max(1,집합 크기)로 고정한다. 사건의 실제 공격자/파괴자는 집합에 반드시 포함. 실제 섬·접근 발판의 전투구역 경계와 스냅샷 tick/UUID를 배치 전에 공개·저장한다. 파티 초대/탈퇴·C04 명부 변경은 이 집합과 무관. 이후 합류·사망·이탈·재접속으로 재배율0.",
+    "pre_damaged_activation": "설치 전 이미 손상된 용은 기존 HP비율을 새 maxHP에 1회 보존. 사망 개체는 결합 금지. 최초 생성/개전 뒤 바꾸는 운영 재설정 금지",
+    "late_join_tradeoff": "한 명 선개전 뒤 여럿이 합류하면 낮은 고정HP에 더 많은 출력이 붙는 이점이 남는다. 자유합류+고정HP 설계의 명시적 허용 결과이며 악용 완전방지라고 주장하지 않는다. 이를 막으려고 후발 차단·보상박탈·사후 HP증폭·기여삭제를 하지 않음. 성능 비교에는 initialN과 실제 시간별 참가인원을 따로 기록한다."
+  },
+  "hurt_controller": {
+    "implementation_required": true,
+    "key": [
+      "world_uuid",
+      "first_dragon_uuid",
+      "attacker_owner_uuid"
+    ],
+    "suppression_ticks": 10,
+    "within_window": "동일/작은 피해 억제, 큰 피해는 기존 최대와 차이만. 후속타로 창 연장0",
+    "multi_part": "1cast×1boss×1hit event. 머리/몸통 겹침은 최대1부위만; head 우선",
+    "different_players": "같은tick 각자 적용",
+    "environmental_explosion": "실제 폭발event별1회. 침대/TNT/투사체의 실제 유발자 UUID를 추적해 소유자10tick창 공유. 소유자를 지워 매 event를 새 공격자로 만드는 우회 금지. 소유자 없는 진짜 환경 폭발은 worldUUID+firstDragonUUID+ENVIRONMENT 공용10tick창과 eventID 중복방지를 함께 적용. 출처 확인 불가는 기여 소유자 임의생성0.",
+    "without_controller": "강화 프로필 출시 금지, 전역 바닐라 규칙을 임의변경하지 않음"
+  },
+  "hitboxes": {
+    "implementation_required": true,
+    "head": {
+      "shape": "현재 머리관절 중심 구",
+      "radius": 1.5,
+      "incoming_damage_multiplier": 1
+    },
+    "body": {
+      "shape": "현재 몸통관절 중심, 방향회전 타원체",
+      "semi_axes": [
+        4,
+        2,
+        3
+      ],
+      "incoming_damage_multiplier": 0.5
+    },
+    "tail": {
+      "shape": "실제 꼬리 관절 3개 중심 캡슐 연결",
+      "radius": 0.65,
+      "incoming_damage_multiplier": 0.5
+    },
+    "wing": {
+      "incoming_damage_multiplier": 0,
+      "visible_rule": "날개막은 피격부위 아님. 모델 자산/도움말에서 명시; 몸통과 머리의 타격윤곽 대비"
+    },
+    "sweep": "이전tick→현재tick swept volume; 벽 차폐 반영. 보스와 플레이어 크기 확장 중복 금지",
+    "projectiles": "머리/몸통/꼬리 동일배율. 착지 중 화살 면역 제거는 커스텀 요구이며 현행 기능으로 주장0",
+    "outgoing_idle_contact_damage": 0,
+    "native_uncontrolled_attacks": "기본 돌진/접촉/브레스와 커스텀 피해 이중발생 차단 필요",
+    "native_part_mapping": "부위 UUID/parent 관계는 대상 Java 서버 버전의 실제 코드에서 확인 후 어댑터를 구현한다. 머리/몸통/꼬리의 위 기하와 배율, 날개 무피해는 바닐라 원형 수치가 아니라 커스텀 재정의다. 실제 목 부위는 아래 neck proxy로 처리하며 부모 전체 AABB를 추가 타격면으로 중복 사용하지 않는다. 원래 비행/착지·접촉·부위피해·치유·블록 처리 hook이 확인되기 전 강화프로필 배포0.",
+    "neck": {
+      "shape": "현재 머리와 몸통 관절 중심을 잇는 캡슐",
+      "radius": 0.65,
+      "incoming_damage_multiplier": 0.5,
+      "implementation_required": true,
+      "dedup": "머리 우선 후 몸통/목/꼬리 중 한 부위 최대 피해만; 새 독립 보스 아님"
+    }
+  },
+  "crystals": {
+    "count": "실제 존재하는 중심섬 수정 UUID 집합. 기본10을 검사하되 부족분 재생성0",
+    "break_rule": "기존 파괴 가능한 수정에 유효 직접타/투사체/허용 폭발이 닿으면 실제 파괴. HP 증폭0",
+    "heal": "살아있는 실제 치유연결1개가 있을 때 총2 HP/sec, 상한maxHP. 여러수정 수만큼 중첩0. 연결중 수정 파괴 시 즉시중지",
+    "heal_range": 64,
+    "heal_line_of_sight": "바닐라 광선기반 연결관계 확인; 추가 벽투시 정보0",
+    "boss_damage_on_link_break": 0,
+    "explosion": "실제 수정 제거 후 전용 경고폭발44tick. 지연폭발과 기존즉시피해 중복 차단 구현요구",
+    "restore_on_wipe": false,
+    "cage": "실제 철창·흑요석 기둥과 허용 채굴/배치 사용. 철창 관통 공격 자동허용0",
+    "native_custom_boundary": "2HP/sec·64block·연결파괴 용피해0·44tick 지연폭발·비연쇄/블록피해0은 이 강화안의 구현 계약이다. 특히 공식 기본 용 안내에는 치유 중 수정파괴가 용에 추가 피해를 주므로 그 피해0은 유지 기능이 아니라 명시적 변경이다. 연결 광선 표시는 실제 선택된 연결만 쓰며 시야차폐 여부와 선택주기는 대상버전 코드 확인 후 계약에 연결한다. 미확인 API로 동작한다고 주장하지 않음."
+  },
+  "phases": [
+    {
+      "id": "P1",
+      "predicate": "alive AND actual_living_crystal_count>0",
+      "hp_threshold": null,
+      "goal": "수정접근/파괴와 지상공격을 자유 교대",
+      "cycle_ticks": 800,
+      "flight_ticks": 240,
+      "landing_ticks": 80,
+      "ground_ticks": 400,
+      "takeoff_ticks": 80
+    },
+    {
+      "id": "P2",
+      "predicate": "alive AND crystals==0 AND hp/maxHP>0.30",
+      "hp_threshold": 0.3,
+      "cycle_ticks": 800,
+      "flight_ticks": 240,
+      "landing_ticks": 80,
+      "ground_ticks": 400,
+      "takeoff_ticks": 80
+    },
+    {
+      "id": "P3",
+      "predicate": "alive AND crystals==0 AND hp/maxHP<=0.30",
+      "hp_threshold": 0.3,
+      "cycle_ticks": 880,
+      "flight_ticks": 200,
+      "landing_ticks": 80,
+      "ground_ticks": 520,
+      "takeoff_ticks": 80
+    }
+  ],
+  "phase_rules": {
+    "invulnerable_transition": false,
+    "threshold_damage_clamp": false,
+    "overflow_discard": false,
+    "death_before_phase": "실제 사망 최우선, 미실행 국면 강제재생0",
+    "p1_low_hp": "수정이 남으면 P1 유지, 전부 파괴 시 실제 HP에 따라 P2 또는 P3 직접진입",
+    "transition": "현재 실행공격 종료 후 다음 선택부터 국면변경. 예약공격 취소. 반복latch는 stage revision별1회",
+    "crystal_respawn": "금지; 새 외부 생성수정은 원래 UUID집합에 추가0. 운영오류로 검토",
+    "landing": "현재 실제 출구분수 착지동작을 전용 컨트롤러로 요청. 버튼 유도/순간이동 없음. 80tick 내 경로불가이면 피해없는 선회로 재경로; 자동패배/체력회복0",
+    "flight": "섬 중심으로부터 XZ반경12~36, 지면+12~24. 초당최대12블록/최대회전6도tick. 돌진만 지정속도 사용",
+    "ground": "머리 높이 지면+1.5~2.5, 접근 가능한 방향 최소2개 검사. 머리로 걸어가는 낮은 경로1개 이상. 성공 시각만 강제하지 않음",
+    "cycle_transition": "사망은 즉시 우선. 국면 조건은 매 피해/수정파괴 직후 실제 상태로 평가하되 현재 stance/cast 종료까지 보류. 다음 stance부터 새 국면의 해당 길이를 사용하고 이미 지난 stance를 재생하지 않음. 그 혼합 전환주기는 정상800/880tick 표와 구별해 로그. 쿨/피해창/HP 초기화0. 70%는 전환조건이 아니며 산술식0.7은 수정0 이후100→30% 구간의 체력몫이다."
+  },
+  "scheduler": {
+    "one_boss_pattern_at_a_time": true,
+    "breath_max_live_zones": 1,
+    "gap_after_pattern_end_ticks": 80,
+    "priority": [
+      "actual_death",
+      "crystal_explosion_external",
+      "phase_transition_after_current",
+      "landing_or_takeoff",
+      "breath",
+      "charge",
+      "bite",
+      "tail"
+    ],
+    "flying_slots": "첫 비행시작+20tick에 breath, 다음비행은 charge; 번갈아1회. 착지/이륙 중 새공격0",
+    "ground_slots": "착지완료+40tick bite; 이후 cooldown/80tick gap 충족하면 tail, bite 교대",
+    "cooldown_anchor": "시전 승인tick, 저장되는 gameTick 기준",
+    "ambient": "엔더맨 자연위험은 존중, 인위적 추가몹0. 현재 엔더맨 위험도 포함해 안전성 실측",
+    "conflict": "수정폭발은 보스 단일시전과 별도 외부 사건이다. 살아있는 모든 예정 피격자에게 현재 보스/수정 위험의 합집합 밖 도달경로가 있는지 검사. 불가하면 새 보스시전 금지, 수정 잔류폭발은 새 종료표시와 함께 최대80tick만 추가유예. 유예 만료에도 불가하면 겹친 보스공격을 취소하고 재검사. 지형·여러 수정폭발만으로도 불가하면 그 수정폭발의 피해/넉백을 취소하고 무피해 잔광으로 끝낸다. 수정파괴·치유연결 종료·개인기여는 유지. 경고 시간 강제단축·무한유예·이미 파괴된 수정 복원0.",
+    "stance_admission": "시전의 준비+경고+실행+회수 전체가 남은 stance 시간 안에 끝나며 이전 공격 종료 뒤80tick을 만족할 때만 승인. 부족하면 해당 슬롯을 생략하고 경고를 줄이거나 stance를 몰래 연장하지 않음. P3 비행200tick에서 +20tick 브레스180tick은 정확히 끝남. 실제 경로지연은 별도 비공격 이동시간이며 산술표 접근율을 보장하지 않음."
+  },
+  "arena": {
+    "new_island_or_mod": false,
+    "origin": "기존 중앙 출구분수의 실제 중심",
+    "preferred_ground_radius": 32,
+    "required_walkable": "중앙 및 적격 공격위치마다 폭3블록 이상 실제 통행로2개, 낙차1블록이하의 탈출경로, 경고시간 내 도보도달 검사",
+    "edge_clearance_for_custom_target": 8,
+    "safety_rule": "경고시작에 위험체적과 겹치는 모든 생존 플레이어를 대상으로 반응0.4초+네트워크0.3초+실제 도보탈출시간≤경고시간 검사. 대상선정된 한 명만 검사하지 않는다. 발 위치·실제 AABB·4.3blocks/sec·폭3 실제경로·낙차를 사용하고 보스/수정 위험 합집합을 고려한다. 불가하면 보스시전 취소, 수정은 scheduler/conflict의 유한 유예/무피해 종료. 늦은 참가자에게 현재 경고snapshot 전달 없이 과거피해 즉시적용0; 실제 수신시점과 남은 경고/도달성이 부족한 해당 피해사건은 보류가 아니라 미적용으로 끝낸다. 다음 정상예고부터 통상판정.",
+    "no_valid_target": "해당 커스텀시전 생략, 80tick 후 재판정. 지형 리셋/임의텔레포트0; 일반 위험 경고 유지",
+    "arrival_platform": "안전구역 아님. 실제 이동/재생성/기존위험 고지",
+    "block_work": "플레이어 소유/보호규칙 안의 발판·철창채굴·엄폐 허용; 강제 철거0",
+    "beds_and_explosions": "기존 허용규칙 안의 침대/폭발 전술 허용. 용 피해는 일반폭발→부위배율→공격자창, 무제한이중타0. 빨리죽여도 승리 인정. 폭발/낙하/공허의 기존 위험을 보스장판과 혼동하지 않음",
+    "new_mandatory_platform": false,
+    "native_dragon_block_policy": "강화 컨트롤러가 결합된 첫 용은 평상비행/착지/이륙/돌진 전 상태에서 용 유발 블록파괴0을 채택한다. 플레이어의 허용 채굴·배치와 기존 다른 원인의 지형 변화는 유지. 바닐라 드래곤의 블록 처리 hook을 확인하고 억제하는 신규 구현 요구이며 전역 mobGriefing을 임의 변경하지 않는다. 고체와 충돌하면 피해없는 재경로, 지형관통 순간이동/강제철거0."
+  },
+  "death_retry": {
+    "mode": "SHARED_WORLD_SINGLE_LIFE_NOT_INSTANCE",
+    "player_lives_limit": null,
+    "death_drops": "현행 서버 통상규칙 그대로; 지급 장비 자동보험/복구0",
+    "return_portal_before_dragon_death": false,
+    "all_dead": "살아있는 동일용·HP·수정·지형 유지. 실제 살아있는 수정 연결이 로딩되어 있으면2HP/sec 실제회복 가능, 의도적 전멸리셋/즉시완치0",
+    "no_player_loaded": "일시시전취소, 엔티티 실제청크정책 존중, 오프라인 경과치유/전투강제진행0",
+    "reentry": "실제 요새포탈/장비로 재진입; 즉시참가 허용, 과거기여 유지",
+    "reconnect": "실제 엔더좌표 위험과 현재 보스상태 알림, 무적/탈출/공짜HP0",
+    "restart": "save된 동일엔티티/HP/수정 대조. 일시공격·도트는 취소, 다음 커스텀공격은 재경고부터80tick 후, 치유는 실제연결로 재개",
+    "disconnect_grace_reward": "시간조건 없음. 이미 수행한 기여는 무기한 유지. 끊김시간을 신규 전투기여로 계산0",
+    "combat_timeout": null,
+    "checkpoints": [
+      "C04 지상 실제물자/정보",
+      "현재 수정UUID별 파괴와 용HP",
+      "실제 사망원장",
+      "귀환출구검증",
+      "알취급원장 및 미해결 복구",
+      "개인초회선택권"
+    ],
+    "no_reset": "보스복제/수정재생/지형되감기/지급반복0"
+  },
+  "story_binding": {
+    "victory": "bound first_dragon_uuid의 실제 death event와 영속 death evidence. HP0만 또는 애니메이션만으로확정0",
+    "world_unlock": "실제 최초사망을 C05 공용승리로 기록 후 기존세계 문턱연결과 C06 접근. 출구/경계 적용 실패는 별도복구작업, 죽은용부활0",
+    "return": "실제 출구가 열리고 사용할 수 있는지 확인. 구현실패를 대사로 출구완료표시0",
+    "egg": "세계1개 기존실물. 생성/소유/보관이력별 상태; 수령자/좌표 기록, 개인보상 포함0",
+    "knowledge": "플레이어 노출명은 첫 용이 남긴 알. 정체/후기사건은 전투로그/UI에서 비공개. 실제관측/전달/열람만 개인지식 갱신",
+    "prepared_not_participated": "준비기여 유지하되 참전/초회토벌장비권 소급0",
+    "early_vanilla_kill": "실제 최초죽음 근거를 현재세계에 반영. C01~C04 미경험/개인찬성·개인관계는 채우지 않음",
+    "post_death_first_npc_contact": "첫 용 사망 후 처음 만나는 NPC는 자기 관측·실제 전달받은 보고만 말한다. 세계 C06 접근과 개인 C01~C04 미수행은 병존한다. 최초토벌 참가권/장비권은 실제 과거 기여 증거로만 복구하고 사후 인사·기록열람·NPC대사로 새 권리를 만들지 않는다. 실제 전투참가자는 NPC를 늦게 만나도 미수령권을 유지한다."
+  },
+  "patterns": [
+    {
+      "id": "breath",
+      "name": "숨결 낙하지점",
+      "phases": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "stance": "FLY",
+      "cooldown_ticks": 360,
+      "target": "P1 최근120tick 실제수정공격자 우선, 없으면 실제참전자 중 전회대상 제외 최근표적순환. 1인만 남으면 그1인. P2/3 전회대상 제외 순환. 출정명부/피해순위가 아닌 현재생존/적격지형/시야 대상",
+      "target_range": 64,
+      "lock": "경고시작tick 지상좌표 고정, 추적0",
+      "prepare_ticks": 10,
+      "warning_ticks": 50,
+      "execution_ticks": 100,
+      "recovery_ticks": 20,
+      "shape": "실제 반경5, 높이3의 지면원통; 보이는외피반경5.5. 단일 지면층만",
+      "visible_radius": 5.5,
+      "hit_radius": 5,
+      "raw_damage": 4,
+      "pulses_relative_execution_ticks": [
+        0,
+        20,
+        40,
+        60,
+        80
+      ],
+      "hit_per_target_max": 5,
+      "source": "ORDINARY_MAGIC_BREATH; 갑옷비적용, 등록보호/저항 적격처리, 화염저항으로 소거0",
+      "parry": false,
+      "H02": false,
+      "dash": "이동허용, 기존 기술의 해당피해 회피프레임만 인정. 장판전체 지속면역0",
+      "shield": "브레스 장판은방패불가",
+      "knockback": 0,
+      "fx": "준비:목을젖히고 입안얇은빛. 경고:빈내부/끊긴둘레와 바깥방향 화살; 50tick 수축눈금. 실행:낮은막/지면 균열빛, 펄스마다0.1초 밝아짐. 명중:서버event 짧은발목접촉과 국소음. 소멸:20tick내 테두리접힘, 잔상무피해",
+      "sound": "준비64블록 저음흡기/경고점48블록 주기음, 화면방향표식; 전역방송0"
+    },
+    {
+      "id": "charge",
+      "name": "가로지르는 비행",
+      "phases": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "stance": "FLY",
+      "cooldown_ticks": 480,
+      "target": "현재생존 적격대상 중 용에서 가장먼 대상; 동률 UUID정렬. 전회대상 가능. 경고시점60블록 이내, 경로 양측 실제탈출로 필요",
+      "target_range": 60,
+      "lock": "경고시작 원점/방향고정. 목표이탈 후 재조준0",
+      "prepare_ticks": 10,
+      "warning_ticks": 60,
+      "execution_ticks": 50,
+      "recovery_ticks": 40,
+      "shape": "지면+2 높이 중심의 반경2 swept capsule, 최대길이30. 시각 띠폭5(중심선±2.5), 실제폭4. 플레이어AABB와 겹침",
+      "speed_blocks_tick": 0.6,
+      "visible_half_width": 2.5,
+      "hit_radius": 2,
+      "raw_damage": 10,
+      "hit_per_target_max": 1,
+      "source": "ORDINARY_PHYSICAL",
+      "parry": false,
+      "H02": false,
+      "dash": "이동/기존적격회피허용",
+      "shield": "기존방향방패판정 허용, 방패내구/쿨 변경0",
+      "knockback": 0.6,
+      "knockback_vertical": 0,
+      "fx": "준비:날개닫고 머리낮춤. 경고:실제지면에 점선중심과 양측띠, 끝점화살. 실행:몸체가중심선 따라이동, 날개잔상무피해. 명중:개별event 타점스파크. 소멸:40tick 상승회복, 꼬리잔상10tick 종료",
+      "sound": "준비64블록 두번날갯짓, 경로48블록 바람음. 충돌음은실제event",
+      "solid_collision": "첫 실제고체에서정지; 지형파괴0, 체력자해0. 회복40tick은 그대로",
+      "launch_path": "비행 중 실제 용 위치에서 돌진 시작점으로 피해 없이 이동한다. 지면+2의 시작점에 실제 도착하고 전체160tick 시전이 남은 FLY 시간에 들어갈 때만 승인. 준비/경고 중 순간이동이나 위치보정 금지. 0.6block/tick의50tick 실제 이동만 판정하고 경로불가·잔여시간 부족은 그 슬롯 생략."
+    },
+    {
+      "id": "bite",
+      "name": "정면 물기",
+      "phases": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "stance": "GROUND",
+      "cooldown_ticks": 180,
+      "target": "머리에서5블록내 시야있는 가장가까운 실제생존자. 없으면 시전0",
+      "target_range": 5,
+      "lock": "경고시작방향고정",
+      "prepare_ticks": 8,
+      "warning_ticks": 24,
+      "execution_ticks": 2,
+      "recovery_ticks": 30,
+      "shape": "머리 입관절 원점 전방70도 부채꼴, 길이5 높이3. 보이는외피5.5/80도",
+      "visible_range": 5.5,
+      "hit_range": 5,
+      "raw_damage": 10,
+      "hit_per_target_max": 1,
+      "source": "ORDINARY_PHYSICAL_MELEE_FRONT",
+      "parry": true,
+      "H02": "원래 전방120도·공격원점4블록·유효1초 조건 충족시에만×0.70. 4~5블록에서는H02불가를UI알림",
+      "dash": "이동/기존적격회피허용",
+      "shield": "기존방향방패판정 허용",
+      "knockback": 0,
+      "fx": "준비:턱올림. 경고:턱끝/지면에 갈라진V윤곽24tick, 옆틈 비움. 실행:짧은턱닫힘2tick. 명중:타점한번만. 소멸:턱회수30tick 반격시간",
+      "sound": "준비32블록 턱마찰/명중16블록, 경고음 공격음과구별"
+    },
+    {
+      "id": "tail",
+      "name": "후방 꼬리쓸기",
+      "phases": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "stance": "GROUND",
+      "cooldown_ticks": 220,
+      "target": "몸통뒤120도/8블록내 생존자, 가장가까운1인 기준 방향고정. 빈후방이면 시전0",
+      "target_range": 8,
+      "lock": "경고시작몸통방향고정",
+      "prepare_ticks": 8,
+      "warning_ticks": 44,
+      "execution_ticks": 8,
+      "recovery_ticks": 40,
+      "shape": "몸통중심 후방120도 부채꼴, 내반경2 외반경8 높이2. 시각외반경8.5/130도",
+      "visible_range": 8.5,
+      "hit_range": 8,
+      "raw_damage": 8,
+      "hit_per_target_max": 1,
+      "source": "ORDINARY_PHYSICAL_MELEE_REAR",
+      "parry": true,
+      "H02": false,
+      "dash": "이동/기존적격회피허용",
+      "shield": "기존방향방패판정 허용",
+      "knockback": 0.8,
+      "knockback_vertical": 0,
+      "fx": "준비:꼬리한쪽올림. 경고:빈내부 부채꼴호/시작방향44tick. 실행:꼬리관절 실제sweep8tick. 명중:1cast당1회. 소멸:40tick 지면에내렸다회수, 먼지장식10tick",
+      "sound": "준비48블록 돌긁음, 실행32블록 낮은휙음; 날개바람과서로다름",
+      "geometry_resolution": "경고 부채꼴은 피해상한 외피다. 실제 꼬리관절 sweep와 명시한 후방부채꼴의 교집합에만1회 판정. 애니메이션과 판정부피가 어긋나면 출시 불가; 보이지 않는 부채꼴 전체 즉시타격으로 대체0."
+    },
+    {
+      "id": "crystal_break",
+      "name": "수정 파괴 잔류폭발",
+      "phases": [
+        "P1"
+      ],
+      "stance": "WORLD_OBJECT",
+      "cooldown_ticks": 0,
+      "target": "파괴된 실제수정위치, 플레이어추적없음",
+      "target_range": 6,
+      "lock": "실제파괴좌표",
+      "prepare_ticks": 0,
+      "warning_ticks": 44,
+      "execution_ticks": 1,
+      "recovery_ticks": 10,
+      "shape": "실제 반경6 구체, 시각외피6.5. 철창/고체 노출도 e[0,1]로감쇠. 파괴자도포함",
+      "visible_radius": 6.5,
+      "hit_radius": 6,
+      "raw_damage": "12*max(0,1-distance/6)*exposure",
+      "hit_per_target_max": 1,
+      "source": "ORDINARY_EXPLOSION; 갑옷/적격보호/저항 적용",
+      "parry": false,
+      "H02": false,
+      "dash": "이동/기존폭발적격회피프레임만; 공허생존없음",
+      "shield": "현행폭발방패파이프라인, 검증불가이면감쇄보장0",
+      "knockback": "최대수평0.8*(1-r/6)*exposure, 수직0",
+      "block_damage": false,
+      "chain_crystal_damage": false,
+      "fx": "준비:실제파괴/광선즉시끊김. 경고:기둥주변반투명구면띠와 실제표면링44tick. 실행:비어있는고리확장1tick, 큰연막0. 명중:개별event 짧은파편음. 소멸:10tick 잔광, 피해없음",
+      "sound": "경고48블록 유리떨림 상승음, 실행48블록 짧은파열음",
+      "phase_persistence": "수정 실제파괴 시 생성한 잔류폭발 event는 마지막 수정이어서 P2/P3로 넘어가도 경고/판정을 유지한다. phases=P1은 생성조건이며 이미 생성한 사건의 취소조건이 아니다. 실제 용사망·서버재시작은 transient 종료 정책에 따라 무피해 종료하며 재생성0."
+    }
+  ],
+  "player_skill_boundary": {
+    "skill_stats_changed": 0,
+    "H02_existing_id": "mythictrpg:guan_yu_rearguard",
+    "H02_unchanged": {
+      "mana": 24,
+      "cooldown_ticks": 240,
+      "prepare_ticks": 4,
+      "defense_ticks": 20,
+      "recovery_ticks": 6,
+      "multiplier": 0.7,
+      "cone_degrees": 120,
+      "distance": 4
+    },
+    "H02_boss_allowlist": [
+      "bite"
+    ],
+    "parry_boss_allowlist": [
+      "bite",
+      "tail"
+    ],
+    "dash_ordinary_allowlist": [
+      "bite",
+      "tail",
+      "charge",
+      "breath",
+      "crystal_break"
+    ],
+    "forced_gimmick_damage_allowlist": [],
+    "forced_gimmick_rule": "새 무적우회/강제벌칙0. 실제공허·낙하와 기존플레이어기술의 개별예외 유지. 패링성공이수정파괴/용사망대신0",
+    "other_skills": "스킬별원문쿨/마나/잠금/회피프레임/조건 그대로. CC면역 대상이면피해와CC별도판정. 화염저항·정화로브레스삭제불가",
+    "mana": {
+      "base": 200,
+      "regen_max_fraction_per_second": 0.01
+    },
+    "accessory_slots": 2,
+    "cross_effect_contract": {
+      "basis": "전역기준의 기존 효과를 소급변경하지 않으며 기본공격·무가호·무장신구가 출발 모델이다. 아래는 C05 통합 구현/인수 조건이며 모든 조합이 이미 검증됐다는 뜻이 아니다.",
+      "damage_order": "용에게 주는 피해: 원래 직접공격 계산(힘 적격이면 A+3L+0.04*A*L, 스킬/발사체 자동가산0)→커스텀 부위배율→보스 방어0의 단일 감쇄경로→적격 최종공격장신구 가산→0하한→공격자10tick 최대차이 억제. 플레이어가 받는 피해: 패턴 원시피해→피해유형 적격 갑옷/강인함→등록보호·저항→적격 H02→강인 고정감소→0하한→흡수잔량→실제HP. 이미 처리한 vanilla 감쇄를 또 적용하지 않는다. 공격장신구는 실효 적격사건에1회, 억제된0타·멀티파트·반사재귀로 추가proc0. 현행 코드 순서와 다르면 배포 전 이 계약과 대조·재승인한다.",
+      "protection": "등록보호 P의40/(40+P)와 vanilla 인챈트 보호를 같은 값으로 두 번 세지 않는다. 기준 철 A15/T0/P8/R0, 다이아 A20/T8/P0/R0, 무갑옷 A0/T0/P0/R0. 실제 인챈트 환산/피해태그는 코드확인 전 미검증. 저항 R은 전역 기술상한4이며 새 보상상한과 기존 예외는 각각 보존.",
+      "haste": "성급함/공격속도는 실제 충전간격과10tick창을 함께 검산. 스킬쿨 자동감소0. 2hits/sec를 넘는 입력의 모든타를 단순 DPS에 곱하지 않음.",
+      "survival": "생명력 강화는20+4L, 흡수는별도 잔량·소모원장. 재접속/reapply/우유/교체로무료충전0. 저항·강인고정감소·재생·음식·응급회복을 같은실수열에서 합산하며 최대HP변경과 응급25% 하향경계 트리거를 구별한다. 응급은생존후5초회복이며공허부활0.",
+      "mobility": "신속+속도 장신구·점프강화+추가점프·느린낙하+낙하흉갑은 실제 충돌/도달성을 따른다. 공중교체/재접속 점프충전0, 느린낙하가 공허탈출권이 되지 않음. 기준 도보회피를 특정버프 전제로 줄이지 않음.",
+      "skills_accessories": "연계는 원문이 지정한 적격 무기시전당1회만 습득쿨 감소, 다단/멀티파트/도트마다발동0. 재정비는 시전전체 적중0 판정 뒤 지불마나에만 원문비율 환급하고 일부적중/억제된후속타를 전부빗나감으로보지 않음. 정화는일반CC만이며 브레스지형·공허·기믹삭제0. 독립2권리만2슬롯 허용, 교체해도 각권리 쿨보존.",
+      "targeting": "투명화가 보스표적제외를 보장한다는 새효과0. 실제 버전/기술의 감지규칙을 검사하고, 이미 고정한 지면경고는 투명화로삭제0. 야간투시가 필수선 대비를 없애지 않는지 검사.",
+      "reward": "행운은알·3택1고유장비·초회권 수량을늘리지 않으며 골드장신구는 기본골드0에 새재화를생성하지 않음.",
+      "support": "실제 소유/가용성/동의가 있는 특수지원만 원문비용·한도·스폰/복귀조건 유지. CC면역과 피해를 분리하고 보스가1체라는 이유로 광역최대대상수만큼 중복피해0. NPC가 첫승리를 대행했다는 서사 추가0."
+    }
+  },
+  "presentation": {
+    "common_reference": "퀘스트/스킬연출/00_공통연출기준.json",
+    "priority": "보스예고>공격타점>아군장식>잔상",
+    "empty_interiors": true,
+    "camera_shake": false,
+    "forced_camera": false,
+    "depth_test": true,
+    "cover": "벽너머 지면을투영하지 않음; 시야막힌 본인위험은방향UI와음으로 중복경고. 실제부피는벽/층처리와일치",
+    "party_budget": "중심반경8/5인 장식동시120 최초목표, 아군장식알파×0.55. 필수예고제거0",
+    "alpha": {
+      "core": 0.85,
+      "edge": 0.35,
+      "afterimage": 0.18
+    },
+    "danger_visibility": "64블록 안 관측자 및 현재위험체적에 겹치는 플레이어에게필수예고. 그밖 장식0. 공격자영역선표시는색+선형+소리중복",
+    "sync": "서버castId/worldUUID/dragonUUID/startTick/origin/vector/shapeRevision/eventId 권위. late join 현재단계만, tombstone종료우선, 피해/성공음event중복0",
+    "network_limits": "경고패킷 유실/역순 재전송 및 snapshot 구현, 150/300ms 지연 인수. 피해클라예측0",
+    "lag": "경고·쿨 서버tick. TPS저하에서 실초가늘어남. 공격판정 전 필수예고전송확인로그 필요; 텔레그래프없는catchup 일괄피해0"
+  },
+  "reward": {
+    "scope": "B3 초회보스 주보상1. 영웅 역할장비3택1; 가호/스킬/장신구 추가0",
+    "first_right_key": "worldUUID+firstDragonUUID+playerUUID+C05_CHOICE",
+    "source": "QUEST 단일지급경로; RAID_DIRECT/FTB/Story중복0",
+    "quantity": 1,
+    "eligibility": "실제전투에서 유효한 행위1개 이상. 시간/DPS순위/막타 조건없음. 아래 event owner/대상/실효량 증거 필요",
+    "actions": [
+      "실제 용 유효피해>0",
+      "실제 원래 수정파괴 소유자",
+      "현재 참전자에게 전투 중 유효회복 HP합>=2",
+      "살아있는 수정 접근/동료귀환에 실제 사용된 발판3블록 이상 배치 및 다른참전자 또는자신의 통과",
+      "표적된 보스공격을 실제회피하거나방패/패링으로막은 event1개",
+      "동료에게 전달한 음식/화살/회복물품1개가 같은전투에서 실제소모됨"
+    ],
+    "solo_support": "자기가쓴발판통과/실제회피도인정; 남에게시켜야하는조건0",
+    "death_or_offline": "사망·끊김 전 수행기여 보존, 승리시 AVAILABLE권리. 마지막접속/생존조건0",
+    "preparation": "엔드외 준비공로는별도기록, 장비권생성0",
+    "late_after_death": "초회권0, 현재C06/자력성장만",
+    "choice_state": [
+      "AVAILABLE",
+      "CHOICE_LOCKED",
+      "DELIVERY_PENDING",
+      "DELIVERED"
+    ],
+    "choice_lock": "명시선택 순간 canonical design_id와 수량1을 영속 고정한다. 선택 전만 AVAILABLE, 선택 후 인벤부족이면 CHOICE_LOCKED 또는 DELIVERY_PENDING으로 유지하고 바닥드롭/재선택0. 권리는 만료되지 않는다.",
+    "idempotency": "claimUUID 부착실물+지급영수증 대조. 불확실재시도는확인후누락분만; DB/인벤원자성 가정0",
+    "repeat_quantity": 0,
+    "repeat_resurrection": false,
+    "vanilla_loot": "실제용최초사망의원래XP/통상드롭 유지, 커스텀XP0/금0/소모품0. 알은공동유일물별도",
+    "stock": "NPC보유재고를꾸미지않는 초회시스템 선택보상. 확인된초회기여자마다1개 예약생성권, 다른수령자가차감할공용한도없음. 이것은신규구현요구. 최대품목정의3, 플레이어별실물1",
+    "items": [
+      {
+        "design_id": "C05_SURVIVAL_CHEST",
+        "name": "귀환 준비의 흉갑",
+        "quality": "영웅",
+        "base": "diamond_chestplate형 커스텀",
+        "quantity": 1,
+        "armor": 8,
+        "toughness": 2,
+        "protection_enchantment": 0,
+        "knockback_resistance": 0.2,
+        "durability": 800,
+        "repair": "다이아몬드1개당최대내구25%=200, 초과소실; 기존모루레벨비용 유지",
+        "special": "이 흉갑을 실제착용한동안 낙하피해만 일반방어후×0.80; 공허/폭발/브레스적용0. 새modifier구현요구",
+        "weapon_skill": null,
+        "intrinsic_E": 10,
+        "sidegrade": "네더라이트흉갑 armor8 toughness3 넉백.1 대비강인함1낮고넉백.1높음/낙하20%보조. 네더라이트인챈트고효율품보다모든피해상위아님",
+        "tradeoff": "흉갑슬롯, 외투/겉날개와동시0. 장신구칸소비0"
+      },
+      {
+        "design_id": "C05_LANDING_SWORD",
+        "name": "착지의 틈을 노리는 검",
+        "quality": "영웅",
+        "base": "diamond_sword형 커스텀",
+        "quantity": 1,
+        "total_attack_including_base1": 9,
+        "attack_speed": 1.6,
+        "nominal_dps": 14.4,
+        "range": 3,
+        "targets": 1,
+        "prepare_ticks": 0,
+        "recovery": "완충간격12.5tick; 실제공격쿨파이프라인",
+        "durability": 1800,
+        "repair": "다이아몬드1개당최대내구25%=450, 기존모루레벨비용",
+        "initial_sharpness": 0,
+        "new_enchant_cap": 3,
+        "special": null,
+        "weapon_skill": null,
+        "intrinsic_E": 8,
+        "sidegrade": "무인챈트네더라이트검총8보다1타+1, 날카로움V 보유검총11보다약함. 추가이동/무적/광역0. 좋은기존검몰수0"
+      },
+      {
+        "design_id": "C05_OPEN_PATH_BOW",
+        "name": "열린 길의 활",
+        "quality": "영웅",
+        "base": "bow형 커스텀",
+        "quantity": 1,
+        "full_draw_ticks": 20,
+        "release_recovery_ticks": 4,
+        "full_draw_raw_damage": 10,
+        "partial_draw": "사용20tick미만발사불가; 승인전취소는화살소모0",
+        "nominal_dps": 8.333333333333334,
+        "range_max": 48,
+        "projectile_speed_blocks_tick": 3,
+        "gravity_per_tick": 0.05,
+        "spread_degrees": 0,
+        "crit_random_bonus": false,
+        "ammo": "일반화살1/승인발사, 회수는현행정책; 유도0 무한0",
+        "durability": 700,
+        "durability_cost": 1,
+        "repair": "실4개당최대내구25%=175, 기존모루비용; 레시피등록요구",
+        "initial_power_enchantment": 0,
+        "power_compatibility": "신규등록품은힘/화염/밀어내기/무한 인챈트 불가, 내구/수선허용; 기존활변경0",
+        "special": "고정완충피해와일정분산으로조준재현성. 원거리로머리노출시간확보, 후딜이동허용",
+        "weapon_skill": null,
+        "intrinsic_E": 8,
+        "sidegrade": "고성능힘V활보다순간피해낮음. 원거리보상은모든기존활상위가아니며 48블록·탄약·당김/후딜비용. 원거리역할없는사람의선택"
+      }
+    ],
+    "claim_access": "세계승리 확정 뒤 개인에게 확인된 기여·AVAILABLE/미수령 상태를 기존 퀘스트 기록에서 조회하고 3택1 명시선택을 요청하는 UI를 구현한다. 특정 NPC 첫대화·개인 C01~C04 완료·현재생존을 청구 추가조건으로 요구하지 않는다. 아이템 정의/등록이 불완전하면 권리만 보존하며 지급 완료로 쓰지 않는다.",
+    "definition_link": {
+      "canonical_ids": [
+        "C05_SURVIVAL_CHEST",
+        "C05_LANDING_SWORD",
+        "C05_OPEN_PATH_BOW"
+      ],
+      "runtime_registration": "미등록. 별도 어댑터가 canonical ID마다 실제 item/variant 하나를 매핑해야 한다. 매핑 미확인은 DELIVERY_PENDING 유지, 바닐라 기본아이템을 같은 보상이라고 임시 지급0.",
+      "growth_scope": "C03 장비는 별도 원천 정의, C05 세 ID는 본 정의, C26/성장 비교는 이 동일 ID와 능력치 참조만 사용. 성장표·재열람·버전개정·다른 지급경로에서 새 first_right를 만들지 않음.",
+      "transfer": "개인 선택권은 타인에게 이전0. 지급된 실물의 실제 기존 거래/대여 정책을 임의변경하지 않으며, 거래가 가능해도 받는 이의 C05 최초권리가 생성·소모되지 않는다."
+    },
+    "event_provenance": "기여는 사망확정 전 bound firstDragonUUID 전투의 eventID/ownerUUID/대상/실효량/시각으로 저장한다. 회복은 실효HP만, 회피는 유효표적·회피행동·종료판정이 확인된 사건만, 보급은 실제 물품이 같은전투에서 소모된 근거만. 자기·동료 고의 피해/치유 반복을 새 권리로 늘리지 않음. 발판은 실제 수정접근·동료귀환 경로 사용으로 확인하고 무관한3블록 왕복은 불인정. 한 번의 정당한 미량기여는 원래 정책대로 인정하며 DPS/시간 추가컷0."
+  },
+  "persistence": {
+    "keys": [
+      "worldUUID",
+      "firstDragonUUID",
+      "designVersion",
+      "initialN",
+      "maxHP",
+      "actualHP",
+      "crystalUUIDStates",
+      "currentPhase",
+      "stageRevision",
+      "globalGameTick",
+      "cooldownRemainingTicks",
+      "contributionEventIDs",
+      "deathEventID",
+      "exitVerified",
+      "eggCustodyState",
+      "rewardClaimIDs"
+    ],
+    "write_points": [
+      "실제수정파괴/피해/기여/사망 WAL",
+      "20tick마다 상태snapshot",
+      "청크언로드/서버저장",
+      "선택확정/지급전후 영수증"
+    ],
+    "reconcile": "실물엔티티가 생존·HP/수정을 결정, 영속 사망증거가 있으면 미확인새용을 원본으로 채택하지 않음. 불일치시코어서사/보상추가쓰기를보류하고운영자복구. 살아있는기존월드의통상플레이를허위동결완료하지않음",
+    "death_commit": "deathEvidence확정→세계승리1회→각기여자권리1회→출구/알/경계별확인. 각하위단계retry는영속멱등키",
+    "transient": "실행공격/도트/파티클은재시작재생0. 쿨잔여 유지. 재접속으로기술마나/장신구쿨충전0"
+  },
+  "implementation_requirements": [
+    "기존dragon UUID와멀티파트를연결하는전용phase/controller",
+    "기본dragon AI 피해와커스텀피해중복차단",
+    "공격자별10tick피해억제와부위/폭발event dedup",
+    "실제수정파괴/치유/지연폭발분리",
+    "지면/고체/위험영역을읽는도달성검사",
+    "서버권위예고·hitbox·입자·소리·저TPS/재접속동기화",
+    "WAL/snapshot/세계사실·개인기여·보상권원장연결",
+    "기존퀘스트/Story파서에맞는별도adapter와ID등록",
+    "새보상3종과낙하modifier/활탄도·인챈트제한·실물claim연결",
+    "실제출구/단일알/경계개방검증과복구",
+    "버전고정된 실제 vanilla 멀티파트·목·블록파괴·치유연결 hook 확인과 커스텀 차이표",
+    "stance 잔여시간 시전승인 및 모든 위험대상 도달성·복수수정 유한취소",
+    "고정 initialN과 시간별 실제참가·파티무관 기여원장",
+    "전역 버프/장신구/스킬 피해순서·흡수·쿨·교차조합의 단일 어댑터 인수"
+  ]
+}

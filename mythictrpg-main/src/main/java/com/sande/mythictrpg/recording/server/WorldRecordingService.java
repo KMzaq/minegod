@@ -203,7 +203,8 @@ public final class WorldRecordingService implements GameRecordingPort {
     public long projectionGeneration() { return projectionGeneration.get(); }
     public boolean projectionAuthorityStable() { return pendingProjectionWrites.get() == 0 && readAuthorityStable(); }
     public RecordingRetrievalSettings.Policy retrievalPolicy() { return retrievalPolicy; }
-    boolean shadowReadsEnabled() { return settings.archiveMode() != RecordingSettings.Mode.OFF && retrievalPolicy.shadowReadsAllowed(); }
+    // Historical method name: the same scoped native issuer serves SHADOW diagnostics and explicit NEW.
+    boolean shadowReadsEnabled() { return settings.archiveMode() != RecordingSettings.Mode.OFF && retrievalPolicy.nativeReadsAllowed(); }
     boolean lexicalMaintenanceEnabled() { return settings.archiveMode() == RecordingSettings.Mode.SHADOW; }
     CompletableFuture<RecordedRoomSearch.Result> readRoom(RecordedRoomSearch.Scope scope,
             MemoryReadSession.Query query, MemoryReadSession.Budget readBudget, long watermark, long before) {

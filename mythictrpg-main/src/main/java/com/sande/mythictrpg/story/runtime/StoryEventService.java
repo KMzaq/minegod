@@ -58,6 +58,7 @@ public final class StoryEventService {
                     .thenComparing(value -> value.scheduleId().toString()));
     private final Set<UUID> queuedSchedules = new HashSet<>();
     private boolean draining;
+    private boolean reevaluatingLatched;
     private MinecraftServer activeServer;
 
     private StoryEventService() {}
@@ -133,12 +134,17 @@ public final class StoryEventService {
     }
 
     public void onServerStopped(ServerStoppedEvent event) {
-        pending.clear(); due.clear(); queuedSchedules.clear(); draining = false; activeServer = null;
+        pending.clear(); due.clear(); queuedSchedules.clear(); draining = false;
+        reevaluatingLatched = false; activeServer = null;
     }
 
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         StoryRuntimeState state = StoryRuntimeState.get(player.server);
+        if (!state.isReady()) return;
+        state.schedules().values().stream()
+                .filter(value -> value.initiatingPlayerId().filter(player.getUUID()::equals).isPresent())
+                .forEach(this::enqueueSchedule);
         state.presentations().values().stream()
                 .filter(value -> value.audiencePlayerId().equals(player.getUUID()))
                 .filter(value -> value.status() == PresentationStatus.PENDING)
@@ -211,11 +217,24 @@ public final class StoryEventService {
 
     private AttemptResult attempt(MinecraftServer server, EventDefinition definition, StorySignal signal,
             TriggerDefinition trigger) {
+        return attempt(server, definition, signal, trigger,
+                resolveScope(server, definition.scope(), signal.initiatingPlayerId()));
+    }
+
+    private AttemptResult attempt(MinecraftServer server, EventDefinition definition, StorySignal signal,
+            TriggerDefinition trigger, ScopeResolution scope) {
         StoryRuntimeState state = StoryRuntimeState.get(server);
-        ScopeResolution scope = resolveScope(server, definition.scope(), signal.initiatingPlayerId());
-        if (scope == null) return AttemptResult.rejected("Story event scope requires an initiating player");
-        if (!repeatAllowed(state, definition, scope.scope, signal.gameTime()))
-            return AttemptResult.rejected("Story event repeat policy rejected the signal");
+        if (!state.isReady()) return AttemptResult.rejected("Story state is unavailable");
+        if (scope != null && scope.scope.type() != definition.scope())
+            return AttemptResult.rejected("Story event scope changed while pending");
+        if (scope == null || !initiatorAvailable(server, definition.scope(), signal.initiatingPlayerId()))
+            return AttemptResult.deferred("Story event scope requires an online initiating player");
+        if (!repeatAllowed(state, definition, scope.scope, signal.gameTime())) {
+            if (state.resolvedCount(definition.id(), scope.scope) >= definition.repeatPolicy().maximumApplications())
+                return AttemptResult.rejected("Story event repeat policy is exhausted");
+            if (trigger != null && trigger.mode() == TriggerMode.LATCHED) latch(state, definition, trigger, signal, scope);
+            return AttemptResult.deferred("Story event repeat policy is temporarily unavailable");
+        }
         ConditionResult prerequisites = ConditionEngine.INSTANCE.evaluate(definition.prerequisites(),
                 ConditionContexts.forStory(server, signal.initiatingPlayerId(), scope.scope));
         if (prerequisites != ConditionResult.MATCH) {
@@ -226,16 +245,23 @@ public final class StoryEventService {
             state.addAudit(signal.gameTime(), prerequisites == ConditionResult.UNKNOWN
                             ? "BLOCKED_UNKNOWN_CONDITION" : "PREREQUISITE_NO_MATCH",
                     definition.id() + " scope=" + scope.scope);
-            return AttemptResult.rejected("Story event prerequisites did not match");
+            return AttemptResult.deferred("Story event prerequisites did not match");
         }
 
+        Set<ResourceLocation> reserved;
+        try { reserved = com.sande.mythictrpg.content.StoryAdmission.resources(definition.id(), signal.initiatingPlayerId()); }
+        catch (IllegalArgumentException invalid) { return AttemptResult.rejected(invalid.getMessage()); }
+        if (!com.sande.mythictrpg.content.StoryAdmission.available(reserved, state.eventInstances().values())) {
+            if (trigger != null && trigger.mode() == TriggerMode.LATCHED) latch(state, definition, trigger, signal, scope);
+            return AttemptResult.deferred("Story event resource is currently reserved");
+        }
         int sequence = state.nextSequence(definition.id(), scope.scope);
         String instanceId = definition.id() + "|" + scope.scope.type().name().toLowerCase()
                 + ":" + scope.scope.key() + "|" + sequence;
         EventInstance instance = new EventInstance(instanceId, definition.id(), scope.scope,
                 scope.frozenAudience, signal.initiatingPlayerId(), signal.signalId(), EventStatus.TRIGGERED,
                 1, definition.fingerprint(), Optional.empty(), OptionalLong.empty(), signal.gameTime(),
-                OptionalLong.empty(), Set.of(), sequence);
+                OptionalLong.empty(), Set.of(), sequence, reserved);
         state.putEvent(instance);
 
         if (definition.resolutionPolicy() == ResolutionPolicy.PLAYER_CHOICE) {
@@ -262,7 +288,7 @@ public final class StoryEventService {
             OutcomeDefinition outcome, OptionalLong roll) {
         StoryRuntimeState state = StoryRuntimeState.get(server);
         long gameTime = server.overworld().getGameTime();
-        String validation = validateEffects(state, definition, original, outcome);
+        String validation = validateEffects(server, state, definition, original, outcome);
         if (validation != null) {
             state.putEvent(original.withStatus(EventStatus.RECOVERY_REQUIRED));
             state.addAudit(gameTime, "EFFECT_VALIDATION_FAILED", original.instanceId() + ": " + validation);
@@ -272,9 +298,9 @@ public final class StoryEventService {
         state.putEvent(decided);
 
         Set<ResourceLocation> applied = new LinkedHashSet<>();
-        List<Effect.RelationTransition> externalRelations = new ArrayList<>();
+        List<Effect> externalRelations = new ArrayList<>();
         for (Effect effect : outcome.effects()) {
-            if (effect instanceof Effect.RelationTransition relation) externalRelations.add(relation);
+            if (externalEffect(effect)) externalRelations.add(effect);
             else {
                 applyCanonical(server, state, decided, effect, gameTime);
                 applied.add(effect.effectId());
@@ -285,7 +311,8 @@ public final class StoryEventService {
         var external = applyExternalEffects(server, committed, externalRelations, false);
         if (!external.complete()) {
             state.putEvent(state.eventInstance(committed.instanceId()).orElseThrow()
-                    .withAppliedEffects(external.applied(), EventStatus.EXTERNAL_EFFECT_PENDING));
+                    .withAppliedEffects(external.applied(), requiresManualReview(server, committed, externalRelations, external.applied())
+                            ? EventStatus.RECOVERY_REQUIRED : EventStatus.EXTERNAL_EFFECT_PENDING));
             state.addAudit(gameTime, "EXTERNAL_EFFECT_FAILED",
                     committed.instanceId() + ": " + external.failedEffectId().orElseThrow());
             return;
@@ -342,7 +369,7 @@ public final class StoryEventService {
         }
     }
 
-    private String validateEffects(StoryRuntimeState state, EventDefinition definition,
+    private String validateEffects(MinecraftServer server, StoryRuntimeState state, EventDefinition definition,
             EventInstance instance, OutcomeDefinition outcome) {
         Map<ResourceLocation, StoryActorView> simulatedActors = new HashMap<>();
         for (Effect effect : outcome.effects()) {
@@ -376,6 +403,20 @@ public final class StoryEventService {
                 if ((value.holder() == HolderSelector.TRIGGER_PLAYER
                         || value.holder() == HolderSelector.TRIGGER_TEAM)
                         && instance.initiatingPlayerId().isEmpty()) return "Knowledge grant requires trigger player";
+            } else if (effect instanceof Effect.GrantRewards value) {
+                var player = instance.initiatingPlayerId().map(id -> server.getPlayerList().getPlayer(id)).orElse(null);
+                if (player == null) return "Story reward requires an online initiating player";
+                if (!com.sande.mythictrpg.data.god.GodDefinitionManager.INSTANCE.definitions().containsKey(value.godId())) return "Story reward God is not registered";
+                var references = com.sande.mythictrpg.quest.reward.RewardExecutionService.validateForGod(value.godId(),
+                        value.rewards(), com.sande.mythictrpg.quest.reward.RewardGrantPurpose.QUEST);
+                if (!references.allowed()) return references.reason();
+                var check = com.sande.mythictrpg.quest.reward.RewardClaimService.INSTANCE.preflight(player,
+                        rewardSource(instance, value.effectId()), new com.sande.mythictrpg.quest.reward.ResolvedQuestReward("사건 보상", value.rewards(), List.of()));
+                if (!check.succeeded()) return check.reason();
+            } else if (effect instanceof Effect.RecoverReputation value) {
+                if (instance.initiatingPlayerId().isEmpty()) return "Reputation recovery requires an initiating player";
+                if (!com.sande.mythictrpg.rumor.ReputationService.recoveryAvailable(server,value.godId(),value.policyId()))
+                    return "Reputation recovery policy is unavailable for this God";
             } else if (effect instanceof Effect.ScheduleEvent value) {
                 EventDefinition target = StoryDefinitionManager.INSTANCE.event(value.eventId()).orElse(null);
                 if (target == null) return "Unknown scheduled event " + value.eventId();
@@ -420,6 +461,23 @@ public final class StoryEventService {
         long total = eligible.stream().mapToLong(OutcomeDefinition::weight).sum();
         long seed = server.overworld().getSeed() ^ stableHash(definition.id() + "|" + scope + "|"
                 + sequence + "|" + definition.fingerprint());
+        // Only the owner of an explicitly marked personal random event supplies luck.
+        // Team/server events and unmarked events retain their existing deterministic roll.
+        if (definition.resolutionPolicy() == ResolutionPolicy.WEIGHTED_ONCE && scope.type() == ScopeType.PLAYER
+                && eligible.stream().anyMatch(outcome -> outcome.luckQuality().isPresent())) {
+            ServerPlayer owner;
+            try { owner = server.getPlayerList().getPlayer(UUID.fromString(scope.key())); }
+            catch (IllegalArgumentException invalidOwner) { owner = null; }
+            int level = com.sande.mythictrpg.quest.reward.luck.EffectiveLuck.level(owner);
+            var model = com.sande.mythictrpg.quest.reward.luck.LuckDefinitions.INSTANCE.model();
+            if (level > 0 && model.eventQualityPerLevel() > 0
+                    && eligible.stream().anyMatch(outcome -> outcome.luckQuality().orElse(0) != 0)) {
+                var weights = eligible.stream().map(outcome -> model.eventWeight(outcome.weight(),
+                        outcome.luckQuality().orElse(0), level)).toList();
+                var selected = com.sande.mythictrpg.quest.reward.luck.LuckSelector.weightedIndex(weights, seed);
+                return new Selection(eligible.get(selected.index()), OptionalLong.of(selected.roll()));
+            }
+        }
         long roll = Math.floorMod(mix64(seed), total);
         long cursor = 0;
         for (OutcomeDefinition outcome : eligible) {
@@ -452,6 +510,11 @@ public final class StoryEventService {
             return new ScopeResolution(StoryScopeKey.player(player.getUUID()), Set.of(player.getUUID()));
         StoryTeamResolver.TeamSnapshot team = StoryTeamResolver.resolve(player);
         return new ScopeResolution(StoryScopeKey.team(team.stableTeamId()), team.frozenMembers());
+    }
+
+    private boolean initiatorAvailable(MinecraftServer server, ScopeType type, Optional<UUID> playerId) {
+        return type == ScopeType.SERVER
+                || playerId.map(id -> server.getPlayerList().getPlayer(id) != null).orElse(false);
     }
 
     private StoryScopeKey resolveEffectScope(ScopeSelector selector, EventInstance instance) {
@@ -488,45 +551,81 @@ public final class StoryEventService {
     }
 
     private void expireAndReevaluateLatched(MinecraftServer server) {
-        StoryRuntimeState state = StoryRuntimeState.get(server);
-        long now = server.overworld().getGameTime();
-        state.latchedTriggers().values().stream().filter(value -> value.expiresAtGameTime().isPresent()
-                && value.expiresAtGameTime().getAsLong() <= now).map(LatchedTrigger::key).toList()
-                .forEach(key -> { state.removeLatched(key); state.addAudit(now, "LATCH_EXPIRED", key); });
         reevaluateLatched(server);
     }
 
     private void reevaluateLatched(MinecraftServer server) {
         StoryRuntimeState state = StoryRuntimeState.get(server);
-        for (LatchedTrigger latched : state.latchedTriggers().values()) {
-            EventDefinition definition = StoryDefinitionManager.INSTANCE.event(latched.eventId()).orElse(null);
-            if (definition == null) continue;
-            ConditionResult result = ConditionEngine.INSTANCE.evaluate(definition.prerequisites(),
-                    ConditionContexts.forStory(server, latched.initiatingPlayerId(), latched.scope()));
-            if (result != ConditionResult.MATCH) continue;
-            state.removeLatched(latched.key());
-            StorySignal signal = new StorySignal(latched.signalId(), StorySignalTypes.SCHEDULED_DUE,
-                    latched.initiatingPlayerId(), latched.subjectId(), Optional.empty(), Optional.empty(),
-                    server.overworld().getGameTime());
-            attempt(server, definition, signal, null);
+        if (reevaluatingLatched || !state.isReady()) return;
+        reevaluatingLatched = true;
+        try {
+            long now = server.overworld().getGameTime();
+            // Resolving an event calls this method again. A single ordered pass prevents duplicate
+            // execution from stale nested snapshots, including for repeatable reward events.
+            for (LatchedTrigger latched : state.latchedTriggers().values().stream()
+                    .sorted(Comparator.comparingLong(LatchedTrigger::createdGameTime)
+                            .thenComparing(LatchedTrigger::key)).toList()) {
+                if (latched.expiresAtGameTime().isPresent() && latched.expiresAtGameTime().getAsLong() <= now) {
+                    state.removeLatched(latched.key());
+                    state.addAudit(now, "LATCH_EXPIRED", latched.key());
+                    continue;
+                }
+                EventDefinition definition = StoryDefinitionManager.INSTANCE.event(latched.eventId()).orElse(null);
+                if (definition == null) continue;
+                if (definition.scope() != latched.scope().type()) {
+                    state.removeLatched(latched.key());
+                    state.addAudit(now, "LATCH_REJECTED", latched.key() + ": Story event scope changed while pending");
+                    continue;
+                }
+                if (!initiatorAvailable(server, definition.scope(), latched.initiatingPlayerId())) continue;
+                ConditionResult result = ConditionEngine.INSTANCE.evaluate(definition.prerequisites(),
+                        ConditionContexts.forStory(server, latched.initiatingPlayerId(), latched.scope()));
+                if (result != ConditionResult.MATCH) continue;
+                StorySignal signal = new StorySignal(latched.signalId(), StorySignalTypes.SCHEDULED_DUE,
+                        latched.initiatingPlayerId(), latched.subjectId(), Optional.empty(), Optional.empty(), now);
+                state.removeLatched(latched.key());
+                AttemptResult attempt = attempt(server, definition, signal, null,
+                        new ScopeResolution(latched.scope(), latched.frozenAudiencePlayerIds()));
+                if (attempt.retryable) state.putLatched(latched);
+                else if (!attempt.started) state.addAudit(now, "LATCH_REJECTED", latched.key() + ": " + attempt.reason);
+            }
+        } finally {
+            reevaluatingLatched = false;
         }
     }
 
     private void processDue(MinecraftServer server) {
+        StoryRuntimeState state = StoryRuntimeState.get(server);
+        if (!state.isReady()) return;
         long now = server.overworld().getGameTime();
         int processed = 0;
         while (processed < MAX_DUE_PER_TICK && !due.isEmpty() && due.peek().dueGameTime() <= now) {
-            ScheduledSignal schedule = due.remove(); queuedSchedules.remove(schedule.scheduleId());
-            if (StoryRuntimeState.get(server).removeSchedule(schedule.scheduleId()).isEmpty()) continue;
+            ScheduledSignal schedule = due.remove();
+            processed++;
+            if (!state.schedules().containsKey(schedule.scheduleId())) {
+                queuedSchedules.remove(schedule.scheduleId());
+                continue;
+            }
             EventDefinition target = StoryDefinitionManager.INSTANCE.event(schedule.targetEventId()).orElse(null);
+            if (target != null && target.scope() == schedule.scope().type()
+                    && !initiatorAvailable(server, target.scope(), schedule.initiatingPlayerId())) {
+                // Login requeues this persisted source; it must not starve other due events.
+                queuedSchedules.remove(schedule.scheduleId());
+                continue;
+            }
+            queuedSchedules.remove(schedule.scheduleId());
+            state.removeSchedule(schedule.scheduleId());
             if (target == null) {
-                StoryRuntimeState.get(server).addAudit(now, "ORPHANED_DEFINITION", schedule.targetEventId().toString());
+                state.addAudit(now, "ORPHANED_DEFINITION", schedule.targetEventId().toString());
                 continue;
             }
             StorySignal signal = new StorySignal(schedule.scheduleId(), StorySignalTypes.SCHEDULED_DUE,
                     schedule.initiatingPlayerId(), Optional.of(schedule.targetEventId()), Optional.empty(),
                     Optional.of(schedule.causeInstanceId()), now);
-            attempt(server, target, signal, matchingTrigger(target, signal)); processed++;
+            AttemptResult result = attempt(server, target, signal, matchingTrigger(target, signal),
+                    new ScopeResolution(schedule.scope(), schedule.frozenAudiencePlayerIds()));
+            if (!result.started) state.addAudit(now, "SCHEDULE_DEFERRED_OR_REJECTED",
+                    schedule.scheduleId() + ": " + result.reason);
         }
     }
 
@@ -578,8 +677,12 @@ public final class StoryEventService {
                 state.putEvent(instance.withStatus(EventStatus.RECOVERY_REQUIRED));
                 continue;
             }
-            var relations = outcome.effects().stream().filter(Effect.RelationTransition.class::isInstance)
-                    .map(Effect.RelationTransition.class::cast).toList();
+            var relations = outcome.effects().stream().filter(StoryEventService::externalEffect).toList();
+            // A saved recovery receipt can finish acknowledgement; never select newer allegations on restart.
+            if (requiresManualReview(server, instance, relations, instance.appliedEffectIds())) {
+                state.putEvent(instance.withStatus(EventStatus.RECOVERY_REQUIRED));
+                continue;
+            }
             var external = applyExternalEffects(server, instance, relations, recoveryAfterRestart);
             if (!external.complete()) continue;
             EventInstance resolved = state.eventInstance(instance.instanceId()).orElseThrow()
@@ -594,18 +697,67 @@ public final class StoryEventService {
     }
 
     private StoryExternalEffectReceipts.Result<ResourceLocation> applyExternalEffects(MinecraftServer server,
-            EventInstance instance, List<Effect.RelationTransition> relations, boolean recoveryAfterRestart) {
+            EventInstance instance, List<Effect> relations, boolean recoveryAfterRestart) {
         var state = StoryRuntimeState.get(server);
-        Map<ResourceLocation, Effect.RelationTransition> byId = new LinkedHashMap<>();
+        Map<ResourceLocation, Effect> byId = new LinkedHashMap<>();
         relations.forEach(relation -> byId.put(relation.effectId(), relation));
         return StoryExternalEffectReceipts.apply(new ArrayList<>(byId.keySet()), instance.appliedEffectIds(), effectId -> {
-            var transition = GodRelationTransitionManager.INSTANCE.find(byId.get(effectId).transitionId()).orElse(null);
+            try {
+            Effect effect = byId.get(effectId);
+            if (effect instanceof Effect.GrantRewards reward) {
+                if (uncertainReward(server, instance, effectId)) return false;
+                var player = instance.initiatingPlayerId().map(id -> server.getPlayerList().getPlayer(id)).orElse(null);
+                return player != null && com.sande.mythictrpg.quest.reward.RewardClaimService.INSTANCE.issue(player,
+                        reward.godId(), rewardSource(instance, effectId),
+                        new com.sande.mythictrpg.quest.reward.ResolvedQuestReward("사건 보상", reward.rewards(), List.of()),
+                        com.sande.mythictrpg.quest.reward.RewardOrigin.STORY_DIRECT).succeeded();
+            }
+            if (effect instanceof Effect.RecoverReputation recovery) {
+                if (recoveryRecorded(server,instance,recovery)) return true;
+                return !recoveryAfterRestart && instance.initiatingPlayerId().isPresent()
+                        && com.sande.mythictrpg.rumor.ReputationService.recoverFromGameResult(server,
+                                instance.initiatingPlayerId().get(), recovery.godId(), recovery.policyId(),
+                                recoveryResult(instance,effectId), recovery.reasonId());
+            }
+            var transition = GodRelationTransitionManager.INSTANCE.find(((Effect.RelationTransition) effect).transitionId()).orElse(null);
             boolean alreadyAppliedAfterRestart = recoveryAfterRestart && transition != null
                     && transition.maxApplications() == 1
                     && DynamicGodRelationState.get(server).applicationCount(transition.id()) >= 1;
             return alreadyAppliedAfterRestart || transition != null && GodRelationService.INSTANCE.apply(server, transition).succeeded();
+            } catch (RuntimeException unavailable) {
+                MythicTrpg.LOGGER.warn("Story external effect deferred: {} / {}", instance.instanceId(), effectId, unavailable);
+                return false;
+            }
         }, applied -> state.putEvent(state.eventInstance(instance.instanceId()).orElseThrow()
                 .withAppliedEffects(applied, EventStatus.EXTERNAL_EFFECT_PENDING)));
+    }
+
+    private static boolean externalEffect(Effect effect) {
+        return effect instanceof Effect.RelationTransition || effect instanceof Effect.GrantRewards || effect instanceof Effect.RecoverReputation;
+    }
+    private static boolean requiresManualReview(MinecraftServer server, EventInstance instance, List<Effect> effects,
+            Set<ResourceLocation> applied) {
+        return effects.stream().filter(effect -> !applied.contains(effect.effectId())).anyMatch(effect ->
+                effect instanceof Effect.RecoverReputation recovery && !recoveryRecorded(server,instance,recovery)
+                        || effect instanceof Effect.GrantRewards && uncertainReward(server, instance, effect.effectId()));
+    }
+    private static UUID recoveryResult(EventInstance instance,ResourceLocation effectId) {
+        return UUID.nameUUIDFromBytes((instance.instanceId()+"/"+effectId).getBytes(StandardCharsets.UTF_8));
+    }
+    private static boolean recoveryRecorded(MinecraftServer server,EventInstance instance,Effect.RecoverReputation recovery) {
+        return instance.initiatingPlayerId().isPresent()
+                &&com.sande.mythictrpg.rumor.ReputationService.recoveryCompleted(server,instance.initiatingPlayerId().get(),
+                        recovery.godId(),recovery.policyId(),recoveryResult(instance,recovery.effectId()),recovery.reasonId());
+    }
+    private static boolean uncertainReward(MinecraftServer server, EventInstance instance, ResourceLocation effect) {
+        // A claimed payout without this event's completion receipt can be a crash between claiming and delivery.
+        // Do not report success or grant again when the original delivery cannot be established.
+        return instance.initiatingPlayerId().flatMap(player -> com.sande.mythictrpg.quest.reward.RewardClaimState.get(server)
+                .findBySource(player, rewardSource(instance, effect))).map(com.sande.mythictrpg.quest.reward.RewardClaim::automaticGranted).orElse(false);
+    }
+    public static ResourceLocation rewardSource(EventInstance instance, ResourceLocation effect) {
+        return ResourceLocation.fromNamespaceAndPath("mythictrpg", "story_reward/" + UUID.nameUUIDFromBytes(
+                (instance.instanceId() + "/" + effect).getBytes(StandardCharsets.UTF_8)));
     }
 
     private void dispatchResolvedPresentations(MinecraftServer server, String instanceId) {
@@ -668,9 +820,10 @@ public final class StoryEventService {
 
     private record ScopeResolution(StoryScopeKey scope, Set<UUID> frozenAudience) {}
     private record Selection(OutcomeDefinition outcome, OptionalLong roll) {}
-    private record AttemptResult(boolean started, String reason, String instanceId) {
-        static AttemptResult started(String id) { return new AttemptResult(true, "Story event started", id); }
-        static AttemptResult rejected(String reason) { return new AttemptResult(false, reason, null); }
+    private record AttemptResult(boolean started, String reason, String instanceId, boolean retryable) {
+        static AttemptResult started(String id) { return new AttemptResult(true, "Story event started", id, false); }
+        static AttemptResult rejected(String reason) { return new AttemptResult(false, reason, null, false); }
+        static AttemptResult deferred(String reason) { return new AttemptResult(false, reason, null, true); }
     }
 
     public enum Status { ACCEPTED, STARTED, REJECTED }

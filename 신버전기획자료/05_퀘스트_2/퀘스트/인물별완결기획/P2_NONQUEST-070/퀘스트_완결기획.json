@@ -1,0 +1,1836 @@
+{
+  "packet_id": "P2_NONQUEST-070",
+  "category": "퀘스트",
+  "status": "저술 채택 완료; 실행 미구현·미시험",
+  "common_contract": {
+    "문서성격": "현재 채택된 저술·구현 요구. 실제 구현·게임/API/LLM/영상/5인 시험 0. runtime_ready=false.",
+    "원문보존": "source_contract·retained_profile·source_episode는 정확한 원문이다. adopted_detail은 별도 현행 보강이며 과거 미채택 상태를 소급 수정하지 않는다.",
+    "조우운영": {
+      "참조": "퀘스트/공통설계/시간_조우_성장_운영정책.json#general_encounter 및 #atomic_contract",
+      "현재채택": "일반 후보를 아래 인물별 실제 접근 범위 안에서만 등록한다. 세계 해금은 한 명 달성 시 전역영구, 현재 개인조건 맞는 실제 한 명이 조우주체. 해금자/주체/MAIN/보상 수혜자는 별개.",
+      "확률": "공통 300 활동초 창·서버25%·실제 등장 후1800 가동초 쿨·등급가중치 그대로. 인물별 추가 추첨0.",
+      "단일본체": "canonical_actor CAS, 저장된 window/후보/난수/결과 재사용. 미배치와 미로드를 구별하며 기존본체는 재추첨 없이 접촉. 사망·완전봉인·잔여봉인은 원문대로, 해금은 부활/해제 아님.",
+      "복구": "재시작 후 entity/journal/receipt 대조, 불확실하면 대기하고 재생성0. 동행자는 재해금 없이 현장 접근하되 사적 권한 복제0."
+    },
+    "현장": "대화는 실제 동일 공간의 시야·청취 기본8블록, 집기·인수·수선만2블록. 관측·이동에 손2블록을 강제하지 않는다. 실제 허용 접촉모드가 우선.",
+    "정산": "합의에는 품목·정수량·대체재·행동 대가·수혜자·회차를 실제 확정한다. 기본 제안은 다른 유효 합의를 금지하지 않는다. 수행/권리/예약재고/인도/실제 소비는 별도. 미수령 보존, 같은 회차 수혜자 receipt로 누락분만 복구; 불확실 인도 중 재지급0.",
+    "기록": "event_id, actual_actor, object_before_after, action_receipt, consent_scope, receiver_uuid, audience, received_at를 분리한다. 미래 계획·소문 수신·사실 검증은 다르다.",
+    "중단": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0.",
+    "범위": "새 퀘스트0, 개인MAIN0, 추가 성장보상0. 기존 생활지도·허락현물 유지."
+  },
+  "records": [
+    {
+      "record_key": "RPG-S04-045",
+      "name": "닌카시",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-045/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-045/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-045/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-045",
+          "batch": "PS-015",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-015.json",
+            "sha256": "c12aee89bbd95e2fdcd6f145e48a7a6b16bacbeadb771e9c485c404b642bd478",
+            "pointer": "/records/20"
+          },
+          "goal_and_stake": {
+            "goal": "산길 잔치에서 취향이 다른 사람도 자리를 떠나지 않을 음료를 고른다.",
+            "stake": "잔이 가득해도 자리를 떠나는 사람이 많으면 자기 솜씨가 무색해진다.",
+            "connection_to_story": "「마시지 않는 사람의 잔」: 닌카시와 플레이어가 산길 잔치용 음료의 향과 목넘김을 소량 비교한다. 술을 원하지 않는 손님에게도 마실 수 있는 별도 음료를 준비한다. → 닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/238"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/20"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/20"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "잔 두 개의 향을 번갈아 맡으며 마시지 않는 사람의 자리를 떠올린다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/238"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/20"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/20"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "service"
+            ],
+            "role_specific_reason": "닌카시는 함께 마시는 소리를 좋아하는 까다로운 양조자이며 칭찬만 하는 손님에게는 시큰둥하다. 「마시지 않는 사람의 잔」에서 모두에게 같은 인기 음료를 줄지, 취향이 다른 사람의 요구로 배합을 나눌지 고른다. 이후 닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/238"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/20"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/20"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "닌카시와 플레이어가 산길 잔치용 음료의 향과 목넘김을 소량 비교한다. 술을 원하지 않는 손님에게도 마실 수 있는 별도 음료를 준비한다.",
+                "actor_or_player": "닌카시, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 산길로 음료를 보내는 기존 양조 자리의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "닌카시와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 실제 시음에 응한 사람의 취향만 알게 되며 술 거절이 잔치 거절이 되지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "모두에게 같은 인기 음료를 줄지, 취향이 다른 사람의 요구로 배합을 나눌지 고른다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "실제 시음에 응한 사람의 취향만 알게 되며 술 거절이 잔치 거절이 되지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 닌카시의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "루갈반다가 실제로 여는 잔치에 합의된 분량을 내고 닌카시가 남는 잔과 대화를 본다. 잔치가 아직 없으면 소규모 시음으로 결론낸다.",
+                "actor_or_player": "닌카시, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 산길로 음료를 보내는 기존 양조 자리의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "닌카시와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "칭찬 많은 배합을 고집하거나 조용한 손님의 선택도 반영해 다음 배합을 바꾼다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 취향이 다르다는 사람에게 같은 잔을 억지로 권하지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 닌카시의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「마시지 않는 사람의 잔」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/238"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/20"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/20"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-052",
+                "existing_edge_or_new_minor_basis": "루갈반다의 산길 잔치에 음료를 고르는 관계를 안다.",
+                "request_and_actual_response": "위 「마시지 않는 사람의 잔」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "닌카시는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "닌카시와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "루갈반다가 실제로 여는 잔치에 합의된 분량을 내고 닌카시가 남는 잔과 대화를 본다. 잔치가 아직 없으면 소규모 시음으로 결론낸다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "신규 저술안: 실제 양조 도움·시음 참여자에게 합의한 보통 음료 한 몫 또는 배합 지도. 만취 강제·미등록 포션 능력·무한 반복 보상 없음.",
+            "details": "신규 저술안: 실제 양조 도움·시음 참여자에게 합의한 보통 음료 한 몫 또는 배합 지도. 만취 강제·미등록 포션 능력·무한 반복 보상 없음. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/238"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/20"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/20"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/238"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                  "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                  "pointer": "/records/20"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                  "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                  "pointer": "/records/20"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/238"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                  "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                  "pointer": "/records/20"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                  "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                  "pointer": "/records/20"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "마시지 않는 사람의 잔",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-015.json",
+                  "sha256": "c12aee89bbd95e2fdcd6f145e48a7a6b16bacbeadb771e9c485c404b642bd478",
+                  "pointer": "/records/20"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "닌카시는 잔을 비웠다는 숫자보다 자리에 머문 이유를 묻고 다음 서비스에 서로 다른 선택을 남긴다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 산길로 음료를 보내는 기존 양조 자리의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "service"
+      ],
+      "existing_episode_ids": [
+        "EP015B-RPG-S04-045"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "양조 자리에서 회차 참여 방식을 도움·시음·향 관찰로 각각 선택한다. 성분과 술 유무, 비교분 정수량, 보조 행동과 답례 선택을 시작 전에 합의한다. 기본 비교용 잔 2개와 각 1회 맛보기는 제안일 뿐 한 잔만 맛보기·비음주·향만 관찰도 유효하다. 술 없는 잔과 도구는 별도 표시·세척 후 사용. 잔치 요청이 실제 있으면 합의 포장량과 목적지를 확인해 실제 운반·루갈반다 인수까지, 없으면 현장 소량 비교·잔 정리로 끝낸다.",
+        "completion_guard": "시음만 택한 손님에게 준비 노동 강제0. 향 관찰자는 술 마심0. 향만 본 사람의 지급권은 별도 합의 없으면0. 후기·잔치 개최·루갈반다 수신은 현장 서비스 성과의 필수 아님.",
+        "reward_detail": "현재 회차에서 (실제 양조 도움 OR 실제 시음) AND 닌카시의 참여 확인 AND 사전 답례 합의가 있을 때 (보통 음료 한 몫 OR 배합 지도 1회) 중 하나의 기회가 성립한다. 향 관찰만 한 사람은 별도 합의 없으면 지급권이 없다. 음료 종류·용기·정수 개수는 시작 전에 현재 재고로 확정하며 기본 기존 보통 음료 1용기 외 합의 대체재·비음주 음료도 유효하다. 미등록 술·포션 효과는 만들지 않는다. 지도는 별도 동의 후 현재 배합 1회의 재료 확인→실제 섞기 시범→본인 연습까지 마친 때만 수강 완료다. 음료의 최초 실제 인도 또는 지도의 최초 실제 제공 전에는 선택을 바꿀 수 있다. 일부 음료를 받거나 지도를 일부 실제 제공받았다면 같은 회차 선택을 유지하고 남은 수량·지도 단계만 재개한다. 일부 지도는 수강 완료가 아니지만 음료까지 중복 제공하는 근거도 아니다. 양쪽 이행 모두 불확실하면 인수·지도 원장을 대조할 때까지 추가 이행을 멈춘다. 후기 거절·가방 부족·부재는 미정산 권리를 보존하며, 같은 회차 음료와 지도 이중 지급은 없다.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "동시 인수 및 재시작",
+            "expected": "같은 회차 수혜자 실지급1, 불확실 대기"
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "시음만 택한 손님에게 준비 노동 강제0. 향 관찰자는 술 마심0. 향만 본 사람의 지급권은 별도 합의 없으면0. 후기·잔치 개최·루갈반다 수신은 현장 서비스 성과의 필수 아님."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-047",
+      "name": "아드가르키두그",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-047/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-047/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-047/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-047",
+          "batch": "PS-015",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-015.json",
+            "sha256": "c12aee89bbd95e2fdcd6f145e48a7a6b16bacbeadb771e9c485c404b642bd478",
+            "pointer": "/records/22"
+          },
+          "goal_and_stake": {
+            "goal": "마르투와 어디서 어떻게 살지를 스스로 고르고 그 선택에 맞는 생활 부담을 나눈다.",
+            "stake": "선택이 잘못되더라도 그것이 자신의 선택이었다고 말할 자리를 잃고 싶지 않다.",
+            "connection_to_story": "「내가 고른 하루」: 아드가르키두그가 고른 기존 거처에서 혼자 보내는 시간과 마르투와 나누는 시간을 실제로 시험한다. 플레이어는 요청받은 생활 일 하나를 돕는다. → 그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/240"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "함께 갈 날과 남을 날을 직접 짚으며 방문자의 편들기를 끊는다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/240"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "아드가르키두그는 좋아하는 것을 스스로 고르며 남의 찬반을 구경하는 데도 제법 배짱이 있는 신. 「내가 고른 하루」에서 주변의 칭찬에 맞춰 일정을 채울지, 혼자 있고 싶은 시간을 비워 둘지 고른다. 이후 그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/240"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "아드가르키두그가 고른 기존 거처에서 혼자 보내는 시간과 마르투와 나누는 시간을 실제로 시험한다. 플레이어는 요청받은 생활 일 하나를 돕는다.",
+                "actor_or_player": "아드가르키두그, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 자신이 고른 거처에서 이동로를 바라보는 문턱의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "아드가르키두그와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 누구와 어느 시간을 보냈는지가 남고 아직 결정하지 않은 생활을 결혼식 재연으로 확정하지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "주변의 칭찬에 맞춰 일정을 채울지, 혼자 있고 싶은 시간을 비워 둘지 고른다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "누구와 어느 시간을 보냈는지가 남고 아직 결정하지 않은 생활을 결혼식 재연으로 확정하지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 아드가르키두그의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "아드가르키두그가 불편했던 일 하나를 마르투에게 직접 말하고 자신이 바꿀 몫도 고른다.",
+                "actor_or_player": "아드가르키두그, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 자신이 고른 거처에서 이동로를 바라보는 문턱의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "아드가르키두그와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "처음 선택을 체면 때문에 고집할지, 자기 선택이었다는 사실을 지키며 생활안을 수정할지 정한다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 가문의 체면이나 손님의 평판을 내 대답 대신 내세우지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 아드가르키두그의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「내가 고른 하루」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/240"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-046",
+                "existing_edge_or_new_minor_basis": "마르투와 결혼을 선택한 자기 인연을 기억한다.",
+                "request_and_actual_response": "위 「내가 고른 하루」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "아드가르키두그는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "아드가르키두그와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "아드가르키두그가 불편했던 일 하나를 마르투에게 직접 말하고 자신이 바꿀 몫도 고른다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "NOT_APPLICABLE",
+            "reason": "실물 보상 없음. 자기 시간을 결정하고 수정한 당사자의 변화가 핵심이며 연애·혼인 호감 수치를 지급하지 않는다.",
+            "details": "실물 보상 없음. 자기 시간을 결정하고 수정한 당사자의 변화가 핵심이며 연애·혼인 호감 수치를 지급하지 않는다. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/240"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                "pointer": "/records/22"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                "pointer": "/records/22"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/240"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                  "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                  "pointer": "/records/22"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                  "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                  "pointer": "/records/22"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/240"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-015.json",
+                  "sha256": "7b63dc5b85b3ed4dc10cd1ec70646d98fed4349f0907e8791ac127032bac48a5",
+                  "pointer": "/records/22"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-015.json",
+                  "sha256": "4becc968410e72790ba26e36330fe71629adc63edfce181a1b6fb153ad772b46",
+                  "pointer": "/records/22"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "내가 고른 하루",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-015.json",
+                  "sha256": "c12aee89bbd95e2fdcd6f145e48a7a6b16bacbeadb771e9c485c404b642bd478",
+                  "pointer": "/records/22"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "그녀가 후회나 만족을 자기 말로 표현하며 다음 만남에는 자신이 다시 고른 일상을 보여 준다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 자신이 고른 거처에서 이동로를 바라보는 문턱의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "event"
+      ],
+      "existing_episode_ids": [
+        "EP015B-RPG-S04-047"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "본인이 부탁한 그릇 1개를 실제 씻어 지정한 면에 놓고 사적 안쪽을 비운다. 혼자 고른 정리·휴식이 끝났다는 본인 응답만 받고 자세한 사생활 공개는 요구하지 않는다. 마르투와 함께하는 시험은 두 사람이 현재 동의한 활동을 실제 마친 범위만 기록한다. 만났다는 사실만으로 그 시험을 완료하지 않는다. 본인이 불편 한 가지를 자기 말로 전하고 실제 응답 뒤 자기 변경 몫을 고른다. (자기 물건의 배치를 유지하며 정돈하기 OR 원하는 자기 물건을 실제 옮기기)를 선택하고, 공용 짐은 상대의 실제 동의가 있는 부분만 바꾼다. 상대 부재·거절이면 혼자 보낸 시간과 자기 물건 정돈이라는 부분 결과만 유지하며 함께하는 시험·전달·응답의 미완료를 남긴다. 이 부분 종료를 전체 생활 시험 완료로 쓰지 않는다. 사적 감상 공개는 필수가 아니다.",
+        "completion_guard": "혼인식·새 집·새 이주·미래 만족을 생성하지 않는다. 마르투의 기존 동일 짐·물을 재생성하거나 이중소비0. 사적 고백이 없어도 실제 정돈은 완료.",
+        "reward_detail": "물품·호감 수치·연애·혼인 보상0. 맡은 그릇은 실제 주인에게 반환하며 새 물건 획득으로 세지 않는다.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "동시 인수 및 재시작",
+            "expected": "같은 회차 수혜자 실지급1, 불확실 대기"
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "혼인식·새 집·새 이주·미래 만족을 생성하지 않는다. 마르투의 기존 동일 짐·물을 재생성하거나 이중소비0. 사적 고백이 없어도 실제 정돈은 완료."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-048",
+      "name": "남라트",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-048/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-048/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-048/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-048",
+          "batch": "PS-016",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+            "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+            "pointer": "/records/0"
+          },
+          "goal_and_stake": {
+            "goal": "아드가르키두그의 손님을 맞으면서 잔치 뒤 남는 숙소와 정리의 부담까지 나눈다.",
+            "stake": "행사가 끝난 뒤 자기 수고까지 없었던 일이 되면 다음 환대를 열 마음이 식는다.",
+            "connection_to_story": "「마지막 손님의 자리」: 남라트가 손님을 맞는 동안 플레이어는 실제 숙소의 마지막 자리와 식사 준비를 돕는다. 아드가르키두그가 초대한 범위를 확인하되 새 손님을 임의 소환하지 않는다. → 남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/241"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/0"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "손님에게 자리를 내주다가 뒤에 남아 정리할 사람의 시간을 따로 묻는다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/241"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/0"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "남라트는 성대한 환대의 겉모습보다 마지막까지 치울 일을 기억하며, 자기 손맛을 알아주는 손님을 좋아하는 신. 「마지막 손님의 자리」에서 눈에 띄는 환영을 맡을지, 피곤한 마지막 손님의 잠자리를 돌볼지 고른다. 이후 남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/241"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/0"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "남라트가 손님을 맞는 동안 플레이어는 실제 숙소의 마지막 자리와 식사 준비를 돕는다. 아드가르키두그가 초대한 범위를 확인하되 새 손님을 임의 소환하지 않는다.",
+                "actor_or_player": "남라트, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 잔치가 끝나 가는 기존 거처의 공동 마당의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "남라트와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 선택한 손님이 실제 쉬거나 아직 기다리며, 남라트가 뒤의 일을 맡은 사람을 기억한다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "눈에 띄는 환영을 맡을지, 피곤한 마지막 손님의 잠자리를 돌볼지 고른다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "선택한 손님이 실제 쉬거나 아직 기다리며, 남라트가 뒤의 일을 맡은 사람을 기억한다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 남라트의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "잔치 뒤 남라트와 플레이어가 합의된 그릇과 자리를 정리하고 남은 노동을 주최자에게 실제 인계한다.",
+                "actor_or_player": "남라트, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 잔치가 끝나 가는 기존 거처의 공동 마당의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "남라트와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "혼자 전부 끝내기보다 끝내지 못할 몫을 말할지, 맡은 작은 몫을 끝내고 떠날지 선택한다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 잔치의 체면을 위해 치우는 사람의 쉼을 없애지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 남라트의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「마지막 손님의 자리」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/241"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/0"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-047",
+                "existing_edge_or_new_minor_basis": "아드가르키두그의 손님을 맞고 숙소를 배분하는 관계를 기억한다. 전승에서 누무쉬다의 배우자로 축제에 참여한 자기 인연도 보존한다.",
+                "request_and_actual_response": "위 「마지막 손님의 자리」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "남라트는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "남라트와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "잔치 뒤 남라트와 플레이어가 합의된 그릇과 자리를 정리하고 남은 노동을 주최자에게 실제 인계한다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "새 저술안: 실제 준비·정리 수행자에게 남라트가 남긴 보통 음식 한 몫. 손님용 물자를 무단 지급하지 않고 실제 여유분만 정산.",
+            "details": "새 저술안: 실제 준비·정리 수행자에게 남라트가 남긴 보통 음식 한 몫. 손님용 물자를 무단 지급하지 않고 실제 여유분만 정산. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/241"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/0"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/0"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/241"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/0"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/0"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/241"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/0"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/0"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "마지막 손님의 자리",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+                  "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+                  "pointer": "/records/0"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "남라트는 다음 환대에 마무리 시간을 먼저 포함한다. 손님이 전부 갚아야 한다는 빚은 만들지 않는다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 잔치가 끝나 가는 기존 거처의 공동 마당의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "event"
+      ],
+      "existing_episode_ids": [
+        "EP016-RPG-S04-048"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "실제 진행 중인 환대 자리에서 B1의 (앞쪽 환영 OR 뒤쪽 잠자리 준비) 중 하나를 합의한다. 앞쪽은 합의 쟁반을 손님에게 실제 인도하고 돌아온 빈 그릇을 세척대에 모으며 맡지 않은 뒤쪽은 미수행으로 알린다. 뒤쪽은 손님 허락을 받아 짐을 정한 보관소로 옮겨 위치를 알리고 천을 편 뒤 합의한 식사를 놓고 손님의 실제 휴식·대기 답을 듣는다. B2는 합의한 작은 정리의 (그릇 세척·건조 자리 배치 OR 사용한 천 걷기·정돈)를 실제 수행하고 남라트에게 결과와 잔여 작업을 확인받는다. 기본 쟁반 1개·그릇 2개 또는 침상 1곳·짐 1묶음·천 1장은 제안이며 실제 식사 품목·정수량과 다른 현장 노동 합의도 시작 전에 확정한다. 남은 작업은 주최자가 실제 인수한 범위만 인계하고, 미응답이면 남라트와 미인계 목록을 보관한 채 쉰다. 선택한 준비·정리만 완료하며 전체 잔치·주최자 회신을 필수로 추가하지 않는다.",
+        "completion_guard": "현재 잔치가 없는 날 과거 혼인·환대 잔치를 재연하지 않는다. 일상 잡담만 가능. 앞쪽 환영만 돕고 뒤 침상까지 완료로 쓰지 않는다. 전체 잔여 노동·주최자 회신을 남라트의 쉼에 강제하지 않는다.",
+        "reward_detail": "현재 여유 음식 한 몫을 남라트가 미리 답례로 제시하고 해당 준비 OR 정리의 합의 몫을 실제 끝낸 사람에게만 권리. 시작 전 기존 음식 종류·정수개수 확정(기본 기존 빵1개, 다른 합의 현물·수량 가능). 손님용 몫을 빼앗지 않는다. 실제 인수만 지급, 섭취는 별도. 미수령분 같은 회차 권리 보존, 후발자·반복 클릭 재지급0.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "동시 인수 및 재시작",
+            "expected": "같은 회차 수혜자 실지급1, 불확실 대기"
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "현재 잔치가 없는 날 과거 혼인·환대 잔치를 재연하지 않는다. 일상 잡담만 가능. 앞쪽 환영만 돕고 뒤 침상까지 완료로 쓰지 않는다. 전체 잔여 노동·주최자 회신을 남라트의 쉼에 강제하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-054",
+      "name": "엔수흐기라나",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-054/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-054/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-054/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-054",
+          "batch": "PS-016",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+            "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+            "pointer": "/records/5"
+          },
+          "goal_and_stake": {
+            "goal": "엔메르카르에게 답을 보내 도시의 존엄을 잃지 않는 교역 조건을 만든다.",
+            "stake": "모든 조건을 거절하면 자존심만 남고, 모두 받으면 주민 앞에서 설 말이 없어진다.",
+            "connection_to_story": "「지워지지 않는 도시 이름」: 엔수흐기라나가 실제 받은 교류안을 펼치고 플레이어와 받아들일 물건·거절할 호칭을 나눈다. 과거 패배 이야기를 할지는 그가 고른다. → 상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/247"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "도시 이름이 지워진 문구를 되짚고 교환할 물자를 따로 앞으로 민다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/247"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "dialogue_only"
+            ],
+            "role_specific_reason": "엔수흐기라나는 패배의 맛을 오래 기억해도 자기 도시를 승자의 장식으로 내주지 않는 경쟁자. 「지워지지 않는 도시 이름」에서 모든 조건을 거절해 자존심을 지킬지, 구체적 교류와 지울 수 없는 도시 이름을 나눠 답할지 선택한다. 이후 상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/247"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "엔수흐기라나가 실제 받은 교류안을 펼치고 플레이어와 받아들일 물건·거절할 호칭을 나눈다. 과거 패배 이야기를 할지는 그가 고른다.",
+                "actor_or_player": "엔수흐기라나, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 기존 교역길의 답장을 펼친 쉼터의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "엔수흐기라나와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 엔수흐기라나는 거절만 반복하던 답에서 무엇을 얻고 싶은지 자기 말로 드러낸다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "모든 조건을 거절해 자존심을 지킬지, 구체적 교류와 지울 수 없는 도시 이름을 나눠 답할지 선택한다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "엔수흐기라나는 거절만 반복하던 답에서 무엇을 얻고 싶은지 자기 말로 드러낸다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 엔수흐기라나의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "엔메르카르에게 허용된 답을 전달한 뒤 실제 회신이 있으면 엔수흐기라나가 주민 앞에서 자기 선택을 설명한다.",
+                "actor_or_player": "엔수흐기라나, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 기존 교역길의 답장을 펼친 쉼터의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "엔수흐기라나와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "회신을 기다리는 동안 대화를 보류하거나, 회신이 거절이어도 자기 조건을 바꾸지 않고 작은 교류 대안을 남긴다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 패배를 인정하더라도 자기 도시를 주인 없는 창고로 부르는 문구는 받지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 엔수흐기라나의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「지워지지 않는 도시 이름」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/247"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-053",
+                "existing_edge_or_new_minor_basis": "엔메르카르와 도시의 우열을 다투고 교류의 답을 보내는 인연을 기억한다.",
+                "request_and_actual_response": "위 「지워지지 않는 도시 이름」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "엔수흐기라나는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "엔수흐기라나와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "엔메르카르에게 허용된 답을 전달한 뒤 실제 회신이 있으면 엔수흐기라나가 주민 앞에서 자기 선택을 설명한다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "NOT_APPLICABLE",
+            "reason": "실물 보상 없음. 자기 도시 이름을 말할 자리와 실제 답변의 변화가 개인 결과다. 교역 물자는 별도 거래다.",
+            "details": "실물 보상 없음. 자기 도시 이름을 말할 자리와 실제 답변의 변화가 개인 결과다. 교역 물자는 별도 거래다. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/247"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/5"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/5"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/247"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/5"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/5"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/247"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/5"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/5"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "지워지지 않는 도시 이름",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+                  "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+                  "pointer": "/records/5"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "상대의 칭찬 없이도 자기 선택을 설명한 장면이 남는다. 주권·도시 관계의 전면 변경이나 자동 화해는 없다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 기존 교역길의 답장을 펼친 쉼터의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "dialogue_only"
+      ],
+      "existing_episode_ids": [
+        "EP016-RPG-S04-054"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "본인이 실제 받은 편지 한 통의 공개 허락 부분을 함께 읽는다. 받아들일 물건 항목과 거절할 호칭을 각각 물어 답한 범위만 정리한다. 전달을 자원하면 허락 문장만 실제 전하고 수신·회신을 따로 남긴다. 현재 회신이 있고 실제 모인 주민 중 들을 자격과 의사가 있는 사람에게 본인이 설명한 경우만 공개 지식. 공개 사양 또는 미회신이면 사적 현재 대화로 끝낸다.",
+        "completion_guard": "과거 패배는 원문 자기 지식과 본인 공개범위만. 오늘 새로운 패배·자동 화해·교역 성공·부재 주민 청취를 만들지 않는다. 전달 거절은 미완료 퀘스트가 아니다.",
+        "reward_detail": "보상0. 물건 교역은 별도 거래 원장, 대화에서 인수·교역 정산하지 않는다. 실제 맡긴 원본만 주인에게 반환한다.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "동시 인수 및 재시작",
+            "expected": "같은 회차 수혜자 실지급1, 불확실 대기"
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "과거 패배는 원문 자기 지식과 본인 공개범위만. 오늘 새로운 패배·자동 화해·교역 성공·부재 주민 청취를 만들지 않는다. 전달 거절은 미완료 퀘스트가 아니다."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-064",
+      "name": "빌룰루",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-064/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-064/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-064/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-064",
+          "batch": "PS-016",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+            "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+            "pointer": "/records/8"
+          },
+          "goal_and_stake": {
+            "goal": "두무지의 추모와 여행자 급수에 응하면서 자신이 감당할 책임의 끝도 정한다.",
+            "stake": "물 한 모금도 끝없는 벌의 일부라 여겨지면 자발적으로 내어줄 마음이 말라 버린다.",
+            "connection_to_story": "「마르지 않는 책임의 끝」: 빌룰루가 여행자에게 내줄 물과 두무지 추모에 남길 물을 나눈다. 플레이어는 실제 용기를 채우고 급수 차례를 돕는다. → 빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/250"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "물을 내주기 전 입구의 모래를 털고 자신이 감당할 몫을 멈춰 세운다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/250"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "service"
+            ],
+            "role_specific_reason": "빌룰루는 자기 책임을 지워 달라고 빌지는 않지만 처벌이 영원한 소유권이 되는 데는 맞서는 존재. 「마르지 않는 책임의 끝」에서 과거 죄를 내세워 더 요구할지, 오늘 감당할 몫과 실제 부족분을 나눠 말할지 선택한다. 이후 빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/250"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "빌룰루가 여행자에게 내줄 물과 두무지 추모에 남길 물을 나눈다. 플레이어는 실제 용기를 채우고 급수 차례를 돕는다.",
+                "actor_or_player": "빌룰루, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 사막길의 기존 급수 그늘의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "빌룰루와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 받은 물만 소모되고 빌룰루가 맡지 않은 무한 노역은 생기지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "과거 죄를 내세워 더 요구할지, 오늘 감당할 몫과 실제 부족분을 나눠 말할지 선택한다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "받은 물만 소모되고 빌룰루가 맡지 않은 무한 노역은 생기지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 빌룰루의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "합의한 급수가 끝나면 빌룰루가 빈 용기를 거두고 자기 휴식을 선언한다. 플레이어는 추가 요청자에게 남은 물의 실제 상태를 알리거나 자기 물을 나눈다.",
+                "actor_or_player": "빌룰루, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 사막길의 기존 급수 그늘의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "빌룰루와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "책임을 끝냈다고 과거 피해까지 지울지, 오늘의 끝과 과거의 책임을 따로 인정할지 고른다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 과거의 죄를 이유로 자신에게 끝없는 새 요구를 붙이는 합의는 받지 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 빌룰루의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「마르지 않는 책임의 끝」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/250"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-018",
+                "existing_edge_or_new_minor_basis": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+                "request_and_actual_response": "위 「마르지 않는 책임의 끝」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "빌룰루는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              },
+              {
+                "counterpart_record_key": "RPG-S04-065",
+                "existing_edge_or_new_minor_basis": "기르기레와 함께 피해와 반환을 다루는 관계, 두무지의 추모에 응하는 관계를 기억한다.",
+                "request_and_actual_response": "위 「마르지 않는 책임의 끝」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "빌룰루는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "빌룰루와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "합의한 급수가 끝나면 빌룰루가 빈 용기를 거두고 자기 휴식을 선언한다. 플레이어는 추가 요청자에게 남은 물의 실제 상태를 알리거나 자기 물을 나눈다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "급수는 실제 여행자에게 필요한 물을 제공하는 서비스다. 새 저술안: 합의한 급수 보조자에게 자기 용기에 정한 물 한 몫, 무한 반복 보상·면죄 증표 없음.",
+            "details": "급수는 실제 여행자에게 필요한 물을 제공하는 서비스다. 새 저술안: 합의한 급수 보조자에게 자기 용기에 정한 물 한 몫, 무한 반복 보상·면죄 증표 없음. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/250"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/8"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/8"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/250"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/8"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/8"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/250"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/8"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/8"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "마르지 않는 책임의 끝",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+                  "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+                  "pointer": "/records/8"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "빌룰루는 스스로 물을 내어줄 여지를 남기며 다음 급수의 범위를 정한다. 두무지의 죽음·변신을 현재 사건으로 재연하지 않는다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 사막길의 기존 급수 그늘의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "service"
+      ],
+      "existing_episode_ids": [
+        "EP016-RPG-S04-064"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "사막길의 현재 급수 그늘에서 실제 물 공급원·용기·여행자 요청을 확인한다. 여행자는 현재 허락한 차례와 필요량만 받고 보조자는 별도 사전 합의한 용기 입구 정리·받치기·인도 확인 몫을 수행한다. 시작 때 용기별 실제 수용단위와 정수 용기 수, 추모 예약분, 여행자분, 보조 답례분을 분리한다. 기본 보조 1용기의 입구 확인·인도 1회는 제안이며 다른 합의량도 가능하다. B2에서 실제 맡았던 빈 용기가 있을 때만 세척·허락 자리 반환과 실제 인수를 확인한다. 이어 (늦은 요청자에게 실제 잔량·종료 상태를 알리기 OR 자발적으로 자기 소유 물의 합의량만 실제 건네고 잔량 확인하기)를 선택한다. 맡지 않은 용기의 반환이나 두 대안의 동시 수행을 요구하지 않는다. 설명·나눔을 사양해도 이미 끝낸 급수·보조와 그 권리는 보존한다.",
+        "completion_guard": "과거 죄·두무지 추모는 무한 노동·새 변신·면죄의 조건이 아니다. 현재 신체와 접촉모드가 허용할 때만 손끝·용기 행동. 존재하지 않는 용기·물·손을 연기하지 않는다. 종료 후 본인 새 동의 없이 공급0.",
+        "reward_detail": "일반 여행자 서비스와 보조 답례를 분리. 보조자 실제 합의 수행 후 자기 용기의 정한 물1몫 권리, 단위는 시작 때 기존 용기1개 분량 또는 합의 정수량. 같은 물을 두 번 계산0. 실제 남은 공급량에서만 인도 차감, 용기 부족·물 부족은 미급수분 보존. 추모 물 무단전용·무한 재생·휴식 중 자동 보충0. 음용 효과는 실제 기존 물품 기능 외 추가0.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "동시 인수 및 재시작",
+            "expected": "같은 회차 수혜자 실지급1, 불확실 대기"
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "과거 죄·두무지 추모는 무한 노동·새 변신·면죄의 조건이 아니다. 현재 신체와 접촉모드가 허용할 때만 손끝·용기 행동. 존재하지 않는 용기·물·손을 연기하지 않는다. 종료 후 본인 새 동의 없이 공급0."
+          }
+        ]
+      }
+    },
+    {
+      "record_key": "RPG-S04-068",
+      "name": "안주·산의 아버지 새",
+      "source_refs": {
+        "profile": "기존페르소나_인물별/RPG-S04-068/profile.json",
+        "contract": "기존페르소나_인물별/RPG-S04-068/authoring_contract.json",
+        "outline": "772명_스토리와기본페르소나_통합.json#RPG-S04-068/outline",
+        "episode_pointer": "/exact_accepted_dossier/episodes",
+        "existing_cards_pointer": "/exact_existing_cards"
+      },
+      "runtime_ready": false,
+      "source_contract": {
+        "scope": {
+          "schema": "personal_story_scope.authoring.v1",
+          "record_key": "RPG-S04-068",
+          "batch": "PS-016",
+          "status": "SCOPE_AUTHORED_NOT_EPISODES",
+          "runtime_ready": false,
+          "input_binding": {
+            "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+            "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+            "pointer": "/records/11"
+          },
+          "goal_and_stake": {
+            "goal": "루갈반다의 돌봄에 보답하며 둥지와 산길 통행의 신뢰를 따로 지킨다.",
+            "stake": "둥지 돌봄이 자신을 부르는 빚문서가 되면 고마움조차 경계해야 한다.",
+            "connection_to_story": "「날개가 고른 보답」: 안주·산의 아버지 새가 현재 둥지 흔적을 살피는 동안 플레이어는 루갈반다가 실제 맡은 돌봄의 남은 부분을 허용 경계 밖에서 돕는다. → 안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/253"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/11"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/11"
+              }
+            ]
+          },
+          "coverage": {
+            "existing_scene_refs": [],
+            "existing_service_refs": [],
+            "what_is_already_playable": "75개 기존 C/R/T/FOX/LUB/서비스 카드를 식별자·이름·관련 장면으로 전수 검색했다. 이 인물의 이번 목표를 행동과 개인 결말까지 충족하는 기존 카드가 확인되지 않아 아래 소규모 이야기를 새로 저술한다.",
+            "what_is_only_encounter_or_seed": "돌아와 둥지 가장자리를 살핀 뒤 누구의 손이 닿았는지 먼저 묻는다 이는 방문자 수락을 기다리다 시작하는 일이 아니다. 이는 첫 조우의 현재 행동이며 아래 선택·실행·후속 결과의 완료는 아니다.",
+            "missing_personal_outcome": "안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다.",
+            "duplicate_avoidance": "기존 카드의 선행·선택·보상·공용 결과를 그대로 유지한다. 기존 장면 참조는 출석·청취·수락 증거가 아니다. 종료된 사건을 이번 개인 이야기의 새 완료로 재연하지 않는다. 루갈반다의 귀환 요청과 안주의 자발적 보답이 같은 현재 돌봄·이동을 가리키면 한 사건의 두 관점으로 재사용한다. 먹이를 다시 소모하거나 비행을 다시 생성해 두 번째 완료로 삼지 않는다. 루갈반다 MAIN의 실제 소유자 경험과 안주 장면의 실제 청중·이동 참가자를 따로 남기며 서로의 완료를 필수 선행으로 강제하지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/253"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/11"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/11"
+              }
+            ]
+          },
+          "mode": {
+            "selected": [
+              "event"
+            ],
+            "role_specific_reason": "안주·산의 아버지 새는 둥지의 흔적부터 확인하고 호의는 스스로 고른 방식으로 갚고 싶어 하는 존재. 「날개가 고른 보답」에서 더 큰 보답을 얻으려고 둥지 안을 꾸밀지, 실제 요청한 작은 돌봄까지만 할지 고른다. 이후 안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다.",
+            "no_additional_episode_reason": null,
+            "source_basis": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/253"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/11"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/11"
+              }
+            ]
+          },
+          "playable_plan": {
+            "steps": [
+              {
+                "action": "안주·산의 아버지 새가 현재 둥지 흔적을 살피는 동안 플레이어는 루갈반다가 실제 맡은 돌봄의 남은 부분을 허용 경계 밖에서 돕는다.",
+                "actor_or_player": "안주·산의 아버지 새, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 산의 기존 둥지에서 거리를 둔 바위 능선의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 일반 인사는 수락이 아니다. 제안을 듣고 자신이 수행할 몫을 명시적으로 택한다.",
+                "evidence_and_judge": "안주·산의 아버지 새와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 실제 돌봄과 침범이 구별되고 안주가 자기 경험으로 판단할 근거가 생긴다. 다른 안주 형상과 기억을 합치지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "더 큰 보답을 얻으려고 둥지 안을 꾸밀지, 실제 요청한 작은 돌봄까지만 할지 고른다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "실제 돌봄과 침범이 구별되고 안주가 자기 경험으로 판단할 근거가 생긴다. 다른 안주 형상과 기억을 합치지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 안주·산의 아버지 새의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              },
+              {
+                "action": "안주가 루갈반다에게 제안할 산길 도움을 자기 방식으로 고른다. 플레이어는 실제 제안된 구간의 이동에만 참여하거나 도보 대안을 준비한다.",
+                "actor_or_player": "안주·산의 아버지 새, 이 단계에 실제 참여한 플레이어, 본문에서 요청된 실제 상대만. 주변 인물은 현행 배역 범위이며 신규 주요 명부 추가 없음.",
+                "prerequisite": "현재 Overworld의 산의 기존 둥지에서 거리를 둔 바위 능선의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 첫 행동의 실제 결과를 사용하되 종료된 공용 일을 재연하지 않는다. 필요한 상대의 응답은 실제 수신해야 한다.",
+                "evidence_and_judge": "안주·산의 아버지 새와 실제 당사자가 위 행동의 물건·현장 전후 상태·실제 수행자·응답 수신을 확인한다. 안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다. 말로 완료했다는 주장만으로 판정하지 않는다.",
+                "decision": "도움이 작다고 추가 비행을 요구하거나, 제안된 범위를 받고 남은 길은 스스로 갈지 선택한다. 선택문에서 플레이어는 자기 행동 또는 제안을 고른다. 인물 자신의 노동·허용·진술·판단은 그 인물이 직접 결정한다. 본인의 변경 불가 원칙: 새끼를 돌봤다는 이유로 둥지와 비행을 모두 내주지는 않는다. 이를 깨라는 제안은 당사자가 거절하며, 그 제안을 인물의 실제 위반으로 기록하지 않는다.",
+                "consequence": "안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다. 위 변화는 해당 행동과 선택이 실제 성립한 경우만 남긴다. 반대 선택·중단으로 그 근거가 없으면 성공 결과를 주지 않고 실제 손실·미완료 쟁점만 보존한다.",
+                "refusal_failure_return": "이 행동을 거절하면 안주·산의 아버지 새의 목표는 남고 다른 일상 접촉은 유지된다. 실패·중단은 이미 확인한 행동과 소비를 보존하며 남은 대상·미인수 물자부터 재개한다. 부재자의 답을 대신 만들지 않고 그 응답만 보류한다. 후발자는 현재 남은 일을 자기 몫으로 수행하며 끝난 사건·첫 공로·사적 청취를 상속하지 않는다."
+              }
+            ],
+            "no_steps_reason": null,
+            "actual_episode_writing_remaining": "위 범위의 실제 대사·목표 카드·증거/소비/복구 세부 집필 및 독립 의미 검수가 남는다. 기존 재사용 카드는 재작성하지 않는다."
+          },
+          "main_ownership": {
+            "status": "NOT_APPLICABLE",
+            "reason": "「날개가 고른 보답」는 현장 참여·생활 선택 또는 기존 결과의 후속으로 완결한다. 개인의 뜻을 독점 수주자에게 종속시키지 않으므로 새 MAIN을 추가하지 않는다.",
+            "details": "위 단계의 자발적 참여는 MAIN 제시·수락·소유·완료가 아니다. 이미 별도 MAIN이 있다면 그 소유자·진행을 변경하지 않는다. 이 장면은 그 소유자 부재에도 현재 가능한 공용 행동·대화를 이어 가고 개인 결과는 실제 수행자·청중에게만 남긴다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/253"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/11"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/11"
+              }
+            ]
+          },
+          "relation_handoffs": {
+            "items": [
+              {
+                "counterpart_record_key": "RPG-S04-052",
+                "existing_edge_or_new_minor_basis": "루갈반다가 새끼를 돌본 데 대해 도움을 제안한 자기 인연을 기억한다.",
+                "request_and_actual_response": "위 「날개가 고른 보답」의 행동에 이 상대의 요청·인수·답이 실제 필요한 때만 당사자에게 전달한다. 기존 관계는 만남·동의·지식 전파가 아니다. 본문에서 요청하지 않은 상대를 강제 출석시키지 않는다.",
+                "what_changes_for_each_side": "안주·산의 아버지 새는 실제 받은 응답 범위에서 위 결말을 선택한다. 상대는 실제 요청받아 동의하고 이행한 자기 몫만 바꾸며 호감·현재 위치·의사를 대신 확정하지 않는다.",
+                "absence_refusal_alternative": "부재·거절이면 그 상대의 협의 결과는 보류한다. 현장 보존·자기 실습·현재 일상은 계속 가능하고, 해당 상대의 말이 필요한 결론을 전언이나 대역으로 완료하지 않는다."
+              }
+            ],
+            "none_reason": null
+          },
+          "knowledge_events": {
+            "items": [
+              {
+                "fact_or_claim": "안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다.",
+                "truth_status": "새 개인 이야기에서 실제 행동·응답이 성립했을 때 확인할 결과. 지금 이미 발생한 정사나 기본 지식이 아니다.",
+                "who_learns": "안주·산의 아버지 새와 해당 현장을 직접 본 사람 또는 허용된 설명을 실제 받은 사람",
+                "from_whom_or_source": "위 단계의 실제 물건·현장 변화와 당사자 본인의 응답. 기존 코어의 자기 경험과 구별한다. 기존에 유효하게 실제 알게 된 사실은 유지하고 이번 참여를 위해 잊게 하지 않는다.",
+                "actual_event": "안주가 루갈반다에게 제안할 산길 도움을 자기 방식으로 고른다. 플레이어는 실제 제안된 구간의 이동에만 참여하거나 도보 대안을 준비한다.",
+                "actual_audience_and_disclosure": "실제 동석·청취·허용된 전달 수신자만. 사적인 이유는 본인 허용 없이 공개하지 않는다. 공용 변화·파티 가입·후발 접속은 사적 지식 전파가 아니다. 코어의 기존 자기 경험·추측·오해·숨김의 공개 조건을 그대로 적용한다. 이번 이야기 완료로 여신의 정체·전쟁의 미수신 작전이나 타인의 사적 고백을 풀지 않는다.",
+                "before_after_change": "안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다. 그 내용을 못 받은 상대는 예전 지식 범위를 유지하며 실제 전달 이후에만 반응한다."
+              }
+            ],
+            "none_reason": null
+          },
+          "rewards_and_costs": {
+            "status": "APPLICABLE",
+            "reason": "신규 저술안: 안주가 실제 제안하고 이행한 한정 산길 도움 자체. 아이템·능력치 지급 없음. 수행자가 아닌 친구에게 이동·인연을 복제하지 않는다.",
+            "details": "신규 저술안: 안주가 실제 제안하고 이행한 한정 산길 도움 자체. 아이템·능력치 지급 없음. 수행자가 아닌 친구에게 이동·인연을 복제하지 않는다. 지급안은 완성된 등록·서버 실행 증거가 아니다. 실제 수행의 유효 확인→해당 수혜자 지급권→재고와 수령 가능 여부 확인→실제 인계를 나눈다. 미수령은 권리를 보존하고 같은 사건·수혜자 실지급 이력을 대조해 미지급분만 복구한다. FTB/게임 중복 지급 금지. 관찰·대화만으로는 소모가 없다. 재료를 쓰는 제작·시음·연습은 실제 사용한 자기 소모품과 합의해 인도한 물자만 실제량으로 차감한다. 장비·지도·축복·가호·주시·호감·MAIN·인정은 별개이며 첫 만남으로 어느 것도 자동 지급하지 않는다. 인간 가호 보유 제한과 허용된 약탈 전리품을 혼동하지 않는다. 미등록 itemID·성능·수치를 만들지 않는다.",
+            "sources": [
+              {
+                "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                "pointer": "/records/253"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                "pointer": "/records/11"
+              },
+              {
+                "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                "pointer": "/records/11"
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "kind": "registry_input",
+              "issue": "실제 부지·배우·재료·아이템 레지스트리와 수량·성능 바인딩이 필요하다.",
+              "affected_scope": "검증된 실행 파일 변환 및 물자 지급.",
+              "safe_continuation": "행동·선택·결말과 보통 보상 기능의 저술은 계속한다. 없는 ID와 수치를 확정하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/253"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/11"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/11"
+                }
+              ]
+            },
+            {
+              "kind": "runtime_integration",
+              "issue": "접근 보호·실제 행동 검출·개인 MAIN 원자 수락/자격 조회·공용 상태와 개인 청취·중복 정산의 실제 연동 검증이 필요하다.",
+              "affected_scope": "게임 실행과 서버 검증.",
+              "safe_continuation": "저술안은 runtime_ready=false로 유지하며 미확인 실행을 성공 대사로 대체하지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/story_relationships_20261014/bundle/rpg_authoring_master_current.json",
+                  "sha256": "af7784a5f8e245d455b06c9382d7552e12b9b68713603274c972408d405fa9d5",
+                  "pointer": "/records/253"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/cores/CORE-016.json",
+                  "sha256": "6b3cf3573e43535c37b9006404341bdf77392a173d6294f4d547c30b8daaae02",
+                  "pointer": "/records/11"
+                },
+                {
+                  "file": "outputs/full_authoring_20261014/encounters/ENC-016.json",
+                  "sha256": "9f9a0030b66f24b7e2596e1970b5045494b6754072891dc29353daa3a52f1fdd",
+                  "pointer": "/records/11"
+                }
+              ]
+            },
+            {
+              "kind": "minor_authoring_remaining",
+              "issue": "범위 기록 뒤 대사·목표별 수량·적 배치·재료 소비·실패 복구를 전체 quest_authoring_card 계약에 맞춰 실제 에피소드로 집필해야 한다.",
+              "affected_scope": "날개가 고른 보답",
+              "safe_continuation": "현재 승인된 소규모 에피소드 집필 범위이며 신규 MAIN이라는 이유만으로 재승인 대기로 돌리지 않는다.",
+              "evidence": [
+                {
+                  "file": "outputs/full_authoring_20261014/personal_story_planning/inputs/PS-016.json",
+                  "sha256": "a7dbe67cb29d8bc915a11cb6a44106573635726bb49eb4399dc0d5fea8d96ceb",
+                  "pointer": "/records/11"
+                }
+              ]
+            }
+          ],
+          "review": {
+            "unique_personal_consequence": "안주는 빚문서가 아닌 자기 보답으로 도움을 마친다. 재방문에는 지킨 경계만 기억하며 영구 탈것·소환·무제한 비행권을 주지 않는다.",
+            "shared_vs_individual_and_late_join": "실제 물자·위치·공개 생활 변화는 공용. 선택·수주·사적 응답·실습·지급권은 실제 개인. 후발자는 현재 남은 일에 참여하며 첫 성공·공로·비밀·MAIN을 복사하지 않는다.",
+            "special_constraints_checked": "현재 Overworld의 산의 기존 둥지에서 거리를 둔 바위 능선의 현장 유형. 실제 기존 부지 등록 연결 대기이며 새 차원·대규모 건축·가상 좌표가 아니다. 실제 접근·배우 활동·당사자 의사를 확인한다. 개별 일반 조우 장 번호는 확정하지 않는다. 현재 현장까지 실제 도달하고 배우가 활동 중이면 접촉 후보다. 과거의 미작성 분류를 새 전역 금지로 읽지 않는다. 완전 봉인은 새 일반 대화 불가. 일부 봉인은 현행 해제된 접촉 범위만 사용하며 나머지 봉인을 풀지 않는다. 위험 수행은 실제 장비·퇴로·현재 위협을 별도 확인하고 신의 등급을 낮추지 않는다. 이 문화권에 다른 일부 신의 초반 전투력 예외를 일괄 이식하지 않는다. 과거 전승의 죽음·귀환·변신·부활을 새 현재 사건으로 반복하지 않는다.",
+            "canon_and_runtime_boundary": "동결 757명·현행 등급·정체·배우 단일성·세계와 소유 규칙 유지. 소규모 내용은 신규 저술안이며 독립 검수 완료·실제 에피소드 완성·서버 실행 완료를 주장하지 않는다."
+          }
+        },
+        "existing_cards": {}
+      },
+      "accepted_mode": [
+        "event"
+      ],
+      "existing_episode_ids": [
+        "EP016-RPG-S04-068"
+      ],
+      "adopted_detail": {
+        "new_quests": 0,
+        "new_personal_main": 0,
+        "new_growth_rewards": 0,
+        "actual_activity": "산의 기존 둥지에서 떨어진 안전 능선에 선다. 현재 안주와 담당이 요청한 먹이1묶음 인도 또는 실제 맡긴 빈 용기1개 회수만 경계 바깥 인도점에서 한다. 합의량이 다르면 실제 정수량을 먼저 기록한다. 루갈반다 편에서 이미 끝났으면 재급식0, 완료한 실제 주체와 남은 경계만 확인한다. 산길 도움은 안주가 실제 제안한 대상·출발점·도착점·방식·한 구간을 기록하고 포함된 사람의 동의·현재 안전 후에만 실제 이동. 사양하거나 대상 밖이면 허용 능선 도보 첫 구간8~16블록의 실제 경로·휴식점을 스스로 확인한다.",
+        "completion_guard": "이 관리키는 루갈반다 이야기의 특정 비신격 비인간 존재. 다른 안주 전승과 합치거나 다른 전승 기억·권능을 수입0. 둥지 안 강제출현·인간형 본체·원격분신0. 관측은 안전한 시야 거리에서, 인도물 접촉만 손2블록.",
+        "reward_detail": "원문 한정 산길 도움을 보존하되 돌봄은 자동 탑승권 아님. 실제 안주가 제안한 루갈반다와 명시 포함한 사람만 한 구간 수혜. 제안/동의/출발/현재 위치/도착 별도 저장, 실제 도착만 이행. 같은 제안·대상·구간 도착 receipt가 있으면 재비행0. 미출발은 현재 의사·안전 재확인, 중단은 실제 위치에서 안전 재개. 소환권·영구 탈것·가호·아이템·새 성장0.",
+        "repeat": "새 현재 요청·실제 재고·허락이 있는 별도 회차만. 지난 성과·동일 물건·첫 지도 이수 복제0. 선택 후기 거절은 이미 끝난 생활성과를 취소하지 않는다.",
+        "implementation_requirements": [
+          "실제 본체·현재 접근과 공통 조우 CAS 결속",
+          "개별 행동·관측·동의·수신 및 미완료 원장",
+          "실제 인벤과 권리 원장을 대조하는 중복방지 인수 처리"
+        ],
+        "acceptance_cases": [
+          {
+            "case": "말만 완료했다고 주장",
+            "expected": "실제 행동/수신 증거 없는 부분 미완료"
+          },
+          {
+            "case": "선택 후기 거절",
+            "expected": "기존 핵심 성과 유지, 지도·전달 미실행 분리"
+          },
+          {
+            "case": "같은 제안의 동시 이동 요청·재시작",
+            "expected": "같은 제안·대상·구간의 도착 원장을 대조하여 이미 도착한 구간은 재이행하지 않는다. 물품 지급이나 가방 부족 복구는 해당하지 않는다. 미출발·이동 중·도착을 분리하고 실제 현재 위치에서만 안전 재개한다."
+          },
+          {
+            "case": "사망·로그아웃·후발자",
+            "expected": "거절·침묵·퇴장은 정상. 사망/로그아웃은 실제 소비·피해·인수·청취만 보존, 미실행은 자동완료0. 재개는 현재 본체·현물·허가 재검사 후 남은 부분만. 후발자는 현재 결과를 새로 읽되 과거 공로·사적 기억·지급 복제0."
+          },
+          {
+            "case": "인물 고유 경계",
+            "expected": "이 관리키는 루갈반다 이야기의 특정 비신격 비인간 존재. 다른 안주 전승과 합치거나 다른 전승 기억·권능을 수입0. 둥지 안 강제출현·인간형 본체·원격분신0. 관측은 안전한 시야 거리에서, 인도물 접촉만 손2블록."
+          }
+        ]
+      }
+    }
+  ]
+}

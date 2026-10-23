@@ -1,5 +1,7 @@
 # MythAI Content Registry
 
+> 2026-10-22: 기존 시험 프로필·로어·인물 예시·퀘스트 목록은 [구버전](../구버전/20261022-테스트콘텐츠/README.md)에 보관하고 기본 배포에서 제외했다. 현재 기본 인물·Story 목록은 비어 있으며 Minecraft 공개 상식 17개와 일반 분류 예시 31개는 유지한다. 아래 LP 복원은 과거 이력이다.
+
 > 2026-09-12 서버 콘텐츠와 프로필 소스 모두 [LP 보존본](../server/backups/LP/README.md)으로 복원했다. 데메테르·포르투나 프로필을 LP 리소스로 되돌렸으며, 새 빌드의 전체 69개 파일 및 JAR SHA-256이 LP와 일치한다. [소스 복원 기록](../docs/LP_SOURCE_RESTORE.md)과 [LP 운영 안내](../docs/LP_RUNTIME_GUIDE.md)를 따른다.
 
 독립 NeoForge 모드로, 신의 변하지 않는 기본 정보·단계형 세계 지식·예시 대화·정적 퀘스트 목록을 Datapack JSON에서 읽어 ResourceLocation ID로 제공한다.

@@ -8,6 +8,7 @@ import com.mojang.serialization.JsonOps;
 import com.sande.mythictrpg.condition.api.ConditionNode;
 import com.sande.mythictrpg.condition.engine.ConditionTreeParser;
 import com.sande.mythictrpg.condition.registry.ConditionTypeRegistry;
+import com.sande.mythictrpg.quest.reward.blessing.GodRank;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ public final class GodDefinitionSchema {
             new ConditionTreeParser(ConditionTypeRegistry.INSTANCE);
     private static final Set<String> ALLOWED_FIELDS = Set.of(
             "schema_version", "display_name", "origin", "faction", "categories",
-            "unlock_conditions", "appearance_conditions", "identification_conditions"
+            "unlock_conditions", "appearance_conditions", "identification_conditions", "god_rank"
     );
 
     private GodDefinitionSchema() {
@@ -51,8 +52,22 @@ public final class GodDefinitionSchema {
                 requiredIdSet(json, "categories"),
                 condition(json, "unlock_conditions", sourceVersion),
                 condition(json, "appearance_conditions", sourceVersion),
-                condition(json, "identification_conditions", sourceVersion)
+                condition(json, "identification_conditions", sourceVersion),
+                rank(json)
         );
+    }
+
+    private static Optional<GodRank> rank(JsonObject json) {
+        if (!json.has("god_rank")) return Optional.empty();
+        JsonElement value = json.get("god_rank");
+        if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) {
+            throw new JsonParseException("god_rank must be a deity rank string");
+        }
+        try {
+            return Optional.of(GodRank.parse(value.getAsString()));
+        } catch (IllegalArgumentException exception) {
+            throw new JsonParseException("Unknown god_rank: " + value.getAsString(), exception);
+        }
     }
 
     private static Optional<ConditionNode> condition(JsonObject json, String field, int sourceVersion) {

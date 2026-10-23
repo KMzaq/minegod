@@ -28,6 +28,7 @@ public final class RecordingRuntime {
         volatile WorldRecordingService service;
         volatile CompletableFuture<WorldRecordingService> opening;
         RoomRecordingCapture roomCapture;
+        final CaptureReadFence roomCaptures = new CaptureReadFence(4096);
         WatchRecordingCapture watchCapture;
         WatchKnowledgeReconciler watchReconciler;
         com.sande.mythictrpg.gameplay.watch.GameWatchGateway reconciliationGateway;
@@ -53,6 +54,13 @@ public final class RecordingRuntime {
         if (!server.isSameThread()) throw new IllegalStateException("Recording lifecycle requires game thread");
         var entry = ENTRIES.get(server); return entry == null || entry.stopped ? Optional.empty() : Optional.ofNullable(entry.service);
     }
+    /** Not a permission grant or a flush of derived/background work. Captures include all delivery batches. */
+    static CompletableFuture<Boolean> pendingRoomCaptures(MinecraftServer server, WorldRecordingService expected) {
+        if (!server.isSameThread()) throw new IllegalStateException("ROOM_CAPTURE_FENCE_REQUIRES_GAME_THREAD");
+        var entry = ENTRIES.get(server);
+        return entry == null || entry.stopped || entry.service != expected
+                ? CompletableFuture.completedFuture(false) : entry.roomCaptures.snapshot();
+    }
     /** Content-free policy diagnostic, not archive health or a permission to invoke NEW foreground retrieval. */
     public static String retrievalState(MinecraftServer server) {
         if(!server.isSameThread())throw new IllegalStateException("RETRIEVAL_POLICY_REQUIRES_GAME_THREAD");
@@ -67,6 +75,13 @@ public final class RecordingRuntime {
         if(!server.isSameThread())throw new IllegalStateException("RETRIEVAL_POLICY_REQUIRES_GAME_THREAD");
         var entry=ENTRIES.get(server);
         return entry!=null&&(entry.stopped||entry.retrievalPolicy==null||entry.retrievalPolicy.foregroundBlocked());
+    }
+    /** Explicit startup selection, not a read/knowledge grant. Defaults remain LEGACY/SHADOW. */
+    public static boolean nativeDialogueEnabled(MinecraftServer server) {
+        if (!server.isSameThread()) throw new IllegalStateException("RETRIEVAL_POLICY_REQUIRES_GAME_THREAD");
+        var entry = ENTRIES.get(server);
+        return entry != null && !entry.stopped && entry.retrievalPolicy != null
+                && entry.retrievalPolicy.state() == RecordingRetrievalSettings.State.NEW;
     }
     /** Game-owned policy gate for the independent derived-memory worker, never a foreground read grant. */
     public static boolean projectionEnabled(MinecraftServer server) {
@@ -167,8 +182,12 @@ public final class RecordingRuntime {
                 entry.roomCapture.gap("CAPTURE_BEFORE_STORAGE_READY", entry.unavailableBeforeCapture);
                 entry.unavailableBeforeCapture = 0;
             }
-            entry.roomCapture.capture(event, com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE.isCurrent(event.roomId(), event.revision()))
-                    .whenComplete((outcome, failure) -> { if (failure != null || outcome == null || !outcome.complete()) entry.captureFailures.incrementAndGet(); });
+            var capture = entry.roomCapture.capture(event, com.sande.mythictrpg.ai.server.ConversationRooms.INSTANCE.isCurrent(event.roomId(), event.revision()));
+            entry.roomCaptures.track(capture.handle((outcome, failure) -> {
+                boolean complete = failure == null && outcome != null && outcome.complete();
+                if (!complete) entry.captureFailures.incrementAndGet();
+                return complete;
+            }));
         } catch (RuntimeException unavailable) {
             entry.captureFailures.incrementAndGet();
             if (entry.roomCapture != null) entry.roomCapture.gap("CAPTURE_ADAPTER_UNAVAILABLE", 1);
@@ -275,12 +294,14 @@ public final class RecordingRuntime {
         NativeRoomEvidence.clear(event.getServer());
         var entry = ENTRIES.get(event.getServer()); if (entry != null) {
             entry.stopped = true;
+            entry.roomCaptures.close();
             if(entry.watchReconciler!=null)entry.watchReconciler.close();
         }
     }
     @SubscribeEvent(priority = EventPriority.LOWEST) public static void stopped(ServerStoppedEvent event) {
         var entry = ENTRIES.remove(event.getServer()); if (entry == null) return;
         entry.stopped = true; entry.bootstrap.shutdown();
+        entry.roomCaptures.close();
         if (entry.opening == null) return;
         var flushed = new CompletableFuture<Void>();
         // Existing action/watch stop listeners run before LOWEST. The NeoForge save chain fences actual SavedData I/O.
@@ -309,8 +330,7 @@ public final class RecordingRuntime {
     private static void configureRumor(MinecraftServer server, Entry entry) {
         if (entry.rumorData == null) return;
         entry.rumorEnabled = entry.settings != null && entry.settings.archiveMode() != RecordingSettings.Mode.OFF
-                && com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
-                == com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST;
+                && com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.supportsRumors();
         entry.rumorData.recordingEnabled(entry.rumorEnabled);
         var status=entry.rumorData.recordingStatus();
         if(status!=entry.rumorStatus) {

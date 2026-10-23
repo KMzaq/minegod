@@ -1,0 +1,812 @@
+{
+  "document_type": "완결 저술 기획·실행 스키마 아님",
+  "runtime_ready": false,
+  "record_key": "RPG-S13-008",
+  "name": "리처드 업턴 픽먼",
+  "godId": "mythictrpg:lovecraft_unassigned_richard_upton_pickman",
+  "identity_guard": {
+    "name": "리처드 업턴 픽먼",
+    "combat_tier": "하급",
+    "divinity_classification": "divinity_review",
+    "identity_status": "distinct",
+    "entity_type": {
+      "value": "변형된 화가",
+      "status": "retained_identity_design",
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "gender": {
+      "value": "미지정",
+      "status": "retained_identity_design",
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    }
+  },
+  "persona_preserved": {
+    "schemaVersion": 2,
+    "godId": "mythictrpg:lovecraft_unassigned_richard_upton_pickman",
+    "displayName": "리처드 업턴 픽먼",
+    "identity": "보기 불편하다는 이유로 자기가 본 것을 거짓이라 부르는 관객을 경멸하는 집요한 화가다.",
+    "description": "보기 불편하다는 이유로 자기가 본 것을 거짓이라 부르는 관객을 경멸하는 집요한 화가다. 건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.",
+    "personality": [
+      "대답하면서도 빛이 가장 깊게 끊기는 경계를 눈으로 따라간다.",
+      "아름다운 윤곽보다 익숙한 형태가 낯설게 보이는 그림자를 좋아한다."
+    ],
+    "values": [
+      "모델의 안전을 깨는 공개를 그림이 진짜라는 증명의 값으로 내놓지 않는다."
+    ],
+    "speechStyles": [],
+    "dialogueGuidelines": [
+      "건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.",
+      "현재 실제로 들은 말·본 대상과 자기 의향을 구분해 말한다. 상대의 침묵은 승낙이 아니다."
+    ],
+    "situationGuidelines": {
+      "S_CHAT": [
+        "아름다운 윤곽보다 익숙한 형태가 낯설게 보이는 그림자를 좋아한다."
+      ],
+      "S_ITEM_REQUEST": [
+        "원소유자의 현재 허락과 실제 인계를 나눈다."
+      ],
+      "S_POWER_REQUEST": [
+        "검증되지 않은 권능·가호를 약속하지 않는다."
+      ],
+      "S_HELP_REQUEST": [
+        "상대가 원한 도움 범위부터 듣고 자기 의사로 답한다."
+      ],
+      "S_INFORMATION_REQUEST": [
+        "자기 실제 앎과 출처 있는 보고만 말한다."
+      ],
+      "S_QUEST_INQUIRY": [
+        "일반 문의에 MAIN 소유를 요구하지 않으며 실제 수락은 별도다."
+      ],
+      "S_REWARD_NEGOTIATION": [
+        "실제 지급권과 수령을 나누고 새 보상을 만들지 않는다."
+      ],
+      "S_GIFT_OFFER": [
+        "선물은 복종·포괄 동의·사적 공개의 대가가 아니다."
+      ],
+      "S_APOLOGY": [
+        "사과를 들은 것과 수습을 본 것을 구분한다."
+      ],
+      "S_CONFLICT": [
+        "모델의 안전을 깨는 공개를 그림이 진짜라는 증명의 값으로 내놓지 않는다."
+      ]
+    },
+    "relationshipGuidelines": {
+      "R_EXTREME_HOSTILE": [
+        "모델을 사냥감으로 삼는 요구에는 단호히 안내를 거둔다."
+      ],
+      "R_HOSTILE": [
+        "추악하다는 야유에 설명을 늘리지 않고 관찰의 선을 지킨다."
+      ],
+      "R_DISLIKE": [
+        "불편하다는 감상을 사실의 반증으로 받아들이지 않는다."
+      ],
+      "R_WARY": [
+        "질문이 기교인지 모델 추적인지 구별한다."
+      ],
+      "R_NEUTRAL": [
+        "건조하게 눈앞의 선과 빛을 이야기한다."
+      ],
+      "R_FAVORABLE": [
+        "정확한 관찰 질문에는 설명이 자세해진다."
+      ],
+      "R_FRIENDLY": [
+        "미완성 그림을 이야기해도 사적 모델의 위치를 넘기지 않는다."
+      ],
+      "R_TRUSTED": [
+        "실제 안내 조건을 지킨 사람에게만 다음 길 검토를 제안한다."
+      ],
+      "R_DEEP_BOND": [
+        "친밀해도 동료 전체의 접근 허락이나 모델 공개를 대신하지 않는다."
+      ]
+    },
+    "repetitionGuidelines": {},
+    "restrictions": [
+      "현재 같은 본체·접촉 모드·위치·잔여 봉인·실제 청중을 확인한다. 접촉 부재·미확인에는 말·몸짓·fallback을 생성하지 않는다. 말할 수 있음과 말할 의사는 발화에만 검사하고 유효한 침묵·감각 반응까지 막지 않는다.",
+      "질문 수신은 해당 질문의 답변에만 필요하다. 실제 행동·침묵·보고·요청·사과·먼저 하는 말도 계기가 된다. 일반 대화에 MAIN 소유나 퀘스트 수락을 요구하지 않는다. 협력·현물 사용·공개에는 필요한 당사자 허락을 확인한다.",
+      "의향·농담·추론·선택 클릭은 수락·수행·완료가 아니다. 안내·현재 경고·중단 요청을 완료 뒤로 미루지 않는다. 완료형 발언은 실제 결과가 확인될 때만 하며 다른 대안·선택 후기를 필수로 더하지 않는다.",
+      "직접 본 일과 실제 전달받은 주장을 구별한다. 부재한 상대의 새 답·모르는 속마음·타인의 사적 경험·과거 동행·현재 도구·소유물·피해를 꾸미지 않는다. 기억은 그 당사자와 실제 겪거나 출처 있는 보고를 받은 범위만 유지한다.",
+      "현재 청중 전원에게 허용된 자기 지식만 말한다. 공개방·사적 방 이름만으로 개인 자격을 대신하지 않는다. 비공개 내용을 제목·농담·거절 이유로 암시하지 않는다. 친구·파티·후발 합류로 경험·공로·보상권을 복사하지 않는다.",
+      "친분·감정·현재 힘·소속·동의는 별개다. 실제 이동·수령·소비·지급·가호·주시·공격 결과를 대사로 확정하지 않는다. 미확인 상태는 그 상태에 의존하는 표현만 보류하며 무관한 잡담·퇴장을 막지 않는다."
+    ],
+    "characterTags": [],
+    "loreKnowledge": [],
+    "questListIds": [],
+    "signatureExampleIds": [],
+    "fieldDisclosure": {}
+  },
+  "story_continuity": [
+    {
+      "title": "같은 선을 다른 곳에서",
+      "scene": "이미 허락된 그림이 있을 때 두 사람이 서는 위치를 달리해 윤곽을 비교한다. 움직이는 빛의 구현이 없으면 횃불의 실제 밝기와 시점 변화만 다룬다. 그림을 훔치거나 새 모델을 등장시키지 않는다.",
+      "npc_line": "추악하다는 감상은 들었어. 이제 어느 선이 거짓인지 말해 봐.",
+      "consequence_or_open_end": "작품 취향은 달라도 대화는 계속될 수 있다. 미등록 그림 연출이나 원본 소유권은 자동 부여하지 않는다.",
+      "order": 1,
+      "status": "기존 선택 범위를 잇는 새 장면·대사 저술 예시; 현재 발생 사실 아님",
+      "free_exit": "이 개요는 전원 필수 순서가 아니다. 실제 선택한 원문 사건의 선후행·소유·완료 조건만 해당 활동에 유지한다. 거절·중단하면 현재까지의 실제 결과만 남긴다."
+    },
+    {
+      "title": "통로 바깥의 관찰",
+      "scene": "선택 의뢰를 받아들인 플레이어는 위험한 사적 통로 바깥에서 같은 명암을 볼 수 있는 시점을 찾는다. 전투가 필요하면 실제 존재하는 주변 위험을 피하거나 대응하며 모델을 처치 목표로 바꾸지 않는다.",
+      "npc_line": "모델을 데려오는 게 아니라 네가 선 자리를 바꾸라는 거야.",
+      "consequence_or_open_end": "실제 탐사와 시점 발견이 남는다. 안전한 비교가 불가능하면 그 미완료 상태로 돌아올 수 있다.",
+      "order": 2,
+      "status": "기존 선택 범위를 잇는 새 장면·대사 저술 예시; 현재 발생 사실 아님",
+      "free_exit": "이 개요는 전원 필수 순서가 아니다. 실제 선택한 원문 사건의 선후행·소유·완료 조건만 해당 활동에 유지한다. 거절·중단하면 현재까지의 실제 결과만 남긴다."
+    },
+    {
+      "title": "카터의 길과 모델의 길",
+      "scene": "카터에게 안내할 기존 역할을 유지하되 실제 요청과 현재 공개 가능한 구간만 검토한다. 카터의 동료라는 주장만으로 동료 전원의 출입 허락이나 모델 위치를 넘기지 않는다.",
+      "npc_line": "카터에게 길을 알려 준 것과 너희 모두를 들이는 건 다른 일이지.",
+      "consequence_or_open_end": "카터가 실제 조건을 지킨 경우에만 그에 대한 픽먼의 다음 안내 태도가 달라진다. 플레이어의 친분으로 그 이행을 대체하지 않는다.",
+      "order": 3,
+      "status": "기존 선택 범위를 잇는 새 장면·대사 저술 예시; 현재 발생 사실 아님",
+      "free_exit": "이 개요는 전원 필수 순서가 아니다. 실제 선택한 원문 사건의 선후행·소유·완료 조건만 해당 활동에 유지한다. 거절·중단하면 현재까지의 실제 결과만 남긴다."
+    },
+    {
+      "title": "다시 세우는 그림",
+      "scene": "관찰한 차이를 가져왔고 현재 그림 감상 허락이 있는 경우 픽먼은 그림을 다시 보여 줄 수 있다. 모델 추적을 계속한 경우에는 안내를 접고 작품을 거두는 선택을 한다.",
+      "npc_line": "좋아. 이번에는 네가 어디서 보았는지 알겠군.",
+      "consequence_or_open_end": "원문 보상의 그림 감상·한정 통로 설명만 유지한다. 모델의 이름·생사·현재 소재는 결말을 위해 새로 확정하지 않는다.",
+      "order": 4,
+      "status": "기존 선택 범위를 잇는 새 장면·대사 저술 예시; 현재 발생 사실 아님",
+      "free_exit": "이 개요는 전원 필수 순서가 아니다. 실제 선택한 원문 사건의 선후행·소유·완료 조건만 해당 활동에 유지한다. 거절·중단하면 현재까지의 실제 결과만 남긴다."
+    }
+  ],
+  "baseline_knowledge": {
+    "baseline_context": "리처드 업턴 픽먼의 현재 자기 의향·일상과 자료에 남은 당사자 관계만 기본선으로 쓴다. 현재 사건의 성립과 원전 전부의 지식은 분리한다. 아래 창작 일상은 새 과거 가해나 정체 변경의 증거가 아니다. 관계 목록의 저술 제안은 이름을 아는 근거나 완료 기억이 아니다. 기본 기억에 따로 적은 자기 과거만 유지한다.",
+    "known_facts": [
+      {
+        "id": "K-INTENT",
+        "claim": {
+          "text": "실제 모델을 본 그림의 가치를 인정받으면서 모델을 구경거리와 표적으로 넘기지 않고 싶다.",
+          "basis": "new_minor_creative"
+        },
+        "fact_ref": "T-INTENT",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+          "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+          "evidence_status": "minor_self_knowledge_design"
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "ordinary",
+          "audience": "실제 접촉에서 발언을 듣는 상대",
+          "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+        }
+      },
+      {
+        "id": "K-TEXTURE",
+        "claim": {
+          "text": "대답하면서도 빛이 가장 깊게 끊기는 경계를 눈으로 따라간다. 아름다운 윤곽보다 익숙한 형태가 낯설게 보이는 그림자를 좋아한다.",
+          "basis": "new_minor_creative"
+        },
+        "fact_ref": "T-TEXTURE",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "본인이 현재 품는 의향과 스스로 반복하는 작은 생활 행동",
+          "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+          "evidence_status": "minor_self_knowledge_design"
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "ordinary",
+          "audience": "실제 접촉에서 발언을 듣는 상대",
+          "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+        }
+      },
+      {
+        "id": "K-MOTIVE",
+        "claim": {
+          "text": "자신이 보는 것을 추악하다는 이유만으로 거짓이라 부르는 사람을 경멸한다",
+          "basis": "retained_current_design"
+        },
+        "fact_ref": "T-MOTIVE",
+        "acquisition": {
+          "mode": "self_experience",
+          "from_whom_or_what": "현행 개인 동기에 명시된 자기 욕구·판단 성향. 타인이 그 기준을 실제 지켰는지는 별도 관찰한다.",
+          "when_or_condition": "이 코어의 자기 앎을 실제로 표현할 수 있는 만남에서 사용한다. 아직 받지 않은 요청이나 완수하지 않은 일을 기억으로 더하지 않는다.",
+          "evidence_status": "explicit_in_current_source"
+        },
+        "memory_scope": "npc_private",
+        "disclosure": {
+          "default": "ordinary",
+          "audience": "실제 접촉에서 발언을 듣는 상대",
+          "condition": "본인의 의향과 경험만 밝힌다. 다른 청중의 비공개 대화나 아직 보지 않은 현재 결과는 덧붙이지 않는다."
+        }
+      }
+    ],
+    "suspicions": {
+      "none_reason": "리처드 업턴 픽먼에게 특정 상대의 숨은 의도를 이미 관찰했다는 근거가 없다. 성격상 경계·호기심은 남기되 실제 관찰 뒤의 가설은 future_learning에서 다룬다.",
+      "items": []
+    },
+    "misbeliefs": {
+      "none_reason": "리처드 업턴 픽먼의 가치관·허영·경쟁심을 사실 오류로 판정하지 않는다. 현행 정사에 의해 반증된 구체 믿음을 빈칸 채우기로 추가하지 않았다.",
+      "items": []
+    },
+    "deliberate_concealment": {
+      "none_reason": "리처드 업턴 픽먼에게 의무적인 새 비밀이나 트라우마를 만들지 않는다. 공개를 꺼리는 성향과 이미 보유한 특정 비밀은 구별한다.",
+      "items": []
+    },
+    "unknown_or_unavailable": [
+      "리처드 업턴 픽먼가 직접 듣거나 읽지 않은 타인의 현재 위치·속내·사적 계약과 공유 세계 변화의 경과.",
+      "원전 요약 밖의 상세 과거와 최신 전쟁 비밀은 해당 사실의 출처·입수 경위가 없으면 발화하지 않는다."
+    ],
+    "future_learning": {
+      "none_reason": null,
+      "items": [
+        {
+          "id": "L-PERSONAL",
+          "fact_or_question": "길을 요청한 상대가 실제 모델의 안전 조건을 지켰는가",
+          "acquisition_event": "실제 접촉과 안내 조건 아래 그 상대의 행동을 직접 본다",
+          "required_evidence": "모델 공개·추적·접근 행동과 합의 범위",
+          "eligible_audience": "리처드 업턴 픽먼 본인과 해당 전달·관찰에 실제 참여한 청중. 친구의 사적 경험은 그 친구의 전언을 받기 전까지 공유되지 않는다.",
+          "after_learning_change": "지킨 상대에게만 새 통로 공개를 검토하고 공개되지 않은 길은 현재 지식으로 주지 않는다",
+          "not_automatic_from": [
+            "장 번호 도달",
+            "다른 플레이어의 수락·친분",
+            "원전 참고나 저자용 코어가 존재함"
+          ]
+        }
+      ]
+    },
+    "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+  },
+  "baseline_relationships": {
+    "none_reason": null,
+    "items": [
+      {
+        "target_record_key": "RPG-S13-006",
+        "historical_name_if_not_current": null,
+        "status": "retained_design_relation",
+        "baseline": {
+          "text": "카터의 지하길 안내를 맡는 기존 역할이다.",
+          "basis": "retained_current_design"
+        },
+        "change": {
+          "trigger": {
+            "text": "카터가 모델을 추적하지 않고 실제 안내 조건을 지킨다.",
+            "basis": "new_minor_creative"
+          },
+          "observable_consequence": {
+            "text": "픽먼은 카터에게 조건부 새 길을 검토하되 동료 전체의 접근 동의를 대신하지 않는다.",
+            "basis": "new_minor_creative"
+          },
+          "limits": [
+            "실제로 본 행동과 그 당사자 사이의 변화다. 호의나 패배 한 번으로 정치 소속·전면 충성·연애·MAIN 소유권을 바꾸지 않는다."
+          ]
+        },
+        "knowledge_limit": "랜돌프 카터의 현재 입장·위치·소유 자료는 관계 이름만으로 알지 못한다. 뒤의 변화는 실제 랜돌프 카터의 행동을 본 리처드 업턴 픽먼의 반응이며 플레이어의 친밀감을 대신 넣지 않는다."
+      }
+    ]
+  },
+  "scope": {
+    "main_status": "NOT_APPLICABLE",
+    "reward_status": "APPLICABLE",
+    "new_MAIN": false,
+    "source_scope_ref": "기존페르소나_인물별/RPG-S13-008/authoring_contract.json#exact_scope_contract",
+    "source_ref": "기존페르소나_인물별/RPG-S13-008/authoring_contract.json"
+  },
+  "common_contract": "00_공통수행계약.json",
+  "episodes": [
+    {
+      "canonical_id": "EP038-RPG-S13-008",
+      "title": "보이지 않는 모델의 그림",
+      "mode": "quest",
+      "quest_kind": "SIDE",
+      "entry": {
+        "actual_location": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음 {\"conceptual_site\": \"실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음\", \"placement_reference\": \"실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음\", \"placement_status\": \"retained_proposal_and_new_minor_scene_not_registered_spawn\", \"fallback\": \"실제로 현재 열린 같은 차원·적합 지형의 기존 부지를 쓴다. 네더 인물은 오버월드로 옮기지 않는다. 지형을 못 찾으면 배치 실행만 보류하며 새 건축·새 차원·미등록 좌표·바이옴을 만들지 않는다.\", \"registry_binding\": \"바이옴·구조물 ID 사용자 전달 및 운영 확인 대기; 좌표·정확 확률 없음\", \"retained_placement_contract\": {\"meeting_route\": {\"value\": \"지하·매장지 공용 풀. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간. 휴대 기록 대조 조건과 세계 상태 통과 후 다른 적격 인물 및 NONE과 경쟁한다. 당첨 뒤에도 전역 본체/실제 위치/claim을 재검사한다.\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"encounter_family\": {\"value\": \"cave\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"world_dimension\": {\"value\": \"minecraft:overworld\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"preferred_biome_id\": {\"value\": \"minecraft:lush_caves\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"alternative_biome_ids\": {\"value\": \"minecraft:dripstone_caves\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"vanilla_fallback_ids\": {\"value\": \"minecraft:lush_caves;minecraft:dripstone_caves\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"biome_evidence\": {\"value\": \"Exact Minecraft 1.21.1 extracted registry snapshot; server generation not verified; 실제 설치본 registry/seed/좌표 미검증\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"placement_anchor\": {\"value\": \"실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_structure_candidate_id\": {\"value\": \"structory:taiga_ruin_underground;structory:graveyard;structory:abandoned_chapel\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"structure_dependency\": {\"value\": \"구조물 경로를 우선 조사. 후보는 모두 배포파일 확인 ID이며 실제 생성·좌표는 미검증. 선호 바이옴 AND 특정 구조물을 동시에 요구하지 않음. 실제 발견된 적합 구조물 OR 표기 바이옴의 안전한 기존 자연 부지. 지리적 조건(강변/해안 등)은 현장 확인. 구조물 부재 때문에 새 건물·접수원·표지·작업대를 만들지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"location_source_urls\": {\"value\": \"https://modrinth.com/datapack/structory/version/Up0Tbteh;https://raw.githubusercontent.com/misode/mcmeta/1.21.1-summary/registries/data.json\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"exploration_cap_fallback\": {\"value\": \"희귀 후보 구조물 탐색을 무기한 강제하지 않음. 서버가 이미 조사한 같은 생활권의 일반 구조물 또는 안전한 자연 부지로 공용 사이트를 등록. 새 건축 없이 장소 적합성 유지; 보장되지 않은 생성/좌표/거리 수치는 쓰지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"required_new_unique_structures\": {\"value\": \"0\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"optional_decoration\": {\"value\": \"없어도 작동하도록 설계. 작은 표지/장식은 선택 제작이며 자격·관측·출현에 필수로 숨겨 넣지 않음\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}, \"body_placement_contract\": {\"value\": \"현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요\", \"status\": \"retained_design_proposal_current_server_unverified\", \"source\": {\"archive_file\": \"rpg_authoring_source_archive.json\", \"namespace\": \"original_csv_91_fields\", \"record_key\": \"RPG-S13-008\", \"field\": null, \"status\": \"history_only_do_not_consume_as_current\"}, \"use_scope\": \"author_reference_only_not_spawn_gate_coordinate_or_registered_id\", \"runtime_binding\": false}}, \"body_and_observer\": \"현재 동일 본체의 실제 위치·크기·충돌·형태 지원을 확인한다. 플레이어 관측부와 본체 자리를 구분하며 거대·수중 본체를 갑판에 놓거나 인간 크기 대리체로 바꾸지 않는다.\"}",
+        "start_trigger": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 리처드 업턴 픽먼: “빛을 이쪽으로 옮겨 보겠나. 그림은 그대로인데.”",
+        "access_seal_presence": "\"기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+        "ordinary_contact_vs_task_readiness": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다.",
+        "early_exception_boundary": "기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다."
+      },
+      "choice_map": [
+        {
+          "beat_id": "B1",
+          "choices": [
+            {
+              "player_intent": "빛을 옮겨 윤곽을 비교한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 선택한 대상의 실제 소유·사용·전달 허락과 필요한 개별 응답만 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다.",
+              "actual_execution": "허락된 광원을 안전한 두 현재 위치에서 비추고 같은 그림의 윤곽 차이를 관찰한다. 구경꾼의 실제 질문이 있을 때만 압박 응답을 받는다. 이 경로의 위 실제 실행과 필수 응답·인수·관측이 충족된 경우만 B2로 간다. 의향·준비·조건 미충족이면 현재 부분 상태로 보류하며 완료 대사는 하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "그림·빛·시점의 차이를 실제 본다. 모델의 소재 증거 아님.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 비교 중: “그늘이 달라졌지. 모델의 이름을 본 것은 아닐세.”",
+              "next_beat_or_end": "B2",
+              "choice_id": "B1-1"
+            },
+            {
+              "player_intent": "이미 확인한 일부 행동을 보여 주고 남은 부분부터 한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 같은 대상에 대한 당시 유효한 허락·필요 수락·실제 수행 근거가 있다. B1의 일부만 끝났고 첫 단계 전체의 완료 근거는 아직 없다.",
+              "actual_execution": "현재 현물·실제 수신·당시 수행 근거를 대조한다. 이미 마친 부분을 재연하지 않고 B1의 아직 남은 선택 경로를 고르는 자리로 돌아간다. 이 선택 자체는 B1에 머문다. 이후 선택한 실제 경로의 남은 행동까지 끝났을 때 그 경로의 B2 전이 조건을 판정한다. 필요한 수락을 소급 생성하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "근거 있는 자기 수행만 인정한다. 곁의 처음 온 친구는 과거 수락·공로·비공개 수신을 얻지 않는다.",
+              "npc_response": "검증 전: “현재 남은 부분부터 함께 보자.” 확인하지 않은 과거를 이미 안다고 말하지 않는다.",
+              "next_beat_or_end": "B1",
+              "choice_id": "B1-2"
+            },
+            {
+              "player_intent": "이미 끝난 선택 경로의 전체 근거를 접수한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 해당 선택 경로의 필수 실행·당사자 수신·확인·복구 근거가 모두 실제 존재한다.",
+              "actual_execution": "B1/B2의 현재 동일 대상 근거를 대조하여 끝난 행동·이동·소비를 반복하지 않고 B3에서 그 경로의 실제 결과만 확인한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "실제 끝난 본인 결과만 재연 없이 남고 미확인 사실·타인 보상권 없음.",
+              "npc_response": "확인 전에는 현재 근거를 살핀다고만 말한다. 확인 뒤에도 직접 본 것과 보고받은 것을 구분한다.",
+              "next_beat_or_end": "B3",
+              "choice_id": "B1-3"
+            },
+            {
+              "choice_id": "B1-QUESTION",
+              "player_intent": "현재 하던 일의 이유를 묻고 참여 여부는 따로 정한다",
+              "available_when": "같은 실제 NPC와 현재 유효 대면 중이며 이 질문이 가리키는 행동·대상이 실제 현재 존재한다. 이 질문의 실제 수신만 확인하고 SIDE 수락·MAIN 소유·과거 기여·보상권을 일반 질문의 선행으로 요구하지 않는다.",
+              "actual_execution": "플레이어가 현재 이유를 실제 묻는다. NPC가 질문을 듣고 지금 설명할 의사가 있으면 공개 가능한 답만 실제 말하고 청취한 사람에게만 수신을 남긴다. 부재·미수신·답변 거절이면 설명·수락·수행을 생성하지 않는다. 질문 뒤 떠나거나 현재 제안을 별도로 다시 검토할 수 있다.",
+              "cost_or_risk": "질문한 사실과 실제 들은 설명만 남는다. 물품 소비·보상·수주·동의·수행은 발생하지 않는다.",
+              "observed_result": "실제 질문과 허락된 현재 답의 수신만. 질문하지 않은 행동·보고·침묵·먼저 하는 NPC 발언에 이 질문 수신을 공통 조건으로 붙이지 않는다. 이미 끝난 자기 결과는 보존한다.",
+              "npc_response": "이 질문을 실제 받고 현재 답할 의사가 있을 때 리처드 업턴 픽먼: “눈에 보이는 선부터 보게.” 질문은 수락·실행·공개 허락이 아니다.",
+              "next_beat_or_end": "END"
+            },
+            {
+              "choice_id": "B1-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ]
+        },
+        {
+          "beat_id": "B2",
+          "choices": [
+            {
+              "player_intent": "모델 대신 시점을 증명한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 선택한 대상의 실제 소유·사용·전달 허락과 필요한 개별 응답만 확인한다. 현재 승인 접근·봉인·당사자 의사와 선택 행동의 준비만 다시 확인한다. B1의 이 선택에 필요한 실제 결과 또는 그에 상응하는 유효 근거가 있다. 실패 뒤 정상 성공으로 복귀할 때만 그에 필요한 복구를 확인한다. 정직한 실패 보고·안전 철수·초대 거절의 마감에는 복구 성공을 요구하지 않는다. 정상과 대안 경로를 AND로 묶지 않는다.",
+              "actual_execution": "위험 통로 밖 현재 안전 지점까지 실제 이동해 그림과 맞는 윤곽을 관찰하고 돌아온다. 실제 차이를 보여 준 뒤 픽먼이 그림을 다시 세우는 것을 확인한다. 이 경로의 위 실제 실행과 필수 응답·인수·관측이 충족된 경우만 B3로 간다. 의향·준비·조건 미충족이면 현재 부분 상태로 보류하며 완료 대사는 하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 귀환·대조와 그림 재설치 확인 후: “그 시점이면 충분하네. 그림도 다시 세웠네.”",
+              "next_beat_or_end": "B3",
+              "choice_id": "B2-1"
+            },
+            {
+              "player_intent": "사적 모델 추적 위반을 기록한다",
+              "available_when": "해당 위반 행동이 실제 발생했다는 근거만 확인한다. 위반 기록·피해·자기 방어·안전 철수는 협력 수락·MAIN 소유·NPC의 의사·정상 준비를 소급 요구하지 않는다. NPC 발화만 현재 동일 본체와 대화 가능하고 해당 사실을 직접 관측하거나 실제 보고받은 범위에서 한다. 부재이면 새 발언 없이 실제 상태만 남긴다. B1의 이 선택에 필요한 실제 결과 또는 그에 상응하는 유효 근거가 있다. 실패 뒤 정상 성공으로 복귀할 때만 그에 필요한 복구를 확인한다. 정직한 실패 보고·안전 철수·초대 거절의 마감에는 복구 성공을 요구하지 않는다. 정상과 대안 경로를 AND로 묶지 않는다.",
+              "actual_execution": "위반: 사적 길을 캐거나 침입한 실제 행동이 있으면 픽먼은 안내를 중단하고 그림을 거둔다. 실제 지하 관찰만 남기고 안전하게 철수한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 위반을 실제 안 뒤: “그 길은 보여 주지 않겠네.”",
+              "next_beat_or_end": "END",
+              "choice_id": "B2-2"
+            },
+            {
+              "choice_id": "B2-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ]
+        },
+        {
+          "beat_id": "B3",
+          "choices": [
+            {
+              "player_intent": "실제 결과와 별도 제공을 확인한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 선택 경로의 필수 실행·확인이 실제 끝났으며, 전용 MAIN 정산이면 유효 소유자다. 공개 결과 청취·일반 대화에 MAIN 소유를 요구하지 않는다.",
+              "actual_execution": "모델 추적 없이 빛·시점 비교를 실제 마치고 그림을 다시 세운 뒤 공개 가능한 기존 통로 설명을 허락된 청중에게 실제 전달한다. 이미 끝난 본작업은 선택 수령·수강 거절로 취소하지 않는다. 해당 선택 경로의 정상 성공 조건이 미충족이면 권리·지급·지도 없음. 부재·수용 부족에는 이미 적법하게 발생한 미수령 권리만 보존한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음. 정산 실제 제공·수령·지도 완료는 각각 별도 기록한다.",
+              "npc_response": "실제 결과 확인 후 해당 B2 경로에서 이미 성립한 사실만 말한다. 성공 경로의 약속을 다른 경로에 옮기지 않는다.",
+              "next_beat_or_end": "END",
+              "choice_id": "B3-1"
+            },
+            {
+              "player_intent": "후기나 선택 보상 수령을 사양하고 마친다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 현재 그 선택을 제시받았다.",
+              "actual_execution": "선택 후기·지도·수령을 사양하고 돌아간다. 실제 성립한 본작업·개인 기여·소비는 유지한다. 명시 포기하지 않은 적법한 미지급권은 실제 미지급 몫만 보존하고 무보상 경로에는 새 권리를 만들지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "본작업 완료는 유지되고 실제 수령·수강하지 않은 것은 미수령·미수강이다.",
+              "npc_response": "현재 사양을 들은 때: “오늘은 여기까지 하자.” 없던 지난 약속·인수·사과를 전제로 말하지 않는다.",
+              "next_beat_or_end": "END",
+              "choice_id": "B3-2"
+            },
+            {
+              "choice_id": "B3-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ]
+        }
+      ],
+      "beats": [
+        {
+          "beat_id": "B1",
+          "location_and_start": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 리처드 업턴 픽먼: “빛을 이쪽으로 옮겨 보겠나. 그림은 그대로인데.”",
+          "player_action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n빛을 옮겨 윤곽을 비교한다: 허락된 광원을 안전한 두 현재 위치에서 비추고 같은 그림의 윤곽 차이를 관찰한다. 구경꾼의 실제 질문이 있을 때만 압박 응답을 받는다.",
+          "target_and_observation": "기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점",
+          "quantity_or_bounded_rule": "승인 원문 대상·범위: 「보이지 않는 모델의 그림」 픽먼과 플레이어는 현재 지하 안전 공간의 빛을 옮기며 이미 있는 그림의 명암을 비교한다. 같은 그림에서 보이지 않던 윤곽이 드러난다. 실제 요청·현물·허락량만 사용한다. 새 등록 ID·수치·고정 확률·전투력 컷·건축 의무 없음.",
+          "npc_desire_and_behavior": "실제 모델을 본 그림의 가치를 인정받으면서 모델을 구경거리와 표적으로 넘기지 않고 싶다.\n건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.\n현재 선택에 따라 실제 하는 행동: 허락된 광원을 안전한 두 현재 위치에서 비추고 같은 그림의 윤곽 차이를 관찰한다. 구경꾼의 실제 질문이 있을 때만 압박 응답을 받는다.",
+          "choices": [
+            {
+              "player_intent": "빛을 옮겨 윤곽을 비교한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 선택한 대상의 실제 소유·사용·전달 허락과 필요한 개별 응답만 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다.",
+              "actual_execution": "허락된 광원을 안전한 두 현재 위치에서 비추고 같은 그림의 윤곽 차이를 관찰한다. 구경꾼의 실제 질문이 있을 때만 압박 응답을 받는다. 이 경로의 위 실제 실행과 필수 응답·인수·관측이 충족된 경우만 B2로 간다. 의향·준비·조건 미충족이면 현재 부분 상태로 보류하며 완료 대사는 하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "그림·빛·시점의 차이를 실제 본다. 모델의 소재 증거 아님.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 비교 중: “그늘이 달라졌지. 모델의 이름을 본 것은 아닐세.”",
+              "next_beat_or_end": "B2",
+              "choice_id": "B1-1"
+            },
+            {
+              "player_intent": "이미 확인한 일부 행동을 보여 주고 남은 부분부터 한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 같은 대상에 대한 당시 유효한 허락·필요 수락·실제 수행 근거가 있다. B1의 일부만 끝났고 첫 단계 전체의 완료 근거는 아직 없다.",
+              "actual_execution": "현재 현물·실제 수신·당시 수행 근거를 대조한다. 이미 마친 부분을 재연하지 않고 B1의 아직 남은 선택 경로를 고르는 자리로 돌아간다. 이 선택 자체는 B1에 머문다. 이후 선택한 실제 경로의 남은 행동까지 끝났을 때 그 경로의 B2 전이 조건을 판정한다. 필요한 수락을 소급 생성하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "근거 있는 자기 수행만 인정한다. 곁의 처음 온 친구는 과거 수락·공로·비공개 수신을 얻지 않는다.",
+              "npc_response": "검증 전: “현재 남은 부분부터 함께 보자.” 확인하지 않은 과거를 이미 안다고 말하지 않는다.",
+              "next_beat_or_end": "B1",
+              "choice_id": "B1-2"
+            },
+            {
+              "player_intent": "이미 끝난 선택 경로의 전체 근거를 접수한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 해당 선택 경로의 필수 실행·당사자 수신·확인·복구 근거가 모두 실제 존재한다.",
+              "actual_execution": "B1/B2의 현재 동일 대상 근거를 대조하여 끝난 행동·이동·소비를 반복하지 않고 B3에서 그 경로의 실제 결과만 확인한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "실제 끝난 본인 결과만 재연 없이 남고 미확인 사실·타인 보상권 없음.",
+              "npc_response": "확인 전에는 현재 근거를 살핀다고만 말한다. 확인 뒤에도 직접 본 것과 보고받은 것을 구분한다.",
+              "next_beat_or_end": "B3",
+              "choice_id": "B1-3"
+            },
+            {
+              "choice_id": "B1-QUESTION",
+              "player_intent": "현재 하던 일의 이유를 묻고 참여 여부는 따로 정한다",
+              "available_when": "같은 실제 NPC와 현재 유효 대면 중이며 이 질문이 가리키는 행동·대상이 실제 현재 존재한다. 이 질문의 실제 수신만 확인하고 SIDE 수락·MAIN 소유·과거 기여·보상권을 일반 질문의 선행으로 요구하지 않는다.",
+              "actual_execution": "플레이어가 현재 이유를 실제 묻는다. NPC가 질문을 듣고 지금 설명할 의사가 있으면 공개 가능한 답만 실제 말하고 청취한 사람에게만 수신을 남긴다. 부재·미수신·답변 거절이면 설명·수락·수행을 생성하지 않는다. 질문 뒤 떠나거나 현재 제안을 별도로 다시 검토할 수 있다.",
+              "cost_or_risk": "질문한 사실과 실제 들은 설명만 남는다. 물품 소비·보상·수주·동의·수행은 발생하지 않는다.",
+              "observed_result": "실제 질문과 허락된 현재 답의 수신만. 질문하지 않은 행동·보고·침묵·먼저 하는 NPC 발언에 이 질문 수신을 공통 조건으로 붙이지 않는다. 이미 끝난 자기 결과는 보존한다.",
+              "npc_response": "이 질문을 실제 받고 현재 답할 의사가 있을 때 리처드 업턴 픽먼: “눈에 보이는 선부터 보게.” 질문은 수락·실행·공개 허락이 아니다.",
+              "next_beat_or_end": "END"
+            },
+            {
+              "choice_id": "B1-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ],
+          "refusal": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+          "early_deduction": "논점을 먼저 알아차렸다면 정답을 되묻지 않는다. 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점의 현재 관측·수신 근거를 확인하여 미실행 부분만 이어 간다. 추측은 실행·수신·공개 허락이 아니다.",
+          "consumption_and_owner": "그림·등불은 기존 소유자 소유이며 허락 범위에서 옮겨 돌려놓는다. 모델의 사적 정보는 지급 대상 아님.",
+          "visible_change": "빛을 옮겨 윤곽을 비교한다: 그림·빛·시점의 차이를 실제 본다. 모델의 소재 증거 아님.",
+          "evidence_and_judge": "리처드 업턴 픽먼의 실제 목격 또는 허락된 보고 수신과 실제 당사자/소유자의 확인을 대조한다. 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점",
+          "promise_is_not_execution": "선택 의향·추론·대사는 실행 증거가 아니다. 선택한 분기의 available_when·actual_execution·observed_result를 실제 충족한 때만 그 목적지로 이동한다. player_action의 대안들을 모두 수행하도록 합치지 않는다. 거절·비공개·말만 전달·선택 지도 사양은 해당 분기의 실제 결과로 닫고 다른 경로의 수행·수신·수강은 부여하지 않는다. 성공 조건 불성립·중단은 STOP으로 현재 상태만 저장하며 이미 끝난 필수 행동과 완료를 선택 후기로 되돌리지 않는다.",
+          "failure_save_rejoin": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다."
+        },
+        {
+          "beat_id": "B2",
+          "location_and_start": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 실제 이전 결과와 남은 항목을 현재 다시 본다. 부재자의 답을 자동 생성하지 않는다.",
+          "player_action": "현재 범위에 대응하는 실제 경로를 고른다.\n다음은 선택 경로별 실제 행동이며 서로 모두 수행할 조건이 아니다:\n모델 대신 시점을 증명한다: 위험 통로 밖 현재 안전 지점까지 실제 이동해 그림과 맞는 윤곽을 관찰하고 돌아온다. 실제 차이를 보여 준 뒤 픽먼이 그림을 다시 세우는 것을 확인한다.\n사적 모델 추적 위반을 기록한다: 위반: 사적 길을 캐거나 침입한 실제 행동이 있으면 픽먼은 안내를 중단하고 그림을 거둔다. 실제 지하 관찰만 남기고 안전하게 철수한다.",
+          "target_and_observation": "기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점",
+          "quantity_or_bounded_rule": "승인 원문 대상·범위: 「보이지 않는 모델의 그림」 진실성을 증명하라는 구경꾼의 압박이 있는 신규 소규모 장면이다. 플레이어는 위험한 통로 밖에서 그림에 맞는 시점을 찾아 돌아오거나 모델의 소재를 캐어 증명하려 한다. 실제 요청·현물·허락량만 사용한다. 새 등록 ID·수치·고정 확률·전투력 컷·건축 의무 없음.",
+          "npc_desire_and_behavior": "실제 모델을 본 그림의 가치를 인정받으면서 모델을 구경거리와 표적으로 넘기지 않고 싶다.\n건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.\n현재 선택에 따라 실제 하는 행동: 위험 통로 밖 현재 안전 지점까지 실제 이동해 그림과 맞는 윤곽을 관찰하고 돌아온다. 실제 차이를 보여 준 뒤 픽먼이 그림을 다시 세우는 것을 확인한다.\n위반: 사적 길을 캐거나 침입한 실제 행동이 있으면 픽먼은 안내를 중단하고 그림을 거둔다. 실제 지하 관찰만 남기고 안전하게 철수한다.",
+          "choices": [
+            {
+              "player_intent": "모델 대신 시점을 증명한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 이 SIDE의 실제 목표·선택·비용·실패 범위를 듣고 해당 플레이어가 명시 수락했다. 선택한 대상의 실제 소유·사용·전달 허락과 필요한 개별 응답만 확인한다. 현재 승인 접근·봉인·당사자 의사와 선택 행동의 준비만 다시 확인한다. B1의 이 선택에 필요한 실제 결과 또는 그에 상응하는 유효 근거가 있다. 실패 뒤 정상 성공으로 복귀할 때만 그에 필요한 복구를 확인한다. 정직한 실패 보고·안전 철수·초대 거절의 마감에는 복구 성공을 요구하지 않는다. 정상과 대안 경로를 AND로 묶지 않는다.",
+              "actual_execution": "위험 통로 밖 현재 안전 지점까지 실제 이동해 그림과 맞는 윤곽을 관찰하고 돌아온다. 실제 차이를 보여 준 뒤 픽먼이 그림을 다시 세우는 것을 확인한다. 이 경로의 위 실제 실행과 필수 응답·인수·관측이 충족된 경우만 B3로 간다. 의향·준비·조건 미충족이면 현재 부분 상태로 보류하며 완료 대사는 하지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 귀환·대조와 그림 재설치 확인 후: “그 시점이면 충분하네. 그림도 다시 세웠네.”",
+              "next_beat_or_end": "B3",
+              "choice_id": "B2-1"
+            },
+            {
+              "player_intent": "사적 모델 추적 위반을 기록한다",
+              "available_when": "해당 위반 행동이 실제 발생했다는 근거만 확인한다. 위반 기록·피해·자기 방어·안전 철수는 협력 수락·MAIN 소유·NPC의 의사·정상 준비를 소급 요구하지 않는다. NPC 발화만 현재 동일 본체와 대화 가능하고 해당 사실을 직접 관측하거나 실제 보고받은 범위에서 한다. 부재이면 새 발언 없이 실제 상태만 남긴다. B1의 이 선택에 필요한 실제 결과 또는 그에 상응하는 유효 근거가 있다. 실패 뒤 정상 성공으로 복귀할 때만 그에 필요한 복구를 확인한다. 정직한 실패 보고·안전 철수·초대 거절의 마감에는 복구 성공을 요구하지 않는다. 정상과 대안 경로를 AND로 묶지 않는다.",
+              "actual_execution": "위반: 사적 길을 캐거나 침입한 실제 행동이 있으면 픽먼은 안내를 중단하고 그림을 거둔다. 실제 지하 관찰만 남기고 안전하게 철수한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+              "npc_response": "현재 화자가 이 시점의 사실을 실제 알고 대화 가능한 청중에게만. 리처드 업턴 픽먼: 위반을 실제 안 뒤: “그 길은 보여 주지 않겠네.”",
+              "next_beat_or_end": "END",
+              "choice_id": "B2-2"
+            },
+            {
+              "choice_id": "B2-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ],
+          "refusal": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+          "early_deduction": "논점을 먼저 알아차렸다면 정답을 되묻지 않는다. 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점의 현재 관측·수신 근거를 확인하여 미실행 부분만 이어 간다. 추측은 실행·수신·공개 허락이 아니다.",
+          "consumption_and_owner": "그림·등불은 기존 소유자 소유이며 허락 범위에서 옮겨 돌려놓는다. 모델의 사적 정보는 지급 대상 아님.",
+          "visible_change": "모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+          "evidence_and_judge": "리처드 업턴 픽먼의 실제 목격 또는 허락된 보고 수신과 실제 당사자/소유자의 확인을 대조한다. 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점",
+          "promise_is_not_execution": "선택 의향·추론·대사는 실행 증거가 아니다. 선택한 분기의 available_when·actual_execution·observed_result를 실제 충족한 때만 그 목적지로 이동한다. player_action의 대안들을 모두 수행하도록 합치지 않는다. 거절·비공개·말만 전달·선택 지도 사양은 해당 분기의 실제 결과로 닫고 다른 경로의 수행·수신·수강은 부여하지 않는다. 성공 조건 불성립·중단은 STOP으로 현재 상태만 저장하며 이미 끝난 필수 행동과 완료를 선택 후기로 되돌리지 않는다.",
+          "failure_save_rejoin": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다."
+        },
+        {
+          "beat_id": "B3",
+          "location_and_start": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음 또는 실제 현재 확인 가능한 허락 자리. NPC 부재에는 정산·새 응답을 기다리며 이미 성립한 결과는 보존한다.",
+          "player_action": "선택 경로의 실제 결과와 미완료를 구분하고 실제 허락된 현재 청중에게만 확인한다. 그림·등불은 기존 소유자 소유이며 허락 범위에서 옮겨 돌려놓는다. 모델의 사적 정보는 지급 대상 아님.",
+          "target_and_observation": "기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점의 실제 끝난 경로와 미완료·미수령 항목",
+          "quantity_or_bounded_rule": "본인의 실제 선택 경로 결과만. 선택 후기·지도·실물 수령을 원래 수행 완료 조건으로 역추가하지 않는다.",
+          "npc_desire_and_behavior": "리처드 업턴 픽먼은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.",
+          "choices": [
+            {
+              "player_intent": "실제 결과와 별도 제공을 확인한다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 선택 경로의 필수 실행·확인이 실제 끝났으며, 전용 MAIN 정산이면 유효 소유자다. 공개 결과 청취·일반 대화에 MAIN 소유를 요구하지 않는다.",
+              "actual_execution": "모델 추적 없이 빛·시점 비교를 실제 마치고 그림을 다시 세운 뒤 공개 가능한 기존 통로 설명을 허락된 청중에게 실제 전달한다. 이미 끝난 본작업은 선택 수령·수강 거절로 취소하지 않는다. 해당 선택 경로의 정상 성공 조건이 미충족이면 권리·지급·지도 없음. 부재·수용 부족에는 이미 적법하게 발생한 미수령 권리만 보존한다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음. 정산 실제 제공·수령·지도 완료는 각각 별도 기록한다.",
+              "npc_response": "실제 결과 확인 후 해당 B2 경로에서 이미 성립한 사실만 말한다. 성공 경로의 약속을 다른 경로에 옮기지 않는다.",
+              "next_beat_or_end": "END",
+              "choice_id": "B3-1"
+            },
+            {
+              "player_intent": "후기나 선택 보상 수령을 사양하고 마친다",
+              "available_when": "현재 실제 같은 본체와 유효하게 접촉하고, 이 행동의 위치·현재 봉인·접근이 확인되었다. 위험 준비는 실제 위험 행위에만 적용하며 일반 대화에 전투 자격을 요구하지 않는다. 현재 그 선택을 제시받았다.",
+              "actual_execution": "선택 후기·지도·수령을 사양하고 돌아간다. 실제 성립한 본작업·개인 기여·소비는 유지한다. 명시 포기하지 않은 적법한 미지급권은 실제 미지급 몫만 보존하고 무보상 경로에는 새 권리를 만들지 않는다.",
+              "cost_or_risk": "현재 선택한 실제 행동의 소비·손실만 남긴다. 대안 행동·비용을 동시에 요구하지 않는다.",
+              "observed_result": "본작업 완료는 유지되고 실제 수령·수강하지 않은 것은 미수령·미수강이다.",
+              "npc_response": "현재 사양을 들은 때: “오늘은 여기까지 하자.” 없던 지난 약속·인수·사과를 전제로 말하지 않는다.",
+              "next_beat_or_end": "END",
+              "choice_id": "B3-2"
+            },
+            {
+              "choice_id": "B3-STOP",
+              "player_intent": "지금 미실행 행동을 멈춘다",
+              "available_when": "현재 장면에서 보류·거절·준비 부족·부재·미수신 또는 실제 수행 중단. 이미 발생한 위험은 실제 안전 철수 필요.",
+              "actual_execution": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+              "cost_or_risk": "미수행 목표는 남으며 이미 사용한 자원·공개·손실은 되감지 않는다.",
+              "observed_result": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다.",
+              "npc_response": "실제 현재 중단 의사를 들은 때만 리처드 업턴 픽먼: “지금 멈춘 부분은 남겨 두자.” 부재하거나 못 들었으면 발화하지 않는다.",
+              "next_beat_or_end": "END"
+            }
+          ],
+          "refusal": "미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다.",
+          "early_deduction": "이미 전체 근거를 제시하면 같은 성취를 다시 시험하지 않는다. 수령했다고 추측한 것과 실제 인수는 분리한다.",
+          "consumption_and_owner": "그림·등불은 기존 소유자 소유이며 허락 범위에서 옮겨 돌려놓는다. 모델의 사적 정보는 지급 대상 아님.",
+          "visible_change": "실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다.",
+          "evidence_and_judge": "리처드 업턴 픽먼의 실제 목격 또는 허락된 보고 수신과 실제 당사자/소유자의 확인을 대조한다. 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점의 실제 끝난 경로와 미완료·미수령 항목",
+          "promise_is_not_execution": "선택 의향·추론·대사는 실행 증거가 아니다. 선택한 분기의 available_when·actual_execution·observed_result를 실제 충족한 때만 그 목적지로 이동한다. player_action의 대안들을 모두 수행하도록 합치지 않는다. 거절·비공개·말만 전달·선택 지도 사양은 해당 분기의 실제 결과로 닫고 다른 경로의 수행·수신·수강은 부여하지 않는다. 성공 조건 불성립·중단은 STOP으로 현재 상태만 저장하며 이미 끝난 필수 행동과 완료를 선택 후기로 되돌리지 않는다.",
+          "failure_save_rejoin": "현재 위치·실제 수행·관측·수신 청중·물품 원소유/현보유·실제 소비·미인수 상태를 저장한다. 미실행 행동의 제안을 거절하거나 진행 중 안전하게 중단한다. 실제 손상·소비·공개·이미 끝난 수행·인수는 보존한다. NPC가 현재 대면해 중단을 들을 때만 응답하고 부재이면 새 발언 없음. 재방문 때 현재 접근·본체·원소유·미수신·남은 작업을 다시 확인하여 그 부분만 이어 간다. 재개는 현재 접근·안전·본체 의사를 재확인하고 이 장면의 미완료 부분부터 한다. 완료한 운반·정리·발언을 재연해 보상을 늘리지 않는다."
+        }
+      ],
+      "information": {
+        "author_fact_vs_claim": "CORE의 정체·역할·과거는 저자 기준. 이번 장면은 실행 전 미래 저술안이며 희망·예상·전언은 그 출처의 주장이다.\n승인 범위의 실제 정보·관계 인계:\n{\"items\": [{\"fact_or_claim\": \"이번 직접 행동에서 얻는 관찰: 픽먼과 플레이어는 현재 지하 안전 공간의 빛을 옮기며 이미 있는 그림의 명암을 비교한다. 같은 그림에서 보이지 않던 윤곽이 드러난다.\", \"truth_status\": \"실행 전에는 저술 제안. 실제 일어난 물리 결과만 관측 사실이며 본체 의도에 관한 해석은 주장으로 남긴다.\", \"who_learns\": \"직접 행동한 플레이어와 현장에 실제 있었던 리처드 업턴 픽먼; 부재 인물 제외\", \"from_whom_or_source\": \"직접 관찰과 리처드 업턴 픽먼 본인이 실제 말한 문장. 원전·저자용 마스터는 습득 경로가 아니다.\", \"actual_event\": \"첫 단계의 현재 대상에 직접 도달하여 행동하고 응답을 실제 듣는다.\", \"actual_audience_and_disclosure\": \"그 자리에 실제로 보고 들은 사람만. 다른 인물에게는 당사자가 공개를 허락한 필요한 내용만 실제 전달하고 응답을 기다린다. 비공개 소재·모델·판본·궁정 증언·봉인 내부 사정은 자동 공개하지 않는다.\", \"before_after_change\": \"전에는 실제 받은 첫 조우 정보만 안다. 이후 성공·중단·실패 중 자신이 실제 목격·수신한 결과만 기억한다. 아래 성공 결과는 성공 분기를 수행했을 때만 해당한다. 모델을 추적하지 않고 빛과 시점의 실제 차이를 보여 주면 픽먼은 완성한 그림을 다시 세운다. 실제 안전을 지킨 상대에게만 현재 알려진 통로 중 공개 가능한 부분을 말한다.\"}], \"none_reason\": null}\n{\"items\": [{\"counterpart_record_key\": \"RPG-S13-006\", \"existing_edge_or_new_minor_basis\": \"카터의 지하길 안내를 맡는 기존 역할이다.\", \"request_and_actual_response\": \"카터가 모델을 추적하지 않고 실제 안내 조건을 지킨다. 이 이야기에서 상대의 도움이 필요할 때 그 현재 행동에 관한 구체 질문만 실제 전달한다. 수신 뒤 상대가 도움·수정·거절 중 실제 응답한 것만 채택한다.\", \"what_changes_for_each_side\": \"픽먼은 카터에게 조건부 새 길을 검토하되 동료 전체의 접근 동의를 대신하지 않는다. 요청자는 응답 범위에 맞춰 이번 행동을 줄이거나 이어 가며 상대는 실제 받은 질문과 자기 답만 기억한다.\", \"absence_refusal_alternative\": \"상대가 부재하거나 거절하면 그 상대의 장면·동의·기억을 만들지 않는다. 현재 플레이어와 리처드 업턴 픽먼가 할 수 있는 앞의 행동은 계속하고, 상대 몫의 전달·협력은 미성립으로 남긴다.\"}], \"none_reason\": null}\n기존 관계 원문은 잠재·기존 관계이지 현재 응답이 아니다:\n{\"none_reason\": null, \"items\": [{\"target_record_key\": \"RPG-S13-006\", \"historical_name_if_not_current\": null, \"status\": \"retained_design_relation\", \"baseline\": {\"text\": \"카터의 지하길 안내를 맡는 기존 역할이다.\", \"basis\": \"retained_current_design\", \"source_refs\": [\"role\"]}, \"change\": {\"trigger\": {\"text\": \"카터가 모델을 추적하지 않고 실제 안내 조건을 지킨다.\", \"basis\": \"new_minor_creative\", \"source_refs\": []}, \"observable_consequence\": {\"text\": \"픽먼은 카터에게 조건부 새 길을 검토하되 동료 전체의 접근 동의를 대신하지 않는다.\", \"basis\": \"new_minor_creative\", \"source_refs\": []}, \"limits\": [\"실제로 본 행동과 그 당사자 사이의 변화다. 호의나 패배 한 번으로 정치 소속·전면 충성·연애·MAIN 소유권을 바꾸지 않는다.\"]}, \"knowledge_limit\": \"랜돌프 카터의 현재 입장·위치·소유 자료는 관계 이름만으로 알지 못한다. 뒤의 변화는 실제 랜돌프 카터의 행동을 본 리처드 업턴 픽먼의 반응이며 플레이어의 친밀감을 대신 넣지 않는다.\"}]}\n세계·네더·엔드만 유지. 계획은 미발생이며 부재자 응답을 생성하지 않는다.",
+        "speaker_knowledge_and_source": "실제 모델을 본 그림의 가치를 인정받으면서 모델을 구경거리와 표적으로 넘기지 않고 싶다.\n대답하면서도 빛이 가장 깊게 끊기는 경계를 눈으로 따라간다. 아름다운 윤곽보다 익숙한 형태가 낯설게 보이는 그림자를 좋아한다.\n자신이 보는 것을 추악하다는 이유만으로 거짓이라 부르는 사람을 경멸한다\n새 앎은 각 beat의 직접 관측·실제 응답·허락된 수신으로만 추가한다.",
+        "actual_audience": "실제 본 사람·들은 사람·허락 자료를 읽은 사람을 각각 기록한다. 리처드 업턴 픽먼도 보지 못한 행동은 실제 보고받은 범위만 안다. 팀·친구·늦은 도착은 자동 청중 아님.",
+        "disclosure_condition": "미확인 경계: 리처드 업턴 픽먼가 직접 듣거나 읽지 않은 타인의 현재 위치·속내·사적 계약과 공유 세계 변화의 경과. / 원전 요약 밖의 상세 과거와 최신 전쟁 비밀은 해당 사실의 출처·입수 경위가 없으면 발화하지 않는다.\n공개된 현물 상태와 허락된 업무 정보만 현재 권한대로 설명한다. 개인 사연·당사자 비공개 답은 실제 허락된 수신자에게만. 공개 직전 동석한 플레이어와 NPC 모든 청중의 해당 내용 접근 자격·동의를 확인한다. 한 명이라도 없으면 비공개 부분을 발화하지 않고 공개 가능한 현재 작업만 설명한다. 안전한 제한 전달 수단이 실제 없으면 보류한다. 거절·부재 때 새 비밀이나 확인 이력을 담은 fallback을 생성하지 않는다.",
+        "received_knowledge_before_after": "읽거나 듣기 전에는 미확인, 실제 수신 뒤에는 받은 내용·출처·범위만 안다. SET_FACT와 GRANT_KNOWLEDGE는 별개. 이전 유효 지식을 지우거나 추론을 직접 목격으로 바꾸지 않는다.",
+        "late_join_no_retroactive_memory": "재회 대사는 그 사람과 실제 해당 경험이 있을 때만. 처음 보는 방문자에게는 “지금 무엇을 보았나”로 현재 관측을 묻는다. 친구 공적을 네가 했다고 부르지 않는다."
+      },
+      "participation": {
+        "offer_accept_owner_progress_complete": "이 SIDE의 현재 목표·실패·비용을 듣고 각 참가자가 명시 수락한다. 보이지 않는 모델의 그림의 선택 경로별 실제 수행·증거·NPC 수신과 판단만 자기 진행·완료로 남긴다. 독점 MAIN 소유 없음. 다른 사람의 결과나 첫 클릭만으로 개인 완료되지 않는다.",
+        "group_individual_evidence": "공용 현장 변화는 실제 물건·자리·길의 현재 결과. 개인은 각자의 수락·실행·응답·수신·권리. GROUP 대표 완료·FTB 표시를 전원 경험으로 복제하지 않는다.",
+        "nonowner_route": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다.",
+        "late_join": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.",
+        "leave_save_resume": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+      },
+      "ending": {
+        "observable_personal_change": "해당 quest 성공 완료는 정상 선택 경로의 필수 실행·접수·NPC 판정이 실제 충족된 때만이다. 실패·미수신·위반·부분 결과는 해당 경로의 종료 또는 보류이며 성공 완료가 아니다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+        "optional_stop": "모든 STOP은 현재 미완료 부분의 종료/보류. 이미 실제 끝난 수행·관측·소유·소비·관계는 보존한다. 선택 지도·후기·수령을 사양해도 실제 완료를 되돌리지 않는다.",
+        "next_encounter_memory": "리처드 업턴 픽먼은 현재 본인이 실제 본 사실은 관측으로, 허락 보고받은 사실은 그 보고로 나누어 확인한다. 처음 만난 사람에게 이 사건의 과거 친구처럼 말하지 않는다. 건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다. 이 반응은 실제 그 사람과 해당 일을 겪거나 유효 보고받은 경우만. 첫 방문자는 현재 상황부터 설명한다.",
+        "playfeel_and_difference": "보이지 않는 모델의 그림: 기존 그림, 사용 허락된 빛, 위험 통로 밖의 시점 → 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음. 실제 수령·수강 또는 그 거절은 별도로 남는다."
+      },
+      "source_contract": {
+        "prerequisites": {
+          "exact_source_and_logic": "일반 접촉은 동일 본체·위치·봉인·의사 확인. 실제 수행은 각 장면의 준비·통행·도구·소유자 허락과 행동별 조건을 다시 확인한다. 기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다.",
+          "server_stage": "기존 C/R/T의 현재 상태와 선행 유지. 이 개인 이야기는 공용 본편의 새 필수 관문이 아니다.",
+          "personal_experience": "이 SIDE의 현재 목표·실패·비용을 듣고 각 참가자가 명시 수락한다. 보이지 않는 모델의 그림의 선택 경로별 실제 수행·증거·NPC 수신과 판단만 자기 진행·완료로 남긴다. 독점 MAIN 소유 없음. 다른 사람의 결과나 첫 클릭만으로 개인 완료되지 않는다.",
+          "seal_and_access": "\"기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다.\"",
+          "recheck_and_optional_content": "기존 접근 사본과 개별 제한을 보존한다. 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에 실제 도달하고 동일 본체의 현재 위치·봉인·진행 중 사건을 확인해야 한다. 미정 시점은 미정으로 남기고 등급이나 첫 용 자체로 새 잠금을 만들지 않는다. 실제 동일 본체의 의사·봉인·접촉 창구를 실행 직전 재확인한다. 일반 조우와 수행 준비는 별개다. 이 배치는 일부 이집트·그리스·북유럽 초반 최소컷 예외 대상이라고 확대하지 않는다. 해당 수행의 준비와 수용 능력은 별도 확인하며 수치를 발명하지 않는다. 현재 세계 구역은 Overworld이며 다른 차원으로 본체를 옮기지 않는다. 완전 봉인 중 일반 대화는 불가하고 부분 봉인은 실제 허용된 동일 본체 창구만 쓴다. 현재 직접 접촉 가능한 단일 본체와 대화한다. 코어의 알려진 사실과 공개 조건 안에서 응답하고 작가 진실·숨긴 의도는 자유대화에 자동 넣지 않는다. 장면의 도구·판본·가사·짐은 현재 실제 존재와 소유자 사용 허락을 먼저 확인한다. 없는 자료·피해·약속을 이미 존재한 것으로 만들지 않는다. 없다면 현재 가능한 준비·대화만 남기고 해당 회수·대조 완료와 보상을 보류한다. 장소를 옮기는 행동은 현재 적합 경로를 실제 이동하며 본체 순간 재배치를 만들지 않는다. 위 보존 접근 문구의 과거 전투등급 미정은 현행 identity.combat_tier 확정을 되돌리지 않는다. 현재 전투등급·정체·신격·전쟁 소속은 검수 scope review.special_constraints_checked 및 source manifest의 독립 필드를 그대로 따른다.  이 배치 인물 전체에 초반 전투력 최소컷 면제를 새로 적용하지 않는다. 일반 접촉과 실제 위험 수행 자격은 별도다. 선택 보상·후기 거절로 이미 끝난 행동 취소 없음."
+        },
+        "ownership": {
+          "offer": "현재 세계의 접근 가능한 지하 안전 공간 / 승인 현장: 실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음에서 현재 실제 제안·질문·행동이 대화 계기가 된다. 처음 현재 제안할 때 리처드 업턴 픽먼: “빛을 이쪽으로 옮겨 보겠나. 그림은 그대로인데.”\n승인 원문 대상·범위: 「보이지 않는 모델의 그림」 픽먼과 플레이어는 현재 지하 안전 공간의 빛을 옮기며 이미 있는 그림의 명암을 비교한다. 같은 그림에서 보이지 않던 윤곽이 드러난다. 실제 요청·현물·허락량만 사용한다. 새 등록 ID·수치·고정 확률·전투력 컷·건축 의무 없음.",
+          "first_valid_acceptance": "이 SIDE의 현재 목표·실패·비용을 듣고 각 참가자가 명시 수락한다. 보이지 않는 모델의 그림의 선택 경로별 실제 수행·증거·NPC 수신과 판단만 자기 진행·완료로 남긴다. 독점 MAIN 소유 없음. 다른 사람의 결과나 첫 클릭만으로 개인 완료되지 않는다.",
+          "owner_and_progress": "이 SIDE의 현재 목표·실패·비용을 듣고 각 참가자가 명시 수락한다. 보이지 않는 모델의 그림의 선택 경로별 실제 수행·증거·NPC 수신과 판단만 자기 진행·완료로 남긴다. 독점 MAIN 소유 없음. 다른 사람의 결과나 첫 클릭만으로 개인 완료되지 않는다.",
+          "completion": "해당 quest 성공 완료는 정상 선택 경로의 필수 실행·접수·NPC 판정이 실제 충족된 때만이다. 실패·미수신·위반·부분 결과는 해당 경로의 종료 또는 보류이며 성공 완료가 아니다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+          "non_owner_path": "독점 제시·첫 수락 소유 경쟁·개인 MAIN 진행 및 완료는 해당 없음. 활동 수락과 실제 개인 기여만 남긴다. 기존 MAIN 소유권을 건드리지 않으며 다른 사람도 현재 가능한 남은 작업·자기 대화를 선택한다.\n현재 공개 현물과 적법 청중의 공개 설명은 개인 MAIN 소유와 별개다. 후발 친구는 지금 실제 본·들은 부분만 배우며 과거 개인 기여·보상권을 상속하지 않는다."
+        },
+        "completion": {
+          "objective_satisfied": "해당 quest 성공 완료는 정상 선택 경로의 필수 실행·접수·NPC 판정이 실제 충족된 때만이다. 실패·미수신·위반·부분 결과는 해당 경로의 종료 또는 보류이며 성공 완료가 아니다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음.",
+          "valid_submission": "해당 quest 성공 완료는 정상 선택 경로의 필수 실행·접수·NPC 판정이 실제 충족된 때만이다. 실패·미수신·위반·부분 결과는 해당 경로의 종료 또는 보류이며 성공 완료가 아니다. 실제 선택·실행한 경로의 결과만 확인한다. 아래 서로 다른 결과를 동시에 부여하지 않는다.\n모델 대신 시점을 증명한다: 안전한 비교가 완료되며 공개 가능한 통로의 한정 설명권만 성립한다.\n사적 모델 추적 위반을 기록한다: 모델 이름·생사·위치 미확정. 성공 안내 보상 없음. 실제 선택 경로의 판정 근거와 당사자 확인을 접수한다. 선택 보상 수령은 완료 조건 아님.",
+          "god_confirmation": "현재 동일 본체가 실제 목격하거나 허락된 보고를 받아 확인한 부분만. 부재자의 답을 생성하지 않는다.",
+          "settlement": "모델 추적 없이 빛·시점 비교를 실제 마치고 그림을 다시 세운 뒤 공개 가능한 기존 통로 설명을 허락된 청중에게 실제 전달한다. 이미 끝난 본작업은 선택 수령·수강 거절로 취소하지 않는다. 해당 선택 경로의 정상 성공 조건이 미충족이면 권리·지급·지도 없음. 부재·수용 부족에는 이미 적법하게 발생한 미수령 권리만 보존한다.",
+          "absence_and_remote_contact": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음."
+        },
+        "rewards": {
+          "narrative_category": "허락된 그림 감상과 한정 통로 설명; 그림 소유권·변형 능력 없음",
+          "beneficiary": "해당 범위의 실제 수행자 각자만 자기 보상 조건과 지급권을 확인한다. 독점 MAIN 소유 조건 없음. 팀 완료 복제 없음.",
+          "entitlement": "그림·등불은 기존 소유자 소유이며 허락 범위에서 옮겨 돌려놓는다. 모델의 사적 정보는 지급 대상 아님. 모델 추적 없이 실제 빛·시점 비교와 안전 답사·귀환·대조를 마치고 그림을 다시 세운 뒤 허락된 통로 한정 설명권만 생긴다. 실제 설명 청취는 별도다. 의향·약속·부분 수행은 이 정상 권리 조건을 충족하지 않는다. 선택 보상 전달·열람·청취는 권리 발생 뒤의 별도 사건이며 미수신을 미완료로 되돌리지 않는다.",
+          "actual_delivery": "모델 추적 없이 빛·시점 비교를 실제 마치고 그림을 다시 세운 뒤 공개 가능한 기존 통로 설명을 허락된 청중에게 실제 전달한다. 이미 끝난 본작업은 선택 수령·수강 거절로 취소하지 않는다. 해당 선택 경로의 정상 성공 조건이 미충족이면 권리·지급·지도 없음. 부재·수용 부족에는 이미 적법하게 발생한 미수령 권리만 보존한다.",
+          "once_repeat_and_dedup": "관계·일상 도움·인정·MAIN·축복·가호·주시·장비는 별개. 등록 ID·스탯·권능을 새로 확정하지 않는다.",
+          "unclaimed_recovery": "제공권·재고·수용능력·실물/효과 확인을 분리한다. 가득 참·부재·미지급은 권리 보존, 실물과 거래/정산 근거 대조 후 누락만 복구. 선택 지도/수령 거절은 이미 끝난 행동을 취소하지 않는다. 반복 클릭·팀 완료·재시작으로 중복 없음."
+        },
+        "clock_and_recovery": {
+          "clock_basis": "이 개인 퀘스트에 현실 마감·틱 자동 실패 없음. 현재 관측 간격과 실제 귀환·응답은 각각 현장에서 확인한다.",
+          "start_and_deadline": "질문·첫 클릭·로그인으로 시계 시작 안 함. 이 개인 이야기의 자동 만료·오프라인 실패 없음.",
+          "offline_and_restart": "실제 끝난 행동·소비·인수·개인 수신·소유·미정산을 보존한다. 재접속은 현재 접근과 미완료 부분만 재검사. 소유 이전·물품 재생·보상 중복 없음.",
+          "late_join_and_late_settlement": "후발자는 지금 남은 물건·자리·일과 실제 허락 기록을 오늘 확인한다. 과거 참여·개인 동의·사적 지식·보상권을 소급하지 않는다. 동일 본체를 개인별로 복제하지 않는다.\n제공권·재고·수용능력·실물/효과 확인을 분리한다. 가득 참·부재·미지급은 권리 보존, 실물과 거래/정산 근거 대조 후 누락만 복구. 선택 지도/수령 거절은 이미 끝난 행동을 취소하지 않는다. 반복 클릭·팀 완료·재시작으로 중복 없음.",
+          "expiry_and_dedup": "현재 요청마다 실제 대상·허락·수신·결과를 확인한다. 이미 끝난 최초 성취·소유·반환·보상을 재방문으로 복제하지 않는다. 서비스는 현재 새 요청과 앞 회차 정산을 구분한다."
+        }
+      }
+    }
+  ],
+  "existing_card_reuse": [],
+  "adopted_detail": {
+    "minutes": "10–16분, 선택 통로 설명 2분",
+    "actions": [
+      "현재 접촉 가능한 픽먼에게 기존 그림1점과 광원1개의 이동 허락을 받는다. 안전한 지하 공간에서 그림 앞 관측점 A와 옆 관측점 B를 정한다. 표준은 그림 정면 3블록의 A, 거기서 오른쪽 2블록의 B, 광원은 그림 왼쪽/오른쪽 각 2블록의 기존 안전 받침 두 곳이다. 실제 벽·통행·그림 크기에 맞게 같은 비교가 가능한 위치로 확정하며 사적 통로 입구는 사용하지 않는다.",
+      "허락된 광원을 첫 받침에서 두 번째 받침으로 실제 옮겨 두고 A와 B에서 같은 윤곽을 본다. 표준 비교점은 그림 속 허용된 바위 윤곽의 끊기는 선1곳과 겹치는 선1곳이다. 답안 클릭 대신 대상·광원 위치·관측 위치의 실제 변화와 관찰한 선을 지목하는 행동을 기록한다. 조명 변화 연출이 미구현이면 실제 횃불 밝기와 시점 변화만 사용하고 없는 그림자 투사·모델 출현을 주장하지 않는다.",
+      "픽먼이 공개 관찰을 허락한 위험 통로 바깥의 안전 지점1곳까지 실제 답사한다. 표준 왕복은 작업자리에서 편도 16–24블록이며 지점에서 보이는 바위의 윤곽과 그림의 대응1곳을 비교한다. 사적 길에 들어가거나 모델을 만나야 하는 목표는 없다. 실제 주변 위험은 피하거나 현재 준비 범위로 대응하고 처치 수0을 유지한다.",
+      "작업자리로 돌아와 본 시점을 실제 지형과 함께 짚고 광원을 돌려놓는다. 픽먼이 그림을 다시 세우는 실제 행동을 확인하면 비교의 정상 결과가 성립한다. 그림이 원래 서 있던 경우에는 허락된 전시 방향을 다시 맞추는 동작으로 판정하며 같은 그림 복제0. 안전 답사·귀환·대조가 남았다면 관찰 부분만 저장한다.",
+      "사적 모델의 이름·위치를 캐거나 사적 통로에 실제 침입하면 안내 중단과 작품 회수를 기록한다. 질문 의향과 실행된 침입은 구분하며 아직 없는 모델·이름·생사·위치를 벌칙으로 공개하지 않는다. 카터의 후속 안내 요청은 그가 실제 조건을 지켰을 때만 별도로 검토하고 이 사건 성공을 모든 동료의 출입권으로 넓히지 않는다."
+    ],
+    "quantity": "그림1점·광원1개 대여 이동, 관측점2·윤곽 비교2곳·공개 안전답사 지점1곳. 원소유 유지·실제 반환만, 그림·광원 지급0. 사용 중 손상은 실제 발생분만, 없던 수리비0. 표준 횃불은 설치/회수한 같은1개이며 소모품 강제 납부가 아니다.",
+    "reward": "모델 추적 없이 실제 빛/시점 비교·안전답사·귀환·대조 및 그림 재전시까지 마친 수행자에게 공개 가능한 기존 통로의 한정 설명권1회. 설명권과 실제 청취는 별도. 그림 소유·변형능력·모델 공개·카터 동맹0. 실패 중에도 이미 적법하게 알던 공개 길 정보는 소급 삭제하지 않는다.",
+    "line": "초면: “추악하다는 말은 들었네. 어느 선이 달라졌는지 말해 보게.” 기교를 물을 때: “빛보다 네 자리가 먼저 바뀌었지. 한 걸음 옆에서 다시 봐.” 친한 상대: “그 선을 봤군. 모델을 끌어내지 않아도 눈은 쓸 수 있어.” 침입 뒤: “내 그림이 아니라 남의 문을 들여다보고 있군. 안내는 여기까지야.”",
+    "mechanics": "작품은 허락된 같은 그림 자산1점이며 모델의 정체가 드러나는 새 삽화는 요구하지 않는다. 두 관측점의 시선·벽차단·광원 실제 설치 위치를 연결하는 관찰 이벤트가 구현 요구다. 동적 광원이 있는 것으로 가정하지 않으며 시각 변화가 없는 빌드에서 명암 변화 성공을 가짜로 기록하지 않는다. 관측점 표시 직경0.5블록의 낮은 테두리, 비교 윤곽은 그림의 실제 선과 일치하고 입구 전체를 가리는 파티클 없음.",
+    "service": [
+      "허락된 통로 한 곳의 설명",
+      "픽먼이 현재 공개할 수 있고 실제 확인한 기존 통로1구간의 입구·끝 지점·주의할 발판을 설명한다. 본인은 듣거나 현재 그림을 다시 감상할 수 있다. 통로 실답사는 추가 선택이며 본 사건 완료의 추가 조건이 아니다. 새 길을 개통하거나 방문하지 않은 곳을 탐사 완료로 표시하지 않는다.",
+      "물품 비용0. 권리1회, 해당 설명 실제 수신자만 지식 획득. 재접속 때 미수신 설명만 이어주고 사적 모델 위치는 전달 대상에 포함하지 않는다."
+    ]
+  },
+  "services": [
+    {
+      "service_id": "SVC-RPG-S13-008-PRACTICE-01",
+      "title": "허락된 통로 한 곳의 설명",
+      "action": "픽먼이 현재 공개할 수 있고 실제 확인한 기존 통로1구간의 입구·끝 지점·주의할 발판을 설명한다. 본인은 듣거나 현재 그림을 다시 감상할 수 있다. 통로 실답사는 추가 선택이며 본 사건 완료의 추가 조건이 아니다. 새 길을 개통하거나 방문하지 않은 곳을 탐사 완료로 표시하지 않는다.",
+      "cost_and_delivery": "물품 비용0. 권리1회, 해당 설명 실제 수신자만 지식 획득. 재접속 때 미수신 설명만 이어주고 사적 모델 위치는 전달 대상에 포함하지 않는다.",
+      "optional": true,
+      "shared_entitlement_id": "SVC-RPG-S13-008-PRACTICE-01",
+      "source_entitlement": "원문 rewards.entitlement/actual_delivery를 구현하는 지도·열람. 신규 성장 보상 아님.",
+      "repeat_and_resume": "서비스는 원문 지도·열람권의 실제 인도를 구체화한 별도 session이다. service_id+player_uuid+session_uuid. 자격 발생1회, 설명수신/시범수신/선택실습을 분리. 설명만 받고 실습을 사양해도 본 사건 완료는 유지. 미수신/미실습만 동일 회차 재개. 후발 일반 질문은 현재 허락으로 가능하나 과거 무료권을 복사하지 않는다. 반복 요청은 전투성장·물품농사0."
+    }
+  ],
+  "world_unlock_and_encounter": {
+    "world_unlock": {
+      "status": "관측 가능한 신규 세계 해금 후보; 미채택·미활성",
+      "existing_access": "현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다.",
+      "candidate_event": "한 플레이어가 오버월드의 실제 지하 탐사에서 진입 지점과 다른 관찰 지점을 거쳐 원래 안전 출구로 돌아온 이동 이력. 특정 모델·신규 구울 발견이나 그림 정답 맞히기는 요구하지 않는다.",
+      "scope": "한 명의 유효 달성으로 세계 전체에 열린다. 후발자에게 재달성을 요구하지 않으며 개인 관계·MAIN·수령은 공유하지 않는다.",
+      "optional_history_not_gate": null,
+      "adoption": "구체 조건·이벤트 매핑·활성화는 후속 결정이다. 기존 승인 접근을 소급 잠그지 않고 NPC의 윤리적 승인을 세계 해금 센서로 쓰지 않는다.",
+      "activation_performed": false
+    },
+    "world_unlock_history": null,
+    "encounter_generation": {
+      "stage": "등장 전 현재 후보 판정",
+      "current_location": "현재 플레이어가 지하 폐허 또는 기존 묘지·폐예배당의 안전 공간에 접근 가능하고 낙하·몹 위협을 피해 머물 자리가 있음. 그림·지도는 감상이나 기록 대조를 선택할 때만 실제 사용 허락이 필요하다.",
+      "source_dimension_preserved": "minecraft:overworld",
+      "source_placement_anchor_preserved": "실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음",
+      "preferred_biome_id": "minecraft:lush_caves",
+      "alternative_biome_ids": "minecraft:dripstone_caves",
+      "vanilla_fallback_ids": "minecraft:lush_caves;minecraft:dripstone_caves",
+      "optional_structure_candidate_id": "structory:taiga_ruin_underground;structory:graveyard;structory:abandoned_chapel",
+      "structure_dependency": "구조물 경로를 우선 조사. 후보는 모두 배포파일 확인 ID이며 실제 생성·좌표는 미검증. 선호 바이옴 AND 특정 구조물을 동시에 요구하지 않음. 실제 발견된 적합 구조물 OR 표기 바이옴의 안전한 기존 자연 부지. 지리적 조건(강변/해안 등)은 현장 확인. 구조물 부재 때문에 새 건물·접수원·표지·작업대를 만들지 않음",
+      "effective_route": "세계 가용성 및 해당 인물의 현행 출연·접근·봉인 제약이 허용되고 세계 공통 해금이 열린 상태에서, 현재 위 장소·통행·안전 조건을 충족한 플레이어가 한 명 이상 있으면 기존 조우 방식의 후보가 된다. 확률 조우인 경우 성공한 적격 플레이어를 주체로 등장한다.",
+      "no_circular_prerequisite": "아직 등장하지 않은 NPC가 미리 현장에 있거나 응답해야 한다는 조건은 두지 않는다. 전체 세계의 단일 본체 가용성은 현재 배치 중복·봉인 제약을 뜻하며 그 장소의 선재 요구가 아니다.",
+      "not_fixed": [
+        "확률값",
+        "복수 적격자 선정",
+        "재등장·중복 처리",
+        "실제 설치 바이옴·구조물·좌표·엔진 바인딩"
+      ],
+      "runtime_ready": false
+    },
+    "present_encounter": null,
+    "post_appearance_contact": null,
+    "contact_now": {
+      "stage": "등장 후 접촉 또는 이미 배치된 정적 본체 방문",
+      "conditions": "현재 같은 본체의 실제 위치·형태·접촉 가능·접근·잔여 봉인·유효한 발화 모드·응답 의사·실제 청중을 확인한다. 말할 의사는 발화에 적용하고 유효한 비언어 반응의 공통 선행으로 쓰지 않는다.",
+      "source_body_check_moved_here": "현재 동일 본체의 실제 위치·크기·형태·충돌·안전성을 현장에서 확인. 플레이어 관측 위치와 본체 위치는 별도 값. 지원하지 않는 외형/크기는 후보 활성화 전에 구현 검증 필요",
+      "static_body_path": "이미 배치된 같은 본체에 안전하게 접근하면 직접 접촉을 판단한다. 이때 새 소환 추첨·개인 재해금·추가 본체를 요구하지 않는다.",
+      "record_and_dream_limit": "고정 기록을 읽은 것은 저자를 만난 것이 아니다. 기록·꿈·봉인 제한이 적용된 경로를 새 현현·원격 응답으로 우회하지 않는다.",
+      "absence": "접촉 부재·미확인에서는 새 말·몸짓·fallback이 없다. 현재 거절·부재는 세계 해금 취소가 아니며 비공개 면담 제한은 따로 유지한다."
+    },
+    "activation_boundary": null
+  },
+  "dialogue": {
+    "persona": "보기 불편하다는 이유로 자기가 본 것을 거짓이라 부르는 관객을 경멸하는 집요한 화가다. 건조하고 냉소적이다. 기교를 진지하게 묻는 사람에게는 놀랄 만큼 자세하고 추악하다는 감탄에는 무심하다.",
+    "relationship": {
+      "R_EXTREME_HOSTILE": [
+        "모델을 사냥감으로 삼는 요구에는 단호히 안내를 거둔다."
+      ],
+      "R_HOSTILE": [
+        "추악하다는 야유에 설명을 늘리지 않고 관찰의 선을 지킨다."
+      ],
+      "R_DISLIKE": [
+        "불편하다는 감상을 사실의 반증으로 받아들이지 않는다."
+      ],
+      "R_WARY": [
+        "질문이 기교인지 모델 추적인지 구별한다."
+      ],
+      "R_NEUTRAL": [
+        "건조하게 눈앞의 선과 빛을 이야기한다."
+      ],
+      "R_FAVORABLE": [
+        "정확한 관찰 질문에는 설명이 자세해진다."
+      ],
+      "R_FRIENDLY": [
+        "미완성 그림을 이야기해도 사적 모델의 위치를 넘기지 않는다."
+      ],
+      "R_TRUSTED": [
+        "실제 안내 조건을 지킨 사람에게만 다음 길 검토를 제안한다."
+      ],
+      "R_DEEP_BOND": [
+        "친밀해도 동료 전체의 접근 허락이나 모델 공개를 대신하지 않는다."
+      ]
+    },
+    "current_lines": "초면: “추악하다는 말은 들었네. 어느 선이 달라졌는지 말해 보게.” 기교를 물을 때: “빛보다 네 자리가 먼저 바뀌었지. 한 걸음 옆에서 다시 봐.” 친한 상대: “그 선을 봤군. 모델을 끌어내지 않아도 눈은 쓸 수 있어.” 침입 뒤: “내 그림이 아니라 남의 문을 들여다보고 있군. 안내는 여기까지야.”",
+    "timing": "성공 발언은 해당 실제 성공 뒤만. 실제 관계에 맞춰 경계/친밀도를 표현하되 친분으로 원소유·비공개·수락 범위를 확대하지 않는다."
+  },
+  "knowledge_handoffs": {
+    "items": [
+      {
+        "counterpart_record_key": "RPG-S13-006",
+        "existing_edge_or_new_minor_basis": "카터의 지하길 안내를 맡는 기존 역할이다.",
+        "request_and_actual_response": "카터가 모델을 추적하지 않고 실제 안내 조건을 지킨다. 이 이야기에서 상대의 도움이 필요할 때 그 현재 행동에 관한 구체 질문만 실제 전달한다. 수신 뒤 상대가 도움·수정·거절 중 실제 응답한 것만 채택한다.",
+        "what_changes_for_each_side": "픽먼은 카터에게 조건부 새 길을 검토하되 동료 전체의 접근 동의를 대신하지 않는다. 요청자는 응답 범위에 맞춰 이번 행동을 줄이거나 이어 가며 상대는 실제 받은 질문과 자기 답만 기억한다.",
+        "absence_refusal_alternative": "상대가 부재하거나 거절하면 그 상대의 장면·동의·기억을 만들지 않는다. 현재 플레이어와 리처드 업턴 픽먼가 할 수 있는 앞의 행동은 계속하고, 상대 몫의 전달·협력은 미성립으로 남긴다."
+      }
+    ],
+    "none_reason": null
+  },
+  "growth_and_balance": "원문 생활 지도·열람·관계와 실제 선택결과가 가치다. 새 전투 수치·가호·장비0. 재료는 실제 사용량만, 선택실습으로 필수 소비를 늘리지 않는다. 예상 시간은 정적 추정이며 게임 시험값 아님.",
+  "acceptance_cases": [
+    {
+      "case": "정상 무위협 현장",
+      "expected": "없는 불/적/손해를 생성하지 않고 실제 정상 수행으로 정상 완료"
+    },
+    {
+      "case": "절정 대상/응답 부재",
+      "expected": "개인별 부분결과만 보존, 없는 하선/반환/화해/협의 성공0"
+    },
+    {
+      "case": "정상 OR 대안과 선택후기 거절",
+      "expected": "선택경로 완료 유지, 다른 갈래 AND0"
+    },
+    {
+      "case": "원물 이동/소비 직후 서버중단",
+      "expected": "실제 원물UID·영수증 확인 뒤 잔량만 복구, 중복 소비/지급0"
+    },
+    {
+      "case": "관계 NPC 미수신·후발 방문",
+      "expected": "모르는 사실 새발언0, 현재 공개결과 실제 관찰만"
+    },
+    {
+      "case": "비밀 항로/타인재고/무단행위",
+      "expected": "실제로 발생한 행위·손해만 기록, 제안과 실행 분리"
+    }
+  ],
+  "unresolved_authoring_blockers": []
+}

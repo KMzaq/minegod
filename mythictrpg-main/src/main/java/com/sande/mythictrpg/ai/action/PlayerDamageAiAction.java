@@ -19,7 +19,15 @@ final class PlayerDamageAiAction {
                 PlayerDamageAiAction::validate, PlayerDamageAiAction::execute);
     }
 
+    static boolean requiresWarningResponse(AiActionProposal proposal) {
+        if(!proposal.actionType().equals(AiActionTypes.PLAYER_DAMAGE))return false;
+        var template=AiActionParameters.template(proposal,PlayerDamageTemplate.class);
+        return template!=null&&template.allowDeath();
+    }
+
     private static AiActionValidation validate(AiActionContext context, AiActionProposal proposal) {
+        if(!com.sande.mythictrpg.ai.action.protection.AiHarmProtection.damageAllowed(context.targetPlayer(),proposal.actingGodId()))
+            return AiActionValidation.reject("The player is protected from repeated AI harm after a death; changing room or God does not clear protection");
         if (!AiActionParameters.hasOnly(proposal, "template_id")) {
             return AiActionValidation.reject("Player damage requires only 'template_id'");
         }
@@ -39,6 +47,8 @@ final class PlayerDamageAiAction {
     }
 
     private static AiActionExecution execute(AiActionContext context, AiActionProposal proposal) {
+        if(!com.sande.mythictrpg.ai.action.protection.AiHarmProtection.damageAllowed(context.targetPlayer(),proposal.actingGodId()))
+            return AiActionExecution.rejected("Repeated AI harm protection is active");
         PlayerDamageTemplate template = AiActionParameters.template(proposal, PlayerDamageTemplate.class);
         if (template == null || !context.targetPlayer().isAlive()) {
             return AiActionExecution.rejected("Damage template or target is no longer available");
@@ -57,7 +67,10 @@ final class PlayerDamageAiAction {
             return AiActionExecution.rejected("Damage would have no valid effect");
         }
 
-        boolean applied = context.targetPlayer().hurt(new DamageSource(type), requested);
+        final float damage=requested;
+        boolean applied = com.sande.mythictrpg.ai.action.protection.AiDeathLossGuard.damage(context.targetPlayer(),proposal.actingGodId(),proposal.proposalId(),
+                () -> context.targetPlayer().hurt(new DamageSource(type), damage));
+        com.sande.mythictrpg.ai.action.protection.AiHarmProtection.afterDamage(context.targetPlayer(),proposal.actingGodId(),true);
         if (!applied) {
             return AiActionExecution.rejected("Player rejected or was immune to this damage source");
         }

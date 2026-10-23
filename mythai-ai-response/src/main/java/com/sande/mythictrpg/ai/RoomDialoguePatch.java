@@ -89,7 +89,11 @@ final class RoomDialoguePatch {
             var playerFirstPerson=new LinkedHashSet<String>();
             for(var source:sources.values()) {
                 var line=source.getAsJsonObject();
-                String role=line.has("sourceRole")?line.get("sourceRole").getAsString():line.get("role").getAsString();
+                // Derived state / game evidence is not a speaker. It stays in the semantic review,
+                // but cannot be read as an attributed first-person utterance here.
+                var roleValue=line.has("sourceRole")?line.get("sourceRole"):line.get("role");
+                if(roleValue==null||!roleValue.isJsonPrimitive()||!roleValue.getAsJsonPrimitive().isString())continue;
+                String role=roleValue.getAsString();
                 if(!Set.of("PLAYER","OTHER_PLAYER").contains(role))continue;
                 String sourceText=line.get("text").getAsString();if(sourceText.isBlank())continue;
                 var sourceSpeech=new AiDialogueModels.StructuredAiResult(List.of(new AiDialogueModels.Speech("source",sourceText,List.of())),"",List.of());

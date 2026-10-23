@@ -21,6 +21,7 @@ public final class CombatPowerPolicyTest {
         """;
     public static void main(String[] args) {
         policy(); invalidPolicies(); persistence();
+        CombatPowerEvaluatorTest.run();
         System.out.println("CombatPowerPolicyTest: " + checks + " assertions passed");
     }
     private static JsonObject json() { return JsonParser.parseString(POLICY).getAsJsonObject(); }
@@ -80,7 +81,7 @@ public final class CombatPowerPolicyTest {
         check(!rejected.ready() && rejected.save(new CompoundTag(), null).equals(corrupt), "malformed evidence preserved, not empty-complete");
         var wrongList = saved.copy(); ListTag strings = new ListTag(); strings.add(StringTag.valueOf("not a player")); wrongList.put("players", strings);
         check(!RewardPowerState.load(wrongList, null).ready(), "wrong list element type failclosed");
-        for (int index = 0; index < 513; index++) state.record(a, item("test:variant_" + index));
+        for (int index = 0; index <= RewardPowerState.MAX_VARIANTS; index++) state.record(a, item("test:variant_" + index));
         check(!state.history(a).orElseThrow().complete() && state.history(a).orElseThrow().items().contains(strong), "bounded history never evicts old best");
     }
     private static CompoundTag item(String id) { CompoundTag tag = new CompoundTag(); tag.putString("id", id); tag.putInt("count", 1); return tag; }

@@ -1,0 +1,52 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S14-084",
+  "name": "스톨라스",
+  "definition_id": "ACTIVATION-RPG-S14-084",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "같은 플레이어가 Overworld 기존 전망점에서 서로 다른 서버 관찰 event 시점2회 실제 관찰하고 그 내용을 기록한 자기 writable_book 1개 또는 동등한 기존 관측기록1개를 네더로 실제 반입. 최소 대기시간0, 동일 event 재전송은 두번째 관찰 아님. 시각·위치·관찰 방향/실제 본 하늘 또는 지형 차이 기록; 별자리 정답0. 기록UUID/두 관찰 event/네더 인벤토리 인입 receipt 결속.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "현재 승인 네더 전망점 도달+주변 실제 네더 지형 관찰1회. 네더에서 별보기/Overworld 관찰기록 재반입0.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-053/RPG-S14-084.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "역사 access override null은 실행 허가가 아님. 실제 원문 세계해금/현재접근 및 패킷 선후행·배치를 대조. 052/053의 기존 네더 차원·바이옴·대체부지·소유·봉인을 그대로 유지.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-053/RPG-S14-084.json",
+      "record_key": "RPG-S14-084",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "26b9e49f35b4ced1eb5238e777afa56ca0c564b9c08ff9a70281408edc0891fe"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-053/RPG-S14-084_스톨라스.json",
+      "record_key": "RPG-S14-084",
+      "pointers": [
+        "/adopted_detail"
+      ],
+      "sha256": "3e43689c1c75658264c0048db772cec28df39fc96fdd9d0693bec74a01697759"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

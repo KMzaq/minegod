@@ -60,8 +60,9 @@ public final class RecordingRetrievalSettingsTest {
                 var policy=explicit(archive,mode);
                 check(policy.requestedMode().orElseThrow()==mode&&policy.origin()==Origin.EXPLICIT,"explicit request never rewritten");
                 check(policy.shadowReadsAllowed()==(mode==Mode.SHADOW&&archive!=RecordingSettings.Mode.OFF),"independent native read policy");
-                check(policy.foregroundBlocked()==(mode==Mode.NEW),"unsupported NEW never falls back to LEGACY");
-                if(mode==Mode.NEW)check(policy.state()==State.BLOCKED_CONTRACT_NOT_READY,"NEW reports missing foreground/proof contract even with archive OFF");
+                check(policy.nativeReadsAllowed()==(mode!=Mode.LEGACY&&archive!=RecordingSettings.Mode.OFF),"native reads require archive and explicit read selection");
+                check(policy.foregroundBlocked()==(mode==Mode.NEW&&archive==RecordingSettings.Mode.OFF),"NEW with disabled archive never falls back to LEGACY");
+                if(mode==Mode.NEW)check(policy.state()==(archive==RecordingSettings.Mode.OFF?State.ARCHIVE_OFF:State.NEW),"NEW is explicit and archive gated");
             }
         }
     }
@@ -79,8 +80,8 @@ public final class RecordingRetrievalSettingsTest {
         check(!store.lexicalMaintenanceEnabled()&&await(store.pumpLexicalIndex()).state().equals("OFF"),"explicit SHADOW plus RECORD_ONLY uses raw fallback, leaves index background off");
         await(store.closeAsync());
         store=await(WorldRecordingService.open(root,world,settings,confirmed(1),explicit(settings.archiveMode(),Mode.NEW)));
-        check(store.retrievalPolicy().foregroundBlocked()&&store.retrievalPolicy().state()==State.BLOCKED_CONTRACT_NOT_READY,"NEW remains explicitly blocked in actual store");
-        readGate(store,false);await(capture(store,2));
+        check(!store.retrievalPolicy().foregroundBlocked()&&store.retrievalPolicy().state()==State.NEW,"NEW uses actual scoped store");
+        readGate(store,true);await(capture(store,2));
         check(await(store.statistics()).sources()==2,"blocked retrieval does not stop existing archive writes");await(store.closeAsync());
         store=await(WorldRecordingService.open(root,world,settings,confirmed(2),explicit(settings.archiveMode(),Mode.LEGACY)));
         check(store.datasetId().orElseThrow().equals(dataset)&&await(store.statistics()).sources()==2,"latest committed game boundary reopens retained records without resetting cutover");

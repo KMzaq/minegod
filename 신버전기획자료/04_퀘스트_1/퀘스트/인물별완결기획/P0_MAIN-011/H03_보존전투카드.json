@@ -1,0 +1,43 @@
+{
+  "content_id": "H03",
+  "record_key": "USER-SELECTED-HUMAN-007",
+  "definition_id": "mythictrpg:miyamoto_musashi_clearing_blade",
+  "name": "빈터의 검",
+  "runtime_ready": false,
+  "policy_ref": "../../공통설계/전역기준.json",
+  "details": {
+    "content_key": "H03",
+    "provider_record_key": "USER-SELECTED-HUMAN-007",
+    "name": "빈터의 검",
+    "kind": "weapon_with_skill",
+    "proposed_content_id": "mythictrpg:miyamoto_musashi_clearing_blade",
+    "runtime_ready": false,
+    "numeric_status": "unvalidated_initial_design",
+    "fields": {
+      "성격·이야기 근거": "무사시의 느슨한 여행 태도와 위험 앞의 집중, 좁은 빈터에서 동작을 다시 고르는 이야기. 패링 뒤 자동 살상을 붙이지 않아 멈춤 신호와 민간인의 통행을 지키는 성격을 반영. FGO 성별·다른 세계·고유 기술은 이식하지 않는다.",
+      "기존 범위와 신규 연결": "원문 PERSONAL_MAIN 「빈터를 바꾸는 걸음」의 대가는 소유자의 발놀림 지도와 자기 연습 도구 손질. 새 검 증여가 아니다. 이 무기는 별도 실물 소유/양도 합의가 성립하는 후속 연결 후보로 격리한다. MAIN 보상을 새 무기로 교체하거나 일반 참가자에게 MAIN 몫을 복제하지 않는다. 무사시 최상급은 무기 제공 자격일 뿐 자동 지급 근거가 아니다.",
+      "조작·장비": "희귀, 다이아몬드 검 변형 후보, 내구도 1561. 좌클릭 기본 공격, 주 손 우클릭 내장 「한 번의 응수」(제안 ID mythictrpg:miyamoto_musashi_single_parry). Shift+우클릭 일반 상호작용, K/J 습득 목록에 내장 기술을 추가하지 않는다.",
+      "수치": "무기 기여 +6, 기본 1 포함 공격력 7, 속도 1.6/초, 날카로움/보호 0. E=10, 내장 기술 점수 20. 패링은 적격 피해 1건을 0으로 하고 그 피해의 넉백만 차단. 자동 반격·피해·스턴·적 행동 취소 없음.",
+      "범위·선후딜": "t=[0,2) 선딜, [2,6) 패링창, [6,14) 후딜, 총 14 tick. 매 tick 현재 시선 전방 총각 100도, 피해 원점 4블록 내, 시야 차단 고체 없음. 수평 원점 벡터가 0이거나 원점 미상이면 부적격. 동일 tick 서버 순서상 첫 적격 1건만 막고 창 종료; 후딜 종료 시각 유지.",
+      "마나·쿨": "20마나 / 160 tick=8초. 승인 즉시 차감·쿨. 패링 성공/실패 모두 동일, 성공 환급 없음.",
+      "실패·아군": "공통 승인 전 실패 무소모. 적이 공격하지 않거나 부적격 피해면 헛시도 비용 유지. 부적격 피격은 남은 패링 창을 소비하지 않는다. 아군 공격은 성공 처리하지 않음. 사망·기절·로그아웃·주 손 변형 변경·내구 파괴 시 창 취소, 원래 잠금/쿨은 유지.",
+      "지형·보스": "벽 넘어 방어 불가. 지형 변화 없음. 적격 일반 직접 근접만; 투사체·지속 피해·장판·환경·공허·처형 제외. 보스별 명시 허용 목록을 연결하고 미분류는 불가. 피해를 막아도 낙인·발판·인원 기믹·적의 다음 연계는 정상. 다른 참가자를 보호하는 광역 방패 아님.",
+      "중첩·교체": "같은 내장 기술 ID의 여러 검은 개인 쿨 공유. 새 검 수령/복사/재접속으로 재시도하지 못함. 기존 무적이 이미 취소한 피해는 패링 창 소모/성공 통계에 세지 않음. 내장 기술은 피해 0의 방어라 매듭·빗나감 환급 없음.",
+      "연출": "짧은 칼끝 준비→성공 시 한 번 금속 불꽃→잔광 종료. 과도한 광역 섬광/NPC 소환 없음. 민간인 등장 시 자동 공격을 하지 않는다.",
+      "현재 지원·추가 요구": "기존 무기 변형·rightClickSkill·마나/쿨 기반 재사용. 방향/시간창/1건 피해 차단과 원점·보스 분류는 시제품 E2/E4 수준 추가 구현. 원본 weapon_skills 정의에는 intrinsicPower를 넣지 않고 items.skills에 20 연결. 개별 검·획득 연결은 아직 없음.",
+      "시험": "준비 2 tick·4 tick 판정창 경계, 동시 2타 중 1건만, 공격 원점 미상 제외, 검을 즉시 바꿔도 쿨 유지, 방패/음식 동시 발동 없음, 패링 성공으로 연계가 생기지 않는지."
+    }
+  },
+  "common_execution_ref": "../공통실행.json",
+  "acquisition_precedence": "기존 fields의 미완 후보/아직 없음 문구는 원문 이력. 현행 획득은 acquisition_authoring이 대체하며 전투수치·정체·최초권리 경계는 원문 유지.",
+  "acquisition_authoring": {
+    "status": "ACQUISITION_AUTHORING_COMPLETE_RUNTIME_UNVERIFIED",
+    "quest_id": "mythictrpg:musashi_blade_transfer",
+    "relative_file": "H03_획득과연출.json",
+    "json_pointer": "/stages"
+  },
+  "visual_execution_ref": {
+    "relative_file": "H03_획득과연출.json",
+    "json_pointer": "/visual_execution"
+  }
+}

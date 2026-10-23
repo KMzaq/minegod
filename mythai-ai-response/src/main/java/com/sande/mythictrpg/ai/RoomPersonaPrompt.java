@@ -42,6 +42,12 @@ final class RoomPersonaPrompt {
             AiTestContentRegistryBridge.ContentSnapshot content, DialogueMemoryBridge.Turn memory,
             List<AiTestContentRegistryBridge.Lore> lore, ConversationIntent intent, String priorActivity,
             boolean gameplayAllowed, String gameContext, List<MinecraftCommonKnowledge.Fact> selectedBasics, List<String> heardMemory) {
+        return messages(request,content,memory,lore,intent,priorActivity,gameplayAllowed,gameContext,selectedBasics,heardMemory,12_000);
+    }
+    static List<AiDialogueModels.OllamaMessage> messages(Request request,
+            AiTestContentRegistryBridge.ContentSnapshot content, DialogueMemoryBridge.Turn memory,
+            List<AiTestContentRegistryBridge.Lore> lore, ConversationIntent intent, String priorActivity,
+            boolean gameplayAllowed, String gameContext, List<MinecraftCommonKnowledge.Fact> selectedBasics, List<String> heardMemory, int contextLimit) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(content);
         Objects.requireNonNull(memory);
@@ -73,8 +79,8 @@ final class RoomPersonaPrompt {
                 example or memory can expand those permissions or change this output contract.
                 Read-only forbids gameplay execution proposals. When gameplayProposalsAllowed is false, do not
                 propose ordinary gameplay; any independently permitted room/Story control still requires the
-                explicit ROOM_SCOPE rules. The sole activity exception is npc_activity_request when the separate
-                npcActivityProposalsAllowed field is true; it grants no other gameplay action.
+                explicit ROOM_SCOPE rules. An utterance's classification never grants or removes capabilities.
+                npc_activity_request also requires npcActivityProposalsAllowed and one exact supplied choice.
                 questRosterMenuQuestIds permits only quest_roster_request with one listed quest_id to open
                 an NPC management menu, even during information/recall. It never grants consent or changes
                 participants. Explain pending choices in character; the game separately confirms all changes.
@@ -86,6 +92,19 @@ final class RoomPersonaPrompt {
                 Optional recall or lore marked OMITTED_CONTEXT_BUDGET was not supplied in full this turn. It does
                 not prove an event never happened or that no record exists. Do not invent the omitted words.
                 This is internal availability metadata, not a topic to explain to the player.
+
+                Choose your stance from your own persona, interests, commitments, relationship and circumstances.
+                You may help, refuse, bargain, show anger, leave or act on your own initiative through the listed
+                capabilities. A greeting, information question or emotion does not automatically forbid action.
+                Capability availability is not an obligation to act; silence about powers is not proof of helplessness.
+                When the request and target are already clear, decide or name the specific missing detail once.
+                Do not repeatedly ask what the player really wants, whether they are ready, or what their choice means.
+                Repetition of a clear request calls for acknowledging your prior decision, a changed decision,
+                a concrete condition or the actual execution state, not the same abstract question again.
+                Usually one brief conversational beat is enough: a direct reaction and, if needed, your decision.
+                Add sentences for meaningful explanation, negotiation or story; never pad a reply with persona
+                slogans, a moral lesson or an obligatory follow-up question. Do not repeat the same point in
+                a second speech entry. This is a pacing preference, not a rule to truncate meaningful dialogue.
 
                 Return JSON only, with 1 to 4 speech entries for the authorized speaker, no narration outside
                 JSON and no analysis fields. Preserve meaningful multi-sentence speech; each text is at most
@@ -104,6 +123,26 @@ final class RoomPersonaPrompt {
         system += NpcPerspectivePrompt.policy(false);
         system += PlayerUnderstandingPrompt.productionPolicy(false);
         system += RoomSpeakerAttribution.policy();
+        system += "\n[NEED_ONLY_PERSONALIZATION]\nAnswer the current conversation, not a running evaluation of the player. "
+                + "Do not volunteer inferred tastes, personality, motives or goals. Dialogue recall remains available: "
+                + "recall the actual speaker's words without converting them into a profile or a commitment. "
+                + "Only a supplied OBSERVED_PLAYER_SUPPORT section permits consulting observed activity for this turn's request; "
+                + "it is not a requirement to mention preferences. A new topic ends that consultation. "
+                + "Earlier NPC compliments or interpretations are not evidence of the player's actions or feelings. "
+                + "Do not repeat those interpretations as remembered facts, including when changing the topic to yourself.\n";
+        if (contextLimit > 12_000) system += """
+
+                [SCOPED_RECALL_AND_SUPPORT]
+                When answering recall, first answer from the supplied matching original PLAYER words.
+                A remembered GOD reply is that God's own wording, NOT something the player said or did.
+                Do not attribute your imagery, compliments or assumptions to the player, even if repeated in history.
+                Preserve an expressed wish as a wish and another person's plan as that person's plan.
+                For observed activity, describe only the supplied completed action. Removing a mature crop does
+                not establish planting, tending, receiving items, enjoyment or skill. An interest is only a
+                tentative possibility, and the player may correct it. Do not embellish the witnessed sequence.
+                Answer ordinary supported recall directly in character; uncertainty about unsupplied facts
+                does not require refusing to recall the words that ARE supplied. Never fill missing memories.
+                """;
         system = MemoryRecallPolicy.recallSystem(system, memory.recall());
 
         // Request history is already audience-filtered. Do not append the current input a second time,
@@ -138,6 +177,8 @@ final class RoomPersonaPrompt {
         scene.put("retrievalHypothesisNotSocialVerdict", hypothesis(intent, request.currentText()));
         scene.put("ongoingActivityHintNotFact", priorActivity == null ? "" : priorActivity);
         scene.put("CURRENT_PLAYER_MESSAGE", request.currentText());
+        var observedBoundary = com.sande.mythai.response.memory.ObservedSupportMemory.boundary(memory.observations());
+        if (!observedBoundary.isEmpty()) scene.put("observedActionBoundary", observedBoundary);
         while (true) {
             scene.put("RECENT_CONVERSATION", RoomSpeakerAttribution.history(request, history));
             scene.put("speakerAttribution", RoomSpeakerAttribution.view(request, history));
@@ -149,7 +190,7 @@ final class RoomPersonaPrompt {
             if (basics.isEmpty()) scene.remove("publicMinecraftReference");
             else scene.put("publicMinecraftReference", MinecraftCommonKnowledge.reference(basics));
             try {
-                String fitted = MemoryRecallPolicy.fitContext(JSON.toJson(scene), true);
+                String fitted = MemoryRecallPolicy.fitContext(JSON.toJson(scene), true, contextLimit);
                 String withMemory = NpcPerspectivePrompt.withMemory(system, memoryData,
                         heardVariants.isEmpty() ? "" : heardVariants.getFirst());
                 return List.of(new AiDialogueModels.OllamaMessage("system", withMemory),

@@ -1,0 +1,566 @@
+{
+  "status": "CAMPAIGN-04 초기수치 채택·구현전",
+  "C03_choice": {
+    "canonical_editorial_key": "C03_FIRST_ROLE_CHOICE",
+    "source": "QUEST",
+    "eligible": "CAMPAIGN-02의 C03-C 실제 지역합동 전투승리 + 해당 시도 참가자 공격/엄호/유효수송·구조 중 검증기여. DPS/막타 순위컷0. 회수만 성공하면 장비권0. 일반야외전투를 레이드승리라 위조0.",
+    "selection_count": 1,
+    "quantity": 1,
+    "repeat": 0,
+    "items": [
+      {
+        "key": "C03_BRACE_CHEST",
+        "name": "버팀의 흉갑",
+        "grade": "희귀",
+        "base": "minecraft:diamond_chestplate",
+        "armor": 8,
+        "toughness": 2,
+        "knockback_resistance_add": 0.1,
+        "durability": 528,
+        "enchants": {
+          "protection": 2
+        },
+        "equipment_E": 6,
+        "role": "정면밀침 완화. 보호는 등록보호합에 반영, 무적/완전넉백무효0"
+      },
+      {
+        "key": "C03_GUIDE_BOW",
+        "name": "길잡이의 활",
+        "grade": "희귀",
+        "base": "minecraft:bow",
+        "durability": 384,
+        "enchants": {
+          "power": 2,
+          "unbreaking": 1
+        },
+        "equipment_E": 6,
+        "arrows_per_shot": 1,
+        "role": "바닐라 활 탄도·완충·사거리·치명분산 유지. 힘II 완충 비치명 비교원시9(바닐라 경로), 무한/유도/무료화살0. 커스텀 C05 활과 다른 탄도경로."
+      },
+      {
+        "key": "C03_DESCENT_BOOTS",
+        "name": "하강 장화",
+        "grade": "희귀",
+        "base": "minecraft:diamond_boots",
+        "armor": 3,
+        "toughness": 2,
+        "durability": 429,
+        "enchants": {
+          "feather_falling": 4,
+          "unbreaking": 1
+        },
+        "equipment_E": 6,
+        "role": "낙하 인챈트 경로로 낙하만 감소. 공허/순간이동/느린낙하 효과0"
+      }
+    ],
+    "already_superior": "기존 네더라이트/강인챈트 유지. 다른역할1개를 선택하거나 동일권리 미선택으로 보류. 전투력 맞춘 몰수·정규화·추가무료보상0. 세장비전부가 무의미해도 새 영구권리를 만들지 않음.",
+    "stock": "기존 지역보급 담당이 소유·제작한 초기 각선택지10개 계획재고, 최초권리10인분. 제작재료 흉갑 다이아80·활 막대30실30·장화 다이아40과 인챈트 공급/경험치 제공근거를 배치전 확보. 인간지역제작품 유한내구. 부족하면 선택권보존 대기. 10은 초기 재고 계획일 뿐 자격자 수 상한이 아니다. 실제 검증기여자 Q명 각각1권리를 보존하고 Q>10이면 부족분 조달 대기; 먼저 수령한10명만 권리를 갖게 하지 않음.",
+    "late": "첫승리참가 미기여자 소급0. 현재미완전투에 실제참가 가능, 완료사건 부활0. 후발 장비접근은 제작/거래·다른 허용활동."
+  },
+  "supplies": [
+    {
+      "scene": "C07",
+      "reward_lines": [
+        {
+          "minecraft:bread": 4
+        },
+        {
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "해당 경작지 귀환 보급소; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:bread": 40,
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C08",
+      "reward_lines": [
+        {
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "귀환로 조사 보급소; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C09",
+      "reward_lines": [
+        {
+          "minecraft:bread": 4
+        },
+        {
+          "minecraft:arrow": 16
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "압수품 반환 야영지 보급 담당; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:bread": 40,
+          "minecraft:arrow": 160
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C10",
+      "reward_lines": [
+        {
+          "minecraft:bread": 4
+        },
+        {
+          "minecraft:arrow": 16
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 선장 소유 항해 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:bread": 40,
+          "minecraft:arrow": 160
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C11",
+      "reward_lines": [
+        {
+          "minecraft:arrow": 16
+        },
+        {
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "동의한 운송대 소유 귀환 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:arrow": 160,
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C12",
+      "reward_lines": [
+        {
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "조사·귀환 실제기여; 사본열람권은 공개자료1권리이며 비밀지식 자동지급0",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기록 조사대 조명 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C14",
+      "reward_lines": [
+        {
+          "minecraft:bread": 4
+        },
+        {
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "민간 회랑 운송대 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:bread": 40,
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C17",
+      "reward_lines": [
+        {
+          "minecraft:baked_potato": 8,
+          "minecraft:arrow": 16
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "사전합의한 원정대 귀환 재고; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:baked_potato": 80,
+          "minecraft:arrow": 160
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "C19",
+      "reward_lines": [
+        {
+          "minecraft:baked_potato": 8
+        },
+        {
+          "minecraft:arrow": 16
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제 해당장면 기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 엔드 외곽 안내인이 맡은 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:baked_potato": 80,
+          "minecraft:arrow": 160
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "T01",
+      "reward_lines": [
+        {
+          "minecraft:bread": 2,
+          "minecraft:torch": 4
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "첫 세계 하층활동 당시 실제 지도/전투·귀환 완료기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 탑 관리 주민 하층 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:bread": 20,
+          "minecraft:torch": 40
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "T03",
+      "reward_lines": [
+        {
+          "minecraft:baked_potato": 4
+        },
+        {
+          "minecraft:arrow": 8
+        }
+      ],
+      "mode": "choice",
+      "first": true,
+      "repeat": 0,
+      "qualification": "실제전투승리 또는 조사·임시봉쇄 기여, 전투칭호는 전자만",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 탑 관리 주민 조사 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:baked_potato": 40,
+          "minecraft:arrow": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "T04_MANAGE",
+      "reward_lines": [
+        {
+          "minecraft:baked_potato": 8,
+          "minecraft:arrow": 16
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "본체제압+연결봉인 실제전투기여",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 탑 관리 주민 제압 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:baked_potato": 80,
+          "minecraft:arrow": 160
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    },
+    {
+      "scene": "T04_CUT",
+      "reward_lines": [
+        {
+          "minecraft:baked_potato": 4,
+          "minecraft:torch": 8
+        }
+      ],
+      "mode": "all",
+      "first": true,
+      "repeat": 0,
+      "qualification": "영구통로절단 실제작업, 보스보상0",
+      "first_world_participants_only": true,
+      "source": "QUEST",
+      "stock": {
+        "provider": "기존 탑 관리 주민 통로 작업 보급; 신규 고유 NPC나 전리품 복제 아님. 실제 소유·지급 허락 필요.",
+        "initial_bundles": 10,
+        "reserve": "참가 확정시 자격자 각각1묶음, 선택형은 최악선택10묶음 각선택지 재고",
+        "replenish": "참가자나 주민의 명시 기부/제작·운반 영수증만, 자동시간보충0",
+        "consume": "DELIVERED 시 실제 선택수량만; 예약과 미수령권 보존",
+        "shortfall": "미지급권 대기, 타인수령으로 권리소멸0",
+        "late": "지난 사건 최초권리 소급0; 현재새활동·제작·기부로 마련한 물자만",
+        "exact_initial_inventory": {
+          "minecraft:baked_potato": 40,
+          "minecraft:torch": 80
+        },
+        "production": "구운감자는 감자 같은 수량+화로연료 ceil(수량/8)석탄, 빵은3배밀, 횃불은4개당석탄1+막대1, 화살은4개당부싯돌1+막대1+깃털1. 기존재고는 동일품 실제확인으로 대체 가능; 소유 미확인 재고 생성 금지."
+      }
+    }
+  ],
+  "ordinary_supply": {
+    "C02_farm": {
+      "decision": "기본 새 배분 제안 채택: 제공자 허락 감자24개/작업묶음, 재파종8개 고정 확보, 운반주민8개, 실제기여자 남은8개를 합의분배(개인8 자동복제0). 자기농장 강제징수0; 기존 실제합의 물량이 있으면 그 수량 우선",
+      "initial_stock": "허락한 경작자 감자240개(10작업묶음); 실제수확·운반 확보시에만 재고표에 적재",
+      "repeat": "새 현재 수확·배달 필요+실제재고일 때 가능, 과거수확 복제0",
+      "rights": "식량은 기여 전 배분합의, 가호/주시/MAIN0"
+    },
+    "C02_forest": "실제 소유자 짐반환·허가된 자연전리품만. 별도정량 장비/보급 증여0. 새무보상창작이 아니라 원문 현재물건 보존.",
+    "C02_mine": "실제채집물·경험치/대여반환만. 공방독립Q1/Q3와 동일완료나 무료장비로 합치지 않음.",
+    "C03_A_B": "현재탐험 전리품·채집/제작·현재왕복권만. 신규 최초성장점수0.",
+    "C03_C_recovery": "반환 소유자의 보급몫: 실제 반환기여자당 구운감자4 최초1회(초기40/10인분) 채택. 전투승리 장비권과 별도 활동목적, 같은소유보급 물건 두번소비0.",
+    "C04": "배치한 기존 공용물자와 피난로가 성과. 출정 장비/보급 자동지급0; 개인기부 출발전 실제수량·수혜자·목적 기록.",
+    "C06": "현재 구호·귀환/보관 실제성과. 새 장비/가호 자동지급0, 기부품 소유자 동의·기존 배분·잔량 유지.",
+    "C23": "개인준비·성취기록, 신규장비/스탯/신격 지급0.",
+    "C24": "분산기능 또는 합일검 그 자체. 조각6/검1 외 개인추가보상0.",
+    "C25_C27": "접근/핵보관/실제결말 성과만, 추가 전투보상0. C27 세결말은 무기회수·추가강화 없음."
+  },
+  "public_catalog": {
+    "decision": "C02 역할 보급 공개 제작·교환 카탈로그 채택. 아래는 신규 기획가격(현재 서버가격 주장0), 물물교환이라 미정 gold 경제발행 없음. 개인물건만 제출, 세계해금은 가격면제 아님.",
+    "unlock": "C02 첫 실제 안전 귀환로 확인 또는 현재 공개기록 열람. 다른 신/개인MAIN/C06 잠금0",
+    "catalog": [
+      {
+        "give": {
+          "minecraft:iron_ingot": 1
+        },
+        "receive": {
+          "minecraft:arrow": 16
+        },
+        "stock": 160,
+        "source": "기존 운송/광산 보급 담당, 부싯돌40+막대40+깃털40 실제제작"
+      },
+      {
+        "give": {
+          "minecraft:wheat": 6
+        },
+        "receive": {
+          "minecraft:bread": 2
+        },
+        "stock": 20,
+        "source": "경작자 밀60으로빵20 제작, 제출밀은 다음 실제제작에만 보충"
+      },
+      {
+        "give": {
+          "minecraft:coal": 1,
+          "minecraft:stick": 1
+        },
+        "receive": {
+          "minecraft:torch": 4
+        },
+        "stock": 40,
+        "source": "견습 석탄10+막대10 실제제작"
+      }
+    ],
+    "equipment": "C03 고유명품 상점무제한판매는 미채택. 후발은 바닐라 다이아 장비 제작·정상인챈트/주민거래 또는 현재미완 지역전투 최초권리. 명목공용상품이 실제 등록/재고검증돼야 판매.",
+    "stock": "각 catalog 전체 공유, 요청시 예약·제출/인도 원자처리, 무재고면 결제금지. 이용자가새자원을반입해 실제제작하면 해당수량 보충, 시간리필0."
+  },
+  "delegated_rewards": {
+    "C05": {
+      "file": "../본편전투/C05/C05_레이드_기획.json",
+      "pointer": "/reward/items",
+      "canonical_items": [
+        "C05_SURVIVAL_CHEST",
+        "C05_LANDING_SWORD",
+        "C05_OPEN_PATH_BOW"
+      ],
+      "source": "QUEST",
+      "count": 1,
+      "repeat": 0,
+      "new_GROWTH_rights": 0,
+      "timing_note": "P3 타임라인 및 소요시간은 최신 C05 담당 정의 우선. GROWTH는 P3 비행120tick/주기 복제 안 함."
+    },
+    "C26": {
+      "items": [
+        "C26-ACC-MANA",
+        "C26-ACC-REGEN",
+        "C26-ACC-SPEED"
+      ],
+      "effects": [
+        {
+          "MAX_MANA": 60
+        },
+        {
+          "REGEN_HP_SEC": 0.08
+        },
+        {
+          "SPEED_ADD_VALUE": 0.01
+        }
+      ],
+      "fixedPower": 32,
+      "grade": "전설",
+      "source": "RAID_DIRECT",
+      "canonical_key": "worldEventUUID+playerUUID+C26_FINAL_CHOICE",
+      "count": 1,
+      "repeat": 0,
+      "owner": "귀환룡 보상 정의; 동일 정의와 권리 참조만",
+      "file": "../본편전투/C26/C26_귀환룡_기획.json",
+      "pointer": "/rewards",
+      "new_GROWTH_rights": 0
+    },
+    "T03_T04": "새 측면장비 미채택. 원문은 후보이며 확정품 아님; 위 기본정량 보급과 상층자료/관리봉쇄시 접근권 확정. 무전투절단이 코어장비수급을 막지 않도록 전투전용 필수스탯0."
+  },
+  "ledger": {
+    "key": "player_uuid+canonical_definition+first_acquisition_scope; repeat는 실제newAttempt UUID",
+    "states": [
+      "AVAILABLE",
+      "DELIVERY_PENDING",
+      "DELIVERED"
+    ],
+    "invariants": [
+      "선택확정후 재로그인/인벤부족/정의개정으로 재선택0",
+      "인벤부족 바닥드롭0, 미수령 유지",
+      "소모품도 line별실지급확인, 재시도누락라인만",
+      "정확기여자료 없는과거사건 보상소급0",
+      "행운으로 원본/장비/권리 수량증가0"
+    ]
+  },
+  "blessing_boundary": "브리기드 C03의 제한채굴 가호 초안은 별도신규보상 미채택: 기존 개별팩의 가호/MAIN 정의가 이미 있으며 공용에서 중복권리 만들지 않음. 무가호는도구/인챈트 경로. 장비·습득기술·가호·주시 별도; 가호없는기술습득을 신가호로 판정0. RAID_DIRECT/초기여신 실제출처 예외유지, 토벌의뢰QUEST를RAID_DIRECT로변조0. 전역기준.json#/human_route에 따라 초기여신 예외는 그 실제 정의/획득증거만 인정, 모든 STORY_DIRECT/NPC_DIRECT가 아님. 우유·사망은 가호 보유권 포기가 아니며 임의 포기/복귀 기능 신설0."
+}

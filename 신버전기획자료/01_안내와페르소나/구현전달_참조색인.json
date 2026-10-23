@@ -1,0 +1,804 @@
+{
+  "document_type": "IMPLEMENTATION_READING_REFERENCE_NOT_RUNTIME_SCHEMA",
+  "reference_base": "배포 묶음 최상위 폴더",
+  "runtime_ready": false,
+  "all_authoring_complete": true,
+  "snapshot_utc": "2026-10-22T20:09:18.775797+00:00",
+  "pointer_convention": "RFC 6901 JSON Pointer. 빈 문자열은 문서 전체. 배열 번호는 이 스냅샷에서만 유효하므로 함께 기록한 키를 확인한다.",
+  "references": [
+    {
+      "topic": "전체 색인",
+      "path": "색인.json",
+      "json_pointers": [
+        "/records",
+        "/release_ready",
+        "/runtime_ready",
+        "/current_authoring_links_by_category",
+        "/campaign_authoring",
+        "/all_authoring_complete",
+        "/release_ready_scope",
+        "/knowledge_final_linkage",
+        "/knowledge_final_readme",
+        "/knowledge_final_receipt_contract",
+        "/knowledge_source_equivalence_expansion",
+        "/combat_visual_linkage",
+        "/current_activation_source_link_extensions",
+        "/implementation_handoff",
+        "/implementation_reference_index"
+      ],
+      "sha256": "5ef37efb0dc4b261ba7e8cc54da0a4ae6852fb37cec2d7ac1b20b53d1e4f6f9f"
+    },
+    {
+      "topic": "페르소나 현행 연결",
+      "path": "페르소나/현행추가저술_연결색인.json",
+      "json_pointers": [
+        "/records",
+        "/rules"
+      ],
+      "sha256": "447fa55eb50f4836c14b64b1425389f4539c822f3330354b02bb8077778c35c6"
+    },
+    {
+      "topic": "스토리 현행 연결",
+      "path": "스토리/현행추가저술_연결색인.json",
+      "json_pointers": [
+        "/records",
+        "/rules"
+      ],
+      "sha256": "215f2d5c78bb412ca2e47282db696ce8ad9ffa1624c3e9e3be4d00caeac931b9"
+    },
+    {
+      "topic": "퀘스트 현행 연결",
+      "path": "퀘스트/현행추가저술_연결색인.json",
+      "json_pointers": [
+        "/records",
+        "/rules"
+      ],
+      "sha256": "d3bdad87f6624e79527bbbd9347ae5bc3b0110f5ff347de61ddc697c29d9f114"
+    },
+    {
+      "topic": "지식 현행 연결",
+      "path": "지식/현행추가저술_연결색인.json",
+      "json_pointers": [
+        "/records",
+        "/rules"
+      ],
+      "sha256": "e1fe46baba65a7f424738794fc178ca49e885212da6c4396f019ff9934f03c2a"
+    },
+    {
+      "topic": "중앙 전역 기준",
+      "path": "퀘스트/공통설계/전역기준.json",
+      "json_pointers": [
+        "/fixed_principles",
+        "/accessories",
+        "/skills",
+        "/claim_and_inventory",
+        "/implementation_requirements"
+      ],
+      "sha256": "15a551cc0b2a92d640f98b702452f41ac90d6a5c66e5b9f2bc5457a60afc9d5e"
+    },
+    {
+      "topic": "시간·세계·본체·원장",
+      "path": "퀘스트/공통설계/시간_조우_성장_운영정책.json",
+      "json_pointers": [
+        "/priority",
+        "/state_separation",
+        "/clocks",
+        "/general_encounter",
+        "/atomic_contract"
+      ],
+      "sha256": "b3913633ee2acaa0a048b61fc67445c2a4b39822ded52312a3d36214dabe1cf7"
+    },
+    {
+      "topic": "NPC 대화",
+      "path": "페르소나/공통/관계와_상황별_대화계약.json",
+      "json_pointers": [
+        "/source_precedence",
+        "/inputs",
+        "/priority",
+        "/relationship_update_separation",
+        "/acceptance_cases"
+      ],
+      "sha256": "6b34626b92b05fc21724d239e23261873f487012fd7c27a9f00189dfcec2a1ad"
+    },
+    {
+      "topic": "청중별 지식",
+      "path": "지식/공통계약/02_지식공급_기획계약.json",
+      "json_pointers": [
+        "/layers",
+        "/knowledge_gate",
+        "/state_machine",
+        "/canonical_grant_requires",
+        "/receipt_idempotency_design",
+        "/unknown_runtime_id_policy"
+      ],
+      "sha256": "4fe3ca72e14d42458bcd4b094e8d6b0a0f40fd31b6027ca170f4f5dbd1f245d1"
+    },
+    {
+      "topic": "73장면",
+      "path": "퀘스트/본편진행/공용73장면/공용73장면_실행연결계약.json",
+      "json_pointers": [
+        "/common",
+        "/scenes"
+      ],
+      "sha256": "64fc0dba9517fe40227a930792bcf92a877bc95f9f17173273e7128ed1fb7166"
+    },
+    {
+      "topic": "14루트",
+      "path": "퀘스트/공통설계/14루트_봉인과친구합류_기획.json",
+      "json_pointers": [
+        "/route_list",
+        "/seals_and_roles",
+        "/friend_rights",
+        "/execution_evidence_binding"
+      ],
+      "sha256": "0091e5f88494a6288688d03b03c56136bbadc269db93308d2aad41591c803429"
+    },
+    {
+      "topic": "이전 지식 사건 연결 보존 스냅샷",
+      "path": "지식/공통계약/03_현재사건_연결색인후보.json",
+      "json_pointers": [
+        "/scope",
+        "/references"
+      ],
+      "sha256": "896b95626e9c3a7dce383f4a398836a8ca048df68d93079d433b41e1aa1a4091"
+    },
+    {
+      "topic": "SS·BC 공통 전환",
+      "path": "퀘스트/전투모드통합/전투모드_통합기획.json",
+      "json_pointers": [
+        "/recommended_mode",
+        "/item_strategy",
+        "/ss_effect_policy",
+        "/input_contract",
+        "/events",
+        "/mana",
+        "/cooldowns",
+        "/rights_and_loot",
+        "/boss_bridge",
+        "/damage_application_contract"
+      ],
+      "sha256": "04f2a41713b6e502e16d9399464f6bff64bb07d85fb366936ebd9b983f280391"
+    },
+    {
+      "topic": "13무기 기반 매핑",
+      "path": "퀘스트/전투모드통합/무기별_SimplySwords_매핑_기획.json",
+      "json_pointers": [
+        "/identity_policy",
+        "/weapons",
+        "/transition_policy"
+      ],
+      "sha256": "70275c7a8faa1078b185c0194413d22225d1d6e28d86d55375a90ef54cde542c"
+    },
+    {
+      "topic": "전환 수치와 레이드",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/numeric_adoption",
+        "/weapons",
+        "/skills",
+        "/raids",
+        "/analysis_model",
+        "/damage_contract"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "배포 정적 증거",
+      "path": "퀘스트/전투모드통합/배포실물_정적확인.json",
+      "json_pointers": [
+        "/method",
+        "/release",
+        "/profiles",
+        "/models",
+        "/animations"
+      ],
+      "sha256": "4e76bca5558985faa18e2d4c2f79f4c201e84378a85ee50e49654a6d111ceb3f"
+    },
+    {
+      "topic": "현재 활성화 연결",
+      "path": "스토리/현행활성화계약/색인.json",
+      "json_pointers": [
+        "/records",
+        "/scope_limit"
+      ],
+      "sha256": "15fba2ea7d47afd922fad1ef3370fc4b06b7455784d293d868bcc786b719d5aa"
+    },
+    {
+      "topic": "현재 활성화 공통",
+      "path": "스토리/현행활성화계약/00_현행활성화_공통계약.json",
+      "json_pointers": [
+        "/precedence",
+        "/initialization",
+        "/site_and_observation",
+        "/body_state_machine",
+        "/personal_separation"
+      ],
+      "sha256": "9681cb244e1ec1e64b6e75abd31da82e6dd4824103d09d561bb1a1922334ecfd"
+    },
+    {
+      "topic": "기존 전투 공통",
+      "path": "퀘스트/전투와보상/공통실행.json",
+      "json_pointers": [
+        "/common_contract",
+        "/rights_count_rule",
+        "/execution_scope_priority"
+      ],
+      "sha256": "e791b065fa89a0f97c3796392527b675425aa5589dcaadeac1ddae9384585c4b"
+    },
+    {
+      "topic": "연출 공통",
+      "path": "퀘스트/스킬연출/00_공통연출기준.json",
+      "json_pointers": [
+        "/좌표계",
+        "/공통렌더",
+        "/동기화",
+        "/인수"
+      ],
+      "sha256": "d98bb990f3f9f7cece39329418860331cba38d84ef427951becf4f1ec0a6b425"
+    },
+    {
+      "topic": "실제 godId 예시",
+      "path": "페르소나/인물/RPG-S01-001.json",
+      "json_pointers": [
+        "/record_key",
+        "/original_profile/godId",
+        "/current_identity",
+        "/current_access"
+      ],
+      "sha256": "9be61561af7e0e2625450bd4bdc7eeb3143e70472aa53048f69510f443f4838b"
+    },
+    {
+      "topic": "C05",
+      "path": "퀘스트/본편전투/C05/C05_레이드_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "bfac292d3e20b7acabcd56b65be3b004f1f441549ce32cfc4de2620d6125af45"
+    },
+    {
+      "topic": "C07",
+      "path": "퀘스트/본편전투/C07/C07_열파응집체_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "235505b7b9011ccbcfafe5c285d3ed4811e59caa3e23cc9bd7946131ccbda5db"
+    },
+    {
+      "topic": "C10",
+      "path": "퀘스트/본편전투/C10/C10_해저방어체_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "24950d716656edac71770c5c239f62af6b6dcceeb22de0795d9394463c92465b"
+    },
+    {
+      "topic": "C11",
+      "path": "퀘스트/본편전투/C11/C11_전투와수행_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "5db51ca0ec65d960f5fff308d1707e8602e1bd17af5df0d8efa14c89b56e8f85"
+    },
+    {
+      "topic": "C17",
+      "path": "퀘스트/본편전투/C17/C17_전투와수행_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "7a1be65b89127d47d06046b21c41f309565ec6f001346592d8da136e465e64b8"
+    },
+    {
+      "topic": "C26",
+      "path": "퀘스트/본편전투/C26/C26_귀환룡_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "0f0172152f0c7f7f531c3596ab416f8b9874d8a6475ba672fb2d579da8287848"
+    },
+    {
+      "topic": "T03",
+      "path": "퀘스트/본편전투/T03/T03_상층조사_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "76d9ab461509a27144a379f3bca44372a370557dcfad2b5293cd50721105322b"
+    },
+    {
+      "topic": "T04",
+      "path": "퀘스트/본편전투/T04/T04_마지막통로_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "9e026bafa10407becba3a8eb53bb7c18ef72a80b034d3aa63075364c19971e68"
+    },
+    {
+      "topic": "AUXILIARY",
+      "path": "퀘스트/본편전투/보조전투/보조전투_기획.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "b11a5f1aa68fd706312aa39939fb19e6b9876590cba9d88ca00726c0dd417f7d"
+    },
+    {
+      "topic": "SHARED_ENDING",
+      "path": "퀘스트/본편진행/공용시험과결말/공용시험과결말_상태계약.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "48d34fcb948aa655e6bb33a96ec03e890b655d1538d99c146a9c4f80a2437065"
+    },
+    {
+      "topic": "키메라",
+      "path": "퀘스트/본편전투/키메라/02_키메라_기획계약.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "1e2a23b92f8f5313923d492c867a5e9dae1f595ca4849adb666a68460b66efa3"
+    },
+    {
+      "topic": "추가 정의 탐색",
+      "path": "퀘스트/전투와보상/추가정의_참조색인.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "8fef28fb5b916e85314b85b4a5fcf7713a4c6381de2f374dbdc69cded318fb1c"
+    },
+    {
+      "topic": "원문 동일값 탐색",
+      "path": "퀘스트/공통설계/원문참조_연결색인.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "ac85d404739480b8ede896a70f06dbac7bf3957519f937e8156f1a45eb10471b"
+    },
+    {
+      "topic": "무기 OLY-ATH-W01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/0/key",
+        "/weapons/0/source",
+        "/weapons/0/route",
+        "/weapons/0/after_initial_design",
+        "/weapons/0/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 OLY-ART-W01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/1/key",
+        "/weapons/1/source",
+        "/weapons/1/route",
+        "/weapons/1/after_initial_design",
+        "/weapons/1/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 OLY-HEP-W01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/2/key",
+        "/weapons/2/source",
+        "/weapons/2/route",
+        "/weapons/2/after_initial_design",
+        "/weapons/2/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 CTL-THO-W01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/3/key",
+        "/weapons/3/source",
+        "/weapons/3/route",
+        "/weapons/3/after_initial_design",
+        "/weapons/3/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 CTL-FOX-W01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/4/key",
+        "/weapons/4/source",
+        "/weapons/4/route",
+        "/weapons/4/after_initial_design",
+        "/weapons/4/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 H01",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/5/key",
+        "/weapons/5/source",
+        "/weapons/5/route",
+        "/weapons/5/after_initial_design",
+        "/weapons/5/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 H03",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/6/key",
+        "/weapons/6/source",
+        "/weapons/6/route",
+        "/weapons/6/after_initial_design",
+        "/weapons/6/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 mythictrpg:hephaestus_workshop_plain_sword",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/7/key",
+        "/weapons/7/source",
+        "/weapons/7/route",
+        "/weapons/7/after_initial_design",
+        "/weapons/7/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 mythictrpg:hephaestus_workshop_plain_hammer",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/8/key",
+        "/weapons/8/source",
+        "/weapons/8/route",
+        "/weapons/8/after_initial_design",
+        "/weapons/8/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 C03_GUIDE_BOW",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/9/key",
+        "/weapons/9/source",
+        "/weapons/9/route",
+        "/weapons/9/after_initial_design",
+        "/weapons/9/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 C05_LANDING_SWORD",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/10/key",
+        "/weapons/10/source",
+        "/weapons/10/route",
+        "/weapons/10/after_initial_design",
+        "/weapons/10/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 C05_OPEN_PATH_BOW",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/11/key",
+        "/weapons/11/source",
+        "/weapons/11/route",
+        "/weapons/11/after_initial_design",
+        "/weapons/11/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "무기 UNIFIED-SWORD",
+      "path": "퀘스트/전투모드통합/전환_구현전달_기획.json",
+      "json_pointers": [
+        "/weapons/12/key",
+        "/weapons/12/source",
+        "/weapons/12/route",
+        "/weapons/12/after_initial_design",
+        "/weapons/12/acquisition_source"
+      ],
+      "sha256": "645435b67311c3f26a5c7be3fb78b261057638f263458d5d8691de5cf35fcbbc"
+    },
+    {
+      "topic": "00_전체연결_읽는순서와경계",
+      "path": "지식/최종연결/00_전체연결_읽는순서와경계.md",
+      "json_pointers": [],
+      "reference_kind": "readable_markdown",
+      "sha256": "ee185ab75b09cea425a094ef40fb6f4e004a2d41f9aea39e623eb1a42ff4bd6d"
+    },
+    {
+      "topic": "01_772명_기본앎과현행저술_연결",
+      "path": "지식/최종연결/01_772명_기본앎과현행저술_연결.json",
+      "json_pointers": [
+        "/성격",
+        "/범위",
+        "/인물",
+        "/기본앎필드",
+        "/현행조건부지식필드"
+      ],
+      "sha256": "77d4f16b7207a8e684e401fc17da0609a5ae4fccc431344eaa806d2747c2751d"
+    },
+    {
+      "topic": "02_공용73사건_전달끝점",
+      "path": "지식/최종연결/02_공용73사건_전달끝점.json",
+      "json_pointers": [
+        "/성격",
+        "/장면"
+      ],
+      "sha256": "22a451ab8a987dbd5c6b5c757a5b9bdbd1665407d13ca2fdb4529aedf79a132c"
+    },
+    {
+      "topic": "03_원문값_실제전달파일_동등연결",
+      "path": "지식/최종연결/03_원문값_실제전달파일_동등연결.json",
+      "json_pointers": [
+        "/성격",
+        "/동등연결",
+        "/미해결",
+        "/현행활성화",
+        "/추가활성화_범위",
+        "/추가활성화_연결표",
+        "/추가활성화_실제원문포인터",
+        "/추가활성화_원문보존동등",
+        "/추가활성화_채택참조",
+        "/A1_개별일정참조"
+      ],
+      "sha256": "94780cbb53772d9c55cd480c293f24fd0fe38eeb64766d04e029461e9cdf08af"
+    },
+    {
+      "topic": "04_기존447참조_보존연결",
+      "path": "지식/최종연결/04_기존447참조_보존연결.json",
+      "json_pointers": [
+        "/성격",
+        "/references"
+      ],
+      "sha256": "592da50d0db9e3c36845a3c781d0aaed95dae74b1d4fadca52e441f3604126e0"
+    },
+    {
+      "topic": "05_보존논리포인터_해석후보",
+      "path": "지식/최종연결/05_보존논리포인터_해석후보.json",
+      "json_pointers": [
+        "/성격",
+        "/후보"
+      ],
+      "sha256": "7e1006b19126c1c58329bca575c925e35e0666c8c62823d222fea4decd478dfb"
+    },
+    {
+      "topic": "06_수신과정정_전달계약",
+      "path": "지식/최종연결/06_수신과정정_전달계약.json",
+      "json_pointers": [
+        "/성격",
+        "/우선순위",
+        "/보존원칙",
+        "/전달순서",
+        "/회귀인수사례",
+        "/실행횟수"
+      ],
+      "sha256": "48aba97d438c1e14ab7404a61f19a2e5cc8f39756a0c909ce78e996b3b3694fb"
+    },
+    {
+      "topic": "07_공용사건_사실층과수신근거",
+      "path": "지식/최종연결/07_공용사건_사실층과수신근거.json",
+      "json_pointers": [
+        "/성격",
+        "/분류방식",
+        "/장면수",
+        "/원문절수",
+        "/장면"
+      ],
+      "sha256": "33dc6d36ced6ae9200ae75fe2212aed6f6769bcbd5f251032eba17d589c17464"
+    },
+    {
+      "topic": "08_기존원문별칭_동등성재확인",
+      "path": "지식/최종연결/08_기존원문별칭_동등성재확인.json",
+      "json_pointers": [
+        "/성격",
+        "/기존원문색인수",
+        "/이전확장수",
+        "/동등연결",
+        "/미해결"
+      ],
+      "sha256": "1dc70c0abe6ad5a710185f8c537d1944fdf3c6453af52ae3dc148d30e7707bbf"
+    },
+    {
+      "topic": "09_시각관측_지식경계와활성화대기",
+      "path": "지식/최종연결/09_시각관측_지식경계와활성화대기.json",
+      "json_pointers": [
+        "/성격",
+        "/실제전달파일",
+        "/실제근거연결",
+        "/시각과수신_공통근거",
+        "/수신경계",
+        "/최종활성화",
+        "/활성화인물연결"
+      ],
+      "sha256": "6cba2776de6c729e0a3e3716fc44d3c44e199985ab878697e1cd467ebcb7725a"
+    },
+    {
+      "topic": "00_시각판정_공통계약",
+      "path": "퀘스트/스킬연출/판정연결/00_시각판정_공통계약.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/제목",
+        "/읽는순서",
+        "/단일기준",
+        "/출처",
+        "/채택_표시문법",
+        "/동시표시",
+        "/공간과가림",
+        "/LOD와예산",
+        "/동기화",
+        "/관전자",
+        "/실패기준"
+      ],
+      "sha256": "a33c540f7c896853bd50d77896a6bb569a0f8b1f5525eff6d7185b8d4c60afc8"
+    },
+    {
+      "topic": "00_읽는순서와_연결원칙",
+      "path": "퀘스트/스킬연출/판정연결/00_읽는순서와_연결원칙.md",
+      "json_pointers": [],
+      "reference_kind": "readable_markdown",
+      "sha256": "f057cc5121fba86e4a23b8c99c82a94c8da3d9c3d4a89ccadc05f74389661060"
+    },
+    {
+      "topic": "01_패턴별_연결",
+      "path": "퀘스트/스킬연출/판정연결/01_패턴별_연결.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/주의",
+        "/패턴"
+      ],
+      "sha256": "ecd077f7c4c90dfa901596a04cb2bb538935c58e80f671ec333c256749c8e23e"
+    },
+    {
+      "topic": "01_패턴별_읽기본",
+      "path": "퀘스트/스킬연출/판정연결/01_패턴별_읽기본.md",
+      "json_pointers": [],
+      "reference_kind": "readable_markdown",
+      "sha256": "6f831bf35a1b0a81329c5883a651b23fce2bbef5b2bc93f2002750f6081b2ce2"
+    },
+    {
+      "topic": "02_플레이어와지원_연결",
+      "path": "퀘스트/스킬연출/판정연결/02_플레이어와지원_연결.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/콘텐츠",
+        "/BC무기",
+        "/지원분리",
+        "/대표검기"
+      ],
+      "sha256": "cad5475c06ec1f8c700927e191f24e7e63914fe4b9f74c7620c9168d36b48c4e"
+    },
+    {
+      "topic": "03A_보조전투_연결",
+      "path": "퀘스트/스킬연출/판정연결/03A_보조전투_연결.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/공통",
+        "/커스텀프로필",
+        "/기존장면",
+        "/바닐라경계"
+      ],
+      "sha256": "86792ebde5b9f600dc44b6f3ee3f5a8d38a68d40bf0b71e793c0f6d84dbd8d23"
+    },
+    {
+      "topic": "03_현장조작과원본_연결",
+      "path": "퀘스트/스킬연출/판정연결/03_현장조작과원본_연결.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/현장행위",
+        "/원본6",
+        "/일반능동_기하와권리",
+        "/합일검",
+        "/C26_자리와순서",
+        "/장면중단",
+        "/탑분기",
+        "/누락방지"
+      ],
+      "sha256": "4fd4a2c9166b12d69b61823e12c083c2eb371836ed7aa5529b11dbc07849a02e"
+    },
+    {
+      "topic": "04_구현전_인수",
+      "path": "퀘스트/스킬연출/판정연결/04_구현전_인수.json",
+      "json_pointers": [
+        "/저술상태",
+        "/실행스키마",
+        "/실제구현",
+        "/실제렌더시험",
+        "/게임실행",
+        "/신규보스",
+        "/신규보상권",
+        "/인수전제",
+        "/공통증거",
+        "/사례",
+        "/패턴별추가",
+        "/영상연결",
+        "/영상정책"
+      ],
+      "sha256": "2ddf70a49cf954ad58c38ba1cca9cea1c4d678bd9230fabeee95174dfff98dbe"
+    },
+    {
+      "topic": "04_인수와_현장연결_읽기본",
+      "path": "퀘스트/스킬연출/판정연결/04_인수와_현장연결_읽기본.md",
+      "json_pointers": [],
+      "reference_kind": "readable_markdown",
+      "sha256": "ed2d75d3f2927c14b77cc47941504657ba7cbf630e953ac3243583caa1a6e591"
+    },
+    {
+      "topic": "색인",
+      "path": "퀘스트/스킬연출/판정연결/색인.json",
+      "json_pointers": [
+        "/document_type",
+        "/scope",
+        "/files",
+        "/reference_base",
+        "/static_planning_reviewed",
+        "/implementation_tested",
+        "/runtime_ready"
+      ],
+      "sha256": "c4a508b54215a697f84701a9e5c338fdccec44f0e53cb59fa2fad3a8be5be640"
+    },
+    {
+      "topic": "추가 활성화 근거 00_BOOTSTRAP_최종근거연결표",
+      "path": "스토리/현행활성화계약/00_BOOTSTRAP_최종근거연결표.json",
+      "json_pointers": [
+        "/records"
+      ],
+      "sha256": "c4a515cd5baaefb6e352905ecabf082771b44d43f76bfb0fd2ab4949cf763e0b"
+    },
+    {
+      "topic": "추가 활성화 근거 추가56명_근거연결",
+      "path": "스토리/현행활성화계약/추가56명_근거연결.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "c2b9f50fb42b15d655777f8770e9bacdaf054dd6191f1be3529a2eb987692ff6"
+    },
+    {
+      "topic": "추가 활성화 근거 04_A1_최종근거연결",
+      "path": "스토리/현행활성화계약/04_A1_최종근거연결.json",
+      "json_pointers": [
+        ""
+      ],
+      "sha256": "5acf905f8f581bca9122847b6723d1962147445c73043a6a33d6f63e14009531"
+    }
+  ],
+  "release_ready_semantics": "기획 묶음의 출고·패키징 검사 플래그이며 런타임 검증과 별개. 최종 출고 상태 변경 뒤 색인.json 해시를 다시 계산한다."
+}

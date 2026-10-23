@@ -1,5 +1,6 @@
 package com.sande.mythictrpg.raid;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.level.ChunkPos;
@@ -19,6 +20,15 @@ final class RaidChunkTickets {
 
     boolean isHeld(UUID attemptId) { return held.containsKey(attemptId); }
 
+    /** A loaded block chunk can still have hidden or pending entity sections for another server tick. */
+    boolean readyForEntities(UUID attemptId) {
+        Held ticket = held.get(attemptId);
+        return ticket != null && ticket.chunks.stream().allMatch(chunk ->
+                ticket.level.areEntitiesLoaded(chunk.toLong())
+                        && ticket.level.isPositionEntityTicking(new BlockPos(
+                                chunk.getMinBlockX(), ticket.level.getMinBuildHeight(), chunk.getMinBlockZ())));
+    }
+
     boolean acquire(UUID attemptId, ServerLevel level, AABB bounds) {
         if (held.containsKey(attemptId)) return false;
         List<ChunkPos> chunks = chunks(bounds);
@@ -28,7 +38,7 @@ final class RaidChunkTickets {
                 level.getChunkSource().addRegionTicket(TYPE, chunk, DISTANCE, attemptId);
                 ticket.added++;
             }
-            // Synchronous load also lets startup cleanup find raid entities before releasing the ticket.
+            // Load block data now; callers must wait for readyForEntities before spawning into this region.
             for (ChunkPos chunk : chunks) level.getChunk(chunk.x, chunk.z);
             held.put(attemptId, ticket);
             return true;

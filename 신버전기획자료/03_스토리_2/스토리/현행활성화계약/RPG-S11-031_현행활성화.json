@@ -1,0 +1,99 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S11-031",
+  "name": "소로소천국",
+  "definition_id": "ACTIVATION-RPG-S11-031",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 강변 통로의 실제 막힌 구간 B까지 안전점 A에서 답사 후, 소유허락 있는 비필수 작은 장애블록1개 제거로 통행 확보 OR 막힘을 우회하는 기존 안전 통로 B→C 실제 통과1회. 실제 막힘 없이 일부러 만든 장애는 불인정. 물길 복구·자손 사과0.",
+      "completion_count": 1,
+      "scope": "같은 world_uuid에서 실제 player_uuid 한 명이 선택한 AND/OR 조건 전체를 달성하면 세계영구; 여러 사람 부분이력 합산0",
+      "initial_state": "새 세계 WORLD_RELEASE=false. 아래 실제 유효 달성 전에는 계약 작성·후보 등록만으로 true가 되지 않는다. 이미 유효하게 배치/접촉된 기존 본체와 그 세계 원장은 재잠금하지 않는다.",
+      "transition": "FALSE → 같은 플레이어의 실제 완료 증거 검증 → world_uuid+record_key 최초 CAS → TRUE 영구. 해금 달성자의 개인 소유/관계/보상/수신을 자동 생성하지 않는다.",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "evidence": "실제 source event ID, world/player UUID, 행동별 object/item/route UUID, 순서있는 실제 위치 및 인수/소비 전후를 같은 시도로 결속. 각 행동의 정수량은 rule을 따른다. 이미 있는 동일 receipt는 증거로 참조할 수 있으나 횟수 누적·물품/권리/보상 재생성0. 다른 인물의 조건에도 사실상 맞는 사건이면 인물별 세계 판정에 참조 가능하며 같은 사건을 새 행동으로 복제하지 않는다.",
+      "source_history_is_not_current_rule": true,
+      "current_adoption_note": "원문 미채택 후보를 현재 일반설계로 선택·수량화했다. 원문 status/null/후보 문자열은 수정하지 않으며 과거부터 채택됐다고 소급하지 않는다.",
+      "resource_refs": []
+    },
+    "first_encounter": {
+      "current_predicate": "현재 적법 자기 oak_planks2개 이상을 소지해 바닐라 막대 제작법을 사용할 준비가 되어 있음. 제작결과/작업대/NPC 시범은 아직 필요하지 않으며 2×2 개인 제작칸으로 가능한 준비다. 다른 목재 판자2개도 그 실제 동일 제작법이 유효하면 허용. 소비·제작·납부0.",
+      "current_location": "플레이어가 현재 실제 강변에 인접한 공용 공간 또는 안전한 기존 자연 부지에 있으며 물가 진입·탈출과 적합한 배치 여건이 확인된다.",
+      "source_location_quote": "플레이어가 현재 실제 강변에 인접한 공용 공간 또는 안전한 기존 자연 부지에 있으며 물가 진입·탈출과 적합한 배치 여건이 확인된다.",
+      "site_anchor": "실제 강변에 인접한 주점·초원 폐허·야영지의 공용 공간; 인물 전용 건축 없음",
+      "world_dimension": "minecraft:overworld",
+      "location_exact_ref": "스토리/인물별연결/RPG-S11-031.json#/connection_manuscript/present_encounter/appearance_before_contact/player_site_condition",
+      "site_source_ref": "스토리/인물별연결/RPG-S11-031.json#/connection_manuscript/present_encounter",
+      "preparation_source_ref": "스토리/인물별연결/RPG-S11-031.json#/connection_manuscript/present_encounter/retained_placement_source_only/meeting_route/value",
+      "preparation_label": "제작 준비",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "기존 무작위 공용 풀. 확률/주기/NONE/actor가중/적격주체선정/쿨다운/CAS는 공통계약 pool 및 전역 참조를 그대로 사용. 이 파일은 전용 수치·새 풀·추가 추첨을 만들지 않는다.",
+      "subject": "현재 세계 가용성과 위 개인 조건을 갖춘 실제 온라인 생존 플레이어1명. 해금자일 필요 없고 0명이면 발생0. 여러 명은 기존 전역 선택계약.",
+      "time": "별도 시간제한 없음. 실제 현재 부지의 출입·위험·세계/봉인 가용성은 항상 검사. 세계해금 행동의 시간조건은 그 행동에만 적용하고 첫조우에 이식하지 않는다.",
+      "no_preappearance_actor_response": true,
+      "existing_body_contact": "이미 등장한 동일 본체의 일반 인사·재대화·친구 합류에는 위 최초 후보 준비물·관찰/이동 과제·새 추첨을 다시 요구하지 않는다. 현재 접근·청중·허용 접촉모드만 확인하며 실제 서비스/거래/수락은 기존 활동의 별도 조건을 따른다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "정체·현재 접근·발화/비언어·MAIN/보상 범위는 source_refs의 현재 페르소나와 기존 개별기획 그대로. 후속 활동 소품·소개자·장면 수행/응답은 최초 배치 전제로 끌어올리지 않는다. 원문 옛 사망·기적은 지금의 부활·새 본체를 허가하지 않는다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "knowledge_boundary": "세계 해금 receipt는 세계 가용성을 위한 기술 원장일 뿐 NPC의 자동 지식·개인 관계·공적 인정이 아니다. 누가 했는지는 실제 목격 또는 허락된 전달과 해당 청중의 실제 수신이 있을 때만 안다. 해금자=조우주체라고 대사에서 추정하지 않는다.",
+    "new_implementation": "실제 행동/수량/물품·경로·관찰 receipt와 원장 연결은 신규 구현 요구이며 실제 게임/API/LLM/영상/5인 시험은 수행하지 않았다. 일반 기획 채택과 런타임 등록·실행 완료는 별개다."
+  },
+  "source_history_preserved": {
+    "exact_value": "누군가 기존 강변의 막힌 통로를 실제 답사하고 허락된 작은 장애물 제거 또는 우회로 확인을 마친 이력. 자손의 사과·귀환은 조건이 아니다.",
+    "exact_ref": "스토리/인물별연결/RPG-S11-031.json#/connection_manuscript/world_unlock_history/candidate",
+    "interpretation": "원문 역사 후보의 보존 인용. 실제 현행 실행은 adopted_activation만 읽는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S11-031.json",
+      "record_key": "RPG-S11-031",
+      "pointers": [
+        "/connection_manuscript/world_unlock_history/candidate",
+        "/connection_manuscript/present_encounter",
+        "/connection_manuscript/current_basic_persona",
+        "/connection_manuscript/present_encounter/retained_placement_source_only/meeting_route/value"
+      ],
+      "sha256": "9a74abb67aa9a42f5f3bdb4de6b05056568a4977b667f50c97ea535f45439e02"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S11-031.json",
+      "record_key": "RPG-S11-031",
+      "pointers": [
+        "/current_identity",
+        "/production_scope",
+        "/current_access",
+        "/original_profile",
+        "/connection_persona"
+      ],
+      "sha256": "ed4c2d3d607ade9a411442b8cf239597283f4d67f61f745fee13187914dfd364"
+    },
+    {
+      "logical_file": "퀘스트/인물별범위/RPG-S11-031.json",
+      "record_key": "RPG-S11-031",
+      "pointers": [
+        "/contract"
+      ],
+      "sha256": "74a457cfb3ea0d95d8af1ab098a6c829a3bee6b22d937b30f8f5733eb1ad18c0"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-044/05_RPG-S11-031_소로소천국_완결기획.json",
+      "record_key": "RPG-S11-031",
+      "pointers": [
+        "/identity_guard",
+        "/world_unlock_and_encounter",
+        "/episodes",
+        "/services",
+        "/adopted_detail"
+      ],
+      "sha256": "d0fa4bfc599813fa2d9b37b8974b51f266b9dfa4e27c0f3881d97ff3d46b5d21"
+    }
+  ],
+  "source_null_boundary": "원문 connection_persona 또는 역사 runtime 필드가 null이면 그대로 보존한다. 현재 정체·원프로필과 실제 연결 원고의 current_basic_persona/basic_persona, 이 별도 adopted_activation을 결속하며 null을 무조건 허용이나 과거 채택으로 바꾸지 않는다.",
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

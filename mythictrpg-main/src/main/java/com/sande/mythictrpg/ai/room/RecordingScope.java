@@ -4,14 +4,15 @@ package com.sande.mythictrpg.ai.room;
 public enum RecordingScope {
     STANDARD,
     TEST_RECORDING,
-    TEST_EPHEMERAL;
+    TEST_EPHEMERAL,
+    LIVE_EPHEMERAL;
 
     /** STANDARD remains subject to the existing global recording policy. */
     public boolean recordingAllowed() {
-        return this != TEST_EPHEMERAL;
+        return this != TEST_EPHEMERAL && this != LIVE_EPHEMERAL;
     }
 
     public boolean isTest() {
-        return this != STANDARD;
+        return this == TEST_RECORDING || this == TEST_EPHEMERAL;
     }
 }

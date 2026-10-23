@@ -31,7 +31,7 @@ public final class ReputationStageTest {
     static Decision change(Decision d,long expected,Outcome outcome,DirectImpact direct){
         return new Decision(UUID.randomUUID(),d.worldId(),d.subject(),d.godId(),d.sourceId(),d.rootId(),d.rumorRevision(),d.policyId(),d.policyFingerprint(),expected,outcome,direct,approval());
     }
-    public static void main(String[] args)throws Exception {settings();assessments();guards();recovery();dialogueRecovery();persistence();capacity();pointQueries();proofPointQueries();wiring();
+    public static void main(String[] args)throws Exception {settings();assessments();guards();recovery();gameRecovery();dialogueRecovery();persistence();capacity();pointQueries();proofPointQueries();wiring();
         System.out.println("ReputationStageTest: "+checks+" assertions passed; OFFLINE judgment foundation, not live gameplay");}
     static void settings(){
         check(ReputationSettings.load(java.nio.file.Path.of("absent-reputation-settings.json")).equals(ReputationSettings.OFF),"absent config OFF");
@@ -111,6 +111,46 @@ public final class ReputationStageTest {
         }
         var state=f.ledger.snapshot();rejects(()->ReputationLedger.restore(new Snapshot(1,WORLD,state.revision(),List.of(state.entries().getFirst(),state.entries().getFirst()))),"duplicate saved assessment rejected");
         rejects(()->ReputationLedger.restore(new Snapshot(1,WORLD,state.revision()+1,state.entries())),"invalid saved revision rejected");
+    }
+    static void gameRecovery(){
+        var f=new Fixture();var first=f.create(NEG);var second=f.create(NEG);
+        f.engine().applyApproved(first);f.engine().applyApproved(second);
+        var request=new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:restitution");
+        var before=f.ledger.snapshot();
+        f.ledger.mutationGate(()->true,(snapshot,maintenance)->false);
+        check(f.engine().recoverFromGameResult(request)==Result.CAPACITY&&f.ledger.snapshot().equals(before),
+                "failed quota admission cannot partially recover a batch");
+        f.ledger.mutationGate(()->true,(snapshot,maintenance)->maintenance);
+        check(f.engine().recoverFromGameResult(request)==Result.APPLIED,"game result recovers whole batch");
+        check(f.ledger.entries().stream().allMatch(Entry::terminal)&&f.ledger.recovered(request),"batch completion receipt stored");
+        check(f.ledger.find(A,GOD,first.sourceId()).initialApproval().equals(first.approval()),"batch preserves initial approval");
+        f.restart();
+        var later=f.create(NEG);f.engine().applyApproved(later);long revision=f.ledger.revision();
+        check(f.engine().recoverFromGameResult(request)==Result.DUPLICATE&&f.ledger.revision()==revision
+                &&!f.ledger.find(A,GOD,later.sourceId()).terminal(),"restarted replay cannot remove a newer allegation");
+        check(f.engine().recoverFromGameResult(new Recovery(request.id(),B,GOD,NEG.id(),request.reasonId()))==Result.REJECTED,
+                "game result cannot be reused for another player");
+        check(f.engine().recoverFromGameResult(new Recovery(request.id(),A,GOD,NEG.id(),"test:other_reason"))==Result.REJECTED,
+                "game result cannot change meaning");
+        var empty=new Fixture();var emptyRequest=new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:empty");
+        check(empty.engine().recoverFromGameResult(emptyRequest)==Result.APPLIED,"empty recovery stores receipt");
+        empty.restart();var fresh=empty.create(NEG);empty.engine().applyApproved(fresh);
+        check(empty.engine().recoverFromGameResult(emptyRequest)==Result.DUPLICATE&&!empty.ledger.find(A,GOD,fresh.sourceId()).terminal(),
+                "empty batch is not a future blanket pardon");
+        var changed=new ReputationSettings(1,true,50,60,List.of(new ReputationSettings.Rule(NEG.id(),NEG.courierRuleId(),GOD,-31,-1000,500)));
+        check(new ReputationEngine(f.ledger,changed,(s,g,r)->Optional.empty()).recoverFromGameResult(
+                new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:changed"))==Result.APPLIED,
+                "explicit recovery removes old assessment after policy changes or source revocation");
+        var legacy=new Gson().toJsonTree(before).getAsJsonObject();legacy.remove("recoveries");
+        check(ReputationLedger.restore(new Gson().fromJson(legacy,Snapshot.class)).snapshot().equals(before),"old v1 saves load without batch receipts");
+        var saved=f.ledger.snapshot();var badReceipt=new RecoveryReceipt(new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:forged"),List.of(first.sourceId()));
+        rejects(()->ReputationLedger.restore(new Snapshot(1,WORLD,saved.revision()+1,saved.entries(),List.of(badReceipt))),
+                "forged completion receipt cannot load");
+        var bounded=new ReputationLedger(WORLD);
+        for(int i=0;i<LIMIT;i++)if(bounded.recover(new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:capacity"))!=Result.APPLIED)
+            throw new AssertionError("batch receipt capacity fixture");
+        check(bounded.recover(new Recovery(UUID.randomUUID(),A,GOD,NEG.id(),"test:capacity"))==Result.CAPACITY,
+                "batch receipt cap fails closed without forgetting old results");
     }
     static void dialogueRecovery(){
         var f=new Fixture();var d=f.create(NEG);f.engine().applyApproved(d);var entry=f.ledger.find(A,GOD,d.sourceId());

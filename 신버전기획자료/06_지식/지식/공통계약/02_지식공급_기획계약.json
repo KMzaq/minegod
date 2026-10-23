@@ -1,0 +1,101 @@
+{
+  "document_kind": "공통 실행 기획; 엔진 스키마 아님",
+  "runtime_ready": false,
+  "management_key_count": 772,
+  "policy_source": "01_지식공급_공개_수신_실행계약.md",
+  "layers": [
+    "author_truth",
+    "initial_self_knowledge",
+    "actual_event",
+    "conditional_disclosure",
+    "actual_audience",
+    "personal_memory",
+    "correction",
+    "inference"
+  ],
+  "truth_values": [
+    "TRUE",
+    "FALSE",
+    "UNKNOWN"
+  ],
+  "knowledge_gate": {
+    "requires": [
+      "현재 존재·접촉·표현 허용",
+      "화자의 실제 앎/근거",
+      "내용과 존재 공개의 별도 허가",
+      "현재 청중 전원 개인 자격",
+      "내용·청중·정책 버전 최신"
+    ],
+    "unknown": "관련 출력만 보류; 접촉 미확인이면 모든 본체 응답 보류"
+  },
+  "state_machine": [
+    {
+      "state": "PLANNED",
+      "meaning": "미발생 설계; 기억 없음"
+    },
+    {
+      "state": "EVENT_COMMITTED",
+      "meaning": "실제 사건 권위 결과; 자동 앎 없음"
+    },
+    {
+      "state": "ACQUISITION_EVIDENCED",
+      "meaning": "개인 직접 관측/실제 전언 수신; 출처와 상태 분리"
+    },
+    {
+      "state": "GENERATED",
+      "meaning": "읽기 전용 후보; 수신 아님"
+    },
+    {
+      "state": "PRE_SEND_VALIDATED",
+      "meaning": "현재 청중 전원·정책·접촉 재확인"
+    },
+    {
+      "state": "DELIVERY_ATTEMPTED",
+      "meaning": "송신 시도; 아직 수신 보장 아님"
+    },
+    {
+      "state": "RECEIPT_CONFIRMED",
+      "meaning": "개인별 실제 수신 범위만 기억"
+    },
+    {
+      "state": "UNDELIVERED_OR_UNCERTAIN",
+      "meaning": "미전달/불확실; 조회 후 재검사, 거절/동의 아님"
+    }
+  ],
+  "canonical_grant_requires": [
+    "원문에 명시된 정식 Fact/Knowledge·수준·정책 연결",
+    "등록·실제 사건 근거",
+    "허용된 정식 내용 완전 수신",
+    "개인별 자격",
+    "중복 처리 확인"
+  ],
+  "free_paraphrase": "대화 기억과 등록 정식 Knowledge grant 분리",
+  "receipt_idempotency_design": [
+    "world_identity",
+    "source_occurrence",
+    "recipient_identity",
+    "canonical_content_revision",
+    "knowledge_level",
+    "delivery_purpose"
+  ],
+  "party_auto_share": false,
+  "world_unlock_is_personal_memory": false,
+  "dialogue_changes_rights": false,
+  "source_ids_may_be_editorial": true,
+  "unknown_runtime_id_policy": "임의 발급 금지; 등록·변환 검증 전 적재 차단",
+  "correction": "원주장 유지+정정 근거·버전·개인 실제 수신; 미수신자 일괄 갱신 금지",
+  "join_leave": "청중 버전 변경; 미발송 재검사; 이전 수신 보존; 소급 경험 금지",
+  "implementation_requirements": [
+    "개인 획득/수신 원장",
+    "개별 청중 UUID 허가",
+    "발송 직전 원자적 청중 검사",
+    "정정·추론 출처 보존",
+    "재접속·부분수신·중복방지 어댑터"
+  ],
+  "tests": {
+    "llm": 0,
+    "api": 0,
+    "game": 0
+  },
+  "full_campaign_complete": false
+}

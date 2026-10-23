@@ -45,8 +45,48 @@ public final class TrialRaidGameTests {
     private TrialRaidGameTests() { }
 
     // One lifecycle fixture owns the one authored trial slot; its subchecks cannot race each other.
-    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty", timeoutTicks = 200)
+    @GameTest(templateNamespace = "mythictrpg_raid", template = "empty",
+            batch = "trial_lifecycle_entities", timeoutTicks = 12000)
     public static void authoredArenaOwnershipCancellationAndRestart(GameTestHelper helper) {
+        // This existing lifecycle test exercises several immediate starts in one callback. Wait for the
+        // real Minecraft entity sections first; cold STARTING/timeout/cancel is covered by RaidGameplayContentGameTests.
+        ServerLevel trial = helper.getLevel().getServer().getLevel(TrialRaidArenaService.DIMENSION);
+        helper.assertTrue(trial != null, "installed trial dimension is missing");
+        var arena = RaidCatalog.INSTANCE.snapshot().arenas().get(ARENA);
+        helper.assertTrue(arena != null, "installed trial arena is missing");
+        var tickets = new RaidChunkTickets();
+        UUID readinessId = UUID.randomUUID();
+        helper.assertTrue(tickets.acquire(readinessId, trial, arena.bounds()), "trial entity readiness ticket failed");
+        boolean[] done = {false};
+        int[] waited = {0};
+        long readinessStarted = System.nanoTime();
+        helper.onEachTick(() -> {
+            if (done[0]) return;
+            try {
+                if (!tickets.readyForEntities(readinessId)) {
+                    waited[0]++;
+                    long elapsed = System.nanoTime() - readinessStarted;
+                    helper.assertTrue(elapsed < java.util.concurrent.TimeUnit.SECONDS.toNanos(10),
+                            "trial entity sections never became ready after "
+                                    + java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(elapsed)
+                                    + " ms (" + waited[0] + " readiness checks)");
+                    // GameTestServer does not pace ticks at 50 ms. Yield briefly to asynchronous
+                    // entity-section IO rather than exhausting a tick budget in a few milliseconds.
+                    java.util.concurrent.locks.LockSupport.parkNanos(1_000_000L);
+                    return;
+                }
+                done[0] = true;
+                tickets.release(readinessId);
+                runAuthoredArenaLifecycle(helper);
+            } catch (RuntimeException | AssertionError failure) {
+                done[0] = true;
+                tickets.release(readinessId);
+                helper.fail("Trial entity-ready lifecycle: " + failure);
+            }
+        });
+    }
+
+    private static void runAuthoredArenaLifecycle(GameTestHelper helper) {
         var channels = new ArrayList<EmbeddedChannel>();
         ServerPlayer leader = connect(helper, "TrialLeader", channels);
         ServerPlayer outsider = connect(helper, "TrialObserver", channels);

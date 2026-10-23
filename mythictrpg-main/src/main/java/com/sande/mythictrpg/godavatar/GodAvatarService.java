@@ -190,6 +190,22 @@ public final class GodAvatarService {
         avatar.clearRaidTarget();
     }
 
+    /** Compare-and-acquire: a late AI response cannot replace an intervening game/OP order. */
+    public long beginConversationDirective(GodAvatarEntity avatar, long expectedOrder) {
+        requireServerThread(avatar.getServer());
+        if (liveDefinition(avatar).isEmpty() || avatar.orderRevision() != expectedOrder
+                || GodAvatarRegistryState.get(avatar.getServer()).raidOwner(avatar.godId().orElseThrow()).isPresent()
+                || (avatar.busyForVisit() && !com.sande.mythictrpg.godavatar.directive.NpcDirectiveRuntime.INSTANCE.active(avatar)))
+            return -1;
+        return avatar.beginConversationDirective();
+    }
+
+    /** Releases only this directive's order; never clears a newer external controller. */
+    public void stopConversationDirective(GodAvatarEntity avatar, long expectedOrder) {
+        requireServerThread(avatar.getServer());
+        avatar.stopConversationDirective(expectedOrder);
+    }
+
     private static Optional<GodAvatarDefinition> liveDefinition(GodAvatarEntity avatar) {
         if (!avatar.isAlive() || !avatar.hasAuthoritativeBinding()) return Optional.empty();
         return avatar.currentDefinition();

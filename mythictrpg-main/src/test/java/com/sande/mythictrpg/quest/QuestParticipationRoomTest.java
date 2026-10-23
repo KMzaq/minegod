@@ -122,7 +122,14 @@ public final class QuestParticipationRoomTest {
                 private static void requireThread(MinecraftServer server){if(!server.isSameThread())throw new IllegalStateException("game thread required");}
                 private enum QuestParticipationType {SOLO,GROUP}
                 private enum QuestNarrativeRole {SIDE,MAIN_ENTRY}
-                private record Policy(QuestParticipationType type){}
+                private record Policy(QuestParticipationType type){Optional<QuestReorganizationPolicy> reorganization(){return Optional.empty();}}
+                private record QuestReorganizationPolicy(int minimumParticipants){}
+                private record QuestContactLocation(){static QuestContactLocation capture(ServerPlayer member){return new QuestContactLocation();}}
+                private static class QuestReorganizationService{
+                    static final QuestReorganizationService INSTANCE=new QuestReorganizationService();
+                    boolean handleAnswer(Object... args){return false;}void clear(){}void logout(Object... args){}void tick(Object... args){}
+                    String contextFor(Object... args){return "";}
+                }
                 private record FtbQuestBinding(ResourceLocation questId,Policy policy){Optional<Policy> participation(){return Optional.of(policy);}QuestNarrativeRole narrativeRole(){return QuestNarrativeRole.SIDE;}}
                 private record QuestOperationResult(Status status,ResourceLocation quest,String reason){enum Status{NOT_ASSIGNED,REWARD_INVALID,PARTICIPATION_CLOSED,WAITING_FOR_PARTICIPANTS}}
                 private static class FtbQuestBindingManager{
@@ -142,6 +149,7 @@ public final class QuestParticipationRoomTest {
                 private static class MythicQuestState{
                     static final MythicQuestState INSTANCE=new MythicQuestState();final List<QuestParticipationRun> runs=new ArrayList<>();
                     static MythicQuestState get(MinecraftServer server){return INSTANCE;}void addParticipationRun(QuestParticipationRun run){runs.add(run);}
+                    void recordAssignmentOrigin(ResourceLocation quest,UUID member,QuestContactLocation location){}
                 }
                 private static class QuestReminderState{static QuestReminderState get(MinecraftServer server){return new QuestReminderState();}void ensure(Object... values){}}
                 private static class GodAttentionState{static GodAttentionState get(MinecraftServer server){return new GodAttentionState();}void recordEntryAssignment(Object... values){}}

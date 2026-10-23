@@ -11,7 +11,7 @@ public final class ExperienceMemory {
             "(?<![가-힣a-z])밀(?=$|[^가-힣a-z]|을|은|이|도|밭|수확|씨앗)|\\bwheat\\b");
     public record Selection(List<ExperienceView.Event> events, boolean recalling) {
         public static final Selection EMPTY = new Selection(List.of(), false);
-        public Selection { events = List.copyOf(events); if (events.size() > 1) throw new IllegalArgumentException("trial evidence budget"); }
+        public Selection { events = List.copyOf(events); if (events.size() > 6) throw new IllegalArgumentException("scoped observation budget"); }
         public Set<UUID> ids() { return events.stream().map(ExperienceView.Event::observationId).collect(java.util.stream.Collectors.toUnmodifiableSet()); }
     }
     private ExperienceMemory() {}

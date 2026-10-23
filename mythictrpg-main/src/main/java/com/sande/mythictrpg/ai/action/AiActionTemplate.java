@@ -94,9 +94,7 @@ record BlessingOfferTemplate(ResourceLocation id, ResourceLocation godId,
         if (durationTicks < 20 || durationTicks > 72_000) {
             throw new IllegalArgumentException("Blessing duration must be between 20 and 72000 ticks");
         }
-        if (amplifier < 0 || amplifier > 4) {
-            throw new IllegalArgumentException("Blessing amplifier must be between 0 and 4");
-        }
+        com.sande.mythictrpg.quest.reward.BlessingRewardEntry.validateAmplifier(effectId, amplifier);
     }
 
     @Override

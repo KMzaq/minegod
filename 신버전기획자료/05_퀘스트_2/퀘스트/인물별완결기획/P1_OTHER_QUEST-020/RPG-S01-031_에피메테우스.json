@@ -1,0 +1,75 @@
+{
+  "record_key": "RPG-S01-031",
+  "name": "에피메테우스",
+  "definition_id": "GR020-031-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_titan_epimetheus",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-031/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-031/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P04_stage2.json#/records/8",
+    "accepted_episodes": [
+      "EP006A-RPG-S01-031"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "하급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "잘못 고른 부품",
+  "site": "기존 허락된 작업대 O, EP-LAMP-01 실제 식은 등잔1, EP-LID-01 맞지 않는 뚜껑, EP-BASE-01 안전한 받침. 등잔이 실제 없으면 작업보류, 임의 다른 파손으로 대체하지 않는다.",
+  "objectives": [
+    "소유자가 허락한 등잔1이 꺼지고 식었는지 확인한 뒤 뚜껑/몸통을 분리해 맞지 않는 홈과 안전 받침을 대조. 처음부터 불일치를 지적한 사람에게 오판자백 강요0.",
+    "맞는 접합을 시험하고 뚜껑을 덮을 때 어긋남을 확인. 휴대/뚜껑 기능을 포기한 고정조명으로만 사용할지 소유자에게 별도 동의받는다. 지상 받침에 올려 켠 상태20초 동안 기울어짐·접합 이탈0을 확인 후 끈다. 본 수리의 접합재 minecraft:string 1개와 첫 점등시험 연료 minecraft:charcoal 1개는 원소유자 또는 참가자의 허락된 실물로 사전 확보한다. 결속 성공 때 끈1, 점등 시작 때 숯1을 해당 시도에 원자 소비하며 OFF/중단으로 되돌려 주지 않는다. 재료가 없으면 시험 보류, 점등 클릭 재시도는 같은 시도 영수증을 조회한다.",
+    "실제 제한용도 작동과 소유자 수락이면 수리완료. 실패/위험이면 사용중지·접합 노출 상태로 종료. 선택 지도는 같은 등잔의 냉각된 접합1곳을 허락된 끈1로 고정하고 손으로 당겨 확인, 안전20초 시험을1회 반복한다. 실습도 식은 상태에서 시작하고 별도 연료 minecraft:charcoal 1개를 소유자/참가자가 제공한다. 실습끈은 재고10개 중 예약1개만 쓰며 보상끈20개를 미리 빼지 않는다. 본 수리완료는 선택 실습 참여/성공을 요구하지 않는다."
+  ],
+  "branches": "판도라/프로메테우스 탓으로 부품선택을 미루면 수리미완. 겉만 덮고 작동검사하지 않으면 완료0. 켜짐/냉각/안정은 등잔 소품 상태 구현이 필요하며 바닐라 랜턴을 실제 연료·재료변형 시스템처럼 취급하지 않는다. 등잔없음은 부재 대기. 제한용도 수락거절이면 미수리 종료.",
+  "reward": {
+    "kind": "복구부품과 수리 지도",
+    "definition": "GR020-EP31-REPAIR",
+    "quantity": "허락된 남은 minecraft:string 2 + 접합법 실습1회",
+    "stock": "에피메테우스 소유 수리함 보상끈20개·실습끈10개. 본수리 소모끈1개는 소유자 허락 재료, 지도시 끈1개 실제 고정 소비. 등잔/뚜껑/받침은 원소유자 반환, 새등잔 보상0.",
+    "condition": "등잔 제한용도 실제 작동20초 및 소유자 수락; 지도완료는 실제 결속/재시험 별도. 보상은 실제 부품 분리·결속·작동검사 중 자기 역할을 수행하고 제한용도 수락을 확인한 개인만 수령한다. 재료 제공·관전·실습만 한 후발자는 실제 공로를 기록하되 본 수리 보상은 받지 않는다. 잃은 부품은 실손실이며 실습 미실행은 새 허락재료 확보 뒤 재개한다.",
+    "effect": "생활 접합 지식·레시피 사용 안내, K/J 등록/피해/내구증폭/자동수리0.",
+    "budget": "B1, 부품2개와 비전투 지도"
+  },
+  "expected_minutes": [
+    5,
+    8
+  ],
+  "acceptance_tests": [
+    "등잔 부재시 다른 파손 생성0",
+    "뚜껑포기 제한용도 소유자 동의",
+    "작동전 완료0·실습과 수리 분리"
+  ],
+  "special": "등잔 상태 연결 신규구현: COLD→OPEN→FIXED_STATIC→LIT_TEST→OFF. 뚜껑 결속 불일치와 받침 안정은 소품 결합점1의 실제 상태, 기획 장식만으로 성공하지 않는다. 물품 모양 등잔/뚜껑/받침 모델 필요. 화염 연출은 소품 내부0.15블록·피해/점화0, 실패 시 즉시 OFF, 플레이어 건축물 화재 생성0. OFF는 뜨거운 상태이므로 실제10초 경과 후 COLD로 바뀐다. 연료는 한 시험20초만 유지하고 시험 종료/중단/실패시 소등한다. 냉각 전 분해/추가결속 입력은 거절한다. 이 소비·냉각 모델은 신규 소품 구현이며 바닐라 랜턴 동작이 아니다.",
+  "reward_status_source": "APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 작동 범위를 정직하게 줄이면 그는 다음 복구 물자 선택을 플레이어와 나눈다. 숨기면 직접 다시 시험할 때까지 물자 사용을 멈춘다.",
+  "source_outcome": "잘못 고른 부품에서 실제 선택한 행동과 결과: 작동 범위를 정직하게 줄이면 그는 다음 복구 물자 선택을 플레이어와 나눈다. 숨기면 직접 다시 시험할 때까지 물자 사용을 멈춘다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR020-031-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "에피메테우스의 직접 관측 또는 실제 보고수신, 해당 참가자와 실제 청중. 외부 상대는 counterpart_delivery 수신완료 범위만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

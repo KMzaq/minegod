@@ -1122,13 +1122,13 @@ public final class AiTestDialogueAdapter {
             // The same mood statement after an NPC question is usually persistence, not an answer to that question.
             // Keep the LLM generation path, but give it a correct, stable reading of the ongoing conversation.
             return new ConversationIntent(Set.of(DialogueExampleTag.S_CHAT), Set.of(), safe.playerToneTags(),
-                    ConversationAct.CASUAL_FEELING, safe.confidence(), safe.source(), safe.turnInterpretation());
+                    ConversationAct.CASUAL_FEELING, safe.confidence(), safe.source(), safe.turnInterpretation(), safe.supportConsultation());
         }
         ConversationAct act = ConversationAct.resolve(safe.conversationAct(), text, latestNpcSpeech(session));
         if (act == ConversationAct.SHARING_RECENT_EVENT) {
             // A declarative event report is conversational context, not an information request or a lore lookup.
             return new ConversationIntent(Set.of(DialogueExampleTag.S_CHAT), Set.of(), safe.playerToneTags(), act,
-                    safe.confidence(), safe.source(), safe.turnInterpretation());
+                    safe.confidence(), safe.source(), safe.turnInterpretation(), safe.supportConsultation());
         }
         return safe.withConversationAct(act);
     }
@@ -1784,6 +1784,7 @@ public final class AiTestDialogueAdapter {
         private final Session session;
         private final Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents;
         private final List<String> heardMemory;
+        private final int contextLimit;
         private GenerationPlan plan;
 
         RoomPrompt(com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request,
@@ -1799,7 +1800,13 @@ public final class AiTestDialogueAdapter {
         RoomPrompt(com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request,
                 DialogueMemoryBridge.Turn memory,
                 Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents, String priorActivity, List<String> heardMemory) {
+            this(request,memory,contents,priorActivity,heardMemory,false);
+        }
+        RoomPrompt(com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request,
+                DialogueMemoryBridge.Turn memory,
+                Map<ResourceLocation, AiTestContentRegistryBridge.ContentSnapshot> contents, String priorActivity, List<String> heardMemory, boolean nativeSupport) {
             this.request = request;
+            this.contextLimit = nativeSupport ? 16_000 : 12_000;
             this.contents = Map.copyOf(contents);
             this.heardMemory = List.copyOf(heardMemory);
             RoomPersonaPrompt.validateMemoryScope(request, memory);
@@ -1824,8 +1831,10 @@ public final class AiTestDialogueAdapter {
         }
 
         List<AiDialogueModels.OllamaMessage> classificationMessages() {
-            var messages = MinecraftCommonKnowledge.classification(
-                    classifierMessages(session, request.currentText(), intentClassificationExamples(contents)), request);
+            var messages = new ArrayList<>(MinecraftCommonKnowledge.classification(
+                    classifierMessages(session, request.currentText(), intentClassificationExamples(contents)), request));
+            messages.set(0, new AiDialogueModels.OllamaMessage("system", messages.getFirst().content()
+                    + "\n" + com.sande.mythictrpg.ai.intent.SupportConsultation.instruction()));
             // Select one whole audience-projected recall variant; never substring source/uncertainty labels.
             var last = messages.getLast();
             String suffix = heardMemory.stream().filter(value -> !value.isBlank() && value.length() <= 2_400)
@@ -1843,6 +1852,10 @@ public final class AiTestDialogueAdapter {
             return List.copyOf(result);
         }
         String activity() { return session.playActivity; }
+        com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request() { return request; }
+        RoomPrompt withMemory(DialogueMemoryBridge.Turn memory) {
+            return new RoomPrompt(request, memory, contents, session.playActivity, heardMemory, contextLimit > 12_000);
+        }
         ConversationIntent fastIntent() {
             var directive = DialogueTurnDirective.plan(request.currentText(), session.history.stream().map(Transcript::text).toList(),
                     request.godIds().size(), ConversationIntent.heuristicFallback());
@@ -1887,7 +1900,7 @@ public final class AiTestDialogueAdapter {
                     + " Never invent an event or claim a proposed hook already occurred. Read-only still forbids story_event_hook.";
             if (!legacy) {
                 return RoomPersonaPrompt.messages(request, content, session.memoryTurn, lore, advisory,
-                        session.playActivity, gameplayProposalsAllowed(), gameContext, MinecraftCommonKnowledge.select(request), heardMemory);
+                        session.playActivity, gameplayProposalsAllowed(), gameContext, MinecraftCommonKnowledge.select(request), heardMemory, contextLimit);
             }
             while (true) {
                 try {
@@ -1909,12 +1922,20 @@ public final class AiTestDialogueAdapter {
         String validationIssue(AiDialogueModels.StructuredAiResult output) {
             return RoomPersonaPrompt.validationIssue(request, output);
         }
-        boolean gameplayProposalsAllowed() { return !request.readOnly() && plan.directive().proposalsAllowed(); }
+        // Intent describes the utterance; it is not an execution permission. The game still validates
+        // exact capabilities, targets and consequences after normalization, for every live primary turn.
+        boolean gameplayProposalsAllowed() { return !request.readOnly() && !request.secondary(); }
         boolean activityProposalAllowed(AiDialogueModels.Proposal proposal) { return NpcActivityPrompt.allows(request, proposal); }
         List<AiDialogueModels.Proposal> admittedProposals(List<AiDialogueModels.Proposal> proposed) {
-            if (gameplayProposalsAllowed()) return List.copyOf(proposed);
-            return proposed.stream().filter(p -> !request.readOnly() && "story_event_hook".equals(p.type())
-                    || activityProposalAllowed(p) || QuestRosterPrompt.allows(request, p)).toList();
+            if (!gameplayProposalsAllowed()) return List.of();
+            return proposed.stream().filter(p -> {
+                String type = p.type().trim().toLowerCase(java.util.Locale.ROOT);
+                if (type.equals("npc_activity_request") || type.equals("mythictrpg:npc_activity_request"))
+                    return activityProposalAllowed(p);
+                if (type.equals("quest_roster_request") || type.equals("mythictrpg:quest_roster_request"))
+                    return QuestRosterPrompt.allows(request, p);
+                return true; // Structural/capability normalization and the game gateway remain mandatory.
+            }).toList();
         }
     }
 

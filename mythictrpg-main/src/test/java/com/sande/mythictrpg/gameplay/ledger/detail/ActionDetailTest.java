@@ -45,18 +45,59 @@ public final class ActionDetailTest {
         case MATURE_CROP_REMOVED,BLOCK_INTERACTION,BLOCK_BREAK_ATTEMPT,BLOCK_BREAK_RESULT,BLOCK_REMOVED->"BLOCK";
         case ENTITY_KILLED,ATTACK_ATTEMPT,ATTACK_RESULT,DAMAGE_APPLIED,PLAYER_DIED->"ENTITY";
         case ITEM_PICKED_UP->"ITEM";case QUEST_COMPLETED,QUEST_EVALUATED,QUEST_TRANSITION->"QUEST";
-        case BATTLE_RESULT->"BATTLE";case ADVANCEMENT_EARNED->"ADVANCEMENT";case OBSERVED_ACTIVITY_SUMMARY->"ACTIVITY";default->"LOCATION";};}
+        case BATTLE_RESULT,RAID_CHOICE->"BATTLE";case ADVANCEMENT_EARNED->"ADVANCEMENT";
+        case OBSERVED_ACTIVITY_SUMMARY,PLAYER_UNDERSTANDING_CONTROL,PLAYER_UNDERSTANDING_FEEDBACK,PLAYER_PURPOSE_EVIDENCE,PLAYER_ACTIVITY_FACT,PLAYER_SUPPORT_SIGNAL,PLAYER_CHARACTER_SIGNAL->"ACTIVITY";default->"LOCATION";};}
     private static ActionRecord.Draft draft(UUID actor,int i,ActionRecord.Type type,String outcome) {
         String kind=kind(type);String id=switch(kind){case "ENTITY"->"minecraft:zombie";case "BLOCK"->"minecraft:stone";case "ITEM"->"minecraft:diamond";case "QUEST"->"mythictrpg:test";default->"minecraft:overworld";};
+        Map<String,String> payload=Map.of("test","synthetic_not_live");
+        ActionRecord.Details details=null;
+        if(type==ActionRecord.Type.PLAYER_SUPPORT_SIGNAL) {
+            id=com.sande.mythictrpg.understanding.SupportSignal.SUBJECT;
+            payload=new com.sande.mythictrpg.understanding.SupportSignal(com.sande.mythictrpg.understanding.SupportSignal.Kind.DIALOGUE_SOCIAL,1,"admitted dialogue").payload();
+            details=new ActionRecord.Details(null,"AT_TRANSITION",null,Set.of(actor));
+        }
+        if(type==ActionRecord.Type.PLAYER_CHARACTER_SIGNAL) {
+            id=com.sande.mythictrpg.understanding.CharacterGoalSignal.SUBJECT;
+            payload=new com.sande.mythictrpg.understanding.CharacterGoalSignal(new com.sande.mythictrpg.understanding.PurposeEvidence.Goal(
+                    com.sande.mythictrpg.understanding.PurposeEvidence.Kind.MEET,"mythictrpg:demeter"),com.sande.mythictrpg.understanding.PurposeEvidence.Signal.DESIRE,UUID.randomUUID(),"데메테르를 만나고 싶다").payload();
+            details=new ActionRecord.Details(null,"AT_TRANSITION",null,Set.of(actor));
+        }
+        if(type==ActionRecord.Type.PLAYER_ACTIVITY_FACT) {
+            id=com.sande.mythictrpg.understanding.ActivityEvidence.SUBJECT;
+            payload=new com.sande.mythictrpg.understanding.ActivityEvidence(
+                    com.sande.mythictrpg.understanding.ActivityEvidence.Signal.PLACE_BLOCK,1,i,i).payload();
+            details=new ActionRecord.Details(null,"AT_TRANSITION",null,Set.of(actor));
+        }
+        if(type==ActionRecord.Type.PLAYER_UNDERSTANDING_CONTROL){id="mythictrpg:player_understanding";payload=Map.of("operation","START");}
+        if(type==ActionRecord.Type.PLAYER_UNDERSTANDING_FEEDBACK){id="mythictrpg:player_understanding";payload=Map.of("key","purpose","operation","DECLARE","text","만나고 싶어");}
+        if(type==ActionRecord.Type.RAID_CHOICE){
+            payload=new com.sande.mythictrpg.understanding.RaidChoiceEvidence(UUID.randomUUID(),
+                    com.sande.mythictrpg.understanding.RaidChoiceEvidence.Kind.MECHANIC,
+                    com.sande.mythictrpg.understanding.RaidChoiceEvidence.Result.CHOSEN,"phase","1",true).payload();
+            details=new ActionRecord.Details(null,"AT_TRANSITION",UUID.randomUUID(),Set.of(actor));
+        }
         return new ActionRecord.Draft(UUID.randomUUID(),SESSION,i,"mythictrpg:detail/"+type.name().toLowerCase(Locale.ROOT),1,actor,
                 new ActionRecord.Subject(kind,id,kind.equals("ENTITY")?UUID.randomUUID():null),1800000000000L+i,i,i,"minecraft:overworld",
-                new ActionRecord.Position(1,64,2),type,outcome,Map.of("test","synthetic_not_live"),"mythictrpg:admin_only_unprojected");
+                new ActionRecord.Position(1,64,2),type,outcome,payload,"mythictrpg:admin_only_unprojected",details);
     }
     private static String outcome(ActionRecord.Type t){return switch(t){case BLOCK_INTERACTION->"CANCELLED";case ATTACK_ATTEMPT,BLOCK_BREAK_ATTEMPT->"ATTEMPTED";case ATTACK_RESULT->"RETURNED_NO_CONFIRMED_HEALTH_LOSS";case BLOCK_BREAK_RESULT->"NOT_REMOVED";case TELEPORT_RESULT->"NO_POSITION_CHANGE";default->"COMPLETED";};}
     private static void wire()throws Exception {
         var json=new Gson();int i=0;
         try(var store=new ActionLedgerStore(root.resolve("all-types"),WORLD,new ActionLedgerStore.Limits(4000000,128000,5000))) {
-            for(var t:ActionRecord.Type.values())if(t.ordinal()>1){var d=draft(PLAYER,++i,t,outcome(t));check(json.fromJson(json.toJson(d),ActionRecord.Draft.class).equals(d),"wire "+t);check(store.append(d).sequence()==i,"durable "+t);}
+            ActionRecord purposeSource=null;
+            for(var t:ActionRecord.Type.values())if(t.ordinal()>1){
+                i++;ActionRecord.Draft d;
+                if(t==ActionRecord.Type.PLAYER_PURPOSE_EVIDENCE){
+                    var p=new com.sande.mythictrpg.understanding.PurposeEvidence(WORLD,PLAYER,purposeSource.event().occurrenceId(),purposeSource.sequence(),com.sande.mythictrpg.understanding.PurposeLedger.episodeOf(purposeSource),
+                            new com.sande.mythictrpg.understanding.PurposeEvidence.Goal(com.sande.mythictrpg.understanding.PurposeEvidence.Kind.MEET,"test:person"),
+                            com.sande.mythictrpg.understanding.PurposeEvidence.Origin.SELF_SPEECH,com.sande.mythictrpg.understanding.PurposeEvidence.Attribution.DIRECT_SELF,
+                            com.sande.mythictrpg.understanding.PurposeEvidence.Signal.DESIRE,com.sande.mythictrpg.understanding.PurposeEvidence.Context.DIRECTED,false,true,"만나고 싶어");
+                    d=com.sande.mythictrpg.understanding.PurposeLedger.annotate(purposeSource,p);
+                }else d=draft(PLAYER,i,t,outcome(t));
+                check(json.fromJson(json.toJson(d),ActionRecord.Draft.class).equals(d),"wire "+t);
+                var saved=store.append(d);check(saved.sequence()==i,"durable "+t);
+                if(t==ActionRecord.Type.PLAYER_UNDERSTANDING_FEEDBACK)purposeSource=saved;
+            }
         }
         try(var store=new ActionLedgerStore(root.resolve("all-types"),WORLD,new ActionLedgerStore.Limits(4000000,128000,5000))){check(store.size()==i,"all result variants survive restart");}
         fails(()->draft(PLAYER,1,ActionRecord.Type.ATTACK_ATTEMPT,"COMPLETED"),"attempt never success");
@@ -89,8 +130,10 @@ public final class ActionDetailTest {
         int each=120,total=players*each;long bytes;long[] submits=new long[total];int j=0;
         try(var raw=new AsyncActionLedger(root.resolve("fixture-"+players),WORLD,new ActionLedgerStore.Limits(16000000,256000,10000),2048)) {
             raw.ready().get();List<java.util.concurrent.CompletableFuture<?>> writes=new ArrayList<>();
+            // Derived annotations require an already durable source; wire()/PurposeStateTest cover that path.
+            var rawTypes=Arrays.stream(ActionRecord.Type.values()).filter(t->t.ordinal()>1&&t!=ActionRecord.Type.PLAYER_PURPOSE_EVIDENCE).toList();
             for(int p=0;p<players;p++){UUID actor=UUID.randomUUID();for(int k=0;k<each;k++){
-                var t=ActionRecord.Type.values()[2+k%(ActionRecord.Type.values().length-2)];var d=draft(actor,j+1,t,outcome(t));
+                var t=rawTypes.get(k%rawTypes.size());var d=draft(actor,j+1,t,outcome(t));
                 long at=System.nanoTime();writes.add(raw.submit(d).durable());submits[j++]=System.nanoTime()-at;
             }}
             for(var f:writes)f.get();var s=raw.status();check(s.rejected()==0&&s.indexedEvents()==total,"synthetic "+players+" players no missing/rejected");bytes=s.usedBytes();

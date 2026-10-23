@@ -1,0 +1,803 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.144'
+}
+
+version = mod_version
+
+tasks.register('localOllamaCompletionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.LocalOllamaCompletionTest'
+    args layout.buildDirectory.dir('completion-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'localOllamaCompletionTest' }
+
+tasks.register('supportGroundingEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportGroundingEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file('../검토결과/need-only-support-20261020/evidence/live-v2.json').absolutePath,
+            file(providers.gradleProperty('supportAuditOutput').get()).absolutePath, '--execute-loopback'
+}
+
+tasks.register('supportDialogueReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportDialogueReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('supportReplayInput').orElse('../검토결과/need-only-support-20261020/evidence/live-v2.json').get()).absolutePath,
+            file(providers.gradleProperty('supportReplayOutput').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('supportReplayTurns').orElse('12,13').get()
+}
+
+tasks.register('purposeReplyPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeReplyPlanTest'
+}
+tasks.named('check') { dependsOn 'purposeReplyPlanTest' }
+
+tasks.register('purposeReplyPlanEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeReplyPlanEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('purposePlanInput').orElse('../검토결과/purpose-state-20261019/live-final').get()).absolutePath,
+            file(providers.gradleProperty('purposePlanOutput').orElse('../검토결과/purpose-reply-20261019/run-v1').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('purposePlanMode').orElse('all').get()
+}
+
+tasks.register('purposeDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeDialogueTest'
+}
+tasks.named('check') { dependsOn 'purposeDialogueTest' }
+
+tasks.register('observedSupportMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.ObservedSupportMemoryTest'
+}
+tasks.named('check') { dependsOn 'observedSupportMemoryTest' }
+
+tasks.register('supportConsultationTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportConsultationTest'
+}
+tasks.named('check') { dependsOn 'supportConsultationTest' }
+
+tasks.register('dialogueSupportReadingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueSupportReadingTest'
+}
+tasks.named('check') { dependsOn 'dialogueSupportReadingTest' }
+
+tasks.register('supportProgressLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportProgressLiveEvaluation'
+    doFirst {
+        if (!providers.gradleProperty('dialogueLive').map { it == 'true' }.getOrElse(false)) throw new GradleException('Explicit live opt-in required')
+        args providers.gradleProperty('supportProgressOutput').get(), '--execute-loopback'
+        if (providers.gradleProperty('supportCandidates').getOrElse('false') == 'true') args '--candidate-support'
+    }
+}
+
+tasks.register('purposeStateLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeStateLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/purpose-state-20261019/live-v1').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('1').get()
+}
+
+// Candidate semantic frames remain evaluation-only until all quality gates pass.
+tasks.register('purposeDialogueReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeDialogueReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('purposeReplayInput').orElse('../검토결과/purpose-state-20261019/live-v2').get()).absolutePath,
+            file(providers.gradleProperty('purposeReplayOutput').orElse(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/purpose-state-20261019/replay-v3')).get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('purposeReplaySuite').orElse('v2').get()
+}
+
+tasks.withType(JavaExec).configureEach {
+    if (name in ['playerClaimBoundaryEvaluation', 'playerClaimGeneralRegression', 'roomPatchLiveEvaluation', 'roomPatchReplayEvaluation']) {
+        systemProperty 'mythai.eval.independentFrames', providers.gradleProperty('independentFrameEvaluation').orElse('false').get()
+    }
+}
+
+tasks.register('roomSpeakerAttributionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomSpeakerAttributionTest'
+}
+tasks.named('check') { dependsOn 'roomSpeakerAttributionTest' }
+
+tasks.register('playerIntentComparisonPreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentModelComparison'
+    args '--preflight'
+}
+tasks.register('playerIntentModelComparison', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentModelComparison'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback',
+            providers.gradleProperty('understandingModels').get(), providers.gradleProperty('understandingStage').orElse('extract').get(),
+            providers.gradleProperty('understandingGenerationModel').orElse('gemma4:12b').get(),
+            providers.gradleProperty('understandingPersona').orElse('baseline').get()
+    }
+}
+
+tasks.register('playerClaimBoundaryEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerClaimBoundaryEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback',
+            providers.gradleProperty('claimStage').orElse('audit').get(),
+            providers.gradleProperty('claimPersona').orElse('baseline').get()
+    }
+}
+
+tasks.register('roomPlayerClaimAuditTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPlayerClaimAuditTest'
+}
+tasks.named('check') { dependsOn 'roomPlayerClaimAuditTest' }
+tasks.register('roomPlayerClaimTransportTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPlayerClaimTransportTest'
+}
+tasks.named('check') { dependsOn 'roomPlayerClaimTransportTest' }
+
+tasks.register('roomSpeechSchemaTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomSpeechSchemaTest'
+}
+tasks.named('check') { dependsOn 'roomSpeechSchemaTest' }
+
+['roomClaimWitnessAuditTest': 'RoomClaimWitnessAuditTest', 'roomDialoguePatchTest': 'RoomDialoguePatchTest'].each { taskName, entry ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = 'com.sande.mythictrpg.ai.' + entry
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+
+tasks.register('playerClaimGeneralRegression', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingClaimsEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args projectDir.parentFile.absolutePath,
+            providers.gradleProperty('understandingEvaluationOutput').get() + '/general-regression', '--candidate-only'
+    }
+}
+
+tasks.register('roomPatchLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPatchLiveEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get() + '/patch-preservation', '--execute-loopback'
+    }
+}
+
+tasks.register('roomPatchReplayEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPatchReplayEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args projectDir.parentFile.absolutePath, providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback'
+    }
+}
+
+tasks.register('playerIntentPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentPlanTest'
+}
+tasks.named('check') { dependsOn 'playerIntentPlanTest' }
+tasks.register('playerIntentPlanEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerIntentPlanEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback', providers.gradleProperty('understandingRepeats').orElse('3').get()
+    }
+}
+
+tasks.register('playerUnderstandingPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerUnderstandingPromptTest'
+}
+tasks.named('check') { dependsOn 'playerUnderstandingPromptTest' }
+tasks.register('playerUnderstandingLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PlayerUnderstandingLiveEvaluation'
+    if (providers.gradleProperty('understandingEvaluationOutput').isPresent()) {
+        args providers.gradleProperty('understandingEvaluationOutput').get(), '--execute-loopback'
+    }
+}
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories { mavenCentral() }
+
+// Public integration contracts are provided by the current game module.
+// The AI engine is now built entirely from this module's versioned sources.
+def currentMythicTrpgJar = file(providers.gradleProperty('mythicTrpgApiJar')
+        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.36.jar').get())
+def patchedAiSourceDir = providers.provider { layout.projectDirectory.dir('src/engine/java') }
+sourceSets.main.java.srcDir(patchedAiSourceDir)
+
+// Fail closed if an archived checkout or combined game JAR is accidentally reintroduced.
+tasks.register('verifyEngineOwnership') {
+    doLast {
+        def forbidden = { File input ->
+            def path = input.canonicalPath.replace('\\', '/')
+            path.contains('/mine/mine/') || path.contains('/mine2/')
+        }
+        if (sourceSets.main.allSource.files.any(forbidden) || configurations.compileClasspath.files.any(forbidden)) {
+            throw new GradleException('AI build depends on an archived game checkout')
+        }
+        def required = ['AiTestDialogueAdapter', 'AiDialogueModels', 'LocalOllamaClient',
+                        'LocalLlmRequestScheduler', 'DialogueTurnDirective']
+        required.each { name ->
+            if (!file("src/engine/java/com/sande/mythictrpg/ai/${name}.java").isFile())
+                throw new GradleException("Missing owned engine source: ${name}")
+        }
+    }
+}
+tasks.named('compileJava') { dependsOn 'verifyEngineOwnership' }
+
+tasks.register('verifyEnginePackage') {
+    dependsOn 'jar'
+    doLast {
+        def classesIn = { File archive ->
+            def zip = new java.util.zip.ZipFile(archive)
+            try { return zip.entries().findAll { !it.directory && it.name.endsWith('.class') }
+                    .collect { it.name }.toSet() }
+            finally { zip.close() }
+        }
+        def actual = classesIn(tasks.named('jar').get().archiveFile.get().asFile)
+        def game = classesIn(currentMythicTrpgJar)
+        def duplicate = actual.intersect(game)
+        if (!duplicate.empty) throw new GradleException("Game classes embedded in AI JAR: ${duplicate}")
+        def compiled = sourceSets.main.output.classesDirs.files.collectMany { root ->
+            if (!root.isDirectory()) return []
+            fileTree(root).matching { include '**/*.class' }.files.collect {
+                root.toPath().relativize(it.toPath()).toString().replace('\\', '/')
+            }
+        }.toSet()
+        if (actual != compiled) throw new GradleException('AI JAR classes must come exclusively from owned source compilation')
+        logger.lifecycle("Owned AI package verified: ${actual.size()} classes, no game overlap")
+    }
+}
+tasks.named('check') { dependsOn 'verifyEnginePackage' }
+
+neoForge {
+    version = project.neo_version
+    runs {
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+dependencies {
+    // Public integration contracts are owned by the current upstream MythicTRPG project.
+    compileOnly files(currentMythicTrpgJar)
+    testImplementation files(currentMythicTrpgJar)
+    // Same pinned driver as the game-owned store, for isolated end-to-end projection fixtures only.
+    // Not embedded in the AI distribution and never a second production storage owner.
+    testRuntimeOnly('org.xerial:sqlite-jdbc:3.53.4.0') { transitive = false }
+}
+
+tasks.register('roomConversationEngineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomConversationEngineTest'
+    args layout.buildDirectory.dir('room-engine-test-artifacts').get().asFile.absolutePath
+}
+tasks.register('roomEmotionStateTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomEmotionStateTest'
+}
+tasks.named('check') { dependsOn 'roomEmotionStateTest' }
+tasks.named('check') { dependsOn 'roomConversationEngineTest' }
+
+tasks.register('roomPersonaPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPersonaPromptTest'
+}
+tasks.named('check') { dependsOn 'roomPersonaPromptTest' }
+
+tasks.register('minecraftCommonKnowledgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.MinecraftCommonKnowledgeTest'
+}
+tasks.named('check') { dependsOn 'minecraftCommonKnowledgeTest' }
+
+// Offline only: exports synthetic, frozen-context A/B inputs; never invokes Ollama or the server.
+tasks.register('exportNpcHarnessComparison', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.NpcHarnessComparisonExport'
+    args layout.buildDirectory.dir('npc-harness-comparison').get().asFile.absolutePath,
+            file('../server/config/mythictrpg/ai-dialogue.json').absolutePath
+}
+tasks.register('roomReactionPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomReactionPromptTest'
+}
+tasks.register('roomKnowledgeContextTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomKnowledgeContextTest'
+}
+tasks.named('check') { dependsOn 'roomKnowledgeContextTest', 'roomReactionPromptTest', 'storyPresentationProviderTest' }
+tasks.register('roomQuestKnowledgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomQuestKnowledgeTest'
+}
+tasks.named('check') { dependsOn 'roomQuestKnowledgeTest' }
+tasks.register('storyPresentationProviderTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.StoryPresentationProviderTest'
+}
+tasks.named('check') { dependsOn 'roomReactionPromptTest', 'storyPresentationProviderTest' }
+tasks.register('godRelationCapabilityBridgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.GodRelationCapabilityBridgeTest'
+}
+tasks.named('check') { dependsOn 'godRelationCapabilityBridgeTest' }
+tasks.register('raidCapabilityBridgeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RaidCapabilityBridgeTest'
+}
+tasks.named('check') { dependsOn 'raidCapabilityBridgeTest' }
+tasks.register('questRosterPromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.QuestRosterPromptTest'
+}
+tasks.named('check') { dependsOn 'questRosterPromptTest' }
+
+tasks.register('dialogueTestArgumentsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.DialogueTestArgumentsTest'
+}
+tasks.register('aiCallArgumentsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.AiCallArgumentsTest'
+}
+tasks.named('check') { dependsOn 'aiCallArgumentsTest' }
+tasks.register('aiCallRoutingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.AiCallRoutingTest'
+    args file('..').absolutePath,
+            layout.buildDirectory.dir('ai-call-routing-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'aiCallRoutingTest' }
+tasks.register('dialogueTestSpeakerPolicyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.DialogueTestSpeakerPolicyTest'
+}
+tasks.register('dialogueTestSessionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueTestSessionTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath,
+            layout.buildDirectory.dir('dialogue-session-test-artifacts').get().asFile.absolutePath
+}
+tasks.register('memoryAudienceTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryAudienceTest'
+    def artifacts = layout.buildDirectory.dir('memory-audience-test-artifacts')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'dialogueTestArgumentsTest', 'dialogueTestSpeakerPolicyTest', 'dialogueTestSessionTest', 'memoryAudienceTest' }
+
+tasks.register('dialogueMemoryRecordingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.DialogueMemoryRecordingTest'
+    args file('src/main/java/com/sande/mythai/response/memory/DialogueMemoryBridge.java').absolutePath,
+            layout.buildDirectory.dir('dialogue-memory-recording-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'dialogueMemoryRecordingTest' }
+
+tasks.register('memoryFoundationTest', JavaExec) {
+    dependsOn testClasses
+    // ModDev's provided Minecraft libraries (including Gson) are compile-only outside a game run.
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryJournalTest'
+    def artifacts = layout.buildDirectory.dir('memory-test-artifacts')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+
+tasks.register('questParticipationDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.QuestParticipationDialogueTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath,
+            layout.buildDirectory.dir('quest-participation-dialogue-tests').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'questParticipationDialogueTest' }
+tasks.register('socialReviewTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.SocialReviewTest'
+    args patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+    def artifacts = layout.buildDirectory.dir('social-review-test-artifacts')
+    workingDir artifacts
+    doFirst { artifacts.get().asFile.mkdirs() }
+}
+tasks.named('check') { dependsOn 'socialReviewTest' }
+
+tasks.register('memoryRecallTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryRecallTest'
+    def artifacts = layout.buildDirectory.dir('memory-test-artifacts')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+}
+
+tasks.register('recallStageTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecallStageTest'
+    def artifacts = layout.buildDirectory.dir('memory-test-artifacts')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+}
+
+// These offline suites use main() rather than a JUnit runner. `build` must run them too.
+tasks.named('test', Test).configure { failOnNoDiscoveredTests = false }
+tasks.named('compileTestJava', JavaCompile).configure { classpath += sourceSets.main.compileClasspath }
+tasks.named('check').configure { dependsOn('memoryFoundationTest', 'memoryRecallTest', 'recallStageTest') }
+tasks.register('experienceDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.experiencecontract.ExperienceDialogueTest'
+    args layout.buildDirectory.dir('experience-dialogue-test-artifacts').get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/AiTestDialogueAdapter.java').asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('experienceDialogueTest') }
+tasks.register('rumorDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RumorDialogueTest'
+}
+tasks.named('check').configure { dependsOn('rumorDialogueTest') }
+
+tasks.register('derivedMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.DerivedMemoryTest'
+    args layout.buildDirectory.dir('derived-memory-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('derivedMemoryTest') }
+
+tasks.register('memoryIndexRuntimeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryIndexRuntimeTest'
+    args layout.buildDirectory.dir('memory-index-test-artifacts').get().asFile.absolutePath,
+            patchedAiSourceDir.get().file('com/sande/mythictrpg/ai/LocalLlmRequestScheduler.java').asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('memoryIndexRuntimeTest') }
+
+// Requires fresh explicit permission; never a dependency of build, check or a server task.
+tasks.register('memoryModelBenchmark', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryModelBenchmark'
+    doFirst {
+        if (project.findProperty('memoryLiveApproved') != 'true')
+            throw new GradleException('Live synthetic model calls require explicit user approval and -PmemoryLiveApproved=true')
+        args project.findProperty('memoryBenchmarkMode') ?: 'embedding-cpu',
+                layout.buildDirectory.dir('memory-model-benchmark').get().asFile.absolutePath
+    }
+}
+
+tasks.register('naturalMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.NaturalMemoryTest'
+    args layout.buildDirectory.dir('natural-memory-test-artifacts').get().asFile.absolutePath
+}
+tasks.named('check').configure { dependsOn('naturalMemoryTest') }
+
+// Opt-in only: never attached to build/check; no server boot and no live-world mutations.
+tasks.register('memoryRecallReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.MemoryRecallReplay'
+    doFirst {
+        if (!project.hasProperty('recallLog')) throw new GradleException('Pass -PrecallLog=<captured log path>')
+        args file(project.property('recallLog')).absolutePath,
+                file('../server/config/mythictrpg/ai-dialogue.json').absolutePath,
+                layout.buildDirectory.dir('memory-recall-replay').get().asFile.absolutePath
+    }
+}
+
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version: neo_version,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_license: mod_license,
+            mod_version: mod_version
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+// A namespaced test template lets the combined-module test run independently of game-only fixtures.
+// Reuse Minecraft's existing empty test structure from the build's local runtime resources.
+tasks.named('processResources', ProcessResources) {
+    dependsOn 'createMinecraftArtifacts'
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_native_dialogue/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_room_full_path/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_recording_policy/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_dialogue_guard/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
+}
+neoForge.ideSyncTask generateModMetadata
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes('Implementation-Title': mod_name,
+                'Implementation-Version': mod_version,
+                'MythAI-Engine': 'source-owned-ollama-pipeline')
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.register('homeVisitTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.HomeVisitTest'
+}
+tasks.named('check') { dependsOn 'homeVisitTest' }
+
+tasks.register('godActivityAiTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.GodActivityAiTest'
+    args layout.buildDirectory.dir('god-activity-ai-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'godActivityAiTest' }
+
+tasks.register('recordedProjectionRuntimeTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionRuntimeTest'
+}
+tasks.named('check') { dependsOn 'recordedProjectionRuntimeTest' }
+
+tasks.register('recordedProjectionExtractorTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionExtractorTest'
+}
+tasks.register('recordedProjectionPipelineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedProjectionPipelineTest'
+    def artifacts = layout.buildDirectory.dir('recorded-projection-pipeline-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedProjectionExtractorTest', 'recordedProjectionPipelineTest' }
+
+tasks.register('recordedEmbeddingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedEmbeddingTest'
+}
+tasks.named('check') { dependsOn 'recordedEmbeddingTest' }
+
+tasks.register('recordedEmbeddingPipelineTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedEmbeddingPipelineTest'
+    def artifacts = layout.buildDirectory.dir('recorded-embedding-pipeline-test')
+    doFirst { artifacts.get().asFile.mkdirs() }
+    args artifacts.get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'recordedEmbeddingPipelineTest' }
+
+tasks.register('recordedObservationShadowTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedObservationShadowTest'
+}
+tasks.named('check') { dependsOn 'recordedObservationShadowTest' }
+
+tasks.register('recordedRecallQueryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedRecallQueryTest'
+}
+tasks.named('check') { dependsOn 'recordedRecallQueryTest' }
+
+tasks.register('roomRecallPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RoomRecallPlanTest'
+}
+tasks.named('check') { dependsOn 'roomRecallPlanTest' }
+
+tasks.register('roomRecallPlannerTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RoomRecallPlannerTest'
+}
+tasks.named('check') { dependsOn 'roomRecallPlannerTest' }
+
+// Explicit opt-in only: real Ollama calls against synthetic fixtures, never part of check.
+tasks.register('dialogueGroundingAuditReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingAuditReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file('../검토결과/dialogue-system-20261007/live').absolutePath,
+            file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/dialogue-system-20261007/audit-v2').get()).absolutePath,
+            '--execute-loopback'
+}
+tasks.register('dialogueGroundingLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueGroundingLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/dialogue-system-20261007/live').get()).absolutePath,
+            '--execute-loopback'
+}
+
+['turnInterpretationTest': 'TurnInterpretationTest',
+ 'roomDialogueGroundingTest': 'RoomDialogueGroundingTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythictrpg.ai.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+
+tasks.register('recordedRumorShadowTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.RecordedRumorShadowTest'
+}
+tasks.named('check') { dependsOn 'recordedRumorShadowTest' }
+
+// Paired compact/verbose prompt evaluation; opt-in live calls are never part of check.
+tasks.register('compactDialoguePreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.CompactDialogueLiveEvaluation'
+    args '--preflight'
+}
+tasks.register('compactDialogueLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.CompactDialogueLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput')
+            .orElse('../검토결과/compact-dialogue-20261007/paired').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('3').get()
+}
+
+tasks.register('roomPerspectivePromptTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.RoomPerspectivePromptTest'
+}
+tasks.named('check') { dependsOn 'roomPerspectivePromptTest' }
+
+tasks.register('perspectiveDialoguePreflight', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PerspectiveDialogueLiveEvaluation'
+    args '--preflight'
+}
+
+// Explicit opt-in: same local model, synthetic evidence, no Minecraft state or deployment.
+tasks.register('perspectiveDialogueLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PerspectiveDialogueLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput')
+            .orElse('../검토결과/npc-perspective-20261007/paired').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('3').get(), '--with-rollout'
+}
+
+['recordedRetrievalCoordinatorTest': 'RecordedRetrievalCoordinatorTest',
+ 'roomEvidenceRefreshTest': 'RoomEvidenceRefreshTest',
+ 'recordedNativeSpeechPromptTest': 'RecordedNativeSpeechPromptTest',
+ 'recordedNativeInterpretationPromptTest': 'RecordedNativeInterpretationPromptTest',
+ 'roomHistoryEvidencePreparationTest': 'RoomHistoryEvidencePreparationTest',
+ 'recordedMemoryPromptTest': 'RecordedMemoryPromptTest',
+ 'recordedQueryEmbeddingTest': 'RecordedQueryEmbeddingTest',
+ 'recordedRetrievalShadowTest': 'RecordedRetrievalShadowTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythai.response.memory.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}

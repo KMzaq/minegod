@@ -1,0 +1,74 @@
+{
+  "record_key": "RPG-S01-067",
+  "name": "페르세우스",
+  "definition_id": "GR021-067-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_unassigned_perseus",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-067/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-067/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P04_stage2.json#/records/22",
+    "accepted_episodes": [
+      "EP007A-RPG-S01-067"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "상급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "빌리지 않은 다음 길",
+  "site": "기존 폐허의 실제 통로 폭2~3·길이18~30블록. PR-RETURN-01 빌린 물품 반환점, PR-COVER-A/B 기존 벽 엄폐2, PR-EXIT-01 출구. 실제 일반 적 최대2개체를 기록.",
+  "objectives": [
+    "출발 전에 빌린 물건과 자기 장비를 실제 구분하고 현재 손상된 끈이 있으면 소유자 허락을 받아 다시 묶거나 보수한다. 교체가 실제 필요한 끈은 허락된 자기 string1을 사용하고 소비/손상을 남기며 손상없으면 보수 해당없음으로 기록한다. 빌린 물건은 물품UUID별 원소유자에게 실제 반환하고 확인한다. 빌린 물건없음은 반환단계 해당없음, 임의 신물 지급0. 자기 보유 장비와 통로를 직접 확인해 우회·교전·철수 선택. 출발 전 끈 보수는 탐사 뒤의 선택 장비보수 보상과 별도다.",
+    "우회: 두 엄폐 사이 실제 이동 후 출구에 도달, 적을 무시한 자동완료0. 교전: 실제 출구 압박 개체를 제압해 출구를 직접 통과. 철수: 같은 입구 안전칸으로 실제 돌아온 뒤 남은 적/미탐색 구간을 보고. 우회/교전 모두 정한 목표지점 확인 후 입구까지 실제 귀환해야 완료.",
+    "페르세우스와 실제 실행한 전술을 대조하고 탐사에서 사용한 자기 장비1의 손상·결속을 확인. 원래 유적물자는 실제 존재/소유가능/참가자 합의가 있는 몫만 별도 분배하며 보상재고를 대체하지 않는다."
+  ],
+  "branches": "적 없는 통로는 탐사/자기판단으로 끝나며 적을 추가생성하지 않는다. 철수/목표미도달/미귀환은 부분 관측만 보존하며 보수권0. 자기장비로 정한 목표에 실제 도달하고 귀환한 경우만 탐사완료와 보수권. 메두사·신화 반사방패·아테나장비 필수0.",
+  "reward": {
+    "kind": "자기 장비 현장 보수",
+    "definition": "GR021-PR67-MEND",
+    "quantity": "실제 사용한 자기 minecraft:shield 또는 minecraft:leather_boots 1개 내구최대24 복구1회 수락한 대상의 끈/결속을 실제 풀어 상태를 확인하고 다시 묶어 당김을 시험한 보수만 확정하며, 같은 UUID의 손상값을 최대24만 줄인다. 부품/장비 새것 생성0.",
+    "stock": "페르세우스 개인 보수함 minecraft:oak_planks 10개·minecraft:leather 10개. 대상종류에 맞는 재료1 예약/소비, 대상UUID 선택고정. 빌린물건은 대상불가.",
+    "condition": "목표 실제도달 후 귀환+실제 사용한 자기장비 손상확인. 철수/미도달은 권리0. 완전/무한내구 대상불가.",
+    "budget": "B1, 기존장비 소규모 수리"
+  },
+  "expected_minutes": [
+    5,
+    9
+  ],
+  "acceptance_tests": [
+    "철수=적잔존 상태 유지",
+    "빌린 방패 보수보상 전환0",
+    "2인/5인 우회와 공로분리"
+  ],
+  "special": "일반 적 원래 HP/AI 유지. 검토 예시 좀비2×20HP=40HP·1타3HP, 엄폐에서 한 마리씩 유인하거나 우회 가능. 단순 처치수 목표가 아니라 실제 출구 통과/철수 선택이 판정이다. 공격력 정규화·보스·신규스킬0. 상대 몬스터가 다르면 그 실제 위험을 출발 전에 고지하고 강제 미확인 안전보장을 하지 않는다.",
+  "reward_status_source": "APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 페르세우스가 실제 실행한 전술의 장단점을 자신의 판단으로 설명한다. 길을 열었다면 그 통로가 남고 철수했다면 적대 위험이 남으며 허위 성공은 없다.",
+  "source_outcome": "빌리지 않은 다음 길에서 실제 선택한 행동과 결과: 페르세우스가 실제 실행한 전술의 장단점을 자신의 판단으로 설명한다. 길을 열었다면 그 통로가 남고 철수했다면 적대 위험이 남으며 허위 성공은 없다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR021-067-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "페르세우스와 플레이어 각각이 직접 관측하거나 허락된 보고를 실제 받은 범위만. 참가명부만으로 지식이 생기지 않으며 실제 청취/목격/열람 UUID별로 기록한다. 외부 상대는 counterpart_delivery의 실제 수신완료 내용만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

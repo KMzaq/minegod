@@ -262,7 +262,8 @@ public final class NpcActivityWork {
             for (Store store : stores) {
                 if (worldOnly && store.pos == null) continue;
                 if (!store.access()) return ItemStack.EMPTY;
-                for (ItemStack stack : store.after) if (!stack.isEmpty() && eligible.test(stack)) {
+                for (ItemStack stack : store.after) if (!stack.isEmpty() && eligible.test(stack)
+                        && com.sande.mythictrpg.ai.action.protection.AiProtectedItems.rejection(level,stack).isEmpty()) {
                     ItemStack found = stack.copyWithCount(1); stack.shrink(1); return found;
                 }
             }

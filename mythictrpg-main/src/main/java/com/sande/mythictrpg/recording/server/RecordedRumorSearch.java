@@ -27,7 +27,7 @@ final class RecordedRumorSearch {
     private final Connection db;private final UUID world;private final RecordedRoomSearch.Scope scope;private final long watermark,deadline;
     private int readBytes;
     private RecordedRumorSearch(Connection db,UUID world,RecordedRoomSearch.Scope scope,long watermark,long deadline){this.db=db;this.world=world;this.scope=scope;this.watermark=watermark;this.deadline=deadline;}
-    static boolean supported(RecordedRoomSearch.Scope scope){return !scope.publicRoom()&&scope.memoryMode().equals("RUMOR_TEST")
+    static boolean supported(RecordedRoomSearch.Scope scope){return !scope.publicRoom()&&Set.of("PERSONAL","RUMOR_TEST").contains(scope.memoryMode())
             &&scope.audience().size()>=2&&scope.audience().size()<=17&&scope.audience().contains(new ActorRef(ActorKind.GOD,scope.speaker()))
             &&scope.audience().stream().filter(a->a.kind()==ActorKind.GOD).count()==1;}
     static Result query(Connection db,UUID world,RecordedRoomSearch.Scope scope,Query query,Budget budget,long watermark,Position position)throws Exception {
@@ -118,7 +118,7 @@ final class RecordedRumorSearch {
         if(!object.keySet().equals(Set.of("memoryMode","rootId","subjectPlayerId","godId","claimRevision","claim","epithet","acquisition","assessmentStatus")))return Optional.empty();
         UUID subject=canonical(object.get("subjectPlayerId").getAsString());String claim=object.get("claim").getAsString(),epithet=object.get("epithet").getAsString();
         if(!scope.audience().contains(new ActorRef(ActorKind.PLAYER,subject.toString()))||claim.isBlank()||claim.length()>300||epithet.length()>60)return Optional.empty();
-        var canonicalProjection=new TreeMap<String,Object>();canonicalProjection.put("memoryMode","RUMOR_TEST");canonicalProjection.put("rootId",root);
+        var canonicalProjection=new TreeMap<String,Object>();canonicalProjection.put("memoryMode",scope.memoryMode());canonicalProjection.put("rootId",root);
         canonicalProjection.put("subjectPlayerId",subject);canonicalProjection.put("godId",scope.speaker());canonicalProjection.put("claimRevision",source.revision());
         canonicalProjection.put("claim",claim);canonicalProjection.put("epithet",epithet);canonicalProjection.put("acquisition","RUMOR_RECEIVED");canonicalProjection.put("assessmentStatus","CURRENT_GAME_LOOKUP_REQUIRED");
         if(!JSON.toJson(canonicalProjection).equals(projection))return Optional.empty();

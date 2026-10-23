@@ -1,0 +1,98 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S08-024",
+  "name": "페르구스",
+  "definition_id": "ACTIVATION-RPG-S08-024",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 숲길 안전점 A에서 그 길로 이어진 강변 기존 거점 B까지 도보 실제 이동1회. 두 장소의 연결통로를 실제로 지난 receipt가 필요하며 왕복은 추가 요구하지 않는다.",
+      "completion_count": 1,
+      "scope": "같은 world_uuid에서 실제 player_uuid 한 명이 선택한 AND/OR 조건 전체를 달성하면 세계영구; 여러 사람 부분이력 합산0",
+      "initial_state": "새 세계 WORLD_RELEASE=false. 아래 실제 유효 달성 전에는 계약 작성·후보 등록만으로 true가 되지 않는다. 이미 유효하게 배치/접촉된 기존 본체와 그 세계 원장은 재잠금하지 않는다.",
+      "transition": "FALSE → 같은 플레이어의 실제 완료 증거 검증 → world_uuid+record_key 최초 CAS → TRUE 영구. 해금 달성자의 개인 소유/관계/보상/수신을 자동 생성하지 않는다.",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "evidence": "실제 source event ID, world/player UUID, 행동별 object/item/route UUID, 순서있는 실제 위치 및 인수/소비 전후를 같은 시도로 결속. 각 행동의 정수량은 rule을 따른다. 이미 있는 동일 receipt는 증거로 참조할 수 있으나 횟수 누적·물품/권리/보상 재생성0. 다른 인물의 조건에도 사실상 맞는 사건이면 인물별 세계 판정에 참조 가능하며 같은 사건을 새 행동으로 복제하지 않는다.",
+      "source_history_is_not_current_rule": true,
+      "current_adoption_note": "원문 미채택 후보를 현재 일반설계로 선택·수량화했다. 원문 status/null/후보 문자열은 수정하지 않으며 과거부터 채택됐다고 소급하지 않는다.",
+      "resource_refs": []
+    },
+    "first_encounter": {
+      "current_predicate": "현재 공개 부지의 안전점에 생존·온라인 상태로 실제 도달. 별도 아이템·기록·행동·수락·과거 개인 이력 조건0.",
+      "current_location": "조우 주체 플레이어가 실제 숲 폐허·저택·감시탑의 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+      "source_location_quote": "조우 주체 플레이어가 실제 숲 폐허·저택·감시탑의 공용 공간에 해당하는 실제 접근 가능한 지형에 도달해 있어야 한다. 현장의 통행·위험·배치할 공간의 적합성을 확인한다. 선호 바이옴과 특정 구조물을 모두 강요하지 않으며 실제 적합 구조물 또는 기존 안전 자연 부지를 따른다.",
+      "site_anchor": "실제 숲 폐허·저택·감시탑의 공용 공간; 인물 전용 건축 없음",
+      "world_dimension": "minecraft:overworld",
+      "location_exact_ref": "스토리/인물별연결/RPG-S08-024.json#/connection_manuscript/encounter_generation/current_location_conditions",
+      "site_source_ref": "스토리/인물별연결/RPG-S08-024.json#/connection_manuscript/encounter_generation",
+      "preparation_source_ref": "스토리/인물별연결/RPG-S08-024.json#/connection_manuscript/source_reuse/original_placement_reference/meeting_route/value",
+      "preparation_label": "공개 방문",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "기존 무작위 공용 풀. 확률/주기/NONE/actor가중/적격주체선정/쿨다운/CAS는 공통계약 pool 및 전역 참조를 그대로 사용. 이 파일은 전용 수치·새 풀·추가 추첨을 만들지 않는다.",
+      "subject": "현재 세계 가용성과 위 개인 조건을 갖춘 실제 온라인 생존 플레이어1명. 해금자일 필요 없고 0명이면 발생0. 여러 명은 기존 전역 선택계약.",
+      "time": "별도 시간제한 없음. 실제 현재 부지의 출입·위험·세계/봉인 가용성은 항상 검사. 세계해금 행동의 시간조건은 그 행동에만 적용하고 첫조우에 이식하지 않는다.",
+      "no_preappearance_actor_response": true,
+      "existing_body_contact": "이미 등장한 동일 본체의 일반 인사·재대화·친구 합류에는 위 최초 후보 준비물·관찰/이동 과제·새 추첨을 다시 요구하지 않는다. 현재 접근·청중·허용 접촉모드만 확인하며 실제 서비스/거래/수락은 기존 활동의 별도 조건을 따른다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "정체·현재 접근·발화/비언어·MAIN/보상 범위는 source_refs의 현재 페르소나와 기존 개별기획 그대로. 후속 활동 소품·소개자·장면 수행/응답은 최초 배치 전제로 끌어올리지 않는다. 원문 옛 사망·기적은 지금의 부활·새 본체를 허가하지 않는다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "knowledge_boundary": "세계 해금 receipt는 세계 가용성을 위한 기술 원장일 뿐 NPC의 자동 지식·개인 관계·공적 인정이 아니다. 누가 했는지는 실제 목격 또는 허락된 전달과 해당 청중의 실제 수신이 있을 때만 안다. 해금자=조우주체라고 대사에서 추정하지 않는다.",
+    "new_implementation": "실제 행동/수량/물품·경로·관찰 receipt와 원장 연결은 신규 구현 요구이며 실제 게임/API/LLM/영상/5인 시험은 수행하지 않았다. 일반 기획 채택과 런타임 등록·실행 완료는 별개다."
+  },
+  "source_history_preserved": {
+    "exact_value": "누구 한 명이 실제 숲길과 강변의 기존 거점을 잇는 이동을 완료한 이력. 정치적 충성이나 중재 성공은 해금 판정이 아니다.",
+    "exact_ref": "스토리/인물별연결/RPG-S08-024.json#/connection_manuscript/world_unlock/proposed_observable_history",
+    "interpretation": "원문 역사 후보의 보존 인용. 실제 현행 실행은 adopted_activation만 읽는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S08-024.json",
+      "record_key": "RPG-S08-024",
+      "pointers": [
+        "/connection_manuscript/world_unlock/proposed_observable_history",
+        "/connection_manuscript/encounter_generation",
+        "/connection_manuscript/current_basic_persona",
+        "/connection_manuscript/main_and_reward_boundary",
+        "/connection_manuscript/source_reuse/original_placement_reference/meeting_route/value"
+      ],
+      "sha256": "1c97894629792457bbaa41389789100c0c826a3628c37b04be4910d33947262a"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S08-024.json",
+      "record_key": "RPG-S08-024",
+      "pointers": [
+        "/current_identity",
+        "/production_scope",
+        "/current_access",
+        "/original_profile",
+        "/connection_persona"
+      ],
+      "sha256": "9aa63f9f7f2e25c64d9adb340487548357caf34f8b878563a8cef4c2d506c5e4"
+    },
+    {
+      "logical_file": "퀘스트/인물별범위/RPG-S08-024.json",
+      "record_key": "RPG-S08-024",
+      "pointers": [
+        "/contract"
+      ],
+      "sha256": "d2ba108df70ff26581f2a5bc7f87ed4053a9f45a268beea9fbfb1f5b9502b6c4"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-040/05_RPG-S08-024_페르구스_완결기획.json",
+      "record_key": "RPG-S08-024",
+      "pointers": [
+        "/identity_guard",
+        "/episodes",
+        "/services"
+      ],
+      "sha256": "03a1030c8808176fa8b47b9d5ccc1dc244648820fb627d9596801af157b75c5a"
+    }
+  ],
+  "source_null_boundary": "원문 connection_persona 또는 역사 runtime 필드가 null이면 그대로 보존한다. 현재 정체·원프로필과 실제 연결 원고의 current_basic_persona/basic_persona, 이 별도 adopted_activation을 결속하며 null을 무조건 허용이나 과거 채택으로 바꾸지 않는다.",
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

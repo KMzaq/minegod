@@ -1,0 +1,92 @@
+# 빈 잔의 매듭
+
+현행 저술 기획. 실제 서버 등록·구현·플레이 검증 자료가 아닙니다.
+
+- 콘텐츠 관리 ID: OLY-DIO-A01
+- 제공자 관리 ID: RPG-S01-014
+- 정의 ID: mythictrpg:greek_olympus_dionysus_empty_cup_music
+- 이름: 빈 잔의 매듭
+- 실행 검증 완료: 아니오
+- 공통 설계 기준: ../../공통설계/전역기준.json
+
+## 상세 설계
+- content ref: mythictrpg:greek_olympus_dionysus_empty_cup_music
+- management key: OLY-DIO-A01
+- definition ownership: 기존 동일 콘텐츠 정의의 운영값 완결. 새 장신구/새 획득권 아님.
+- 이름: 빈 잔의 매듭
+- equipment grade: 고급
+- provider tier: 중급
+- category exception: 디오니소스에게 허용한 전용 장신구 1종이다. 다른 중급 신에게 장신구 제공 자격을 자동으로 확대하지 않는다.
+- base item: minecraft:rabbit_foot
+- model: 작은 빈 잔을 얇은 포도색 끈으로 묶은 장신구. 고유 모델 제작이 필요하다. 기존 장비 속성은 추가하지 않는다.
+- slots: 1
+- total accessory slots: 2
+- fixedPower: 0
+- max mana bonus: 0
+- durability: 신이 준 장비의 기본 무한내구를 적용한다. 분실 불가라는 뜻은 아니며, 복구는 같은 영구 권리의 규칙만 따른다.
+
+### combat effects
+
+### activation
+- command: /발동
+- toggle: 실제로 착용한 발동 후보가 하나이면 /발동으로 ON/OFF 한다. 후보가 둘 이상이면 /발동 1 또는 /발동 2로 실제 슬롯을 지정해 전환한다. 같은 권리를 두 칸에 착용할 수 없고 가방에 보유한 것만으로는 발동할 수 없다.
+- mana cost: 0
+- combat cooldown ticks: 0
+- spam: ON 요청은 최소 20tick 간격으로 받으며 OFF는 즉시 허용한다. 이는 전투 쿨이 아닌 명령 제한이다. 장착 교체나 재로그인으로 ON 난사 방지 구간이 초기화되지 않는다.
+- state: 착용 해제, 사망, 로그아웃, 차원 변경, 권리 대표 실물 변경 때 즉시 OFF 한다. 재착용·복구·재접속 뒤 자동 재생하지 않는다.
+- 실패 처리: 권리·실물·음원이 준비되지 않았으면 재생하지 않고 현재 원인을 안내한다. 이 실패로 보상이나 MAIN 상태를 바꾸지 않는다.
+
+### audio
+- asset key: mythictrpg:music.dionysus_feast
+- resource file: assets/mythictrpg/sounds/music/dionysus_feast.ogg
+- provided by: 사용자가 선택하고 준비하는 음원이다. 이 패킷은 음원을 임의로 선택·복제·배포하지 않는다.
+- asset contract: Ogg Vorbis 파일을 사용한다. 위치 음원 처리를 위해 모노를 권장하며 실제 파일 길이는 로딩할 때 읽는다. 파일이 없으면 NO_AUDIO와 무음 상태를 안내한다. 사용자가 준비한 곡 끝에서 0.5초 페이드아웃한 뒤, 0.5초 페이드인으로 처음부터 반복한다.
+- radius blocks: 24
+- volume: 거리 0~4블록은 클라이언트 장신구 볼륨 상한의 0.4, 4~24블록은 선형 감쇠, 24블록 초과는 0이다. 벽 차폐를 새로 만들어 적용하지 않으며 같은 차원에서만 들린다. 음원 위치는 착용자의 현재 위치로 5tick마다 갱신한다.
+- listener control: 각 청취자는 장신구 음악 ON/OFF와 0~100% 볼륨을 개인 설정한다. 기본은 ON·50%이며 Minecraft 음악 및 전체 음소거를 항상 존중한다. /음악 off로 즉시 음소거할 수 있다. 들었다는 사실이 동의·관계·버프를 뜻하지는 않는다.
+- multiple: 청취자마다 한 곡만 재생한다. 현재 유효 음원을 유지하되, 다른 음원이 4블록 이상 더 가까운 상태가 2초 지속되거나 현재 음원이 범위 밖 또는 종료 상태이면 교체한다. 같은 거리이면 owner UUID 사전순으로 고른다. 전환은 0.5초 교차 페이드이며 두 음원의 피크 합산 상한은 0.4다.
+- raid warning: 기존 레이드 경고 채널이 우선이다. 경고 중과 종료 뒤 2초 동안 음악 볼륨을 원래의 20%로 낮췄다가 복원한다. 음악이 경고음이나 일반 전투음을 중단하거나 변조하지 않는다.
+- safety: 정화·회복·피해 지연·피해 가산·광란·포션 연장·공격 전환·쿨 환급·숨은 힘 탐지·NPC 소환 효과는 없다.
+- ledger: b 최초 수령의 UUID를 영구 유지한다. 신규 획득 1회와 복구 횟수는 별개다. 같은 권리에서 나온 추가 실물을 두 칸에 동시에 착용하거나 음악·점수를 중복 적용할 수 없다. 적법한 별도 권리의 같은 종류 장신구 2개를 일반적으로 허용하는 공통 규칙을 이 1회 권리로 우회하지 않는다.
+- implementation: 현재 MUSIC enum이 지원된다고 주장하지 않는다. 실제 장신구 권리·착용 event, 이동 음원, 청취자 설정, 경고 시 감쇠, 재연결 정리 기능의 신규 구현과 실기 검증이 필요하다.
+
+### current recovery service
+- 정의 ID: mythictrpg:p0m1_dionysus_music_right_recovery
+- title: 같은 매듭의 분실 복구
+- 종류: permanent_right_recovery
+- entry: 유효최초b실지급receipt와현재 기존 권리 소유자 UUID 확인. 분실주장만으로최초 권리생성0.
+- steps: 기존entitlement_uuid/소유자/최초receipt·현재유효실물/미완delivery journal대조→기존실물이인벤토리/접근가능보관함에있으면위치안내만→실물분실이확인되면같은entitlement_uuid의복구transaction과새physical_instance_uuid1을기록→현재유효대표실물generation만착용가능→실지급결과확인.
+- quantity: 기존영구 권리1개의실물복구; 신규 획득증분0
+- time: 기한 없음; 동시요청은같은권리잠금,연속요청안내갱신60초;실패후재시도는같은transaction을대조후계속
+- cost: 추가포션/재료/마나0. 기존 성공권재소비0.
+- completion: 같은entitlement_uuid 유지·신규 획득횟수1. 복구 뒤원품이발견되면구generation은연출/착용불가표시하고같은권리로회수/보관만. 두칸중복/추가 점수/MAIN/주시/가호0.
+- 실패 처리: 최초 지급이불명확하면먼저최초journal대조. 최초 미수령을분실 복구로분류하지않는다. 가방부족은복구delivery_pending보존. 타인양도/판매품이있다는사실만으로권리를이전하지않으며권리소유확인중인실물은새사용자를활성화하지않는다.
+- transfer boundary: 기존승인은판매/양도권리이전의승인이아니다. 이복구기능은기존 소유자권리에만작용한다. 제삼자소유권주장/거래분쟁은서버의별도기존거래정책으로처리하고강제회수/추가 권리를발명하지않는다.
+
+### recovery
+- new acquisition: 개인 신규 획득은 기존 b 보상 개인 1회만 유지한다. 서비스 성공권·b 선택·최초 실지급 조건은 그대로다.
+- permanent right: 정당하게 최초 획득한 기존 소유자의 획득권 UUID를 영구 보존한다.
+- loss recovery: 분실 시 기존 소유자의 같은 획득권 UUID로 장신구를 재지급한다. 새 UUID·새 보상권·새 독립 획득으로 만들지 않는다.
+- no progression change: 복구는 MAIN 제시·수락·진행·완료를 추가하거나 복제하지 않으며 주시·가호·관계 변화·두 번째 착용권을 부여하지 않는다. 기존 서비스 의뢰를 다시 완료한 것으로 기록하지 않는다.
+- slot integrity: 복구품과 뒤늦게 발견한 원품 등 실물이 여러 개여도 모두 같은 권리에 대응한다. 같은 획득권 UUID를 자유 2칸에 동시에 장착할 수 없다. 추가 실물로 음악 효과나 획득 점수를 중복 계산하지 않는다.
+- no fabricated right: 분실 주장만으로 최초 획득 전인 사람에게 권리를 생성하지 않는다. 기존 정당한 획득권과 소유자를 확인할 수 없는 경우 지급을 보류하고 기록을 확인한다.
+- transfer boundary: 이 승인은 판매·양도에 따른 새 사람의 권리 취득·이전을 승인하지 않는다. 거래 허용·금지·회수·구매자 처리 정책을 새로 확정하지 않으며 복구는 확인된 기존 권리 소유자 기준으로만 설계한다.
+
+### stock table
+- provider: 디오니소스의 빈 잔의 매듭 증여재고
+- initial units: 10
+- allocation: 개인 신규b 첫5+후발5. 다른 MAIN 소유자 여부와 독립
+- reservation: b 실물 미획득 수락자의 서비스에 b 선택이 가능한 경우 아직미사용 성공권별1개 예약. a로 확정하면 그 b 예약해제
+- deduct: b 최초 실지급 journal과 영구 권리확정에서만
+- refill: NPC 자기 소유의 실제 빈그릇5+실5가 확보된 때 본체가 안전한 자리에서 각100tick 매듭공정으로 동일품5개만 보충. 초기 별도 제공 재료 그릇10+실10으로 최대2배치. 이후 실제 적법재료가 다시 생길 때만 준비하며 시간경과/납품포션에서 자동 변환0. b재고0이면a만가능한의뢰 또는수락대기
+- recovery: 분실 복구는 신규 재고소비/새획득이 아니라 같은영구 권리의실물표현 재발급. 잠금·대표generation으로중복 착용방지
+- budget: B2 서비스 보상1권. b 전투력0·마나0·전투 효과0, a 정상 대화1회. MAIN 주시는 별도실제 결과 권리.
+- acquisition contract ref: ../../인물별완결기획/P0_MAIN-001/08_RPG-S01-014_디오니소스_완결기획.json#/new_execution_decisions/services/0
+- 획득: 술 의뢰 유효 성공권의 b 선택·개인 신규 최초1회·실수령 영구 UUID 확정. a와 이중 지급 불가. 서비스와 개인 MAIN은 구분하며 다른 MAIN 소유자가 있어도 b의 적법한 수령은 가능하다.
+- common execution ref: ../공통실행.json
+
+## authoring presentation contract
+- relative file: ../../스킬연출/효과별/OLY-DIO-A01.json
+- 상태: 채택된 연출·판정 상세 저술. 런타임 필드가 아님.
+- precedence: 외형·시각 피드백과 명시된 기하 상세는 이 참조를 적용한다. 원시 피해·마나·쿨·장비값·권리·획득 조건은 기존 카드 유지. prototype 검기 개정은 별도 시험 시편이며 이 콘텐츠에 자동 적용하지 않는다.
+- actual game validation: NOT_RUN

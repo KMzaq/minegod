@@ -320,17 +320,18 @@ public final class GodActivityAiTest {
                 com.sande.mythictrpg.ai.intent.ConversationIntent.Source.LOCAL_LLM);
         var messages = prompt.generation(info);
         var scene = JsonParser.parseString(messages.getLast().content()).getAsJsonObject();
-        check(!prompt.gameplayProposalsAllowed() && !scene.get("gameplayProposalsAllowed").getAsBoolean(), "information intent retains ordinary action prohibition");
+        check(prompt.gameplayProposalsAllowed() && scene.get("gameplayProposalsAllowed").getAsBoolean(), "information intent permits live decisions subject to capability validation");
         check(scene.get("npcActivityProposalsAllowed").getAsBoolean(), "actual activity snapshot gets narrow prompt exception");
-        check(messages.getFirst().content().contains("sole activity exception") && messages.getFirst().content().contains("copy one exact available_choices[].choiceId"),
-                "prompt distinguishes generic action denial and exact activity proposal fields");
+        check(messages.getFirst().content().contains("npc_activity_request also requires") && messages.getFirst().content().contains("copy one exact available_choices[].choiceId"),
+                "prompt preserves exact current activity choices");
         var stop = activity("STOP"); var continued = activity("CONTINUE"); var selected = activity(choice);
         var foreign = activity(UUID.randomUUID().toString());
         var ordinary = List.of("reward_proposal", "quest_offer", "generated_quest_offer", "player_damage", "item_request", "blessing_offer", "relationship_change").stream()
                 .map(type -> new AiDialogueModels.Proposal(type, "", "", List.of(), Map.of("choice_id", "STOP"))).toList();
         var all = new ArrayList<>(ordinary); all.addAll(List.of(stop, continued, selected, foreign));
         var story = new AiDialogueModels.Proposal("story_event_hook", "", "", List.of(), Map.of("event_alias", "existing_story_only")); all.add(story);
-        check(prompt.admittedProposals(all).equals(List.of(stop, continued, selected, story)), "actual postfilter permits only offered activity plus pre-existing Story exception");
+        var admitted = new ArrayList<>(ordinary); admitted.addAll(List.of(stop, continued, selected, story));
+        check(prompt.admittedProposals(all).equals(admitted), "live decisions reach capability validation while foreign activity choice is still filtered");
         for (var denied : ordinary) check(!NpcActivityPrompt.allows(request, denied), "no ordinary capability expansion " + denied.type());
         check(!NpcActivityPrompt.allows(request, foreign), "another turn's choice never admitted independently");
         check(!NpcActivityPrompt.allows(request, new AiDialogueModels.Proposal("other:npc_activity_request", "", "", List.of(), Map.of("choice_id", "STOP"))), "foreign type cannot get exception");
@@ -353,7 +354,7 @@ public final class GodActivityAiTest {
         var bare = copyActivityRequest(request, "No visible activity", false, false);
         var noSnapshotPrompt = new AiTestDialogueAdapter.RoomPrompt(bare, DialogueMemoryBridge.EMPTY, Map.of(god, content));
         noSnapshotPrompt.generation(info);
-        check(noSnapshotPrompt.admittedProposals(List.of(stop, selected)).isEmpty(), "information turn without game activity snapshot preserves old prohibition");
+        check(noSnapshotPrompt.admittedProposals(List.of(stop, selected)).isEmpty(), "live turn without game activity snapshot cannot select an activity");
     }
     private static AiDialogueModels.Proposal activity(String choice) {
         return new AiDialogueModels.Proposal("npc_activity_request", "", "", List.of(), Map.of("choice_id", choice));

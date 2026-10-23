@@ -17,7 +17,7 @@ final class RecordedRecallQuery {
         String input = request.currentText().trim();
         if (carried.isPresent() && !matches(request, carried.orElseThrow(), input)) return Optional.empty();
         String original = carried.map(RecallQuery::text).orElse(input);
-        String text = RecallSourceScope.lexicalQuery(original);
+        String text = lexicalTopics(RecallSourceScope.lexicalQuery(original));
         var source = RecallSourceScope.resolve(original);
         var selection = switch (source.role()) {
             case PLAYER -> exact(Set.of(new ActorRef(ActorKind.PLAYER, request.playerId().toString())));
@@ -34,6 +34,12 @@ final class RecordedRecallQuery {
         var query = new MemoryReadSession.Query(text, Optional.empty(), Optional.empty(), selection);
         return Optional.of(new Prepared(query, carried.filter(RecallQuery::explicit).isPresent()
                 && !text.isBlank() && text.length() <= 1600));
+    }
+
+    /** Narrow Korean particle normalization for SEARCH only. Original speech and actor parsing stay exact.
+     * Keep IDs/English/short names and punctuation intact; never turn a nonempty query into a history scan. */
+    static String lexicalTopics(String text) {
+        return text.replaceAll("(?<![\\p{L}\\p{N}_:/-])([가-힣]{2,}?)(에게서|한테서|으로부터|에서|에게|한테|으로|에|을|를|은|는|이|가)(?=[^\\p{L}\\p{N}_:/-]|$)", "$1");
     }
 
     private static MemoryReadSession.ActorSelection exact(Set<ActorRef> actors) {

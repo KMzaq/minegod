@@ -66,7 +66,17 @@ public final class StoryRuntimeModels {
             EventStatus status, long revision, String definitionFingerprint,
             Optional<ResourceLocation> selectedOutcomeId, OptionalLong deterministicRoll,
             long triggeredAtGameTime, OptionalLong decidedAtGameTime,
-            Set<ResourceLocation> appliedEffectIds, int sequence) {
+            Set<ResourceLocation> appliedEffectIds, int sequence, Set<ResourceLocation> reservedResources) {
+        public EventInstance(String instanceId, ResourceLocation eventId, StoryScopeKey scope,
+                Set<UUID> frozenAudiencePlayerIds, Optional<UUID> initiatingPlayerId, UUID triggerSignalId,
+                EventStatus status, long revision, String definitionFingerprint,
+                Optional<ResourceLocation> selectedOutcomeId, OptionalLong deterministicRoll,
+                long triggeredAtGameTime, OptionalLong decidedAtGameTime,
+                Set<ResourceLocation> appliedEffectIds, int sequence) {
+            this(instanceId, eventId, scope, frozenAudiencePlayerIds, initiatingPlayerId, triggerSignalId,
+                    status, revision, definitionFingerprint, selectedOutcomeId, deterministicRoll,
+                    triggeredAtGameTime, decidedAtGameTime, appliedEffectIds, sequence, Set.of());
+        }
         public EventInstance {
             instanceId = bounded(instanceId, "instanceId", 256);
             Objects.requireNonNull(eventId, "eventId");
@@ -80,6 +90,8 @@ public final class StoryRuntimeModels {
             deterministicRoll = Objects.requireNonNull(deterministicRoll, "deterministicRoll");
             decidedAtGameTime = Objects.requireNonNull(decidedAtGameTime, "decidedAtGameTime");
             appliedEffectIds = Set.copyOf(appliedEffectIds);
+            reservedResources = Set.copyOf(reservedResources);
+            if (reservedResources.size() > 17) throw new IllegalArgumentException("Story resource reservation limit");
             if (revision < 0 || triggeredAtGameTime < 0 || sequence < 1)
                 throw new IllegalArgumentException("Invalid Story event instance counters");
         }
@@ -89,19 +101,19 @@ public final class StoryRuntimeModels {
             return new EventInstance(instanceId, eventId, scope, frozenAudiencePlayerIds, initiatingPlayerId,
                     triggerSignalId, nextStatus, revision + 1, definitionFingerprint,
                     Optional.of(outcomeId), roll, triggeredAtGameTime, OptionalLong.of(gameTime),
-                    appliedEffectIds, sequence);
+                    appliedEffectIds, sequence, reservedResources);
         }
 
         public EventInstance withStatus(EventStatus nextStatus) {
             return new EventInstance(instanceId, eventId, scope, frozenAudiencePlayerIds, initiatingPlayerId,
                     triggerSignalId, nextStatus, revision + 1, definitionFingerprint, selectedOutcomeId,
-                    deterministicRoll, triggeredAtGameTime, decidedAtGameTime, appliedEffectIds, sequence);
+                    deterministicRoll, triggeredAtGameTime, decidedAtGameTime, appliedEffectIds, sequence, reservedResources);
         }
 
         public EventInstance withAppliedEffects(Set<ResourceLocation> effects, EventStatus nextStatus) {
             return new EventInstance(instanceId, eventId, scope, frozenAudiencePlayerIds, initiatingPlayerId,
                     triggerSignalId, nextStatus, revision + 1, definitionFingerprint, selectedOutcomeId,
-                    deterministicRoll, triggeredAtGameTime, decidedAtGameTime, effects, sequence);
+                    deterministicRoll, triggeredAtGameTime, decidedAtGameTime, effects, sequence, reservedResources);
         }
     }
 

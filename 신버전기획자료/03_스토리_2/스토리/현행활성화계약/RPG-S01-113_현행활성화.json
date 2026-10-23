@@ -1,0 +1,89 @@
+{
+  "document_type": "현행 활성화 저술 계약; 엔진 실행 스키마 아님",
+  "record_key": "RPG-S01-113",
+  "name": "아킬레우스",
+  "definition_id": "ACTIVATION-RPG-S01-113",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "bootstrap_no_added_history",
+    "world_unlock": {
+      "mode": "explicit_initial_access",
+      "initial_world_available": true,
+      "completion_count": 0,
+      "new_history_required": false,
+      "rule": "신규 세계 초기화 때 이 인물의 세계가용을 true로 명시 채택한다. 추가 과거이력·왕복 수행·새 퀘스트·친분·NPC 선응답 없이 원문 현장에 자연접근한다. 이는 생성·생존·접견·권리 부여가 아니라 세계 해금 관문만의 초기값이다. 현재 시점·차원·접근금지·봉인·생사·활동 제약은 첫 배치 직전에 별도로 통과해야 한다.",
+      "evidence": "플레이어 수행 receipt를 조작하지 않는다. world_uuid+record_key의 초기접근 정책 적용 사실만 초기화 원장에 기록한다.",
+      "event_contract": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization"
+    },
+    "first_encounter": {
+      "site": "기존 대련 공터의 넓은 출발선; 기존 장소 유형의 제안, 바이옴·구조물 등록 연결 대기. 큰 신전·새 차원·신규 필수 건축은 필요 없다.",
+      "world": "Overworld",
+      "current_predicate": "이 문서 세계가용 AND 원문 허용 현장에 현재 실제 도달한 온라인 생존 플레이어 1명 이상 AND 아래 보존 eligibility의 현재 통행·위험·시점·차원·봉인·생사 제약. 원문에 있는 본체 현존·행동·응답은 등장 후 접촉 검사로 분리한다. 최초미배치가 명시 확인되면 동일 actor 최초 배치 후보 진입에 본체 선재를 요구하지 않는다. 현재 준비와 이후 서비스 준비를 구별한다.",
+      "exact_current_player_requirement": "해당 현장에 실제 도착하고 위험·귀환 가능성을 확인한다. 관찰·인사 준비, 전투 수행 준비, 가호 수용력, 개인 MAIN 자격은 별도다. 남의 소개·파티 완료로 개인 허가를 복제하지 않는다.",
+      "stage_interpretation": "위 인용은 원문 보존이다. 실제 최초 배치 전에는 장소·통행·위험 등 NPC 비의존 조건만 검사하고, 본체 상태는 존재 허용·생사·봉인·단일성 원장으로 검사한다. 이미 있는 배우의 현재 체류·수선·몸짓·발화와 청중 확인은 배치 뒤 단계다. 실제 다른 장소에서 활동 중인 본체를 자동 이동시키지 않는다.",
+      "subject": "현재 조건 충족 실제 플레이어 중 공통 선택의 한 사람이 등장 주체다. 해금자와 달라도 되며 해금자의 과거 현장 방문을 현재 방문자의 이력으로 복제하지 않는다.",
+      "probability_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter",
+      "atomic_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/atomic_contract",
+      "mode": "기존 일반 무작위 경로는 전역 확률·가중치·NONE·주기·CAS 그대로. 확정 전용 경로·기록/꿈 모드는 일반풀로 전환하지 않음.",
+      "new_player_gates": 0
+    },
+    "single_body_state_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization",
+    "already_present_contact": "동일 본체가 PRESENT이면 등장 추첨을 인사마다 반복하지 않는다. 현재 실제 거리·시야·청중·접근을 확인하고 질문·관찰·거절을 선택한다. 사적 협력·수주·전달·서비스는 실제 본인의 별도 수락 뒤에만 실행한다. 유효 비언어 접촉에는 발화 강제0.",
+    "preserve": "대련 공터 출발선의 안전한 바깥에서 인사한다. 대련 수락·전투 승리·동료의 부상을 새 필수조건으로 만들지 않는다. 동료가 실제 없으면 동료 반응도 만들지 않는다.",
+    "rights_and_knowledge_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/personal_separation",
+    "no_new_service_gate": "후속 서비스 소품·자료·재료·개인 수락·MAIN 소유·기존 사건 완료를 첫 인사에 추가하지 않는다. exact 단순도달을 outline만의 비무장·휴대기록 후보로 강화하지 않는다. 소품이 없으면 없는 소품 행동을 재연하지 않고 가능한 인사만 한다.",
+    "no_canon_bypass": "세계가용 true는 본체 존재·부활·생존 확정이 아니다. NEVER_PLACED와 실제 부재·미로드·죽음·봉인을 분리한다. 기록전용 상태이면 실제 허용 기록 열람만, 살아 있는 대화 본체 생성0. 새 분신·차원이동·봉인해제·개인별 몸·과거 사건 생성0.",
+    "knowledge": "서버 receipt는 NPC 자동 기억이 아니다. 실제 본 관측, 허락된 전달의 실제 수신, 실제 공개 청중만 대화 근거다. 해금자≠현재 조우주체≠MAIN 소유자≠보상 수령자. 공개 현장 결과만 공유하며 사적 기억·친분·개인 허락은 복제하지 않는다.",
+    "implementation": "좌표·등록 부지·권위 상태·실제 관측 receipt 및 기존 공통 원장 연결은 구현 요구다. 본 저술의 채택은 실제 초기화·등장·게임/API/LLM 시험 완료가 아니다."
+  },
+  "source_contract": {
+    "world_region": "Overworld",
+    "location_scene": "기존 대련 공터의 넓은 출발선; 기존 장소 유형의 제안, 바이옴·구조물 등록 연결 대기. 큰 신전·새 차원·신규 필수 건축은 필요 없다.",
+    "eligibility": {
+      "server_state": "기존 대련 공터의 넓은 출발선 유형의 실제 장소와 접근 가능한 왕복 경로, 현재 동일 본체의 위치를 확인한다. 이 구체 배치는 기존 세계 안의 소규모 새 장면안이며 고정 좌표·과거 발생 사실이 아니다.",
+      "player_state": "해당 현장에 실제 도착하고 위험·귀환 가능성을 확인한다. 관찰·인사 준비, 전투 수행 준비, 가호 수용력, 개인 MAIN 자격은 별도다. 남의 소개·파티 완료로 개인 허가를 복제하지 않는다.",
+      "actor_availability": "아킬레우스의 실제 한 본체만 사용한다. 다른 사람과 활동 중이면 같은 위치·현재 시간 순서에서 응답하며 개인별 복제나 과거 장면 재연을 만들지 않는다.",
+      "seal_guard": "현재 완전 봉인·흡수 봉인·부재면 일반 조우와 효과 실행 불가. 별도 허용된 봉인석 반응이 없는 이 장면에 꿈·분신·원격 대역을 추가하지 않는다. 실제 한 층 해제 뒤에도 남은 봉인 범위와 현재 위치를 재확인한다.",
+      "permission_or_willingness": "현재 대화·협력·동행·대련·계약은 해당 범위의 실제 의사를 확인한다. 소개가 대상의 협력을 대신하지 않는다. 적대 공격·위협·포식 위험은 상호 동의로 잠그지 않고 실제 상태와 행동으로 다룬다. 모욕을 견디라고 강요받아 자기 의사를 접지는 않지만, 동료의 생존을 단지 남의 체면 문제로 줄이지 않는다.",
+      "chapter_reason_if_any": "코어의 C/R 연결은 해당 실제 자료·사건에 쓰는 역할이다. 장 번호·전투 등급을 일반 인사의 새 잠금으로 쓰지 않는다. 구체 장면을 먼저 만났다고 미래 사건의 증거·성취를 선취하지 않는다.",
+      "probability_direction": "일반 방향은 초기 낮은 등급 상대 비중, 진행 뒤 높은 등급 상대 비중 증가다. 이것은 실제 자격 검사를 통과한 후보의 가중치이지 등급별 가능/불가능 판정이 아니다. 정확 확률·등록 후보 목록은 미확인이다."
+    },
+    "npc_current_action": "대련 전 자신 있게 농담하며 먼저 앞에 서다가 동료의 상태가 나쁘면 짧게 멈추라고 말한다.",
+    "player_visible_clue": "먼저 앞에 섰다가 동료의 실제 피로를 보고 짧게 멈춘다"
+  },
+  "source_contract_role": "정확 원문 보존 인용. 원문의 본체 현존 문구를 최초미배치 선행으로 실행하지 않고 adopted_activation의 단계 분리를 적용한다. 원문 역사적 미정·미채택 표기를 소급 수정하지 않는다.",
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S01-113.json",
+      "pointers": [
+        "/connection_manuscript"
+      ],
+      "sha256": "281c5e005cb850c6442b738fd2499007df943df603df600355c030e340759e3a",
+      "role": "보존 연결 원고; 본 계약의 현행 초기접근보다 우선하지 않는 역사 후보 포함"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S01-113.json",
+      "pointers": [
+        "/current_identity",
+        "/current_access"
+      ],
+      "sha256": "109a966e89c86591dcce724ad43ea4dc4b38ddfdd63552354e428ffb6fa00be6",
+      "role": "정체·접근 보호"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-022/완결퀘스트.json",
+      "pointers": [
+        "/records/0"
+      ],
+      "sha256": "9bddd43f5fae5b28e1a57cf75d76c67274f09faaffbeb2e3a69fe98018d358fc",
+      "role": "현행 개별 활동·개인 권리 보존"
+    }
+  ],
+  "common_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json",
+  "precedence": "정체·명시 시점·생사·차원·봉인·개인권리 > 본 문서의 초기 세계가용/최초미배치와 B5 관측대상 분리 > 기존 활동 계약 > 현행 전역 운영 > 역사 후보·보존 사본. 이번 채택 외 일반 조건·확률을 재정의하지 않는다.",
+  "runtime_ready": false,
+  "activation_performed": false,
+  "new_quest_count": 0,
+  "new_reward_count": 0
+}

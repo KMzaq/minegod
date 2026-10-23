@@ -1,0 +1,53 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S12-023",
+  "name": "비잔",
+  "definition_id": "ACTIVATION-RPG-S12-023",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "기존 지하 폐허의 접근 가능한 안전 외곽 A→B→안전 복귀 A 실제 이동1회. 구금·탈출 사건 신규 발생0.",
+      "completion_count": 1,
+      "scope": "누구 실제1명 달성시 세계영구",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "source_history_is_not_current_rule": true
+    },
+    "first_encounter": {
+      "current_predicate": "현재 승인 부지에 도달 AND 현재 지하 외곽 접근/전달 경로를 대조할 자기 또는 열람허가 받은 실제 기록1개 소지. 허용 실물=minecraft:filled_map 또는 내용 있는 writable_book/written_book 또는 기존 개인팩의 출처확인 기록. 현재 부지·경로/물품을 가리키는 정보1개를 현재 관찰/자기 실제 receipt와 대조해 확인. NPC의 선행 서명/응답·미전달 비밀·다른 사람 해금이력 복사는 불가. 초기 대조는 플레이어의 실물/현장 확인이며 NPC와 하는 후속 대조·수락은 별도. 기록 소비/납부0.",
+      "site_source_ref": "인물입력/P1_OTHER_QUEST-046/RPG-S12-023.json#/current_record/outline/encounter_generation",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "원문 기존 조우 경로 유지; 일반 풀 확률/주기/주체선정은 전역 계약 참조",
+      "subject": "현재 적격 실제 온라인 플레이어 UUID 1명. 세계 해금자일 필요 없음. 현재 적격0명이면 발생0.",
+      "time": "별도 명시한 조건만. 원문 네더에 Overworld 낮밤 추가0; 현재 장소/접근시간 제약 보존."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "현재 마스터의 명부·정체·전투등급·미정 소속·접근 분류를 그대로 보존한다. / 이야기상 옛 죽음·귀환·기적을 현재의 새 사망·부활·능력 효과로 자동 확정하지 않는다. / 자료의 종교·문학 배경을 사용한 게임 창작이다. 현실의 신앙 전체를 대신 설명하거나 평가하는 발화로 쓰지 않는다. / 사소한 행동은 기존 공간·도구로 표현한다. 새 차원·필수 건축·퀘스트·보상·실행 JSON을 요구하지 않는다. / 축복과 가호를 구별하며 소개나 도움을 자동 가호·정치 가입·MAIN 수락으로 바꾸지 않는다. / 실제 Story 서버 시험은 하지 않았다. 조건 지원과 런타임 연결·실행 성공은 다른 상태다. / 현재 접근 원본: 현행 자료에서 개별 최초 일반 조우 시점을 확정할 근거가 부족하다. 옛 단계 템플릿만으로 전/후를 강제하지 않는다. / 자기 과거 회상 경계: 마니제와 사랑하고 구덩이에 갇힌 원전의 자기 경험을 기억한다. 그것을 현재 위치 고정이나 현재 탈출 완료로 바꾸지 않는다. 제외된 마야·잉카 인물을 현재 배우로 되살리지 않는다. 현재 정체·등급·신격·미정 소속과 봉인·실제 세계/네더/엔드 접근은 결속 원문 그대로다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "new_implementation": "본 계약의 실제 event/수량/소유/경로/관찰 판정과 원장 연결은 신규 구현 요구. 실제 채택과 구현 완료는 별도이며 실행 미완을 사용자 재채택 대기로 표시하지 않는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "인물입력/P1_OTHER_QUEST-046/RPG-S12-023.json",
+      "record_key": "RPG-S12-023",
+      "pointers": [
+        "/current_record/outline/world_unlock",
+        "/current_record/outline/encounter_generation"
+      ],
+      "sha256": "b9863b712b9b070061da2097c37bcd60ed79cc361b2e127a167180701db70b83"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-046/04_RPG-S12-023_비잔_완결기획.json",
+      "record_key": "RPG-S12-023",
+      "pointers": [
+        "/world_unlock_and_encounter",
+        "/adopted_detail"
+      ],
+      "sha256": "6f6ae96ba71c4219c74d9330ab546e6fbe57455ea24993e2b5b4ce01fb48196c"
+    }
+  ],
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

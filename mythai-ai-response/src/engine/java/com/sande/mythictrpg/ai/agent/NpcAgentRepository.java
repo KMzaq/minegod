@@ -32,7 +32,7 @@ public final class NpcAgentRepository {
 
     public synchronized void load() {
         try {
-            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE);
+            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE, "{\"schemaVersion\":1,\"agents\":{}}\n");
             try (Reader reader = Files.newBufferedReader(file)) {
                 agents = parse(GSON.fromJson(reader, RawRepository.class));
             }

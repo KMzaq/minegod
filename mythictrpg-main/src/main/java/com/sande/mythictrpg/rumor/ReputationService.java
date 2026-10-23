@@ -1,7 +1,6 @@
 package com.sande.mythictrpg.rumor;
 
 import com.sande.mythictrpg.MythicTrpg;
-import com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings;
 import com.sande.mythictrpg.data.god.GodDefinitionManager;
 import com.sande.mythictrpg.data.player.PlayerMythDataService;
 import net.minecraft.network.chat.Component;
@@ -15,7 +14,7 @@ import com.sande.mythictrpg.ai.social.RoomSocialContextProvider;
 import net.neoforged.neoforge.event.server.*;
 import java.util.*;
 
-/** Explicit game-only judgment API. No automatic assessment, AI Proposal, affinity mutation or quest hook. */
+/** Game-owned assessments and authored recovery. Enabled independently of AI memory experiments. */
 public final class ReputationService {
     public record Judgement(UUID subject,ResourceLocation god,Set<UUID> audience,UUID worldId,ReputationEngine.View view) {
         public Judgement {Objects.requireNonNull(subject);Objects.requireNonNull(god);audience=Set.copyOf(audience);Objects.requireNonNull(view);}
@@ -28,7 +27,7 @@ public final class ReputationService {
     public static void started(ServerStartedEvent event) {
         var server=event.getServer();ReputationSavedData.requireThread(server);INSTANCES.remove(server);WARNINGS.remove(server);REVIEWERS.remove(server);
         var settings=ReputationSettings.load(server.getServerDirectory().resolve("config/mythictrpg/reputation-judgement.json"));
-        if(!settings.enabled()||MemoryFoundationSettings.mode()!=MemoryFoundationSettings.Mode.RUMOR_TEST)return;
+        if(!settings.enabled())return;
         var rumors=RumorSavedData.get(server);if(!rumors.ready())return;
         var data=ReputationSavedData.get(server,rumors.worldId());
         INSTANCES.put(server,new Runtime(settings,rumors,data));warn(server,data);
@@ -36,7 +35,7 @@ public final class ReputationService {
     public static void stopped(ServerStoppedEvent event){ReputationSavedData.requireThread(event.getServer());INSTANCES.remove(event.getServer());WARNINGS.remove(event.getServer());REVIEWERS.remove(event.getServer());}
     private static Runtime current(MinecraftServer server) {
         ReputationSavedData.requireThread(server);
-        return MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST?INSTANCES.get(server):null;
+        return INSTANCES.get(server);
     }
     private static boolean ready(Runtime runtime){return runtime.rumors().ready()&&runtime.data().ready(runtime.rumors().worldId());}
     private static ReputationEngine engine(MinecraftServer server,Runtime runtime,ReputationLedger ledger,Set<UUID> audience) {
@@ -52,6 +51,36 @@ public final class ReputationService {
      * No dialogue agreement or LLM text is itself such an approval. Automatic recovery criteria remain unauthored. */
     public static ReputationLedger.Result applyApproved(MinecraftServer server,ReputationLedger.Decision decision) {
         return applyDecision(server,decision,false);
+    }
+    public static boolean recoveryAvailable(MinecraftServer server, ResourceLocation god, ResourceLocation policy) {
+        var runtime=current(server);
+        return runtime!=null&&ready(runtime)&&GodDefinitionManager.INSTANCE.definitions().containsKey(god)
+                &&runtime.settings().rules().stream().anyMatch(rule->rule.id().equals(policy.toString())&&rule.godId().equals(god.toString()));
+    }
+    /** Allows a restarted Story effect to acknowledge an already recorded batch without selecting new targets. */
+    public static boolean recoveryCompleted(MinecraftServer server, UUID subject, ResourceLocation god,
+            ResourceLocation policy, UUID gameResult, ResourceLocation reason) {
+        var runtime=current(server);
+        return runtime!=null&&ready(runtime)&&runtime.data().access(server,runtime.rumors().worldId(),
+                ledger->ledger.recovered(new ReputationLedger.Recovery(gameResult,subject,god.toString(),policy.toString(),reason.toString())));
+    }
+    /** Atomically recover the matching set and persist a single-use game result, including an empty set. */
+    public static boolean recoverFromGameResult(MinecraftServer server, UUID subject, ResourceLocation god,
+            ResourceLocation policy, UUID gameResult, ResourceLocation reason) {
+        var runtime = current(server);
+        if (!recoveryAvailable(server,god,policy)) return false;
+        var request=new ReputationLedger.Recovery(gameResult,subject,god.toString(),policy.toString(),reason.toString());
+        String sourceMode=com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.mode()
+                ==com.sande.mythictrpg.ai.memorycontract.MemoryFoundationSettings.Mode.RUMOR_TEST?"RUMOR_TEST":"PERSONAL";
+        var result=runtime.data().access(server,runtime.rumors().worldId(),
+                ledger->engine(server,runtime,ledger,Set.of(subject)).recoverFromGameResult(request,entry->
+                        runtime.rumors().access(server,rumors->{
+                            var evidence=rumors.evidence(entry.decision().rootId());
+                            // Missing/revoked evidence may be cleaned up, but known test roots stay isolated.
+                            return evidence==null||evidence.memoryMode().equals(sourceMode);
+                        })));
+        try {warn(server,runtime.data());}catch(RuntimeException unavailable){MythicTrpg.LOGGER.warn("Reputation capacity notification unavailable",unavailable);}
+        return result==ReputationLedger.Result.APPLIED||result==ReputationLedger.Result.DUPLICATE;
     }
     private static ReputationLedger.Result applyDecision(MinecraftServer server,ReputationLedger.Decision decision,boolean reviewedDialogue) {
         var runtime=current(server);if(runtime==null||!ready(runtime)
@@ -208,8 +237,10 @@ public final class ReputationService {
         return new RoomSocialContextProvider.ProviderSnapshot(providerId,revision,scope,facts);
     }
     private static void warn(MinecraftServer server,ReputationSavedData data) {
-        long now=server.overworld().getGameTime();if(now<WARNINGS.getOrDefault(server,0L)||data.snapshot().entries().size()<Math.ceil(ReputationLedger.LIMIT*.9))return;
-        String message="[MythAI] 평판 판단 기록이 보관 상한의 90%에 도달했습니다. 관리자는 보관 용량 증설을 검토해 주세요. 자동 삭제하지 않습니다.";
+        long now=server.overworld().getGameTime();var snapshot=data.snapshot();
+        if(now<WARNINGS.getOrDefault(server,0L)
+                ||Math.max(snapshot.entries().size(),snapshot.recoveries().size())<Math.ceil(ReputationLedger.LIMIT*.9))return;
+        String message="[MythAI] 평판 평가 또는 회복 결과 기록이 보관 상한의 90%에 도달했습니다. 관리자는 보관 용량 증설을 검토해 주세요. 자동 삭제하지 않습니다.";
         MythicTrpg.LOGGER.warn(message);server.getPlayerList().broadcastSystemMessage(Component.literal(message),false);WARNINGS.put(server,now+1200);
     }
 }

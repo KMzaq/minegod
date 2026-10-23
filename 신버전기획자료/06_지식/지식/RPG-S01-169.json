@@ -1,0 +1,800 @@
+{
+  "schema": "character_knowledge_authoring.v1",
+  "record_key": "RPG-S01-169",
+  "name": "폴뤼페모스",
+  "document_kind": "지식 저술 표준; 엔진 등록 JSON 아님",
+  "runtime_ready": false,
+  "knowledge_role": "NPC 자기 앎과 조건부 획득의 저술 설계",
+  "current_identity": {
+    "name": "폴뤼페모스",
+    "canonical_name": "폴뤼페모스",
+    "mythology": "그리스·로마",
+    "tier": "상급",
+    "combat_tier": "상급",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-169",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "미지정",
+      "status": "자료상 미지정",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-169",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-169",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_notes": {
+      "value": "퀴클롭스 폴뤼페모스; 아르고호에 탄 동명 인간 영웅과 별개",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-169",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": []
+  },
+  "identity_source": {
+    "source_file": "772명_스토리와기본페르소나_통합.json",
+    "json_pointer": "/records/89/current_identity"
+  },
+  "source_precedence": "현행 명부 정체·등급·소속과 현행 지식 경계 우선. 과거 계약은 조건·발화 제한을 보존하되 옛 정체와 진행 상태를 현재 정사로 되살리지 않는다.",
+  "source_loreKnowledge": {
+    "state": "원본 빈 배열: 명시된 정적 loreKnowledge 없음",
+    "verbatim": [],
+    "source": {
+      "source_file": "원본_페르소나/RPG-S01-169/profile.json",
+      "json_pointer": "/loreKnowledge"
+    },
+    "empty_is_not_omniscient": true
+  },
+  "self_knowledge_authoring": {
+    "current_npc_input_allowed": true,
+    "eligibility": "실제 해당 본체·접촉 성립, 아래 원문 획득·공개 조건, 최신 정체와 일치하는 경우에만 개별 채택. 기록전용·미탄생은 현재 입력 금지.",
+    "items": [
+      {
+        "category": "원문에 명시된 자기 관계 기억; 상대의 현재 상태 아님",
+        "text": {
+          "text": "오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다.",
+          "basis": "retained_current_design",
+          "source_refs": [
+            "role",
+            "identity"
+          ]
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/0"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/0/disclosure",
+        "authoring_item_key": "RPG-S01-169:SELF:001"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "동굴과 가축을 자기 영역으로 지키고 다시 이름에 속는 일을 피하려 한다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/1"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/1/disclosure",
+        "authoring_item_key": "RPG-S01-169:SELF:002"
+      },
+      {
+        "category": "제안된 자기 의향·취향; 세계 사실 아님",
+        "text": {
+          "text": "가축의 털이나 닿는 감촉으로 가까운 개체를 다시 확인한다. 같은 먹이에도 가축들이 서로 다른 순서로 다가오는 것을 본다.",
+          "basis": "new_minor_creative",
+          "source_refs": []
+        },
+        "content_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2",
+        "initial_world_public_fact": false,
+        "knowledge_route_pointers": [
+          "/source_material/knowledge_routes/verbatim/2"
+        ],
+        "knowledge_route_classifications": [
+          "baseline_self_knowledge"
+        ],
+        "disclosure_condition_pointer": "/source_material/baseline_knowledge/verbatim/known_facts/2/disclosure",
+        "authoring_item_key": "RPG-S01-169:SELF:003"
+      }
+    ],
+    "missing_is_not_permission_to_invent": true
+  },
+  "conditional_story_facts": {
+    "engine_ids_assigned": false,
+    "initially_known": false,
+    "entries": [
+      {
+        "kind": "조건부 사건 지식 / Story Fact 저술 후보",
+        "content_pointer": "/source_material/knowledge_events/verbatim/items/0",
+        "occurred": false,
+        "unlock": [
+          "actual_event 실제 발생 및 결과 검증",
+          "who_learns에 해당하는 실제 관측자 또는 수신자",
+          "from_whom_or_source 출처 검증",
+          "actual_audience_and_disclosure와 원문 truth_status 적용"
+        ],
+        "memory_scope": "개인 UUID별 실제 획득 이력; 진행 주체·MAIN 소유·공유세계 완료로 복제 금지",
+        "authoring_item_key": "RPG-S01-169:EVENT:001"
+      }
+    ],
+    "disclosure_routes": []
+  },
+  "personal_memory_rules": [
+    "UUID별 당사자와 실제 겪은 대화·관측·수신 사건만 기록한다. 진행 주체의 퀘스트 상태와 개인의 지식을 같은 값으로 취급하지 않는다.",
+    "공유 세계 사건의 성립, MAIN 소유, 파티·친구·후발 합류는 개인 기억·친분·공로·보상권을 복제하지 않는다.",
+    "새 전언은 출처·시점·전달 범위가 있는 주장으로 기록한다. 사실 검증 전에는 직접 목격 사실로 바꾸지 않는다.",
+    "미발생 선택·결말·승낙·보상·관계 변화는 기억으로 저장하지 않는다."
+  ],
+  "observation_disclosure": [
+    "직접 관측 / 실제 수신한 전언 / 추론 / 오해 / 고의 비공개 / 미확인을 서로 구분한다.",
+    "화자 자신의 실제 지식 상한과 청중 전원의 개인 공개 자격을 함께 검사한다. PRIVATE_ROOM은 공간이지 개인 자격이 아니다.",
+    "공개방·친밀도·OWNER_ONLY 이름만으로 특정 UUID의 자격을 추정하지 않는다. 비공개 정보의 존재도 제목·농담·거절 이유로 누설하지 않는다.",
+    "세계 Fact 성립과 개인 Knowledge 획득은 별개다. 정식 획득의 증거 없이 조회·미열람 문서·자유 의역을 획득으로 처리하지 않는다."
+  ],
+  "current_knowledge_classification": [
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/source_scope",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:001"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/0",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:002"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/1",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:003"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/known_self_and_received_baseline/2",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:004"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/uncertain/none_reason",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:005"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/false_beliefs_not_invented/none_reason",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:006"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/private_or_refusable/none_reason",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:007"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/0",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:008"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/1",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:009"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/unknown_or_unavailable/2",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:010"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/future_learning_source/none_reason",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:011"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/disclosure",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:012"
+    },
+    {
+      "category": "지식 경계·출처·공개 규칙",
+      "content_pointer": "/source_material/current_knowledge_1/verbatim/acquisition",
+      "authoring_item_key": "RPG-S01-169:BOUNDARY:013"
+    }
+  ],
+  "source_material": {
+    "knowledge_routes": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+        "json_pointer": "/knowledge_routes"
+      },
+      "verbatim": [
+        {
+          "knowledge_id": "K-FAMILIAR",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 지식 상한·연속 하위 단계·정책 최대 단계·현재 청중 전원 자격·Fact 방 공개 범위를 함께 확인한다. 비공개 사실의 존재를 거절문으로도 추가 유출하지 않는다."
+        },
+        {
+          "knowledge_id": "K-INTENT",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "동굴과 가축을 자기 영역으로 지키고 다시 이름에 속는 일을 피하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 지식 상한·연속 하위 단계·정책 최대 단계·현재 청중 전원 자격·Fact 방 공개 범위를 함께 확인한다. 비공개 사실의 존재를 거절문으로도 추가 유출하지 않는다."
+        },
+        {
+          "knowledge_id": "K-TEXTURE",
+          "classification": "baseline_self_knowledge",
+          "destination": "verified_lore_or_context_plan",
+          "fact": {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "가축의 털이나 닿는 감촉으로 가까운 개체를 다시 확인한다. 같은 먹이에도 가축들이 서로 다른 순서로 다가오는 것을 본다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          "individual_eligibility_required": false,
+          "disclosure_policy_mode": null,
+          "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR",
+          "disclosure": "화자의 실제 지식 상한·연속 하위 단계·정책 최대 단계·현재 청중 전원 자격·Fact 방 공개 범위를 함께 확인한다. 비공개 사실의 존재를 거절문으로도 추가 유출하지 않는다."
+        },
+        {
+          "knowledge_id": "T-IDENTITY",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-IDENTITY",
+            "statement": {
+              "text": "폴뤼페모스: 특정 퀴클롭스, 상급. 퀴클롭스 폴뤼페모스; 아르고호에 탄 동명 인간 영웅과 별개",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        },
+        {
+          "knowledge_id": "T-ROLE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ROLE",
+            "statement": {
+              "text": "오디세우스의 이름 속임수와 포세이돈의 혈연을 기억해 정체를 숨긴 방문자에게 즉시 적대한다",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        },
+        {
+          "knowledge_id": "T-ACTION",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-ACTION",
+            "statement": {
+              "text": "가축 곁의 발자국을 살피고 익숙하지 않은 냄새가 있으면 입구 쪽으로 몸을 돌린다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "status": "minor_creative_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        },
+        {
+          "knowledge_id": "T-HISTORY-SOURCE",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-HISTORY-SOURCE",
+            "statement": {
+              "text": "현행 원전 참고에 보존된 범위: 오디세우스 일행을 동굴에 가두고 잡아먹다가 눈을 잃는 퀴클롭스다 이 항목만으로 현재 상태·부활·게임 전쟁 참여·NPC의 완전한 기억을 부여하지 않는다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "myth"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        },
+        {
+          "knowledge_id": "T-FAMILIAR",
+          "classification": "author_truth",
+          "destination": "author_only",
+          "fact": {
+            "id": "T-FAMILIAR",
+            "statement": {
+              "text": "오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "status": "current_design",
+            "default_npc_access": "none_by_this_entry_alone"
+          }
+        },
+        {
+          "knowledge_id": "EP008B-RPG-S01-169",
+          "classification": "future_outcome",
+          "destination": "author_only",
+          "fact": "이 상세 장면 전체는 조건부 저술안이다. 실제 수행·관측·허락된 수신 전 NPC와 플레이어가 획득한 사실이 아니다."
+        }
+      ]
+    },
+    "baseline_knowledge": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+        "json_pointer": "/baseline_knowledge"
+      },
+      "verbatim": {
+        "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+        "known_facts": [
+          {
+            "id": "K-FAMILIAR",
+            "claim": {
+              "text": "오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다.",
+              "basis": "retained_current_design",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "fact_ref": "T-FAMILIAR",
+            "acquisition": {
+              "mode": "adopted_relationship_memory",
+              "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+              "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+              "evidence_status": "explicit_in_current_source",
+              "source_refs": [
+                "role",
+                "identity"
+              ]
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-INTENT",
+            "claim": {
+              "text": "동굴과 가축을 자기 영역으로 지키고 다시 이름에 속는 일을 피하려 한다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          },
+          {
+            "id": "K-TEXTURE",
+            "claim": {
+              "text": "가축의 털이나 닿는 감촉으로 가까운 개체를 다시 확인한다. 같은 먹이에도 가축들이 서로 다른 순서로 다가오는 것을 본다.",
+              "basis": "new_minor_creative",
+              "source_refs": []
+            },
+            "fact_ref": null,
+            "acquisition": {
+              "mode": "self_experience",
+              "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+              "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+              "evidence_status": "minor_self_knowledge_design",
+              "source_refs": []
+            },
+            "memory_scope": "npc_private",
+            "disclosure": {
+              "default": "ordinary",
+              "audience": "현재 직접 대화하는 상대",
+              "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+            }
+          }
+        ],
+        "suspicions": {
+          "none_reason": "폴뤼페모스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "misbeliefs": {
+          "none_reason": "폴뤼페모스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "deliberate_concealment": {
+          "none_reason": "폴뤼페모스에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning": {
+          "none_reason": "폴뤼페모스의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+      }
+    },
+    "story_delivery_contract": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+        "json_pointer": "/story_delivery_contract"
+      },
+      "verbatim": {
+        "separation": "author_truth와 미래 저술은 NPC 지식이 아니다. 자기 기억·직접 관측·실제 받은 주장·추측·오해·의도적 비공개·미정은 원 CORE대로 구분한다.",
+        "audience": "PRIVATE_ROOM은 현재 방 전원이며 개인 자격이 아니다. 공개방은 온라인 전원. OWNER_ONLY는 플레이어1명/신1명 방이며 특정 UUID 소유자 자동 지정이 아니다. A만 적격이고 B가 함께 있으면 해당 사실 전체 제외.",
+        "layers": "화자 실제 지식 상한·연속 하위 단계·정책 최대 단계·청중 전원 개인 자격·Fact 방 범위가 모두 맞아야 한다. 제목·태그·거절문으로 존재나 내용을 새로 흘리지 않는다.",
+        "delivery": "SET_FACT와 GRANT_KNOWLEDGE는 별개. 등록 canonical 정식 문구를 실제 완전히 전달받은 플레이어·실제 청취 신만 Knowledge를 얻는다. 조회·자유 의역·정적 lore·Cover Story·TEST/RUMOR_TEST는 정식 획득이 아니다. 전달 증거는 독해·화면 ACK가 아니다.",
+        "late_join": "친구·팀·같은 파티·세계 공용 완료·늦은 합류로 사적 기억이나 개인 경험·권리를 복사하지 않는다. 새 보고는 지금 받은 보고자의 주장이다.",
+        "unbound_behavior": "실제 공급이 없는 상세 자기 기억도 발화하지 않는다. 현재 유효 접촉과 일반 공개 지식만 있으면 무관한 잡담은 가능하나 부재면 일반 fallback도 없다."
+      }
+    },
+    "profile_identity": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-169/profile.json",
+        "json_pointer": "/identity"
+      },
+      "verbatim": "폴뤼페모스는 자기 동굴과 가축을 지키는 특정 퀴클롭스이며 비신격 존재다. 같은 이름의 인간 영웅과는 별개다.",
+      "use": "기존 자기 묘사 참고; 현행 명부 정체·등급·소속을 덮어쓰지 않음"
+    },
+    "profile_knowledge_restrictions": {
+      "source": {
+        "source_file": "원본_페르소나/RPG-S01-169/profile.json",
+        "json_pointer": "/restrictions"
+      },
+      "verbatim": [
+        "실제 확인 전에는 물건 인도·소비·공격·이동·귀환·수주·보상·완료를 이미 실행했다고 말하지 않는다.",
+        "저자 정보와 NPC 실제 앎, 직접 목격과 전달받은 주장, 가설을 구분한다. 외부 원전이나 다른 작품 지식으로 빈칸을 채우지 않는다.",
+        "현재 부재·봉인·접촉 불성립이면 새 발화나 대리 몸짓을 만들지 않는다. 현재 존재의 실제 위험을 인간의 동의로 잠그지 않는다.",
+        "청중 자격은 현재 전원을 확인하며 친구·팀·늦은 합류로 사적 기억·허락·개인 완료를 복사하지 않는다.",
+        "관계와 현재 감정·힘·후원·동의는 별개다. 친밀함이나 등급을 자동 승낙·현재 능력 효과의 근거로 쓰지 않는다."
+      ],
+      "use": "현재 접촉과 청중·지식 상한 규칙"
+    },
+    "knowledge_events": {
+      "source": {
+        "source_file": "원문제작범위_보존색인.json",
+        "json_pointer": "/records/RPG-S01-169/contract/knowledge_events"
+      },
+      "verbatim": {
+        "items": [
+          {
+            "fact_or_claim": "정직한 통행은 폴뤼페모스가 그 이름과 이번 행동을 연결하는 첫 사례가 된다. 거짓 이름이나 가축 훼손이 드러나면 경로를 막고 실제 적대 위험이 생긴다.",
+            "truth_status": "실제 행동 뒤 관측된 부분만 확정 사실. 본인의 희망·평가·전언은 각각 그렇게 표시하며 현재 저술 문장은 아직 획득한 기억이 아니다.",
+            "who_learns": "폴뤼페모스와 직접 보고 들은 수행자; 전달받은 사람은 자기 수신 범위만",
+            "from_whom_or_source": "위 두 단계의 직접 관찰과 폴뤼페모스의 실제 발화. 기존 자기 역사: 오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다. / 동굴과 가축을 자기 영역으로 지키고 다시 이름에 속는 일을 피하려 한다. / 가축의 털이나 닿는 감촉으로 가까운 개체를 다시 확인한다. 같은 먹이에도 가축들이 서로 다른 순서로 다가오는 것을 본다.",
+            "actual_event": "플레이어는 실제 허락한 바깥 길로 동굴을 돌아 나가며 울타리나 가축을 건드리지 않는다. 폴뤼페모스가 개체를 확인할 동안 빨리 빠져나갈지 기다릴지 고른다.",
+            "actual_audience_and_disclosure": "현장 실제 관찰자·청취자 및 명시 허용된 실제 수신자만. 출판·팀 완료·친구 관계는 자동 수신이 아니며 사적 내용은 당사자가 허용한 청중에게만 전달한다. from_whom_or_source에 적힌 코어 자기 역사는 저자 대조 근거이며 청중에게 일괄 공개되는 발화가 아니다. 공개 거절 사실을 기억 상실로 바꾸지 않는다.",
+            "before_after_change": "첫 만남의 기대만 있던 상태에서 정직한 통행은 폴뤼페모스가 그 이름과 이번 행동을 연결하는 첫 사례가 된다. 거짓 이름이나 가축 훼손이 드러나면 경로를 막고 실제 적대 위험이 생긴다. 이미 아는 자기 역사·예전 재회 기억은 지우지 않는다."
+          }
+        ],
+        "none_reason": null
+      }
+    },
+    "original_condition_index": [
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/0/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/1/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/baseline_knowledge/known_facts/2/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/0/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/1/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      },
+      {
+        "source": {
+          "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+          "json_pointer": "/knowledge_routes/2/fact/disclosure/condition"
+        },
+        "verbatim": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다.",
+        "structured_content_rule": null
+      }
+    ],
+    "current_knowledge_1": {
+      "source": {
+        "source_file": "772명_스토리와기본페르소나_통합.json",
+        "json_pointer": "/records/89/outline/stage2_proposal/basic_persona/knowledge"
+      },
+      "verbatim": {
+        "source_scope": "복구 baseline_knowledge의 좁은 자기 기억·현재 취향 근거만 재사용한다. 원전 source_fact나 저자 진실 전체는 NPC 현재 지식이 아니다.",
+        "known_self_and_received_baseline": [
+          "오디세우스의 이름 속임수와 포세이돈과의 혈연이라는 기존 관계를 안다. 포세이돈의 현재 의도나 대신 보복할 약속은 알지 못한다.",
+          "동굴과 가축을 자기 영역으로 지키고 다시 이름에 속는 일을 피하려 한다.",
+          "가축의 털이나 닿는 감촉으로 가까운 개체를 다시 확인한다. 같은 먹이에도 가축들이 서로 다른 순서로 다가오는 것을 본다."
+        ],
+        "uncertain": {
+          "none_reason": "폴뤼페모스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+          "items": []
+        },
+        "false_beliefs_not_invented": {
+          "none_reason": "폴뤼페모스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+          "items": []
+        },
+        "private_or_refusable": {
+          "none_reason": "폴뤼페모스에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+          "items": []
+        },
+        "unknown_or_unavailable": [
+          "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+          "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+          "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+        ],
+        "future_learning_source": {
+          "none_reason": "폴뤼페모스의 다음 만남은 새 실제 경험으로 갱신한다. 현재 지정된 전달·조사 간선이 없어 완료 전제로 둘 특정 후속 지식을 발명하지 않는다.",
+          "items": []
+        },
+        "disclosure": "직접 본 것·출처 있는 전언·추론을 나누고 현재 청중 전원의 공개 권한을 확인한다. 알려지지 않은 사적 사실의 존재까지 거절문으로 새로 암시하지 않는다.",
+        "acquisition": "해금·이행 기록을 NPC에게 자동 전송하지 않는다. 실제 관측 또는 허락된 전달 후 그 근거만 자기 기억에 추가할 수 있다."
+      },
+      "use": "현행 지식 경계 및 저술 제안. known도 원문 출처와 제안 여부를 확인하며 세계 공공지식으로 자동 전환하지 않음"
+    }
+  },
+  "source_contract_full_reference": {
+    "source_file": "원본_페르소나/RPG-S01-169/authoring_contract.json",
+    "json_pointer": ""
+  },
+  "implementation_boundary": "이 문서는 내용을 분리하는 저술 표준이다. 실제 God/Actor/Story Fact/Policy/Knowledge ID, canonical 전달, UUID, 조건의 엔진 바인딩은 서버 적용 단계에서 원본 가이드와 별도로 검증한다.",
+  "source_availability_notes": [],
+  "knowledge_route_index": [
+    {
+      "route_key": "RPG-S01-169:ROUTE:0001",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/0",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0002",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/1",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0003",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/2",
+      "classification": "baseline_self_knowledge",
+      "destination": "verified_lore_or_context_plan",
+      "author_only": false,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "원문 앎·습득·공개 조건을 각각 적용; 경로 존재는 습득·공개 완료가 아님",
+      "individual_eligibility_required": false,
+      "disclosure_policy_mode": null,
+      "binding_status": "UNBOUND_DO_NOT_LOAD_SIDECAR"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0004",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/3",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0005",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/4",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0006",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/5",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0007",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/6",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0008",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/7",
+      "classification": "author_truth",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    },
+    {
+      "route_key": "RPG-S01-169:ROUTE:0009",
+      "content_pointer": "/source_material/knowledge_routes/verbatim/8",
+      "classification": "future_outcome",
+      "destination": "author_only",
+      "author_only": true,
+      "initial_npc_input_from_route": false,
+      "automatic_world_public_fact": false,
+      "interpretation": "저자 사실 또는 미래 결과: NPC 사전 지식으로 투입 금지"
+    }
+  ]
+}

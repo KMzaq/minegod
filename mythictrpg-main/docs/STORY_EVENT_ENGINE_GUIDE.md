@@ -1,5 +1,7 @@
 # 조건 기반 스토리 사건 엔진 가이드
 
+> 2026-10-21 개발 후속: 현장 조사·본인 단서 재열람, `GRANT_REWARDS`, `RECOVER_REPUTATION`, 사건별 자원 예약을 추가했다. [콘텐츠 공통 시스템의 작성 형식과 제한](CONTENT_SYSTEMS_GUIDE.md)을 함께 읽는다. 정식 콘텐츠 설치·운영 배포는 하지 않았다.
+
 > 2026-09-23 현재 문서는 게임1.0.16·AI 응답0.1.17 개발 소스 기준이다. 개발 구현·검증·서버
 > 배포는 구분하며, 이번 재연결의 검증 및 미배포 상태는
 > [작업 기록](../../docs/FULL_ROOM_DIALOGUE_INTEGRATION_20260923.md)을 따른다.
@@ -159,6 +161,7 @@ Fact가 참이어도 지식 grant를 받지 않은 플레이어나 신에게는 
 - `mode: IMMEDIATE`: 현재 전제조건이 맞지 않으면 해당 신호를 소비하고 종료한다.
 - `mode: LATCHED`: 전제조건이 나중에 맞을 때까지 신호를 저장한다.
 - LATCHED는 `expiresAfterTicks`에 양수 또는 무기한 `-1`을 사용한다.
+- LATCHED는 자원 점유·열린 동일 사건·쿨다운에도 대기하며 최대 횟수 소진과 만료는 종결한다. PLAYER/TEAM 대기 및 예약 사건은 로그아웃으로 삭제하지 않고, 재개할 때 저장된 범위·청중을 유지한다. [대기·예약 상세](CONTENT_SYSTEMS_GUIDE.md#story-사건-자원-예약)를 따른다.
 
 기본 신호 ID는 다음과 같다.
 
@@ -193,6 +196,18 @@ Story 신호가 발생한다.
 `MAIN`과 `ENDING`에 `WEIGHTED_ONCE`를 쓰려면 `randomNarrativeExplicitlyAllowed: true`를 반드시
 명시해야 한다. `PLAYER_CHOICE`에는 `choicePolicy`가 필요하며, 시간 제한이 있으면
 `timeoutTicks`와 `defaultOutcomeId`를 함께 작성한다.
+
+### 개인 무작위 사건의 행운 보정
+
+2026-10-21 개발 소스는 `PLAYER` 범위의 `WEIGHTED_ONCE` 사건에서 outcome에 작성한 선택적 정수 `luckQuality`(-5~5)를 지원한다. 좋은 결과는 양수, 불리한 결과는 음수, 중립은 0이다. 아래는 기존 outcome의 작성 예시이며 `effects`는 해당 사건의 실제 효과로 채운다.
+
+```json
+{"id":"example:fortunate_outcome","weight":100,"luckQuality":1,"effects":[{"effectId":"example:mark_found","type":"SET_FACT","fact":"example:found_supply","scope":"EVENT_SCOPE","value":true}]}
+```
+
+`example:found_supply`는 별도 등록된 `PLAYER` 허용 Fact여야 한다. 보정은 해당 개인 범위 소유자의 **현재 활성 행운** 0~17단계만 사용한다. 기본 가중치는 `weight × exp(0.03 × 행운 단계 × luckQuality)`이며 `.03`은 변경 가능한 초기 계수다. 확정 outcome과 roll은 기존 Story 상태에 저장하므로 재접속·복구 시 다시 추첨하지 않는다. 사용자가 고르는 `PLAYER_CHOICE`에는 적용하지 않는다.
+
+`luckQuality`가 없는 기존 사건, `SERVER`·`TEAM` 범위, `FIXED`·`FIRST_MATCH`는 기존 선택 규칙을 유지한다. 팀 대표자의 행운이나 서버 전체 행운을 추정하지 않는다. `MAIN`·`ENDING`의 명시적 무작위 허용 조건도 그대로 유지한다. 계수·보상 행운과의 차이는 [가호·행운 보상과 전투력 v2](BLESSING_REWARD_POWER_V2.md)를 따른다.
 
 ### Effect
 
@@ -248,6 +263,30 @@ mythictrpg:story_knowledge
 ```
 
 알 수 없거나 읽을 수 없는 상태는 성공으로 간주하지 않고 `UNKNOWN`으로 닫힌다.
+
+### 5.1 레이드 직접 보상을 제외한 가호 획득 조건
+
+`mythictrpg:has_non_raid_blessing`은 `scope: "player"`로 판정 대상 플레이어의 **영구 가호 획득 기록**을 조회한다. Story의 `prerequisites`, Outcome의 `additionalConditions`, 같은 Condition Tree를 사용하는 루트 조건에 넣을 수 있다.
+
+```json
+{"type":"mythictrpg:has_non_raid_blessing","scope":"player"}
+```
+
+‘레이드 직접 보상을 제외한 가호를 얻지 않은 루트’는 다음 부정 조건으로 작성한다.
+
+```json
+{
+  "type":"mythictrpg:not",
+  "condition":{"type":"mythictrpg:has_non_raid_blessing","scope":"player"}
+}
+```
+
+- 실제 RaidRuntime이 직접 지급한 `RAID_DIRECT` 가호만 이 조건의 획득 이력에서 제외한다. 레이드 성공으로 완료한 퀘스트의 가호는 `QUEST`이므로 획득한 것으로 판정한다. 퀘스트 이름·source ID에 `raid`가 들어 있는지로 구분하지 않는다.
+- NPC·Story 직접 지급과 출처를 확정할 수 없는 이전 저장 데이터도 포함한다. 다른 가호에 밀려 효과가 나타나지 않거나 효과 없는 `only_ownership`으로 받은 이름 있는 가호도 획득 기록에 포함한다.
+- 우유·효과 해제로 이력을 지우지 않는다. 아직 수령하지 않은 보상 후보·선택지, 일시 물약 효과는 영구 가호 획득 기록이 아니다.
+- `player`는 조건 Context의 판정 대상이다. Story에서는 사건을 시작한 플레이어이며 팀 전체·현재 청중으로 자동 확대하지 않는다. 판정 대상이 없거나 보상 저장소를 읽을 수 없으면 `UNKNOWN`이고, `not`도 `UNKNOWN`이므로 가호 없는 루트를 열지 않는다.
+
+이 조건은 루트 판정만 제공한다. 실제 사건·엔딩에 연결할 조건과 내용은 기획 데이터에서 작성해야 한다. 출처 저장과 기존 저장 데이터 처리 기준은 [가호·행운 보상과 전투력 v2](BLESSING_REWARD_POWER_V2.md)를 함께 참고한다.
 
 ## 6. Knowledge와 공개
 

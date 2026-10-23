@@ -1,0 +1,125 @@
+{
+  "status": "STATIC_ASSUMPTIONS_NOT_PLAYTEST",
+  "source_loadouts": "GROWTH 읽기용_성장검산의 초기약3.584/중반정상7.776/초기강10.868 DPS. 이미 명중률/공격가동률을 포함하므로 다시0.65를 곱하지 않는다.",
+  "limits": "적3개체 총HP를 한 체력풀로 본 보수적 또는 낙관적 단순모델: 표적전환/owner창손실/광역2적동시피해/CC/동선/엄폐시간을 실제로 시뮬레이션하지 않았다. 설계값은 입장 최소장비가 아니다. 높은가호는 빠른 제압을 허용하며 몰래HP를 재배율하지 않는다.",
+  "rows": [
+    {
+      "players": 1,
+      "main_hp": 600.0,
+      "each_add_hp": 20.0,
+      "total_enemy_hp": 640.0,
+      "weak_team_dps": 3.584,
+      "weak_ttk_seconds": 178.571,
+      "mid_team_dps": 7.776,
+      "mid_ttk_seconds": 82.305,
+      "strong_team_dps": 10.868,
+      "strong_ttk_seconds": 58.888
+    },
+    {
+      "players": 2,
+      "main_hp": 1020.0,
+      "each_add_hp": 25.0,
+      "total_enemy_hp": 1070.0,
+      "weak_team_dps": 7.168,
+      "weak_ttk_seconds": 149.275,
+      "mid_team_dps": 15.552,
+      "mid_ttk_seconds": 68.801,
+      "strong_team_dps": 21.736,
+      "strong_ttk_seconds": 49.227
+    },
+    {
+      "players": 3,
+      "main_hp": 1440.0,
+      "each_add_hp": 30.0,
+      "total_enemy_hp": 1500.0,
+      "weak_team_dps": 10.752,
+      "weak_ttk_seconds": 139.509,
+      "mid_team_dps": 23.328,
+      "mid_ttk_seconds": 64.3,
+      "strong_team_dps": 32.604,
+      "strong_ttk_seconds": 46.007
+    },
+    {
+      "players": 4,
+      "main_hp": 1860.0,
+      "each_add_hp": 35.0,
+      "total_enemy_hp": 1930.0,
+      "weak_team_dps": 14.336,
+      "weak_ttk_seconds": 134.626,
+      "mid_team_dps": 31.104,
+      "mid_ttk_seconds": 62.05,
+      "strong_team_dps": 43.472,
+      "strong_ttk_seconds": 44.396
+    },
+    {
+      "players": 5,
+      "main_hp": 2280.0,
+      "each_add_hp": 40.0,
+      "total_enemy_hp": 2360.0,
+      "weak_team_dps": 17.92,
+      "weak_ttk_seconds": 131.696,
+      "mid_team_dps": 38.88,
+      "mid_ttk_seconds": 60.7,
+      "strong_team_dps": 54.34,
+      "strong_ttk_seconds": 43.43
+    }
+  ],
+  "normal_defense": {
+    "model": "HP20,A20,T8,P12,R0,피격만,회복0",
+    "physical8_taken": 1.7230769230769232,
+    "magic6_taken": 4.615384615384615,
+    "magic7_taken": 5.384615384615385,
+    "physical4_taken": 0.7384615384615384,
+    "palm_with_H02_taken": 1.2061538461538461,
+    "magic6_fixed1_absorb2_hp": 1.615384615384615
+  },
+  "reaction_examples": {
+    "sheet_center_side": "폭0.6 정방 AABB가 열판R과45도면 투영반폭0.3sqrt(2)=0.424264. 보수적 탈출거리1.5+0.424264+0.01=1.934264, /4.3+0.7=1.149829초<2. 실제현재속도/경로로 재검사.",
+    "burst_center": "보수적 AABB 외접반경0.3sqrt(2)=0.424264와 여유0.01: 중심탈출4.434264/4.3+0.7=1.731224초<2.2. 축방향 탈출은4.31로 충분하지만 대각선/장애물에 일괄4.3을 쓰지 않는다."
+  },
+  "timing_example": {
+    "unit": "정상20TPS, 첫접근40tick 포함, 모든패턴적격·취소/패링없음 예시",
+    "cycle_ticks": 298,
+    "cycle_seconds": 14.9,
+    "first_cycle": [
+      {
+        "id": "PALM",
+        "start": 40,
+        "active": [
+          70,
+          74
+        ],
+        "end": 104
+      },
+      {
+        "id": "SHEET",
+        "start": 104,
+        "active": [
+          144,
+          160
+        ],
+        "end": 184
+      },
+      {
+        "id": "PALM",
+        "start": 184,
+        "active": [
+          214,
+          218
+        ],
+        "end": 248
+      },
+      {
+        "id": "BURST",
+        "start": 248,
+        "active": [
+          292,
+          294
+        ],
+        "end": 338
+      }
+    ],
+    "note": "준비/회복 중 공격가능. HP 잠금/강제기믹시간0, 전투길이는 정적TTK 약43~179초이나 실제경로/피격창/전환시간에 따라 달라진다."
+  },
+  "source_scope": "공용 성장검산의 초기약/중반정상/초기강3개DPS만 사용한다. 합일검5개를 가진 가상팀 계산은 사용하지 않는다. 현재기존 장비와 실제획득권을 입장 시 확인하되 이 예시를 무료지급이나 강제장비조건으로 만들지 않는다."
+}

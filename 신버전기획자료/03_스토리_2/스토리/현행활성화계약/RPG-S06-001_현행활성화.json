@@ -1,0 +1,99 @@
+{
+  "document_type": "현행 활성화 저술 계약; 엔진 실행 스키마 아님",
+  "record_key": "RPG-S06-001",
+  "name": "반고",
+  "definition_id": "ACTIVATION-RPG-S06-001",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "bootstrap_no_added_history",
+    "world_unlock": {
+      "mode": "explicit_initial_access",
+      "initial_world_available": true,
+      "completion_count": 0,
+      "new_history_required": false,
+      "rule": "신규 세계 초기화 때 이 인물의 세계가용을 true로 명시 채택한다. 추가 과거이력·왕복 수행·새 퀘스트·친분·NPC 선응답 없이 원문 현장에 자연접근한다. 이는 생성·생존·접견·권리 부여가 아니라 세계 해금 관문만의 초기값이다. 현재 시점·차원·접근금지·봉인·생사·활동 제약은 첫 배치 직전에 별도로 통과해야 한다.",
+      "evidence": "플레이어 수행 receipt를 조작하지 않는다. world_uuid+record_key의 초기접근 정책 적용 사실만 초기화 원장에 기록한다.",
+      "event_contract": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization"
+    },
+    "first_encounter": {
+      "site": {
+        "place": "기존 동굴 폐허 입구의 안정된 바닥",
+        "retained_placement_reference": "실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음",
+        "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+        "status": "new_minor_scene_detail_on_unverified_retained_placement"
+      },
+      "world": "Overworld: 기존 오버월드 생활권; 등록 연결 대기",
+      "current_predicate": "이 문서 세계가용 AND 원문 허용 현장에 현재 실제 도달한 온라인 생존 플레이어 1명 이상 AND 아래 보존 eligibility의 현재 통행·위험·시점·차원·봉인·생사 제약. 원문에 있는 본체 현존·행동·응답은 등장 후 접촉 검사로 분리한다. 최초미배치가 명시 확인되면 동일 actor 최초 배치 후보 진입에 본체 선재를 요구하지 않는다. 현재 준비와 이후 서비스 준비를 구별한다.",
+      "exact_current_player_requirement": "현재 안정된 입구까지 실제 통행 가능해야 한다. 반고가 떠받치는 위험 구역은 대화 가능과 통행 가능을 분리한다. 균열 전체 해소나 교대 완료를 이 첫 만남으로 만들지 않는다.",
+      "stage_interpretation": "위 인용은 원문 보존이다. 실제 최초 배치 전에는 장소·통행·위험 등 NPC 비의존 조건만 검사하고, 본체 상태는 존재 허용·생사·봉인·단일성 원장으로 검사한다. 이미 있는 배우의 현재 체류·수선·몸짓·발화와 청중 확인은 배치 뒤 단계다. 실제 다른 장소에서 활동 중인 본체를 자동 이동시키지 않는다.",
+      "subject": "현재 조건 충족 실제 플레이어 중 공통 선택의 한 사람이 등장 주체다. 해금자와 달라도 되며 해금자의 과거 현장 방문을 현재 방문자의 이력으로 복제하지 않는다.",
+      "probability_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/general_encounter",
+      "atomic_ref": "퀘스트/공통설계/시간_조우_성장_운영정책.json#/atomic_contract",
+      "mode": "기존 일반 무작위 경로는 전역 확률·가중치·NONE·주기·CAS 그대로. 확정 전용 경로·기록/꿈 모드는 일반풀로 전환하지 않음.",
+      "new_player_gates": 0
+    },
+    "single_body_state_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/initialization",
+    "already_present_contact": "동일 본체가 PRESENT이면 등장 추첨을 인사마다 반복하지 않는다. 현재 실제 거리·시야·청중·접근을 확인하고 질문·관찰·거절을 선택한다. 사적 협력·수주·전달·서비스는 실제 본인의 별도 수락 뒤에만 실행한다. 유효 비언어 접촉에는 발화 강제0.",
+    "preserve": "현재 안정된 동굴 입구 바닥에서만 접촉 후보를 만든다. 지지하는 위험 구역 안 진입·손 떼기·교대 완료·균열 해소를 가용 초기화로 만들지 않는다. 현재 지지 활동이 있으면 그 동일 본체와 실제 거리로만 접촉한다.",
+    "rights_and_knowledge_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json#/personal_separation",
+    "no_new_service_gate": "후속 서비스 소품·자료·재료·개인 수락·MAIN 소유·기존 사건 완료를 첫 인사에 추가하지 않는다. exact 단순도달을 outline만의 비무장·휴대기록 후보로 강화하지 않는다. 소품이 없으면 없는 소품 행동을 재연하지 않고 가능한 인사만 한다.",
+    "no_canon_bypass": "세계가용 true는 본체 존재·부활·생존 확정이 아니다. NEVER_PLACED와 실제 부재·미로드·죽음·봉인을 분리한다. 기록전용 상태이면 실제 허용 기록 열람만, 살아 있는 대화 본체 생성0. 새 분신·차원이동·봉인해제·개인별 몸·과거 사건 생성0.",
+    "knowledge": "서버 receipt는 NPC 자동 기억이 아니다. 실제 본 관측, 허락된 전달의 실제 수신, 실제 공개 청중만 대화 근거다. 해금자≠현재 조우주체≠MAIN 소유자≠보상 수령자. 공개 현장 결과만 공유하며 사적 기억·친분·개인 허락은 복제하지 않는다.",
+    "implementation": "좌표·등록 부지·권위 상태·실제 관측 receipt 및 기존 공통 원장 연결은 구현 요구다. 본 저술의 채택은 실제 초기화·등장·게임/API/LLM 시험 완료가 아니다."
+  },
+  "source_contract": {
+    "world_region": "Overworld: 기존 오버월드 생활권; 등록 연결 대기",
+    "location_scene": {
+      "place": "기존 동굴 폐허 입구의 안정된 바닥",
+      "retained_placement_reference": "실제 지하 폐허, 또는 매장·기억 장면에 적합한 실제 묘지·폐예배당의 안전 공간; 인물 전용 건축 없음",
+      "fallback": "지정 구조물이 없으면 같은 생활권의 이미 안전이 확인된 자연 부지에서 동일 동작을 수행한다. 소도구는 현재 소유하거나 사용 허락된 것만 사용하며 새 전용 건물·필수 NPC를 만들지 않는다. 실제로 가능한 부지가 없으면 이 장면을 배치하지 않는다.",
+      "status": "new_minor_scene_detail_on_unverified_retained_placement"
+    },
+    "eligibility": {
+      "server_state": "현재 실제 길과 안전 구역이 존재하는지 확인한다. 첫 용 공용 결과는 세계 경로 변화만 제공하며 개인 만남 경험을 부여하지 않는다.",
+      "player_state": "현재 안정된 입구까지 실제 통행 가능해야 한다. 반고가 떠받치는 위험 구역은 대화 가능과 통행 가능을 분리한다. 균열 전체 해소나 교대 완료를 이 첫 만남으로 만들지 않는다.",
+      "actor_availability": "서버의 같은 본체가 이 현장에 있고 다른 사건·전투·배타적 실행과 충돌하지 않을 때만 접촉한다. 개인별 복제체를 생성하지 않는다.",
+      "seal_guard": "입력에는 새 개별 봉인이 확정되어 있지 않다. 이를 무조건 무봉인으로 해석하지 않고 실제 권위 접근 상태를 확인한다. 완전 봉인 중 일반 대화·수주 불가.",
+      "permission_or_willingness": "“내 크기를 보러 왔다면 그만 봐도 된다. 저 틈이 조금이라도 움직이는지 봐 줄 수 있나?” 대답·도움·접견은 각자 거절 가능하다.",
+      "chapter_reason_if_any": "기존 메인 배역 없음. 이 첫 접촉에 새 필수 MAIN이나 장 번호를 붙이지 않는다.",
+      "probability_direction": "장소·접근·봉인·의사 등 실제 조건을 먼저 적용한 뒤 초반에는 낮은 가중치도 가능한 후보로 둔다. 정확 확률과 후보 등록은 미정이며 첫 용 뒤 상대적 빈도 증가와 실제 새 길 개통을 분리한다."
+    },
+    "npc_current_action": "반고는 균열 아래에서 힘을 유지하며 작은 돌 하나가 굴러 나오는 방향을 보고 있다. 사람이 다가오자 받치는 손은 두고 고개만 돌린다.",
+    "player_visible_clue": "안쪽으로 갈수록 떨어지는 돌가루가 한쪽에만 쌓이고, 반고가 비워 둔 발길은 그 반대편으로 이어진다."
+  },
+  "source_contract_role": "정확 원문 보존 인용. 원문의 본체 현존 문구를 최초미배치 선행으로 실행하지 않고 adopted_activation의 단계 분리를 적용한다. 원문 역사적 미정·미채택 표기를 소급 수정하지 않는다.",
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S06-001.json",
+      "pointers": [
+        "/connection_manuscript"
+      ],
+      "sha256": "012936d2fda57fd901ca00d6e5bcc0a7e36ff0703660776f4e15ae4869f600ce",
+      "role": "보존 연결 원고; 본 계약의 현행 초기접근보다 우선하지 않는 역사 후보 포함"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S06-001.json",
+      "pointers": [
+        "/current_identity",
+        "/current_access"
+      ],
+      "sha256": "b160742af593a50311065ac746d35247cfaaae27a60bc538dd3f73a330b918e7",
+      "role": "정체·접근 보호"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-032/RPG-S06-001_반고.json",
+      "pointers": [
+        ""
+      ],
+      "sha256": "461f2fbc4f53cbb12870e3b6934fbfdad117565cd35924bbc2f5d9376d826954",
+      "role": "현행 개별 활동·개인 권리 보존"
+    }
+  ],
+  "common_ref": "스토리/현행활성화계약/00_현행활성화_공통계약.json",
+  "precedence": "정체·명시 시점·생사·차원·봉인·개인권리 > 본 문서의 초기 세계가용/최초미배치와 B5 관측대상 분리 > 기존 활동 계약 > 현행 전역 운영 > 역사 후보·보존 사본. 이번 채택 외 일반 조건·확률을 재정의하지 않는다.",
+  "runtime_ready": false,
+  "activation_performed": false,
+  "new_quest_count": 0,
+  "new_reward_count": 0
+}

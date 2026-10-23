@@ -1,0 +1,56 @@
+# 잎그늘 부채 · 잔향불씨
+
+현행 저술 기획. 실제 서버 등록·구현·플레이 검증 자료가 아닙니다.
+
+- 콘텐츠 관리 ID: CTL-FOX-W01
+- 제공자 관리 ID: RPG-S06-084
+- 정의 ID: mythictrpg:fox_traditions_unified_fox_daji_leafshade_ember
+- 이름: 잎그늘 부채 · 잔향불씨
+- 실행 검증 완료: 아니오
+- 공통 설계 기준: ../../공통설계/전역기준.json
+
+## 상세 설계
+- key: CTL-FOX-W01
+- 이름: 잎그늘 부채 · 잔향불씨
+- 종류: weapon_package
+- proposal status: 기존 콘텐츠 수치 유지; 별도 획득 상세 저술 채택, 런타임 미구현
+- proposed id: mythictrpg:fox_traditions_unified_fox_daji_leafshade_ember
+- registered id: 없음
+- 실행 검증 완료: 아니오
+- 획득맥락: FOX-TRAIN-W01 「불씨를 보내기 전에」 별도 SIDE 훈련 채택. 실제 본체 지도·본인 수행·인수 원장 이후 개인 최초1회. 기존 FOX-SIDE/MAIN/봉인해제/호칭과 독립.
+- 역할: 가벼운 적중 뒤 짧은 잔향 피해로 움직이며 견제. 세 이름의 힘을 합치거나 세 본체를 호출하지 않음.
+- 무기: 희귀 제안 / minecraft:wooden_sword 기반 부채 모델 / 공격 기여 W=3, 기본1 포함 총4 / 공격속도1.8 / 무한내구(실물 손상·내구 소모0) / 인챈트0. 일반 검 좌클릭 범위, 별도 평타 버프 없음. 공격속도 modifier와 모델·무한내구 지급 component 검증. 무기+내장1개를 1콘텐츠로 계산.
+- 조작과수치: 우클릭. 마나20, 쿨160tick(8초). 투사체1개 피해5, 적중 뒤 잔향 피해1을20·40tick에 각1회(총7). 사거리16, 속도1.6/tick, 반경0.12, 관통0.
+- 선후딜: 선딜[0,4), t4발사, 후딜[4,10), 최대비행10tick. 승인 조준 고정, 이동·회전 자유. 잔향은 명중부터40tick.
+- 실패: 투사체가 막히면 잔향 미부여. 최초 체력피해>0일 때만 도트 등록. 도트 매회 새 방어/무적 검사, 사라진 대상을 추적하거나 다른 적으로 이전 안 함. 비용은 공통.
+- 아군과지형: 아군·중립 무해. 불씨는 실제 화염 아님, 숲/물체 발화·물 증발·채광 없음. 투사체 충돌 공통.
+- 보스: 직접피해는 정상 방어/무적 적용. 잔향은 debuff_dot 허용표, 미분류/면역 보스에는 부착0. 허용 보스 각 tick 피해만, 기믹 표식/실제 봉인/신호로 쓰지 않음.
+- 중첩과교체: 한 대상에 잔향 슬롯1개(모든 시전자 공유). 기존 잔향이 있으면 새 직격5만, 도트 갱신·중첩·소유자 탈취 없음. 동일 시전의 도트는 원 castId, 무기 연계는 전체1회. 무기 변경은 적용된 잔향 유지.
+- 상태정리: 기절은 이미 부착된 잔향 중단 안 함. 시전자 사망/로그아웃/차원이동, 대상 사망/차원이동, 전투 종료는 원 출처 잔향 제거. 일반 CC 정화와 도트 정화는 별개, 도트 면역/해제표 없이 패로 지우지 않음.
+- 연출: 잎 모양 주황빛 한 줄, 대상 곁 작은 잔불 두 번. 귀환 신호와 다른 색/아이콘이며 실제 인물 음성·사적 호칭 없음.
+- 현재지원: 무기/우클릭·자원·동일 대상 반복피해 기반.
+- 추가필요: 실이동 불씨·직격 연결 source별 도트·면역표·개별 시전 종료시점·중첩 슬롯. 단순 반복 피해 기능만으로 이 흐름 지원을 단정하지 않음.
+
+### 전투력
+- equipment E: 10
+- weapon W: 3
+- weapon skill K: 18
+
+## durability policy
+- unbreakable: 예
+- physical damage consumption: 0
+- new rights from revision: 0
+- common execution ref: ../공통실행.json
+
+## authoring presentation contract
+- relative file: ../../스킬연출/효과별/CTL-FOX-W01.json
+- 상태: 채택된 연출·판정 상세 저술. 런타임 필드가 아님.
+- precedence: 외형·시각 피드백과 명시된 기하 상세는 이 참조를 적용한다. 원시 피해·마나·쿨·장비값·권리·획득 조건은 기존 카드 유지. prototype 검기 개정은 별도 시험 시편이며 이 콘텐츠에 자동 적용하지 않는다.
+- actual game validation: NOT_RUN
+
+## acquisition authoring contract
+- relative file: ../../상세저술/RPG-S06-084/여우신_별도전투훈련.json
+- json pointer: /acquisitions/0
+- quest id: FOX-TRAIN-W01
+- 상태: AUTHORED_NOT_RUNTIME
+- new rights from revision: 0

@@ -1,0 +1,75 @@
+{
+  "record_key": "RPG-S01-084",
+  "name": "이카로스",
+  "definition_id": "GR021-084-SIDE01",
+  "mode": "SIDE_LOCAL_EVENT",
+  "personal_MAIN": "NOT_APPLICABLE",
+  "engine_god_id": "mythictrpg:greek_unassigned_icarus",
+  "source_reference": {
+    "persona": "기존페르소나_인물별/RPG-S01-084/profile.json",
+    "contract": "기존페르소나_인물별/RPG-S01-084/authoring_contract.json",
+    "fields": [
+      "/scope_nonprofile_contract/main_ownership",
+      "/scope_nonprofile_contract/rewards_and_costs",
+      "/scope_nonprofile_contract/relation_handoffs",
+      "/scope_nonprofile_contract/knowledge_events"
+    ],
+    "story": "02_연결집필/P22_stage2.json#/records/2",
+    "accepted_episodes": [
+      "EP007A-RPG-S01-084"
+    ],
+    "episode_field": "/episode_link_contract/accepted_episode"
+  },
+  "preserved_identity": {
+    "tier": "최하급",
+    "identity_boundary": "추가 통합 메모 없음"
+  },
+  "title": "낮은 곳에서 배우는 차이",
+  "site": "기존 북방 폐허/감시탑의 안전 지상 8×6. IC-RIG-01 자기 시험용 결속모형, IC-LINE-01 길이4블록 시험선, IC-STOP-01 끝1블록 전 중단표식. 고공·절벽 사용0.",
+  "objectives": [
+    "실제로 보유한 시험모형의 변형 흔적1을 살펴 표시. 옛 제한 자료가 있으면 대조하되 아버지의 현재 승인으로 바꾸지 않는다. 모형 없으면 자기 minecraft:stick 2 + minecraft:string 1을 허락받아 지상 결속모형1로 조립, 완료 시 같은 구성품을 반환. 결속모형의 손높이 지상시험에서 재료 굽힘표식이 처음 나타나는 지점(허용 손동작길이0.5블록)을 실제 확인해 기록한다. 이는 신규 모형상태 COLD/STRAIGHT/BEND_MARK 연결이며 원래 재료 일반물리로 주장하지 않는다. 과도변형/파괴 전에 중단.",
+    "B1의 실제 변형 시작점을 확인한 뒤, 그보다 낮은 손동작 범위와 지상 이동 중단지점을 먼저 함께 정하고 움직이는 사람/중단 신호를 보내는 사람의 역할·중단어를 합의한다. 모형을 지상 시험선에서 초당1블록 이하로 운반하며 이카로스의 실제 중단어에1초 이내 이동과 재료 손동작을 함께 멈추고2초 정지한다. 실제 손동작이 관측된 변형 시작점에 이르기 전에 멈췄는지도 확인한다.",
+    "실제 이동거리·중단지연·손상/변화없음을 남기고 실패 위치와 줄인 범위를 자기 말로 설명한다. 실패한 시험은 그대로 보존하고 재시도는 더 낮은 자극·짧은 동작에 새로 동의한 경우만 한다. 신호 성공과 범위 설명이 실제 확인돼야 완료하며 성공까지 무한 반복을 강요하지 않는다."
+  ],
+  "branches": "무작정 성공대화는 불인정. 변형이 없으면 관측상 변화없음을 정직하게 남기고 표식 기준 중단을 독립 연습할 수 있지만 B1 변형점 미확인으로 SIDE 완료·지도권은 없다. 새 손상/실패를 일부러 만들거나 엔진에 재료변형 물리가 있다고 사칭하지 않는다. 달리기/고공도약은 시험취소. 단순 종이회전 놀이는 수료시험 아님.",
+  "reward": {
+    "kind": "안전시험 제작 지도",
+    "definition": "GR021-IC84-BIND",
+    "quantity": "결속 지도1회",
+    "stock": "완성품/날개 지급0. 자기 시험 구성품 stick2/string1을 사용·회수, 실제 소실만 손실. 해체/반환은 원래 구성품UUID와 관측된 마모·휨·손상상태를 보존하고 새 부품으로 재생하지 않는다.",
+    "condition": "실제 변형 시작점 확인, 변형/실패/변화없음 기록 보존, 합의한 지상 시험의 중단신호 실제 성공1회와 실패가 바꾼 범위 설명까지 확인한 개인. 변형점 미확인·신호실패·설명미완료는 지도권0.",
+    "effect": "같은 구성품의 결속을 한번 풀어 재조립하고 지상2블록 운반 후 흔들림/빠짐을 관찰. 실습기록만 보존, 레시피 자동해금·비행·K/J·능력치0.",
+    "budget": "B1, 생활 제작지도"
+  },
+  "expected_minutes": [
+    5,
+    8
+  ],
+  "acceptance_tests": [
+    "고공비행 성공플래그0",
+    "실패기록 유지",
+    "반환구성품 중복0"
+  ],
+  "special": "",
+  "reward_status_source": "APPLICABLE",
+  "new_permanent_combat_rewards": 0,
+  "personal_change": "이전에는 계획 또는 상대에 대한 기대였다. 실제 관측 뒤에는 이카로스가 아버지의 현재 허락을 빌리지 않고 확인한 범위의 다음 시도를 직접 선택한다. 비행 능력·새 추락·부활은 부여하지 않는다.",
+  "source_outcome": "낮은 곳에서 배우는 차이에서 실제 선택한 행동과 결과: 이카로스가 아버지의 현재 허락을 빌리지 않고 확인한 범위의 다음 시도를 직접 선택한다. 비행 능력·새 추락·부활은 부여하지 않는다.",
+  "counterpart_delivery": [],
+  "knowledge_fact": {
+    "id": "GR021-084-SIDE01.RESULT",
+    "payload": [
+      "실제수행자UUID",
+      "시각",
+      "목표별 증거",
+      "선택",
+      "실제 성공/실패/손실",
+      "공개 허용범위"
+    ],
+    "learners": "이카로스와 플레이어 각각이 직접 관측하거나 허락된 보고를 실제 받은 범위만. 참가명부만으로 지식이 생기지 않으며 실제 청취/목격/열람 UUID별로 기록한다. 외부 상대는 counterpart_delivery의 실제 수신완료 내용만.",
+    "private": "개인 수락·손실 사연·사적 발언은 별도 동의 없는 공유 금지. 과거관계와 현재응답은 별개."
+  },
+  "completion_evidence": "각 objectives의 물체/위치/상태/실제 응답 로그를 함께 저장. branches에서 정한 실패·부분종료는 성공 보상으로 대체하지 않는다.",
+  "balance_reason": "표시 시간은 이동·상호작용을 합한 설계 예상이며 실측 아님. 원문 보상 종류를 유지하고 신규 전투력 상승을 붙이지 않는다. 역할 선택·이동·검증 가치가 핵심이다.",
+  "runtime_ready": false
+}

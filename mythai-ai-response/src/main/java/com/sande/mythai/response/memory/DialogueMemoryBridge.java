@@ -67,9 +67,55 @@ public final class DialogueMemoryBridge {
     }
     private DialogueMemoryBridge() {}
 
+    /** NEW base turn: current game rumor receipts are separate from archived speech and observation lookup. */
+    public static CompletableFuture<Turn> beginNativeRoomAsync(ServerPlayer player,
+            com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request, long number) {
+        if (!player.server.isSameThread()) throw new IllegalStateException("Room snapshot requires server thread");
+        var inherited = roomHistoryReferences(request.roomId(), request.history());
+        var context = request.speakerState().memoryContext();
+        if (!MemoryFoundationSettings.supportsRumors() || request.publicRoom() || context == null
+                || context.audience().size() > 16 || !roomCurrent(player, context))
+            return CompletableFuture.completedFuture(inherit(EMPTY, inherited));
+        var gods = request.godIds().stream().map(Object::toString)
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+        var available = com.sande.mythictrpg.rumor.RoomRumorAccess.heard(player.server, context.playerId(),
+                context.godId(), context.audience(), gods, request.publicRoom());
+        return CompletableFuture.completedFuture(inherit(currentRumorTurn(context, available, request.currentText(), number), inherited));
+    }
+
+    /** Inputs are already filtered by the game's exact recipient/audience/mode checks. Opens no journal. */
+    static Turn currentRumorTurn(ConversationMemoryContext context, List<RumorLedger.HeardRumor> available,
+            String query, long number) {
+        var packed = packLegacy(List.of(), selectRumors(available, query, number == 1));
+        return new Turn(context, null, List.of(), packed.rumors(), packed.prompt(), number);
+    }
+
+    /** Invoked only after classifying THIS turn, and independently constrained by the game-owned lease. */
+    public static CompletableFuture<Turn> consultSupportAsync(ServerPlayer player,
+            com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request, Turn base,
+            com.sande.mythictrpg.ai.intent.SupportConsultation consultation) {
+        if (!player.server.isSameThread()) throw new IllegalStateException("Room snapshot requires server thread");
+        var context = request.speakerState().memoryContext();
+        if (!ObservedSupportMemory.requested(consultation.validatedFor(request.currentText()).use())
+                || request.secondary()) return CompletableFuture.completedFuture(base);
+        if (request.publicRoom() || request.godIds().size() != 1 || context == null || !roomCurrent(player, context))
+            return CompletableFuture.completedFuture(base);
+        return ExperienceAccess.requestForNativeDialogue(player, context).exceptionally(failure -> ExperienceLease.unavailable("QUERY_FAILED"))
+                .thenApply(lease -> {
+                    var selected = ObservedSupportMemory.select(lease.view());
+                    return new Turn(context, base.journal(), base.selected(), base.rumors(),
+                            base.prompt() + ObservedSupportMemory.prompt(selected, consultation.use()), base.turn(),
+                            base.recall(), base.readView(), base.settings(), lease, selected, base.inherited());
+                });
+    }
+
     /** Explicit room lease path. It never installs, reads or switches the legacy player binding. */
     public static CompletableFuture<Turn> beginRoomAsync(ServerPlayer player,
             com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request, long number) {
+        return beginRoomAsync(player, request, number, true);
+    }
+    public static CompletableFuture<Turn> beginRoomAsync(ServerPlayer player,
+            com.sande.mythictrpg.ai.api.RoomConversationEngine.Request request, long number, boolean includeObservations) {
         if (!player.server.isSameThread()) throw new IllegalStateException("Room snapshot requires server thread");
         var refs = roomHistoryReferences(request.roomId(), request.history());
         // This compatibility format has no PUBLIC declaration, unlike the full room heard-memory store.
@@ -95,7 +141,7 @@ public final class DialogueMemoryBridge {
                 number, now, ROOM_FOCUS.get(roomKey));
         if (query.focus() == null) ROOM_FOCUS.remove(roomKey); else ROOM_FOCUS.put(roomKey, query.focus());
         var view = journal.readView(key(c), c.audience(), gods);
-        var rumors = c.readOnly() ? selectRumors(com.sande.mythictrpg.rumor.RoomRumorAccess.heard(player.server,
+        var rumors = MemoryFoundationSettings.supportsRumors() ? selectRumors(com.sande.mythictrpg.rumor.RoomRumorAccess.heard(player.server,
                 c.playerId(), c.godId(), c.audience(), gods, request.publicRoom()), request.currentText(), number == 1)
                 : List.<RumorLedger.HeardRumor>of();
         // New room speech is persisted once by RoomMemoryBridge.published, including non-LLM input,
@@ -120,7 +166,7 @@ public final class DialogueMemoryBridge {
             });
         } catch (RejectedExecutionException busy) { personal.complete(new Turn(c, journal, List.of(), List.of(), "", number)); }
         // The current watch proof has no God audience. Public speech and multiple Gods cannot consume it.
-        var experience = !request.publicRoom() && gods.size() == 1 ? ExperienceAccess.request(player, c)
+        var experience = includeObservations && !request.publicRoom() && gods.size() == 1 ? ExperienceAccess.request(player, c)
                 : CompletableFuture.completedFuture(ExperienceLease.unavailable("ROOM_AUDIENCE_UNSUPPORTED"));
         return personal.thenCombine(experience.exceptionally(failure -> ExperienceLease.unavailable("QUERY_FAILED")),
                 (turn, lease) -> inherit(combine(turn, lease, request.currentText(), recentPlayers), refs));
@@ -313,7 +359,7 @@ public final class DialogueMemoryBridge {
         if (query.focus() == null) FOCUS.remove(key(c)); else FOCUS.put(key(c), query.focus());
         var gods = godAudience(player, c);
         var view = journal.readView(key(c), c.audience(), gods);
-        var rumors = c.readOnly() && gods.size() == 1 ? selectRumors(heard(player.server, c), text, number == 1) : List.<RumorLedger.HeardRumor>of();
+        var rumors = MemoryFoundationSettings.supportsRumors() && gods.size() == 1 ? selectRumors(heard(player.server, c), text, number == 1) : List.<RumorLedger.HeardRumor>of();
         recordPlayer(player, c, number, text);
         // Worker receives immutable data only, no live player/world object. Optional semantic work has a bounded fallback.
         var result = new CompletableFuture<Turn>();
@@ -373,7 +419,7 @@ public final class DialogueMemoryBridge {
         var gods = godAudience(player, context);
         List<MemoryJournal.Entry> selected = journal.searchConversation(key, context.audience(), text, recent,
                 recentPlayerTexts, context.generation(), System.currentTimeMillis(), 3, 15_000_000L, gods);
-        List<RumorLedger.HeardRumor> rumors = context.readOnly() && gods.size() == 1 ? selectRumors(heard(player.server, context), text, number == 1) : List.of();
+        List<RumorLedger.HeardRumor> rumors = MemoryFoundationSettings.supportsRumors() && gods.size() == 1 ? selectRumors(heard(player.server, context), text, number == 1) : List.of();
         Turn turn = new Turn(context, journal, selected, rumors, prompt(selected, rumors), number);
         TURNS.put(player.getUUID(), turn);
         recordPlayer(player, context, number, text);
@@ -393,7 +439,7 @@ public final class DialogueMemoryBridge {
     public static Turn prepare(MinecraftServer server, ConversationMemoryContext context, String eventQuery) {
         MemoryJournal journal = journal(server);
         var selected = journal.search(key(context), context.audience(), eventQuery, Set.of(), System.currentTimeMillis(), 3, 15_000_000L);
-        var rumors = context.readOnly() ? selectRumors(heard(server, context), eventQuery, true) : List.<RumorLedger.HeardRumor>of();
+        var rumors = MemoryFoundationSettings.supportsRumors() ? selectRumors(heard(server, context), eventQuery, true) : List.<RumorLedger.HeardRumor>of();
         return new Turn(context, journal, selected, rumors, prompt(selected, rumors), 0);
     }
     public static boolean preparedCurrent(MinecraftServer server, Turn turn) {
@@ -416,7 +462,7 @@ public final class DialogueMemoryBridge {
                 var server=player.server;var context=turn.context();var claims=turn.rumors();
                 refs.add(ExperienceHistory.Reference.guarded(()->server.isSameThread()
                         && AiConversationRuntimeService.INSTANCE.memoryContextCurrent(player, context)
-                        && MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST
+                        && MemoryFoundationSettings.supportsRumors()
                         && heard(server,context).containsAll(claims)));
             }
             DERIVED_HISTORY.computeIfAbsent(player.getUUID(), ignored -> new ExperienceHistory()).record(text, refs);

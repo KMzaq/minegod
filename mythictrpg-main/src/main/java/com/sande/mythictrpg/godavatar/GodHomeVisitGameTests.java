@@ -147,7 +147,7 @@ public final class GodHomeVisitGameTests {
         catch(Exception failure){throw new IllegalStateException(failure);}
         finally { f.close(); }
     }
-    private static final class Fixture {
+    static final class Fixture {
         final GameTestHelper helper;
         final GodHomeVisitService service = GodHomeVisitService.INSTANCE;
         final Field definitions, policies, provider;

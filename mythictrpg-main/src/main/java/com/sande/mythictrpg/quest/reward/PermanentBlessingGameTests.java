@@ -32,6 +32,136 @@ public final class PermanentBlessingGameTests {
     private PermanentBlessingGameTests() { }
 
     @GameTest(templateNamespace = "mythictrpg_blessings", template = EMPTY, timeoutTicks = 300)
+    public static void authoredLevelCapsAndHighPermanentOwnershipRoundTrip(GameTestHelper helper) {
+        ResourceLocation strength = ResourceLocation.withDefaultNamespace("strength");
+        ResourceLocation resistance = ResourceLocation.withDefaultNamespace("resistance");
+        expectRejected(helper, () -> new BlessingRewardEntry(strength, 20, -1), "negative amplifier accepted");
+        expectRejected(helper, () -> new BlessingRewardEntry(strength, -1, 17), "strength XVIII accepted");
+        expectRejected(helper, () -> new BlessingRewardEntry(resistance, 20, 4), "resistance V accepted");
+        for (ResourceLocation effect : List.of(strength, SPEED, ResourceLocation.withDefaultNamespace("regeneration"),
+                ResourceLocation.withDefaultNamespace("haste"), ResourceLocation.withDefaultNamespace("jump_boost"))) {
+            var highest = new BlessingRewardEntry(effect, -1, 16);
+            helper.assertValueEqual(RewardEntryCodec.load(RewardEntryCodec.save(highest)), highest,
+                    "level XVII reward did not survive serialization");
+        }
+        expectRejected(helper, () -> RewardEntryCodec.parse(JsonParser.parseString(
+                "{\"type\":\"blessing\",\"effectId\":\"minecraft:resistance\",\"durationTicks\":-1,\"amplifier\":4}")
+                .getAsJsonObject(), "fixture"), "authored JSON accepted resistance V");
+        try (var fixture = new Connected(helper)) {
+            ServerPlayer player = fixture.player;
+            grant(helper, player, id("high_strength/" + UUID.randomUUID()), new BlessingRewardEntry(strength, -1, 16));
+            grant(helper, player, id("max_resistance/" + UUID.randomUUID()), new BlessingRewardEntry(resistance, -1, 3));
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getAmplifier(), 16, "strength XVII was not applied");
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier(), 3, "resistance IV was not applied");
+            var state = RewardClaimState.get(player.server);
+            var restored = RewardClaimState.load(state.save(new CompoundTag(), player.registryAccess()), player.registryAccess());
+            helper.assertTrue(restored.isWritable(), "high blessing ownership was rejected on reload");
+            helper.assertValueEqual(restored.ownedPermanentBlessingLevels(player.getUUID()), Map.of(strength, 16, resistance, 3),
+                    "high blessing levels changed on reload");
+            helper.succeed();
+        }
+    }
+
+    @GameTest(templateNamespace = "mythictrpg_blessings", template = EMPTY, timeoutTicks = 300)
+    public static void temporaryRewardsKeepLowerRemainingTimeAcrossLogin(GameTestHelper helper) {
+        ResourceLocation strength = ResourceLocation.withDefaultNamespace("strength");
+        try (var fixture = new Connected(helper)) {
+            ServerPlayer player = fixture.player;
+            temporaryGrant(helper, player, strength, 20, 4);
+            temporaryGrant(helper, player, strength, 100, 2);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getAmplifier(), 4, "lower grant replaced active strength V");
+            player = fixture.reconnect();
+            tickEffect(helper, player, MobEffects.DAMAGE_BOOST, 20);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getAmplifier(), 2, "strength III was lost after V expired");
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getDuration(), 80, "hidden duration restarted or disappeared");
+            temporaryGrant(helper, player, strength, 40, 2);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getDuration(), 80, "equal shorter reward reduced duration");
+            temporaryGrant(helper, player, strength, 120, 2);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getDuration(), 120, "equal longer reward failed to extend duration");
+            temporaryGrant(helper, player, strength, 20, 4);
+            tickEffect(helper, player, MobEffects.DAMAGE_BOOST, 20);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getAmplifier(), 2, "stronger grant discarded prior lower effect");
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_BOOST).getDuration(), 100, "lower effect elapsed time was not preserved");
+            helper.assertTrue(RewardClaimState.get(player.server).permanentBlessingsFor(player.getUUID()).isEmpty(),
+                    "temporary grants created permanent ownership");
+            helper.succeed();
+        }
+    }
+
+    @GameTest(templateNamespace = "mythictrpg_blessings", template = EMPTY, timeoutTicks = 300)
+    public static void extendingUpperLayerKeepsLiveTailWithoutClearingMilkState(GameTestHelper helper) throws Exception {
+        ResourceLocation strength = ResourceLocation.withDefaultNamespace("strength");
+        try (var fixture = new Connected(helper)) {
+            ServerPlayer player = fixture.player;
+            // Reproduce the vanilla chain edge: the expired middle layer hides a still-live tail.
+            var raw = new MobEffectInstance(MobEffects.DAMAGE_BOOST, -1, 0);
+            raw.update(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 60, 2));
+            raw.update(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20, 4));
+            raw.update(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 4));
+            boolean rawAlive = true;
+            for (int i = 0; i < 100; i++) rawAlive = raw.tick(player, () -> { });
+            helper.assertFalse(rawAlive, "fixture did not reproduce vanilla expired-middle-layer loss");
+
+            grant(helper, player, id("layer_baseline/" + UUID.randomUUID()), new BlessingRewardEntry(strength, -1, 0));
+            temporaryGrant(helper, player, strength, 60, 2);
+            temporaryGrant(helper, player, strength, 20, 4);
+            temporaryGrant(helper, player, strength, 100, 4);
+            tickEffect(helper, player, MobEffects.DAMAGE_BOOST, 100);
+            var baseline = player.getEffect(MobEffects.DAMAGE_BOOST);
+            helper.assertTrue(baseline.isInfiniteDuration() && baseline.getAmplifier() == 0,
+                    "upper refresh lost the live permanent tail");
+            var state = RewardClaimState.get(player.server);
+            helper.assertFalse(state.isBlessingSuppressed(player.getUUID(), strength), "chain normalization simulated effect removal");
+            drinkMilk(player);
+            helper.assertTrue(state.isBlessingSuppressed(player.getUUID(), strength), "milk did not suppress the permanent blessing");
+            temporaryGrant(helper, player, strength, 60, 2);
+            temporaryGrant(helper, player, strength, 20, 4);
+            temporaryGrant(helper, player, strength, 100, 4);
+            helper.assertTrue(state.isBlessingSuppressed(player.getUUID(), strength), "temporary normalization cleared milk suppression");
+            helper.assertValueEqual(player.server.getCommands().getDispatcher().execute("mythblessing", player.createCommandSourceStack().withPermission(0)),
+                    1, "ordinary player could not read restore command help");
+            helper.assertTrue(state.isBlessingSuppressed(player.getUUID(), strength), "help command restored effects");
+            helper.assertValueEqual(player.server.getCommands().getDispatcher().execute("mythblessing reapply", player.createCommandSourceStack().withPermission(0)),
+                    1, "ordinary self restore command failed");
+            helper.assertFalse(state.isBlessingSuppressed(player.getUUID(), strength), "explicit restore did not clear suppression");
+            tickEffect(helper, player, MobEffects.DAMAGE_BOOST, 100);
+            helper.assertTrue(player.getEffect(MobEffects.DAMAGE_BOOST).isInfiniteDuration(), "restore did not preserve hidden permanent baseline");
+            helper.succeed();
+        }
+    }
+
+    @GameTest(templateNamespace = "mythictrpg_blessings", template = EMPTY, timeoutTicks = 300)
+    public static void hiddenAbsorptionAndExistingExternalLevelsAreNotOverwritten(GameTestHelper helper) {
+        ResourceLocation absorption = ResourceLocation.withDefaultNamespace("absorption");
+        ResourceLocation resistance = ResourceLocation.withDefaultNamespace("resistance");
+        try (var fixture = new Connected(helper)) {
+            ServerPlayer player = fixture.player;
+            grant(helper, player, id("absorption_baseline/" + UUID.randomUUID()), new BlessingRewardEntry(absorption, -1, 0));
+            temporaryGrant(helper, player, absorption, 20, 4);
+            player.setAbsorptionAmount(1.0F);
+            temporaryGrant(helper, player, absorption, 100, 2);
+            helper.assertValueEqual(player.getAbsorptionAmount(), 1.0F, "hidden lower absorption refilled spent hearts");
+            PermanentBlessingRuntime.reapply(player);
+            helper.assertValueEqual(player.getAbsorptionAmount(), 1.0F, "reapply refilled spent hearts");
+            // A weaker, longer layer is removed only when an actual upper extension dominates it.
+            temporaryGrant(helper, player, absorption, 120, 4);
+            player.setAbsorptionAmount(1.0F);
+            temporaryGrant(helper, player, absorption, 40, 3);
+            helper.assertValueEqual(player.getAbsorptionAmount(), 1.0F, "covered grant refilled spent hearts");
+            tickEffect(helper, player, MobEffects.ABSORPTION, 120);
+            helper.assertTrue(player.getEffect(MobEffects.ABSORPTION).isInfiniteDuration(), "absorption normalization lost permanent tail");
+            helper.assertValueEqual(player.getAbsorptionAmount(), 1.0F, "normalization or fallback refilled spent hearts");
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20, 4));
+            temporaryGrant(helper, player, resistance, 100, 3);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier(), 4,
+                    "game blessing globally capped an existing external effect");
+            tickEffect(helper, player, MobEffects.DAMAGE_RESISTANCE, 20);
+            helper.assertValueEqual(player.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier(), 3, "resistance IV fallback missing");
+            helper.succeed();
+        }
+    }
+
+    @GameTest(templateNamespace = "mythictrpg_blessings", template = EMPTY, timeoutTicks = 300)
     public static void strictCodecOwnershipMigrationAndPrunableClaims(GameTestHelper helper) {
         BlessingRewardEntry blessing = (BlessingRewardEntry) RewardEntryCodec.parse(JsonParser.parseString(
                 "{\"type\":\"blessing\",\"effectId\":\"minecraft:speed\",\"durationTicks\":-1,\"amplifier\":1}")
@@ -95,7 +225,7 @@ public final class PermanentBlessingGameTests {
             ResourceLocation first = id("milk/" + UUID.randomUUID());
             grant(helper, player, first, new BlessingRewardEntry(SPEED, -1, 0));
             var basePower = CombatPowerRuntime.ownedBlessingPower(player);
-            helper.assertTrue(basePower.available() && basePower.score() > 0, "authored blessing power unavailable: " + basePower.evidence());
+            helper.assertTrue(basePower.available() && basePower.score() == 0, "unnamed legacy blessing invented intrinsic power: " + basePower.evidence());
             grant(helper, player, id("same_level/" + UUID.randomUUID()), new BlessingRewardEntry(SPEED, -1, 0));
             helper.assertValueEqual(CombatPowerRuntime.ownedBlessingPower(player).score(), basePower.score(), "duplicate source doubled power");
             ResourceLocation upgrade = id("upgrade/" + UUID.randomUUID());
@@ -105,7 +235,7 @@ public final class PermanentBlessingGameTests {
             helper.assertValueEqual(state.ownedPermanentBlessingLevels(player.getUUID()), Map.of(SPEED, 1), "same effect did not select highest level");
             assertInfinite(helper, player, 1);
             double power = CombatPowerRuntime.ownedBlessingPower(player).score();
-            helper.assertTrue(power > basePower.score(), "higher blessing level did not increase authored score");
+            helper.assertValueEqual(power, basePower.score(), "effect upgrade changed unnamed intrinsic ownership score");
 
             drinkMilk(player);
             helper.assertFalse(player.hasEffect(MobEffects.MOVEMENT_SPEED), "milk did not remove infinite effect");
@@ -208,6 +338,16 @@ public final class PermanentBlessingGameTests {
     private static void grant(GameTestHelper helper, ServerPlayer player, ResourceLocation source, BlessingRewardEntry reward) {
         var result = RewardClaimService.INSTANCE.issue(player, GOD, source, new ResolvedQuestReward("fixture", List.of(reward), List.of()));
         helper.assertTrue(result.succeeded(), "permanent grant failed: " + result.reason());
+    }
+    private static void temporaryGrant(GameTestHelper helper, ServerPlayer player, ResourceLocation effect, int duration, int amplifier) {
+        var result = RewardExecutionService.grant(player, GOD, List.of(new BlessingRewardEntry(effect, duration, amplifier)), RewardGrantPurpose.QUEST);
+        helper.assertTrue(result.granted(), "temporary grant rejected: " + result.reason());
+    }
+    private static void tickEffect(GameTestHelper helper, ServerPlayer player, net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> effect, int ticks) {
+        for (int i = 0; i < ticks; i++) {
+            var current = player.getEffect(effect);
+            helper.assertTrue(current != null && current.tick(player, () -> { }), "effect chain ended before a surviving fallback at tick " + i);
+        }
     }
     private static RewardClaim claim(UUID player, ResourceLocation source, BlessingRewardEntry reward, long time) {
         return new RewardClaim(UUID.randomUUID(), player, GOD, source, "fixture", List.of(reward), List.of(), false, Optional.empty(), time);

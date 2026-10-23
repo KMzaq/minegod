@@ -23,7 +23,7 @@ public final class RoomRumorAccess {
     private static List<RumorLedger.HeardRumor> project(MinecraftServer server, UUID subject, String originGod,
             Set<UUID> playerAudience, Set<String> godAudience, boolean publicRoom, boolean historicalReference) {
         if (!server.isSameThread()) throw new IllegalStateException("Room rumor access requires game thread");
-        if (MemoryFoundationSettings.mode() != MemoryFoundationSettings.Mode.RUMOR_TEST
+        if (!MemoryFoundationSettings.supportsRumors()
                 || !scopeAllowed(subject, originGod, playerAudience, godAudience, publicRoom, historicalReference)) return List.of();
         var state = RumorSavedData.get(server);
         // Preserve the old one-God read path; a multi-God audience additionally needs current game receipts.

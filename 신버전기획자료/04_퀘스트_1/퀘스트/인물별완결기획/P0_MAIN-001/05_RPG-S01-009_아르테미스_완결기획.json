@@ -1,0 +1,836 @@
+{
+  "schema": "authoring.complete_personal_content.v1",
+  "packet_id": "P0_MAIN-001",
+  "record_key": "RPG-S01-009",
+  "name": "아르테미스",
+  "design_status": "현재 위임으로 채택한 완결 저술. 실제 런타임 구현/등록/플레이 검증 전.",
+  "authored_complete": true,
+  "runtime_ready": false,
+  "identity_preserved": {
+    "name": "아르테미스",
+    "canonical_name": "아르테미스",
+    "mythology": "그리스·로마",
+    "tradition_source": "그리스·로마: 고대 서사·신화집·로마 축제시",
+    "tier": "최상급",
+    "tier_display": "최상급",
+    "tier_confirmation": false,
+    "tier_source_status": "기존 제안 유지",
+    "divinity_classification": "divine",
+    "combat_tier": "최상급",
+    "gender_status": "원본 존재 분류에 명시; 게임 외형 확정과 별개",
+    "war_allegiance": {
+      "value": "미정",
+      "status": "current_source_identity_evidence",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "war_allegiance",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "myth_subgroup": {
+      "value": "올림포스",
+      "status": "기존 분류 제안",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "myth_subgroup",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "identity_safeguards": {
+      "value": "추가 통합 메모 없음",
+      "status": "current_source_identity_safeguards",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "record_key": "RPG-S01-009",
+    "record_key_type": "roster_management_key_not_registered_engine_id",
+    "registered_god_id": null,
+    "registered_story_id": null,
+    "runtime_registration_status": "not_verified",
+    "source_record_key": "RPG-S01-009",
+    "source_membership_status": "retained_original_identity",
+    "canonical_goetia_number": null,
+    "original_name": "Artemis",
+    "aliases": "Diana;디아나",
+    "identity_status": "distinct",
+    "identity_notes": {
+      "value": "아르테미스·디아나 대응을 한 게임 개체로 제안; Selene와 별개",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "identity_notes",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "gender": {
+      "value": "여성",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "gender",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "entity_type": {
+      "value": "올림포스 여신",
+      "status": "retained_identity_design",
+      "source": {
+        "archive_file": "rpg_authoring_source_archive.json",
+        "namespace": "reconciled_rows",
+        "record_key": "RPG-S01-009",
+        "field": "entity_type",
+        "status": "history_only_do_not_consume_as_current"
+      },
+      "use_scope": "authoring_design_only",
+      "runtime_binding": false
+    },
+    "regional_aliases": null,
+    "tier_interpretation": {
+      "value": null,
+      "status": "not_separately_authored",
+      "source": {
+        "source_file": "project_sources/dragon_roster_split/normalized_roster.json",
+        "record_key": "RPG-S01-009",
+        "field": "tier_interpretation"
+      },
+      "use_scope": "author_reference_not_current_rank_promotion_or_runtime_formula",
+      "runtime_binding": false
+    },
+    "current_identity_evidence": [],
+    "combat_tier_assignment": {
+      "assignment_status": "기존 제안 유지",
+      "rationale": "기존 명부의 최상급 설계를 보존하여 공통 전투등급으로 적용한다.",
+      "special_note": "",
+      "previous_tier": "최상급",
+      "previous_combat_tier": "미지정",
+      "user_confirmed": false,
+      "source_message_id": "Sentinel_0a2f85b8448481919965f710022964d7"
+    }
+  },
+  "provider_definition_id": "mythictrpg:greek_olympus_artemis",
+  "provider_id_adoption": "기존 profile.godId를 생산 설계 ID로 확정, 테스트CSV미사용. 서버등록 미수행.",
+  "original_scope_status": {
+    "main": "APPLICABLE",
+    "reward": "APPLICABLE"
+  },
+  "source_preserved": {
+    "interpretation": "원문 인용 보존 필드. 아래 원문의 제안/미정/미구현 표기는 원자료 당시 상태다. 현재 실행 결정은 new_execution_decisions가 권위다. 원문 정체·명시적 금지·무보상·개인 독점과 결과의 의미는 유지한다.",
+    "original_profile": {
+      "schemaVersion": 2,
+      "godId": "mythictrpg:greek_olympus_artemis",
+      "displayName": "아르테미스",
+      "identity": "숲의 흔적을 세밀하게 살피는 올림포스 여신 아르테미스. 생존을 위한 사냥과 기량을 뽐내려는 살육을 구별한다.",
+      "description": "쉼터에서 얼굴보다 신발에 묻은 흙을 먼저 본다. 부러진 가지의 방향을 살피며 바람과 짐승의 흔적을 가리는 데 몰두한다.",
+      "personality": [
+        "친분 없는 상대에게는 짧게 답하지만 추적 실마리 앞에서는 세세하게 말한다.",
+        "짐승을 보호하려는 마음이 굶는 사람의 길까지 막는 핑계가 되지 않도록 실제 몫을 따진다."
+      ],
+      "values": [
+        "생존 사냥을 비웃지 않지만 새끼를 죽여 기량을 자랑하는 사냥에는 동행하지 않는다."
+      ],
+      "speechStyles": [],
+      "dialogueGuidelines": [
+        "간결한 반말. 사교에는 짧게, 사냥과 추적에는 구체적인 방향·거리·흔적을 붙인다.",
+        "거창한 훈계 대신 눈앞에서 밟을 풀과 멈출 지점을 짚는다.",
+        "상대의 현재 말과 행동에 구체적으로 반응한다. 관계 감정·현재 힘·후원·승낙은 별개다."
+      ],
+      "situationGuidelines": {
+        "S_CHAT": [
+          "잡담을 억지로 늘이지 않는다. 가지와 흙 이야기가 나오면 관심이 길어진다."
+        ],
+        "S_ITEM_REQUEST": [
+          "빌릴 활과 쓸 재료를 당연한 전리품으로 취급하지 않는다."
+        ],
+        "S_POWER_REQUEST": [
+          "호의를 힘이나 무제한 동행으로 환산하는 요구에는 선을 긋는다."
+        ],
+        "S_HELP_REQUEST": [
+          "먹을 몫과 지킬 길을 함께 살핀다. 과시용 살육에는 동행하지 않는다."
+        ],
+        "S_INFORMATION_REQUEST": [
+          "직접 본 흔적과 추측을 분리한다. 외워 온 이야기보다 현재 자국을 본다."
+        ],
+        "S_QUEST_INQUIRY": [
+          "현재 가능한 사냥 내용을 설명하고 인사를 수락으로 만들지 않는다."
+        ],
+        "S_REWARD_NEGOTIATION": [
+          "실제로 끝낸 몫을 따지고 자랑을 위해 더 잡을 권리를 주지 않는다."
+        ],
+        "S_GIFT_OFFER": [
+          "선물 때문에 사냥 기준을 바꾸지 않는다. 도구의 쓸모에는 짧게 관심을 보일 수 있다."
+        ],
+        "S_APOLOGY": [
+          "사과의 크기보다 이후 실제로 길을 비우는 행동을 본다."
+        ],
+        "S_CONFLICT": [
+          "작은 생명을 죽여 자랑하자는 말에는 짧게 거절하고 동행을 끊으려 한다."
+        ]
+      },
+      "repetitionGuidelines": {},
+      "restrictions": [
+        "확인되지 않은 지급·이동·전투·완료·가호·수신을 성공했다고 말하지 않는다.",
+        "실제로 알지 못하는 사건·개인 기억·타인의 현재 속내를 만들어내지 않는다.",
+        "화자의 실제 앎과 현재 청중 모두의 공개 자격을 확인한다. 불가하면 해당 내용과 존재를 누설하지 않는다.",
+        "부재·봉인·접근 불가일 때 대리 인격이나 원격 응답을 만들지 않는다."
+      ],
+      "characterTags": [],
+      "loreKnowledge": [],
+      "questListIds": [],
+      "signatureExampleIds": [],
+      "relationshipGuidelines": {
+        "R_EXTREME_HOSTILE": [
+          "추적보다 실제 위협을 먼저 경계한다."
+        ],
+        "R_HOSTILE": [
+          "대화를 짧게 끊고 거리를 둔다."
+        ],
+        "R_DISLIKE": [
+          "잡담에 답을 늘이지 않는다."
+        ],
+        "R_WARY": [
+          "발걸음과 손을 살핀다."
+        ],
+        "R_NEUTRAL": [
+          "필요한 말만 답한다."
+        ],
+        "R_FAVORABLE": [
+          "흔적을 가리키며 이유를 한 문장 더 붙인다."
+        ],
+        "R_FRIENDLY": [
+          "사교적 과장 없이 가지 하나의 이유를 오래 설명한다."
+        ],
+        "R_TRUSTED": [
+          "멈출 지점을 먼저 보여 주되 판단을 대신하지 않는다."
+        ],
+        "R_DEEP_BOND": [
+          "편안한 침묵을 나눠도 과시용 살육에 따라가지 않는다."
+        ]
+      },
+      "fieldDisclosure": {}
+    },
+    "original_main_contract": {
+      "status": "APPLICABLE",
+      "reason": "새 소규모 개인 MAIN 저술안 「먹을 사냥에서 멈출 사냥」. 공용 C 사건의 필수 관문이 아니라 아르테미스의 개인 목표와 수행자의 선택을 묶는 독점 이야기다.",
+      "details": "내용·비용을 제시하고 본체와 합법적 접촉한 첫 유효 명시 수락자 한 명에게만 소유를 확정한다. 질문·소개·팀 가입은 수락이 아니다. 소유자의 각 실제 선택·수행·유효 NPC 확인으로 진행·완료하며 미접속/보류로 이전하지 않는다. 비소유자는 일반 대화와 동의한 도움·현재 생활 활동을 이어 가되 소유·완료·전용 보상은 복제하지 않는다.  초반 전투력 최소컷 예외는 안전한 숲 가장자리에서 어미·새끼 흔적을 구별하고 바깥 우회를 선택하여 아르테미스가 사냥선을 바꾸는 첫 단계까지다. 일반 조우 자격과 별개이며 안전·소유자 허락·본체 의사를 면제하지 않는다. 둘째 단계 실제 허용 먹잇감을 추적·사냥하거나 놓쳤다면 현재 채집 가능한 식량으로 바꾼다. 그 구간의 실제 일반 몬스터 위협은 엄폐·우회 또는 전투로 넘고, 사냥 성공과 보호한 통로는 각각 확인한다.에 들어가기 전 실제 경로·도구·소비 재료와 수행 준비를 다시 확인한다. 권능 수용은 별도 창구·수용 능력 확인 대상이며 이 생활 수행이 가호나 주시를 주지 않는다. 고정 진행 비율·20%·미정 전투력 수치를 만들거나 전 구간 면제로 확대하지 않는다."
+    },
+    "original_reward_contract": {
+      "status": "APPLICABLE",
+      "reason": "새 개인 MAIN 보상안: 실제 추적·먹을 몫·보전 행동을 마친 소유자에게 아르테미스가 기존 활을 이용한 추적·사격 훈련을 제공한다. 동의한 훈련 자리·실제 자기 탄약 소비·표적 안전 확인 뒤 수행한다. 신급 활·가호를 초반 접촉만으로 주지 않는다.",
+      "details": " 수혜자는 실제 수행자 또는 해당 개인 MAIN 소유자이며 도움자의 기여와 소유자의 보상을 분리한다. 지급 전 제공 권한·실재고·허락 재료·수용 능력을 확인하고 실제 소비/반환/지도/지급을 구별한다. 미수령은 보존하고 지급 기록과 실물을 대조해 누락만 복구한다. 반복 방문·팀 완료·FTB에서 중복 지급하지 않는다. 장비·기술 지도·가호·주시·호감은 별개이며 등록 ID·성능 수치·새 권능은 미확정이다."
+    },
+    "original_episode": {
+      "episode_id": "EP005B-RPG-S01-009",
+      "title": "새끼 길을 비운 사냥선",
+      "mode": "quest",
+      "quest_kind": "PERSONAL_MAIN",
+      "entry_location": "숲길 가장자리의 큰 발자국 사이로 작은 발자국이 낮은 풀에 든다. 바깥 우회는 길지만 흔적을 밟지 않고 돌아올 수 있다.\n기존 숲길의 풀이 낮게 눌린 가장자리; 기존 장소 유형의 제안, 바이옴·구조물 등록 연결 대기. 큰 신전·새 차원·신규 필수 건축은 필요 없다.",
+      "actions": [
+        {
+          "beat_id": "B1",
+          "player_action": "미소유 상태의 첫 유효 수락 뒤 숲 가장자리에서 큰 발자국과 작은 발자국을 실제 비교한다. 현재 주민 식량 요청이 있다면 당사자에게 필요한 몫과 허락 범위를 먼저 확인한다.",
+          "quantity_or_bounded_rule": "현재 흔적의 두 크기와 한 탈출 틈. 허용 먹을 몫은 실제 요청/자기 필요량을 출발 전에 정한다."
+        },
+        {
+          "beat_id": "B2",
+          "player_action": "실제 통행·도구·탄약/채집 재료·본체 의사를 재확인한다. 허용 먹잇감이 남으면 추적해 실제 사냥한다. 놓쳤으면 현재 채집 가능한 식량으로 전환한다. 현재 일반 몬스터 위협이 있으면 엄폐·우회 또는 실제 전투로 넘어간다.",
+          "quantity_or_bounded_rule": "B1에서 정한 먹을 몫까지만. 위협이 없는 경로에는 전투 없음. 전투 수치·새 몬스터 ID 없음."
+        },
+        {
+          "beat_id": "B3",
+          "player_action": "소유자는 식량 확보/인도와 통로 보전의 실제 결과를 따로 확인받는다. 원하면 현재 안전한 표적 자리에서 기존 활로 추적·사격 지도를 받는다.",
+          "quantity_or_bounded_rule": "완료 확인 한 번과 선택 지도 한 회차. 지도 거절은 필수 사냥 결과를 취소하지 않는다."
+        }
+      ],
+      "ending": {
+        "observable_personal_change": "다음 실제 추적에서 소유자에게 멈출 지점을 먼저 가리킨다. 미참여 동료에게 같은 공적을 부르지 않는다.",
+        "optional_stop": "모든 END는 그 분기의 실제 결과로 닫힌다. 거절/부분 수행은 최종 성취 아님. 이미 끝난 필수 행동은 선택 지도·후기 거절 때문에 취소하지 않는다.",
+        "next_encounter_memory": "아르테미스는 긴 칭찬 대신 멈춘 발자국을 보여 준다. 아탈란테의 기량은 자기가 알고 있는 관계 범위로 논할 뿐 현재 출동을 만들지 않는다. 단, 실제 같은 당사자와 해당 결과를 겪은 경우만 기억한다. 첫 방문자는 현재 질문으로 시작한다.",
+        "playfeel_and_difference": "새끼 길을 비운 사냥선: 새끼가 지나간 낮은 틈과 어미의 넓은 발자국. 주민 요청이 없으면 없는 배급 약속을 만들지 않고 자기 허용 식량 범위를 정한다. → 다음 실제 추적에서 소유자에게 멈출 지점을 먼저 가리킨다. 미참여 동료에게 같은 공적을 부르지 않는다."
+      },
+      "rewards": {
+        "status": "PROPOSED",
+        "reason_and_source": "새 개인 MAIN 보상안: 실제 추적·먹을 몫·보전 행동을 마친 소유자에게 아르테미스가 기존 활을 이용한 추적·사격 훈련을 제공한다. 동의한 훈련 자리·실제 자기 탄약 소비·표적 안전 확인 뒤 수행한다. 신급 활·가호를 초반 접촉만으로 주지 않는다.",
+        "earned_condition": "실제 필수 행동·유효 확인을 마친 당사자에게 검수 범위의 지도 제안만 생긴다. 선택 지도를 받아야 앞 수행이 완료되는 구조가 아니다.",
+        "beneficiary_and_claim_right": "완료한 실제 개인 MAIN 소유자만 전용 지도 제안을 갖는다. 도움자는 자기 기여만.",
+        "actual_grant_and_consumption": " 수혜자는 실제 수행자 또는 해당 개인 MAIN 소유자이며 도움자의 기여와 소유자의 보상을 분리한다. 지급 전 제공 권한·실재고·허락 재료·수용 능력을 확인하고 실제 소비/반환/지도/지급을 구별한다. 미수령은 보존하고 지급 기록과 실물을 대조해 누락만 복구한다. 반복 방문·팀 완료·FTB에서 중복 지급하지 않는다. 장비·기술 지도·가호·주시·호감은 별개이며 등록 ID·성능 수치·새 권능은 미확정이다.\nB1 — 관찰에는 탄약 소비 없음. 식량 요청·사냥 권한·MAIN 수락은 서로 다르다.\nB2 — 실제 쓴 자기 탄약·도구·채집물만 소비/획득. 주민 몫은 실제 인도와 수신 전까지 맡은 식량이고 개인 보상 아님.\nB3 — 지도에 실제 사용한 자기 탄약만 소비. 활·신급 장비·가호 지급 없음.\n실제 지도 시범·수신·동작 확인 때만 지도 수신 기록. 등록 레시피/효과는 지원 확인 전 실행 보류.",
+        "unclaimed_retry_no_duplicate": "제안권·실제 수신·소비를 분리. 부재/준비 부족/지도 사양은 완료 성과를 유지하고 미수신만 보존한다. 보상 물품은 이 범위에 없어 가방 여유를 대화/완료 조건으로 추가하지 않는다. 대여물 인도 실패는 그 실제 물건만 미인도 보존. 반복 클릭/재시작에 첫 지도 수신을 중복 집계하지 않는다.",
+        "distinct_recognition_main_blessing_gaze_equipment": "도움·관계·인정·MAIN·축복·가호·주시·장비는 별개. 이 범위 밖 보상과 등급/권능 수치·등록 ID를 확정하지 않는다."
+      }
+    },
+    "current_story_world_frame": {
+      "story_beats_not_quest_chain": [
+        {
+          "title": "지나간 자리와 현재 움직임",
+          "skeleton": "현재 숲에서 볼 수 있는 지형·생물의 흔적을 읽는다. 보이지 않는 전용 추적 UI나 새 동물 행태를 구현된 것으로 쓰지 않는다.",
+          "status": "신규 장면 골격 제안·필수 퀘스트 연쇄 아님",
+          "free_exit": "이 비트의 실제 상황이 없거나 참여 의사가 없으면 생략·대화 종료·철수할 수 있다. 이미 승인된 별도 메인 조건과 결과는 자동 바뀌지 않는다."
+        },
+        {
+          "title": "멈춘 사냥의 이유",
+          "skeleton": "필요와 과시가 갈리는 실제 상황에서 중단·이동을 선택한다. 사냥하지 않은 플레이를 무조건 실패로 처리하지 않고 고정 정답 대사를 요구하지 않는다.",
+          "status": "신규 장면 골격 제안·필수 퀘스트 연쇄 아님",
+          "free_exit": "이 비트의 실제 상황이 없거나 참여 의사가 없으면 생략·대화 종료·철수할 수 있다. 이미 승인된 별도 메인 조건과 결과는 자동 바뀌지 않는다."
+        },
+        {
+          "title": "같은 숲의 다른 진로",
+          "skeleton": "아탈란테의 현재 계획과 실제 마을 채집 필요가 확인된 경우만 조율한다. 마을 대표나 새 인질을 발명해 회의 퀘스트를 늘리지 않는다.",
+          "status": "신규 장면 골격 제안·필수 퀘스트 연쇄 아님",
+          "free_exit": "이 비트의 실제 상황이 없거나 참여 의사가 없으면 생략·대화 종료·철수할 수 있다. 이미 승인된 별도 메인 조건과 결과는 자동 바뀌지 않는다."
+        },
+        {
+          "title": "경계를 다시 맡길 때",
+          "skeleton": "확인된 태도는 다음 동행 여부에 남는다. 이피게네이아의 구원과 연결될 수 있지만 당사자 부재 중 새 의식을 개시하지 않으며 혼자 쉬는 결말도 가능하다.",
+          "status": "신규 장면 골격 제안·필수 퀘스트 연쇄 아님",
+          "free_exit": "이 비트의 실제 상황이 없거나 참여 의사가 없으면 생략·대화 종료·철수할 수 있다. 이미 승인된 별도 메인 조건과 결과는 자동 바뀌지 않는다."
+        }
+      ],
+      "independent_life_and_initial_contact": {
+        "player_absent": "신발의 흙과 부러진 가지 방향을 보며 추적에 몰두한다. 사교에는 짧고 흔적에는 세세하다. 숲을 지킨다는 이유로 살아가려는 사람의 몫을 전부 막지 않고 과시용 살육과 생존 사냥을 구분한다.",
+        "why_contact_optional": "실제 숲에서 동물·지형의 흔적에 관심을 갖는 방문과 만날 수 있다. 세계 해금은 한 사람의 채택된 조건 충족으로 공유되고 현재 조우는 조건을 맞춘 주체와 확률 판정에 따른다. 경계를 지킨 태도는 조우 뒤 실제 확인된 관계 근거이며 친구에게 개인 해금·비가시성을 적용하지 않는다.",
+        "player_agency": "질문·흥정·반박·거절·침묵·퇴장이 가능하다. 호의·관심·가호·주시·친구·동행·진영·MAIN은 자동 단계가 아니다. 위험 생물의 물리 공격 가능성은 인간의 대화 동의와 별개다."
+      }
+    },
+    "original_baseline_knowledge": {
+      "baseline_context": "실제 접근과 본인 의사가 성립한 만남을 위한 저술 기본선. 자기 옛 인연과 본인의 생활·기술은 유지하되, 원전 전부·장면 기획·저자 비밀을 기본 지식으로 주입하지 않는다. 현재 행동은 플레이어가 없어도 이어 갈 소소한 저술안이며 실제 서버에서 이미 발생했다는 선언은 아니다.",
+      "known_facts": [
+        {
+          "id": "K-FAMILIAR",
+          "claim": {
+            "text": "아탈란테의 사냥길과 마을 채집권을 함께 고려하는 자기 역할을 안다. 이름을 안다는 이유로 아탈란테의 현재 사냥 결과를 알지는 않는다.",
+            "basis": "retained_current_design",
+            "source_refs": [
+              "role",
+              "identity"
+            ]
+          },
+          "fact_ref": "T-FAMILIAR",
+          "acquisition": {
+            "mode": "adopted_relationship_memory",
+            "from_whom_or_what": "현행 개인 역할에 직접 보존된 자기 관계·경험의 좁은 범위. 아래 기억은 현재 위치나 최신 응답을 재구성하지 않는다.",
+            "when_or_condition": "기존 역할에 명시된 자신의 인연·습관적 업무를 회상하는 때. 현재 사건의 특정 날짜·발신·수신을 새로 만들지 않는다.",
+            "evidence_status": "explicit_in_current_source",
+            "source_refs": [
+              "role",
+              "identity"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 직접 대화하는 상대",
+            "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+          }
+        },
+        {
+          "id": "K-INTENT",
+          "claim": {
+            "text": "먹기 위한 사냥과 숲을 과시의 무대로 삼는 사냥을 실제 발자국에서 가려내려 한다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": null,
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+            "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 직접 대화하는 상대",
+            "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+          }
+        },
+        {
+          "id": "K-TEXTURE",
+          "claim": {
+            "text": "쉼터에 들어갈 때 얼굴보다 신발에 묻은 흙을 먼저 본다. 부러진 가지가 바람 때문인지 짐승 때문인지 가려 보는 일을 즐긴다.",
+            "basis": "new_minor_creative",
+            "source_refs": []
+          },
+          "fact_ref": null,
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "자신의 현재 의향과 반복하는 생활 행동",
+            "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": []
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 직접 대화하는 상대",
+            "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+          }
+        },
+        {
+          "id": "K-ADOPTED-HABIT",
+          "claim": {
+            "text": "일상 질문에는 짧게 답하고 추적 이야기에만 말이 길어진다",
+            "basis": "adopted_reference_trait",
+            "source_refs": [
+              "adaptation"
+            ]
+          },
+          "fact_ref": "T-ADOPTED",
+          "acquisition": {
+            "mode": "self_experience",
+            "from_whom_or_what": "채택된 작은 일상 태도를 스스로 반복하며 아는 자기 취향",
+            "when_or_condition": "실제 접촉이 가능한 현재의 자기 판단; 아직 만나지 않은 플레이어의 이력은 포함하지 않는다.",
+            "evidence_status": "minor_self_knowledge_design",
+            "source_refs": [
+              "adaptation"
+            ]
+          },
+          "memory_scope": "npc_private",
+          "disclosure": {
+            "default": "ordinary",
+            "audience": "현재 직접 대화하는 상대",
+            "condition": "본인이 실제 아는 범위만 말하며 제삼자의 현재 속내나 비공개 대화를 덧붙이지 않는다."
+          }
+        }
+      ],
+      "suspicions": {
+        "none_reason": "아르테미스의 경계심이나 기대를 특정 타인의 범행·속내에 대한 사실 가설로 바꾸지 않는다. 관찰 없이 상시 의심 대상을 추가하지 않았다.",
+        "items": []
+      },
+      "misbeliefs": {
+        "none_reason": "아르테미스의 고집과 취향은 확인된 거짓 믿음이 아니다. 현행 사실로 반증되는 구체 오해를 별도로 발견하지 못했다.",
+        "items": []
+      },
+      "deliberate_concealment": {
+        "none_reason": "아르테미스에게 분량을 채우기 위한 비밀을 부여하지 않는다. 거절하는 행동과 알고 숨기는 특정 사실은 별개다.",
+        "items": []
+      },
+      "unknown_or_unavailable": [
+        "현재 만나지 않았거나 전언을 받지 않은 인물의 행방·현재 의도·사적 대화",
+        "공유 세계 변화 중 본인이 보거나 보고받지 않은 경과; 여신 정체·용의 기원·전쟁 책임 전체",
+        "원전의 여러 이본 중 선택되지 않은 세부와 다른 작품 고유 가족·연애·전쟁 설정"
+      ],
+      "future_learning": {
+        "none_reason": null,
+        "items": [
+          {
+            "id": "F-REL-076",
+            "fact_or_question": "실제 만남에서 확인하거나 전달받을 내용: 생존 사냥과 과시용 살육을 구분한다",
+            "acquisition_event": "사냥길과 채집권의 구체 충돌 조건을 실제 충족한 뒤, 본인이 현장에 참여하거나 해당 자료·전언을 실제 받는다.",
+            "required_evidence": "자기 관찰과 전달받은 자료의 출처·내용·청중을 각각 남긴다. 장면 실행시 사실 출처·실제 청중·전달 결과로 별도 작성; 아래 경계 문구를 NPC의 획득 지식으로 적재하지 않음",
+            "eligible_audience": "해당 대화·전달에 실제 참여한 본인과 수신자만",
+            "after_learning_change": "아탈란테가 실제 고른 사냥길과 새끼 짐승을 비켜 준 행동을 기억한다. 다음에는 빠른 길만 가리키지 않고 흔적을 남겨 둘 우회 방향을 함께 고른다.",
+            "not_automatic_from": [
+              "장 번호 도달",
+              "동료의 사적 경험",
+              "친족 관계",
+              "관계 간선이 저술 자료에 존재함"
+            ],
+            "source_refs": [
+              "REL-076"
+            ]
+          }
+        ]
+      },
+      "memory_guard": "actual_audience_and_actual_acquisition_only; shared_world_is_not_shared_private_memory"
+    },
+    "source_refs": [
+      "기존페르소나_인물별/RPG-S01-009/profile.json",
+      "기존페르소나_인물별/RPG-S01-009/authoring_contract.json",
+      "772명_스토리와기본페르소나_통합.json#/RPG-S01-009/outline",
+      "원문제작범위_보존색인.json#/RPG-S01-009"
+    ]
+  },
+  "new_execution_decisions": {
+    "title": "새끼 길을 비운 사냥선",
+    "duration_minutes": [
+      18,
+      30
+    ],
+    "entry": "현행 숲 본체와 만나 실제 새끼 개체와 어미가 지나는 낮은 틈을 안전 가장자리에서 확인한다. 늑대 길들이기/번식 세계해금 후보를 새 선행으로 채택하지 않는다. 새끼를 일부러 위험에 넣어 사건을 만들지 않는다.",
+    "site": {
+      "selection": "허용 숲/자작나무 숲의 기존 낮은 통로 G(폭2,높이2 이상), 가장자리 A에서12~24블록. 현재 성체/새끼 UUID를 직접 관측 가능한 곳만. 먹을거리 탐색구역은 A로부터32~96블록의 허락된 자연지형.",
+      "route": "G 중심으로 반경3블록을 보전구역으로 지정. A→왼/오른 외곽노드→반대쪽 귀환점→A 3노드 우회. 새끼가 실제 다른 곳으로 이동하면 현재 길을 다시 확인하되 과거 보호사실을 조작하지 않는다.",
+      "food": "수락 전 먹을 몫을 식량점수8로 고정한다. 정확 허용 item ID와 점수는 food_item_points만 사용한다. minecraft:beef/porkchop/mutton/chicken은 해당 바닐라 생고기 ID이며 raw_ 접두사 ID를 만들지 않는다. sweet_berries와 glow_berries를 각각 명시 허용한다. 실제 현재 수급 가능한 사냥/채집 경로만 설명한다. 식량점수는 퀘스트 분량 단위이지 영양/전투력 수치가 아니다. 기존 허락된 성체만 사냥하며 새끼/길들인 동물/주민 소유 동물은 제외한다.",
+      "recipient": "실제 식량요청자가 있으면 그 기존 인수자 UUID. 없으면 소유자 자기 먹을 몫. 새 마을대표/인질/억지 요청 없음.",
+      "food_item_points": {
+        "minecraft:sweet_berries": 1,
+        "minecraft:glow_berries": 1,
+        "minecraft:apple": 2,
+        "minecraft:beef": 2,
+        "minecraft:porkchop": 2,
+        "minecraft:mutton": 2,
+        "minecraft:chicken": 1
+      }
+    },
+    "objectives": [
+      {
+        "objective_key": "observe_and_leave_gap",
+        "action": "A에서 새끼/어미 실제 움직임을 각각 관측하고 G를 밟지 않는 외곽3노드를 실제 걷는다.",
+        "quantity": {
+          "animals": 2,
+          "nodes": 3
+        },
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [],
+        "completion_evidence": "각 개체 시야 관측1과 소유자 우회3노드. 대사로 발자국추적 완료0. G 보전구역 블록변경·새끼피해0."
+      },
+      {
+        "objective_key": "secure_a_meal",
+        "action": "수락 이후 허용 성체 사냥 또는 허락된 현재 채집으로 먹을 몫8점을 확보한다.",
+        "quantity": 8,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "자기 탄약·도구·실제 채집시간, 의무 희귀재료0.",
+        "requires": [
+          "observe_and_leave_gap"
+        ],
+        "completion_evidence": "각 적법 hunt/drop 또는 harvest event의 원천/소유/수량. 기존 가방 식량만 보여 주기는 이 실제 탐색 수행을 대신하지 않는다. 도움자 제공분은 그 기여로 기록하되 소유자도 최소4점 직접 확보."
+      },
+      {
+        "objective_key": "stop_and_return",
+        "action": "8점에 도달하면 요청 범위의 사냥을 멈추고 실제 A로 돌아와 식량을 자기 보관하거나 실제 요청자에게 인계한다.",
+        "quantity": 1,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [
+          "secure_a_meal"
+        ],
+        "completion_evidence": "상한도달시각 이후 추가 의도적 성체 사냥0, 귀환 위치와8점 현물/인수. 마지막 한 번의 정상 드롭 초과분은 개인 일반 획득으로 기록하고 추가사냥 목표로 쓰지 않는다."
+      },
+      {
+        "objective_key": "confirm_two_results",
+        "action": "아르테미스에게 보전된 길과 식량 처리의 두 결과를 각각 실제 확인받는다.",
+        "quantity": 2,
+        "scope": "개인 MAIN 소유자의 실제 수행",
+        "time": "시간 제한 없음",
+        "cost": "별도 제출 비용 없음",
+        "requires": [
+          "stop_and_return"
+        ],
+        "completion_evidence": "통로 훼손0 및 현재 통행 가능, 식량8점 확보/인계, 실제 소유자 보고수신. 전투승리만으로 먹을몫 성공을 대신하지 않는다."
+      }
+    ],
+    "branches": [
+      {
+        "branch_key": "HUNT",
+        "available_when": "실제 허용 성체가 있고 도구·안전·돌아올 길 확인",
+        "actual_action": "허용 성체를 추적하고 필요한8점까지 사냥. 놓치거나 불필요한 추가 사냥이 될 때는 채집으로 전환 가능.",
+        "result": "사냥 실제 성과만 집계, 새끼 처치공로0.",
+        "main_complete": true
+      },
+      {
+        "branch_key": "GATHER",
+        "available_when": "현재 허락된 먹을 채집물이 존재",
+        "actual_action": "사과/열매를 실제 채집해8점 확보하고 길을 보전한다.",
+        "result": "처치0으로도 동일 MAIN 완료와 선택 훈련 가능.",
+        "main_complete": true
+      },
+      {
+        "branch_key": "WITHDRAW_PARTIAL",
+        "available_when": "현재 위험 또는 분량부족",
+        "actual_action": "확보한 분량과 보전된 틈을 유지하고 A로 철수.",
+        "result": "부분분량 유지·완료0·훈련권0. 남은 분량만 재개.",
+        "main_complete": false
+      }
+    ],
+    "failure": "새끼/보전통로에 본인이 위해를 가하면 현재 사냥 진행을 멈추고 안전확보·실제 훼손복구부터 한다. 죽은 새끼를 부활/대체복제하지 않는다. 새끼를 죽인 시도는 보호 성공으로 영원히 바꾸지 않고 실제 다른 자연적 무리의 안전한 관측에서 재시도한다. 다른 사람의 위해를 소유자 행위로 붙이지 않되 현재 길 안전은 다시 확인한다. 로그아웃/사망은 완료된 관측과 확보증거 보존, 분실 음식은 실제 회수/잔여 확보 필요.",
+    "completion": "실제 통로 보전+식량8점+귀환/현재 인수+아르테미스 결과 확인. 현재 범위 밖 아탈란테·이피게네이아 방문/신급활/가호는 선행/보상으로 만들지 않는다.",
+    "rewards": [
+      {
+        "reward_definition_id": "mythictrpg:p0m1_artemis_measured_shot_instruction",
+        "kind": "learn_skill_after_lesson",
+        "recipient": "MAIN 소유자만",
+        "lines": [
+          {
+            "content_ref": "mythictrpg:greek_olympus_artemis_measured_shot",
+            "count": 1
+          }
+        ],
+        "earned_condition": "MAIN 완료 뒤 선택한 기존 활 지도 실연 완료",
+        "limit": "개인 최초 1회",
+        "delivery": "공통 수령 원장 규약. 실제 수행/권리 생성/실수령은 별도. 가방 부족은 바닥 드롭 없이 미수령 보존. 이미 지급된 줄은 다시 지급하지 않는다."
+      }
+    ],
+    "services": [
+      {
+        "definition_id": "mythictrpg:p0m1_artemis_measured_shot_lesson",
+        "title": "멈춰 쏘는 숨 실연",
+        "kind": "optional_skill_instruction",
+        "entry": "소유자의 MAIN 완료·현재 훈련동의·자기 minecraft:bow·실제 일반 화살·안전 표적 뒤 막힌 공간",
+        "steps": "표적8블록/뒤 고체벽을 실제 확인한다. 임시 J연습으로 멈춰 쏘는 숨을 시전한 뒤 준비시간 안에 일반 활을 당겨 표적에 실제 화살을2회 맞힌다. 실화살 발사·준비1회 소비·표적적중을 대조. 대상은 비생물 훈련표적이며 훈련 성공을 사냥으로 집계하지 않는다.",
+        "quantity": "실제 준비화살 적중2회; 실패 교정 가능",
+        "time": "5~8분, 스킬쿨240tick, 전체 기한 없음",
+        "cost": "시도마다 마나24+실제화살1. 일반회수 가능한 화살만 서버 기존 규칙으로 회수; 무상 화살생성0.",
+        "completion": "설명수신+적중2회 뒤 OLY-ART-L01 동일 ID learn_skill1. 채집분기 완료자도 동일.",
+        "failure": "탄약부족은 준비시간만 흐름, 헛침/벽/만료는 비용유지. 무한 인챈트의 실제 탄약처리는 기존 규칙으로 하되 발사 event 없이 성공0.",
+        "content_ref": "mythictrpg:greek_olympus_artemis_measured_shot",
+        "skill_key_parameters": {
+          "mana": 24,
+          "cooldown_ticks": 240,
+          "ready_duration_ticks": 60,
+          "bonus_damage": 3,
+          "movement_multiplier_while_ready": 0.75,
+          "max_shots": 1,
+          "timing": "[0,6)준비,[6,10)후딜,준비상태[6,66)",
+          "intrinsicPower": 18
+        },
+        "adoption": "원문 기존 활 훈련의 미정 기술 수치를 OLY-ART-L01에 연결한다. 신급 활/가호/주시 지급0. 실제 화살 한 발에만 고정 추가3을 방어계산 전 합산하며 보스무적/벽/아군 보호를 우회하지 않는다."
+      }
+    ],
+    "dialogue": [
+      "“네 발이 막는 곳부터 봐.”",
+      "“놓쳤으면 다른 먹을 것을 보자. 저 틈까지 쫓을 이유는 없어.”",
+      "“빠르게 놓는 것보다 놓지 않을 때를 알아.”"
+    ],
+    "balance": "사냥/채집 동등 보상으로 처치만의 정답을 피한다. 추가3 피해는 마나24/쿨12초/준비3초/이동0.75배의 다음 일반 화살1발에 한정. 기본200마나에서 연속8회 비용192, 기본회복만으로12초마다24회복하므로 최대 빈도는 쿨과 실화살 준비/실제 명중이 제한한다. 이 정적 계산은 전투 효율 실측이 아니다.",
+    "extensions": [
+      "동물 나이/소유·보전구역/채집원천/실제식량점수 추적",
+      "일반 활 발사1회 준비소비·투사체 귀속·추가피해 스냅샷",
+      "해제 시 전용0.75이동modifier만 제거"
+    ],
+    "tests": [
+      [
+        "사냥 실패 후 채집",
+        "같은8점 잔량으로 완주, 사냥처치 강제0."
+      ],
+      [
+        "새끼 위해",
+        "보호 성공0, 부활/대체복제0."
+      ],
+      [
+        "지도 사양",
+        "MAIN 완료 유지."
+      ],
+      [
+        "발사후 무기교체",
+        "화살의 소비/보너스 스냅샷 유지, 준비재생0."
+      ],
+      [
+        "봉인대상 레이드",
+        "기존 아르테미스 가호 보유자 제한만 적용. 이번 학습스킬을 가호로 오인해 제한하지 않는다."
+      ]
+    ],
+    "additional_side_quests": [
+      {
+        "definition_id": "mythictrpg:p0m1_artemis_boundary_knife_commission",
+        "title": "별도 SIDE · 경계를 넘지 않는 칼날",
+        "kind": "SIDE",
+        "separate_from_main": true,
+        "predecessors": [
+          "mythictrpg:greek_olympus_artemis_measured_shot learned"
+        ],
+        "entry": "멈춰쏘는숨의실제수료자가아르테미스에게새무기제공의뢰를별도수락. 그녀소유일반공급재고의경계사냥칼1을미리예약. 기존활훈련만으로자동칼지급0. 신화상징무기탈취/새동물피해과제0.",
+        "duration_minutes": [
+          8,
+          12
+        ],
+        "time_limit": "전체 기한 없음, 각투사시험10초·미완만재시도",
+        "cost": "추가 재료0. 기술실습1회마나22·쿨140tick. 실제아이템을던져소모하지않음.",
+        "objectives": [
+          {
+            "objective_key": "receive_loan",
+            "action": "예약칼1을훈련대여상태로인수하고안전한되돌아올3노드길을걸어확인한다.",
+            "quantity": {
+              "knife": 1,
+              "nodes": 3
+            },
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [],
+            "completion_evidence": "원serial위탁+실제3노드이동. 영구 권리/점수아직0."
+          },
+          {
+            "objective_key": "open_target",
+            "action": "8블록과12블록의비생물훈련표적각1개에 실제 칼날투사체를쏘아맞힌다.",
+            "quantity": 2,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "receive_loan"
+            ],
+            "completion_evidence": "실제 투사체연속충돌/첫충돌/거리·속도·발사기록. 훈련표적은훈련중콜라이더일뿐생명체/경험치/처치수아님."
+          },
+          {
+            "objective_key": "respect_wall",
+            "action": "같은표적앞의허락된기존벽이막은경로에1회쏘아 벽에서소멸하는실제 결과를확인한다.",
+            "quantity": 1,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "open_target"
+            ],
+            "completion_evidence": "block_collision이target_hit보다먼저발생,표적피해0. 관통성공을요구하지않음."
+          },
+          {
+            "objective_key": "come_back_and_receive",
+            "action": "처음확인한3노드의안전길을따라돌아와칼을보여주고별도증여확인을받는다.",
+            "quantity": 1,
+            "scope": "이 별도 SIDE를 명시 수락한 해당 개인의 실제 수행. 수행자를 전역 최초 MAIN 소유자로 자동 대체하지 않는다. 명시된 선행훈련 자격과 그 획득 조건은 별도로 검사한다.",
+            "time": "시간 제한 없음",
+            "cost": "별도 제출 비용 없음",
+            "requires": [
+              "respect_wall"
+            ],
+            "completion_evidence": "실제귀환·같은대여serial→소유이전·수령journal."
+          }
+        ],
+        "completion": "실제표적명중2+벽차단1+안전귀환+아르테미스실제확인. 새끼/중립동물·주민·친구를시험표적으로허용하지않는다.",
+        "reward": {
+          "reward_definition_id": "mythictrpg:p0m1_artemis_boundary_knife_first",
+          "content_ref": "mythictrpg:greek_olympus_artemis_boundary_cast",
+          "management_key": "OLY-ART-W01",
+          "count": 1,
+          "limit": "개인 최초1회·기존 동일콘텐츠권리",
+          "acquisition_right": "같은ID의기존적법획득권은신규 SIDE 라는이유로증식하지않고동일 권리연결.",
+          "adopted_values": "희귀·신제무한내구·기본공격총6/속도2.0, 우클릭마나22/쿨140tick/피해8/사거리14/속도1.4블록tick/단일표적·비관통. 기존 동일ID전투명세를재정의하지않고획득만닫는다."
+        },
+        "failure": "헛침/타당한벽차단은해당목표결과에맞게판정, 첫두명중전부초기화0. 중단/죽음/재접속에대여/부분목표/마나쿨보존. 원물분실은같은위탁대조,새 보상/현금화용복제0. 반복수료물품0.",
+        "knowledge": "실제시험결과를아르테미스가직접보거나받은범위만알고,벽차단을기믹무시능력으로이야기하지않는다.",
+        "implementation": "권리제한훈련모드의비생물콜라이더·실투사체관측연결필요. 정식전투대상의허용표에주민/중립을추가하지않는다.",
+        "stock_table": {
+          "provider": "아르테미스 자기 소유 경계의 사냥칼 공급재고",
+          "initial_units": 1,
+          "allocation": "현재 원문 학습권이 유일 개인 MAIN 소유자에게만 발생하므로 적격1인용. 명부 모든 사람용10개를 만들지 않음",
+          "reservation": "현재 존재하는 미예약 실물1을 SIDE 수락에 예약",
+          "deduct": "원 대여serial의 실제 증여완료 때 소유이전",
+          "refill": "이 획득경로 최초 권리1개이므로 반복/시간보충0. 실제 구현준비 시 제공할 원물1 확보, 미수령/오류는 같은serial 복구만",
+          "budget": "B3 누적: 실제 탐색/보전18~30분+활지도5~8분+별도 실습8~12분. 교육 기술1+희귀 주보상1, 기존 MAIN 자동보상 교체0."
+        }
+      }
+    ],
+    "definition_id": "mythictrpg:p0m1_artemis_personal_main",
+    "kind": "PERSONAL_MAIN",
+    "source_episode_id": "EP005B-RPG-S01-009",
+    "predecessors": [],
+    "common_contract_ref": "00_공통실행계약.json",
+    "runtime_ready": false,
+    "authored_complete": true,
+    "knowledge_definitions": [
+      {
+        "fact_definition_id": "mythictrpg:p0m1_artemis_fact_gap",
+        "statement": "실제 새끼 퇴로를 비운 우회.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "실제 동물/위치 관측자와 수신한 아르테미스.",
+        "disclosure": "마음속 선함을 자동 판정하지 않는다.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_artemis_fact_food",
+        "statement": "먹을 몫8점의 실제 사냥/채집·인수.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "수행자와 실제 인수/보고 수신자.",
+        "disclosure": "채집을 사냥처치로 쓰지 않는다.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_artemis_fact_stop",
+        "statement": "필요량에서 멈춰 귀환한 실제 행동.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "아르테미스의 직접 관측 또는 실제 근거보고.",
+        "disclosure": "다음 만남은 해당 본인에게만 기억.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      },
+      {
+        "fact_definition_id": "mythictrpg:p0m1_artemis_fact_instruction",
+        "statement": "기존 활의 멈춰 쏘는 숨 실연수료.",
+        "activation": "해당 실제 수행/수신 event_uuid가 확정된 뒤만. 작성시 기본locked.",
+        "speaker_condition": "수강자와 지도자.",
+        "disclosure": "후발 친구/가호권 복제0.",
+        "fact_and_knowledge_separate": true,
+        "evidence_fields": [
+          "world_id",
+          "source_event_uuid",
+          "actor_uuid",
+          "observed_at",
+          "source_mode",
+          "actual_audience_uuids",
+          "permission_scope"
+        ],
+        "memory_rule": "현재본체가 직접관측/실제보고를 수신한 부분만 자기앎. 같은 player_uuid의 실제기억으로만 다음만남을변형하며 후발자는 허락된새열람으로 학습."
+      }
+    ]
+  },
+  "persona_application": {
+    "rule": "원문 original_profile의 성격·말투·관계·제한을 유지한다. 아래 대사는 실제 현재 접촉·청중·이전기억 조건에서만 선택하는 예시이며 고정 정답대사/사전완료기억으로 적재하지 않는다.",
+    "scene_lines": [
+      "“네 발이 막는 곳부터 봐.”",
+      "“놓쳤으면 다른 먹을 것을 보자. 저 틈까지 쫓을 이유는 없어.”",
+      "“빠르게 놓는 것보다 놓지 않을 때를 알아.”"
+    ],
+    "profile_quest_links_design": [
+      "mythictrpg:p0m1_artemis_personal_main",
+      "mythictrpg:p0m1_artemis_boundary_knife_commission"
+    ],
+    "runtime_profile_mutated": false
+  },
+  "acceptance_status": {
+    "authoring": "목표/분기/원장/지식/비용/시간/재개/현재보상값 작성완료",
+    "static_review": "동봉 내부검증 참조; 실제실행검증아님",
+    "runtime": "정의등록·로더변환·서버시험 미수행"
+  },
+  "integration_targets": {
+    "페르소나": "원문profile 유지+조건부 장면 말투/quest연결 설계",
+    "스토리": "현재세계경계+원문결말을 보존한 실제분기 결과",
+    "퀘스트": "new_execution_decisions의MAIN·SIDE·서비스·획득연결·운영값",
+    "지식": "knowledge_definitions의 event 기반 Fact/Knowledge 분리"
+  }
+}

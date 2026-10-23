@@ -34,7 +34,7 @@ public final class CourierStageTest {
     }
     static CourierEngine.Candidate candidate(CourierEngine.CandidateInput in){return new CourierEngine.Candidate(in,in.excerpt(),"이상한 부탁을 했다는 소문","오해받은 여행자");}
     public static void main(String[] args)throws Exception {
-        configuration();lifecycle();candidateGuards();delivery();storage();bounded();wiring();
+        configuration();lifecycle();candidateGuards();delivery();storage();modeIsolation();bounded();wiring();
         System.out.println("CourierStageTest: "+checks+" assertions passed");
     }
     static void configuration(){
@@ -133,6 +133,44 @@ public final class CourierStageTest {
         var rejected=RumorSavedData.load(corrupt,null);check(!rejected.ready()&&rejected.save(new CompoundTag(),null).equals(corrupt),"tampered proof not trusted or overwritten");
         var legacy=new RumorLedger();legacy.bindCourier(A,CA);var id=UUID.randomUUID();legacy.observe(id,A,CA,Set.of(A),"legacy",Set.of(G),Set.of(A));legacy.publish(id,"legacy"," ");legacy.deliver(legacy.pending().getFirst());
         check(new CourierEngine(legacy,CourierSettings.OFF,new Probe(),()->1L).heard(A,G,Set.of(A)).size()==1,"isolated legacy receipt contract preserved");
+    }
+    static void modeIsolation() {
+        var f=new Fixture();var source=UUID.randomUUID();
+        var testInput=f.engine.observe(f.event(A,source)).getFirst();
+        var personal=new CourierEngine(f.ledger,RULES,f.probe,f.tick::get,"PERSONAL");
+        check(personal.pendingCandidates(32).isEmpty()&&!personal.publish(candidate(testInput)),
+                "ordinary mode cannot publish pending test evidence");
+        var ordinaryInput=personal.observe(f.event(A,source)).getFirst();
+        check(!ordinaryInput.rootId().equals(testInput.rootId()),"same event has isolated mode roots and cooldown");
+        check(f.ledger.evidence(ordinaryInput.rootId()).memoryMode().equals("PERSONAL")
+                &&f.ledger.evidence(testInput.rootId()).memoryMode().equals("RUMOR_TEST"),"birth mode captured immutably");
+        check(!f.engine.publish(candidate(ordinaryInput))&&f.engine.pendingCandidates(32).equals(List.of(testInput)),
+                "test mode cannot publish or select ordinary candidate");
+        check(personal.publish(candidate(ordinaryInput))&&f.engine.publish(candidate(testInput)),"each mode publishes own witnessed root");
+        for(int i=0;i<8;i++)personal.deliver();
+        check(f.ledger.pending().stream().allMatch(d->d.rootId().equals(testInput.rootId()))
+                &&f.ledger.pending().size()==3,"ordinary delivery preserves foreign pending work");
+        check(personal.heard(A,G,Set.of(A)).stream().map(RumorLedger.HeardRumor::rootId).toList().equals(List.of(ordinaryInput.rootId())),
+                "ordinary read returns own receipt only");
+        check(f.engine.heardOne(A,G,ordinaryInput.rootId(),Set.of(A)).isEmpty(),"point query cannot leak ordinary root to test mode");
+        for(int i=0;i<4;i++)f.engine.deliver();
+        check(personal.heardOne(A,G,testInput.rootId(),Set.of(A)).isEmpty()
+                &&f.engine.heard(A,G,Set.of(A)).stream().map(RumorLedger.HeardRumor::rootId).toList().equals(List.of(testInput.rootId())),
+                "delivered test receipt stays invisible in ordinary mode");
+        f.restart();
+        var restored=new CourierEngine(f.ledger,RULES,f.probe,f.tick::get,"PERSONAL");
+        check(restored.heard(A,G,Set.of(A)).stream().map(RumorLedger.HeardRumor::rootId).toList().equals(List.of(ordinaryInput.rootId())),
+                "birth mode and read isolation survive persisted snapshot restore");
+        var oldJson=new Gson().toJsonTree(f.ledger.snapshot()).getAsJsonObject();
+        oldJson.getAsJsonArray("evidence").forEach(e->e.getAsJsonObject().remove("memoryMode"));
+        var old=RumorLedger.restore(new Gson().fromJson(oldJson,RumorLedger.Snapshot.class));
+        check(old.snapshot().evidence().stream().allMatch(e->e.memoryMode().equals("RUMOR_TEST"))
+                &&new CourierEngine(old,RULES,f.probe,f.tick::get,"PERSONAL").heard(A,G,Set.of(A)).isEmpty(),
+                "missing legacy mode never upgrades to gameplay");
+        rejects(()->new CourierEngine(f.ledger,RULES,f.probe,f.tick::get,"OFF"),"OFF cannot construct active courier engine");
+        var e=f.ledger.evidence(ordinaryInput.rootId());
+        rejects(()->new RumorLedger.Evidence(e.id(),e.subject(),e.observer(),e.epoch(),e.excerpt(),
+                e.receivers(),e.disclosureAudience(),e.proof(),"INVALID"),"invalid persisted birth mode rejected");
     }
     static void bounded(){
         var f=new Fixture();for(int i=0;i<RumorLedger.LIMIT;i++)check(f.ledger.observe(new UUID(9,i),A,CA,Set.of(A),"fixture",Set.of(G),Set.of(A)),"capacity insert");

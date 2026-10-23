@@ -13,6 +13,7 @@ public final class AiActionTypes {
     public static final ResourceLocation BLESSING_OFFER = id("blessing_offer");
     public static final ResourceLocation NPC_VISIT_REQUEST = id("npc_visit_request");
     public static final ResourceLocation NPC_ACTIVITY_REQUEST = id("npc_activity_request");
+    public static final ResourceLocation NPC_DIRECTIVE = id("npc_directive");
     public static final ResourceLocation WORLD_INTERACTION = id("world_interaction");
     public static final ResourceLocation PLAYER_DAMAGE = id("player_damage");
     public static final ResourceLocation GENERATED_QUEST_OFFER = id("generated_quest_offer");

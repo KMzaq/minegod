@@ -22,7 +22,7 @@ public final class RecordedRetrievalShadow {
 
     public static void compare(MinecraftServer server,Request request,RoomMemoryBridge.Recall recall,
             Set<UUID> selectedObservations,Set<UUID> selectedRumors) {
-        if(!server.isSameThread())return;
+        if(!server.isSameThread() || !"SHADOW".equals(com.sande.mythictrpg.recording.server.RecordingRuntime.retrievalState(server)))return;
         boolean external=!request.publicRoom()&&request.godIds().size()==1;
         var options=new RecordedRetrievalCoordinator.Options(8,32768,4,2,15000,external,
                 external&&MemoryFoundationSettings.mode()==MemoryFoundationSettings.Mode.RUMOR_TEST);

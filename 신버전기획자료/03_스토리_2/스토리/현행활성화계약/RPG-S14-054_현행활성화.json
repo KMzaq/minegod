@@ -1,0 +1,96 @@
+{
+  "document_type": "현행 활성화 저술 계약; 런타임 스키마 아님",
+  "record_key": "RPG-S14-054",
+  "name": "약사불",
+  "definition_id": "ACTIVATION-RPG-S14-054",
+  "adopted_activation": {
+    "status": "adopted_current_design",
+    "category": "world_unlock_adopted",
+    "world_unlock": {
+      "rule": "본인 적법 재료로 바닐라 침대1개 OR bread1회(밀3개→빵1개)를 실제 제작·인수하고 그중 침대1개 또는 빵1개 이상을 기존 쉼자리 안전점까지 실제 휴대 도착1회. 사용 가능한 생활물품인지 확인; 환자·기적·치료·NPC 인수0.",
+      "completion_count": 1,
+      "scope": "같은 world_uuid에서 실제 player_uuid 한 명이 선택한 AND/OR 조건 전체를 달성하면 세계영구; 여러 사람 부분이력 합산0",
+      "initial_state": "새 세계 WORLD_RELEASE=false. 아래 실제 유효 달성 전에는 계약 작성·후보 등록만으로 true가 되지 않는다. 이미 유효하게 배치/접촉된 기존 본체와 그 세계 원장은 재잠금하지 않는다.",
+      "transition": "FALSE → 같은 플레이어의 실제 완료 증거 검증 → world_uuid+record_key 최초 CAS → TRUE 영구. 해금 달성자의 개인 소유/관계/보상/수신을 자동 생성하지 않는다.",
+      "event_contract": "00_현행활성화_공통계약.json#/initialization",
+      "evidence": "실제 source event ID, world/player UUID, 행동별 object/item/route UUID, 순서있는 실제 위치 및 인수/소비 전후를 같은 시도로 결속. 각 행동의 정수량은 rule을 따른다. 이미 있는 동일 receipt는 증거로 참조할 수 있으나 횟수 누적·물품/권리/보상 재생성0. 다른 인물의 조건에도 사실상 맞는 사건이면 인물별 세계 판정에 참조 가능하며 같은 사건을 새 행동으로 복제하지 않는다.",
+      "source_history_is_not_current_rule": true,
+      "current_adoption_note": "원문 미채택 후보를 현재 일반설계로 선택·수량화했다. 원문 status/null/후보 문자열은 수정하지 않으며 과거부터 채택됐다고 소급하지 않는다.",
+      "resource_refs": []
+    },
+    "first_encounter": {
+      "current_predicate": "현재 적법하게 소지한 정상 음식1개 이상 OR minecraft:potion의 water 성분 물병1개 이상. 음식/물병은 출현 전 본인 준비물이며 NPC에게 인계·치유·SIDE수락을 요구하지 않는다. 현재 보유 판정이지 과거 직접제작 요구가 아니다. 소유권을 빼앗거나 소비하지 않는다.",
+      "current_location": "실제 꽃숲·수풀 생활권에 있는 폐예배당·초원 폐허·거처; 인물 전용 건축 없음 현재 허락된 접근로·안전점·퇴로와 배치 여건을 확인한다.",
+      "source_location_quote": "플레이어가 위 원문 생활권의 실제 발견된 적합 구조물 또는 안전한 자연 부지에 있으며 현재 통행·지형 위험과 배치 여건이 적합해야 한다. 특정 바이옴과 희귀 구조물을 동시에 강제하지 않는다. 현재 서버의 설치·좌표·안전은 별도 확인 대상이다.",
+      "site_anchor": "실제 꽃숲·수풀 생활권에 있는 폐예배당·초원 폐허·거처; 인물 전용 건축 없음",
+      "world_dimension": "minecraft:overworld",
+      "location_exact_ref": "스토리/인물별연결/RPG-S14-054.json#/connection_manuscript/present_encounter/appearance/location/player_location_conditions",
+      "site_source_ref": "스토리/인물별연결/RPG-S14-054.json#/connection_manuscript/present_encounter",
+      "preparation_source_ref": "스토리/인물별연결/RPG-S14-054.json#/connection_manuscript/fixed_current_snapshot/active_authoring_preserved_source_only/placement_proposals/meeting_route/value",
+      "preparation_label": "돌봄 준비",
+      "site_binding": "00_현행활성화_공통계약.json#/site_and_observation",
+      "mode": "기존 무작위 공용 풀. 확률/주기/NONE/actor가중/적격주체선정/쿨다운/CAS는 공통계약 pool 및 전역 참조를 그대로 사용. 이 파일은 전용 수치·새 풀·추가 추첨을 만들지 않는다.",
+      "subject": "현재 세계 가용성과 위 개인 조건을 갖춘 실제 온라인 생존 플레이어1명. 해금자일 필요 없고 0명이면 발생0. 여러 명은 기존 전역 선택계약.",
+      "time": "별도 시간제한 없음. 실제 현재 부지의 출입·위험·세계/봉인 가용성은 항상 검사. 세계해금 행동의 시간조건은 그 행동에만 적용하고 첫조우에 이식하지 않는다.",
+      "no_preappearance_actor_response": true,
+      "existing_body_contact": "이미 등장한 동일 본체의 일반 인사·재대화·친구 합류에는 위 최초 후보 준비물·관찰/이동 과제·새 추첨을 다시 요구하지 않는다. 현재 접근·청중·허용 접촉모드만 확인하며 실제 서비스/거래/수락은 기존 활동의 별도 조건을 따른다."
+    },
+    "single_body_state_ref": "00_현행활성화_공통계약.json#/body_state_machine",
+    "initialization_ref": "00_현행활성화_공통계약.json#/initialization",
+    "preserve": "정체·현재 접근·발화/비언어·MAIN/보상 범위는 source_refs의 현재 페르소나와 기존 개별기획 그대로. 후속 활동 소품·소개자·장면 수행/응답은 최초 배치 전제로 끌어올리지 않는다. 원문 옛 사망·기적은 지금의 부활·새 본체를 허가하지 않는다.",
+    "personal_and_knowledge_ref": "00_현행활성화_공통계약.json#/personal_separation",
+    "knowledge_boundary": "세계 해금 receipt는 세계 가용성을 위한 기술 원장일 뿐 NPC의 자동 지식·개인 관계·공적 인정이 아니다. 누가 했는지는 실제 목격 또는 허락된 전달과 해당 청중의 실제 수신이 있을 때만 안다. 해금자=조우주체라고 대사에서 추정하지 않는다.",
+    "new_implementation": "실제 행동/수량/물품·경로·관찰 receipt와 원장 연결은 신규 구현 요구이며 실제 게임/API/LLM/영상/5인 시험은 수행하지 않았다. 일반 기획 채택과 런타임 등록·실행 완료는 별개다."
+  },
+  "source_history_preserved": {
+    "exact_value": "누군가 실제 사용할 침구·음식 등 생활 돌봄 물품을 제작하고 기존 쉼자리에 도착한 이력. 완치·고통 증명·기적 성공을 해금 조건으로 쓰지 않는다.",
+    "exact_ref": "스토리/인물별연결/RPG-S14-054.json#/connection_manuscript/world_unlock_history/candidate",
+    "interpretation": "원문 역사 후보의 보존 인용. 실제 현행 실행은 adopted_activation만 읽는다."
+  },
+  "source_refs": [
+    {
+      "logical_file": "스토리/인물별연결/RPG-S14-054.json",
+      "record_key": "RPG-S14-054",
+      "pointers": [
+        "/connection_manuscript/world_unlock_history/candidate",
+        "/connection_manuscript/present_encounter",
+        "/connection_manuscript/current_basic_persona",
+        "/connection_manuscript/fixed_current_snapshot/active_authoring_preserved_source_only/placement_proposals/meeting_route/value"
+      ],
+      "sha256": "038859651766152fbcc8ecbfe9fc63158eec75bcc053bcec03d09ffc5300cffa"
+    },
+    {
+      "logical_file": "페르소나/인물/RPG-S14-054.json",
+      "record_key": "RPG-S14-054",
+      "pointers": [
+        "/current_identity",
+        "/production_scope",
+        "/current_access",
+        "/original_profile",
+        "/connection_persona"
+      ],
+      "sha256": "cccdcd32b483792c8bae4b01487079ef9d8408f96b38397355ed48a954f86c04"
+    },
+    {
+      "logical_file": "퀘스트/인물별범위/RPG-S14-054.json",
+      "record_key": "RPG-S14-054",
+      "pointers": [
+        "/contract"
+      ],
+      "sha256": "c2945ed50828bc6bd34d21cb4d1f6e0349e30425eef6e121a79f750c536b96a3"
+    },
+    {
+      "logical_file": "퀘스트/인물별완결기획/P1_OTHER_QUEST-051/RPG-S14-054.json",
+      "record_key": "RPG-S14-054",
+      "pointers": [
+        "/source_contract",
+        "/adopted_detail"
+      ],
+      "sha256": "230d388395502ddbb208af60c75153c041e063054ddb40f2c75e0a8ee8e67253"
+    }
+  ],
+  "source_null_boundary": "원문 connection_persona 또는 역사 runtime 필드가 null이면 그대로 보존한다. 현재 정체·원프로필과 실제 연결 원고의 current_basic_persona/basic_persona, 이 별도 adopted_activation을 결속하며 null을 무조건 허용이나 과거 채택으로 바꾸지 않는다.",
+  "common_ref": "00_현행활성화_공통계약.json",
+  "runtime_ready": false,
+  "activation_performed": false
+}

@@ -5,7 +5,125 @@ plugins {
 
 version = mod_version
 
+['gmActionCapabilityBridgeTest': 'GmActionCapabilityBridgeTest', 'roomActionNarrationTest': 'RoomActionNarrationTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+        mainClass = "com.sande.mythictrpg.ai.${testClass}"
+    }
+    tasks.named('check') { dependsOn taskName }
+}
+
+tasks.register('contentCatalogBootstrapTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.data.BundledJsonDataTest'
+}
+tasks.named('check') { dependsOn 'contentCatalogBootstrapTest' }
+
+tasks.register('localOllamaCompletionTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.LocalOllamaCompletionTest'
+    args layout.buildDirectory.dir('completion-test').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'localOllamaCompletionTest' }
+
+tasks.register('supportGroundingEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportGroundingEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file('../검토결과/need-only-support-20261020/evidence/live-v2.json').absolutePath,
+            file(providers.gradleProperty('supportAuditOutput').get()).absolutePath, '--execute-loopback'
+}
+
+tasks.register('supportDialogueReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportDialogueReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('supportReplayInput').orElse('../검토결과/need-only-support-20261020/evidence/live-v2.json').get()).absolutePath,
+            file(providers.gradleProperty('supportReplayOutput').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('supportReplayTurns').orElse('12,13').get()
+}
+
+tasks.register('purposeReplyPlanTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeReplyPlanTest'
+}
+tasks.named('check') { dependsOn 'purposeReplyPlanTest' }
+
+tasks.register('purposeReplyPlanEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeReplyPlanEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('purposePlanInput').orElse('../검토결과/purpose-state-20261019/live-final').get()).absolutePath,
+            file(providers.gradleProperty('purposePlanOutput').orElse('../검토결과/purpose-reply-20261019/run-v1').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('purposePlanMode').orElse('all').get()
+}
+
+tasks.register('purposeDialogueTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeDialogueTest'
+}
+tasks.named('check') { dependsOn 'purposeDialogueTest' }
+
+tasks.register('observedSupportMemoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythai.response.memory.ObservedSupportMemoryTest'
+}
+tasks.named('check') { dependsOn 'observedSupportMemoryTest' }
+
+tasks.register('supportConsultationTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportConsultationTest'
+}
+tasks.named('check') { dependsOn 'supportConsultationTest' }
+
+tasks.register('dialogueSupportReadingTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.DialogueSupportReadingTest'
+}
+tasks.named('check') { dependsOn 'dialogueSupportReadingTest' }
+
+tasks.register('supportProgressLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.SupportProgressLiveEvaluation'
+    doFirst {
+        if (!providers.gradleProperty('dialogueLive').map { it == 'true' }.getOrElse(false)) throw new GradleException('Explicit live opt-in required')
+        args providers.gradleProperty('supportProgressOutput').get(), '--execute-loopback'
+        if (providers.gradleProperty('supportCandidates').getOrElse('false') == 'true') args '--candidate-support'
+    }
+}
+
+tasks.register('purposeStateLiveEvaluation', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeStateLiveEvaluation'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/purpose-state-20261019/live-v1').get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('dialogueEvaluationRepeats').orElse('1').get()
+}
+
 // Candidate semantic frames remain evaluation-only until all quality gates pass.
+tasks.register('purposeDialogueReplay', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.sande.mythictrpg.ai.PurposeDialogueReplay'
+    onlyIf { providers.gradleProperty('dialogueLive').orElse('false').get() == 'true' }
+    args file(providers.gradleProperty('purposeReplayInput').orElse('../검토결과/purpose-state-20261019/live-v2').get()).absolutePath,
+            file(providers.gradleProperty('purposeReplayOutput').orElse(providers.gradleProperty('dialogueEvaluationOutput').orElse('../검토결과/purpose-state-20261019/replay-v3')).get()).absolutePath,
+            '--execute-loopback', providers.gradleProperty('purposeReplaySuite').orElse('v2').get()
+}
+
 tasks.withType(JavaExec).configureEach {
     if (name in ['playerClaimBoundaryEvaluation', 'playerClaimGeneralRegression', 'roomPatchLiveEvaluation', 'roomPatchReplayEvaluation']) {
         systemProperty 'mythai.eval.independentFrames', providers.gradleProperty('independentFrameEvaluation').orElse('false').get()
@@ -147,7 +265,7 @@ repositories { mavenCentral() }
 // Public integration contracts are provided by the current game module.
 // The AI engine is now built entirely from this module's versioned sources.
 def currentMythicTrpgJar = file(providers.gradleProperty('mythicTrpgApiJar')
-        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.27.jar').get())
+        .orElse('../mythictrpg-main/build/libs/mythictrpg-1.0.42.jar').get())
 def patchedAiSourceDir = providers.provider { layout.projectDirectory.dir('src/engine/java') }
 sourceSets.main.java.srcDir(patchedAiSourceDir)
 
@@ -489,6 +607,11 @@ sourceSets.main.resources.srcDir generateModMetadata
 // Reuse Minecraft's existing empty test structure from the build's local runtime resources.
 tasks.named('processResources', ProcessResources) {
     dependsOn 'createMinecraftArtifacts'
+    from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
+        include 'data/minecraft/structure/bastion/mobs/empty.nbt'
+        eachFile { path = 'data/mythai_native_dialogue/structure/empty.nbt' }
+        includeEmptyDirs = false
+    }
     from({ zipTree(layout.buildDirectory.file("moddev/artifacts/neoforge-${project.neo_version}-client-extra-aka-minecraft-resources.jar")) }) {
         include 'data/minecraft/structure/bastion/mobs/empty.nbt'
         eachFile { path = 'data/mythai_room_full_path/structure/empty.nbt' }

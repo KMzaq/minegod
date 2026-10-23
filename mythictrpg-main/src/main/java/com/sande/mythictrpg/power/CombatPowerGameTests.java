@@ -32,6 +32,87 @@ public final class CombatPowerGameTests {
          "recommendations":[{"progress":{"test:story":{"minimum":0,"maximum":10}},"recommendedPower":40}]}
         """;
     private static CombatPowerPolicy policy() { return CombatPowerPolicy.parse("test:synthetic", JsonParser.parseString(POLICY).getAsJsonObject()); }
+    @GameTest(templateNamespace = "mythictrpg_power", template = "empty", batch = "power_v2", timeoutTicks = 300)
+    public static void evaluatedStateUsesAcquisitionsAndActualEffects(GameTestHelper helper) {
+        helper.startSequence().thenWaitUntil(() -> helper.assertTrue(CombatPowerRuntime.captureReady(helper.getLevel().getServer()), "power fence startup"))
+                .thenExecute(() -> verifyEvaluatedState(helper)).thenSucceed();
+    }
+    private static void verifyEvaluatedState(GameTestHelper helper) {
+        var previous = CombatPowerPolicyManager.INSTANCE.current();
+        List<io.netty.channel.embedded.EmbeddedChannel> channels = new ArrayList<>();
+        var player = connect(helper,"V2Owner",channels); var other = connect(helper,"V2Other",channels);
+        ResourceLocation borrowed = ResourceLocation.parse("test:borrowed_health");
+        try {
+            com.google.gson.JsonObject json;
+            try (var input = CombatPowerGameTests.class.getResourceAsStream("/data/mythictrpg/mythictrpg/combat_power/default.json")) {
+                if (input == null) throw new IllegalStateException("missing v2 fixture policy");
+                json = JsonParser.parseString(new String(input.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+            } catch (java.io.IOException invalid) { throw new java.io.UncheckedIOException(invalid); }
+            var swordRule = JsonParser.parseString("""
+                    {"itemId":"minecraft:iron_sword","components":{},"classification":"BOUND_REWARD_GEAR","slot":"weapon",
+                     "intrinsicPower":12,"attackDamage":6,"sharpnessLevel":0,"protectionLevel":0,"skills":{}}
+                    """).getAsJsonObject();
+            json.getAsJsonArray("items").add(swordRule);
+            var ignoredRule = JsonParser.parseString("""
+                    {"itemId":"minecraft:paper","components":{},"classification":"IGNORE","slot":"none",
+                     "intrinsicPower":0,"attackDamage":0,"sharpnessLevel":0,"protectionLevel":0,"skills":{}}
+                    """).getAsJsonObject();
+            json.getAsJsonArray("items").add(ignoredRule);
+            var policy = CombatPowerPolicy.parse("test:v2",json);
+            CombatPowerPolicyManager.INSTANCE.apply(new CombatPowerPolicyManager.Loaded(policy,"READY"),null,null);
+            var state = RewardPowerState.get(player.server);
+            var reward = new ResolvedQuestReward("fixture",List.of(new NpcRewardEntry(ResourceLocation.parse("minecraft:iron_sword"),1),
+                    new NpcRewardEntry(ResourceLocation.parse("minecraft:paper"),1)),List.of());
+            double promised = CombatPowerRuntime.previewScorer(player,List.of(new NpcRewardEntry(ResourceLocation.parse("minecraft:iron_sword"),1),
+                    new NpcRewardEntry(ResourceLocation.parse("minecraft:paper"),1))).applyAsDouble(Map.of());
+            helper.assertTrue(state.history(player.getUUID()).orElseThrow().items().isEmpty(),"hypothetical bundle wrote acquisition evidence");
+            boolean unknownPromiseRejected = false;
+            try { CombatPowerRuntime.previewScorer(player,List.of(new NpcRewardEntry(ResourceLocation.parse("minecraft:diamond_sword"),1))); }
+            catch (RuntimeException unavailable) { unknownPromiseRejected = true; }
+            helper.assertTrue(unknownPromiseRejected,"unknown promised equipment was silently omitted from candidate score");
+            var receipt = RewardClaimService.INSTANCE.issue(player,ResourceLocation.parse("mythictrpg:fortuna"),ResourceLocation.parse("test:v2/"+UUID.randomUUID()),reward);
+            helper.assertTrue(receipt.succeeded(),"actual v2 reward failed: "+receipt.reason());
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).actualPower(),promised,"promised bundle preview differed from actual delivery");
+            helper.assertValueEqual(CombatPowerRuntime.previewScorer(player,List.of(new NpcRewardEntry(ResourceLocation.parse("minecraft:iron_sword"),1)))
+                    .applyAsDouble(Map.of()),promised,"already acquired promised variant was counted twice");
+            player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40);
+            var clean = CombatPowerRuntime.captureState(state,policy,player);
+            double expected = CombatPowerEvaluator.evaluate(clean,policy.model()).total();
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).actualPower(),expected,"registered reward/ignored counterpart");
+            helper.assertTrue(clean.acquiredGear().size()==1,"IGNORE supplied gear stats");
+            ItemStack acquired = new ItemStack(Items.IRON_SWORD); acquired.setDamageValue(12);
+            helper.assertTrue(CombatPowerRuntime.registeredAcquiredGear(player,acquired).isPresent(),"durability invalidated acquired gear authentication");
+            helper.assertTrue(CombatPowerRuntime.registeredAcquiredGear(other,acquired).isEmpty(),"borrowed gear inherited owner's authentication");
+            helper.assertTrue(CombatPowerRuntime.registeredAcquiredGear(player,new ItemStack(Items.PAPER)).isEmpty(),"ignored tool authenticated as bound gear");
+            player.getInventory().clearContent(); player.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.DIAMOND_SWORD));
+            player.getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(borrowed,1000,AttributeModifier.Operation.ADD_VALUE));
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).actualPower(),expected,"worn/transient stats changed historical v2 power");
+            player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST,200,2));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,200,0));
+            Map<ResourceLocation,Integer> active = Map.of(ResourceLocation.parse("minecraft:health_boost"),3,ResourceLocation.parse("minecraft:strength"),1);
+            var preview = CombatPowerRuntime.previewScorer(player);
+            helper.assertValueEqual(preview.applyAsDouble(Map.of()),expected,"preview baseline retained temporary health/strength modifiers");
+            double proposed = preview.applyAsDouble(active);
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).actualPower(),proposed,"candidate and real applied state diverged");
+            helper.assertValueEqual(CombatPowerRuntime.captureState(state,policy,player).baseMaxHealth(),40.0,"health effect counted twice");
+            player.removeAllEffects();
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).actualPower(),expected,"expired active effect retained v2 contribution");
+            var restored = RewardPowerState.load(state.save(new CompoundTag(),player.registryAccess()),player.registryAccess());
+            helper.assertValueEqual(CombatPowerRuntime.assessInputs(restored,new CombatPowerPolicyManager.Loaded(policy,"READY"),player,Map.of()).actualPower(),expected,"reload changed v2 acquired state");
+            CompoundTag components = new CompoundTag(); components.putInt("minecraft:custom_model_data",222);
+            helper.assertTrue(RewardExecutionService.grant(player,ResourceLocation.parse("mythictrpg:fortuna"),
+                    List.of(new NpcRewardEntry(ResourceLocation.parse("minecraft:iron_sword"),1,components)),RewardGrantPurpose.QUEST).granted(),"unknown variant blocked reward");
+            helper.assertValueEqual(CombatPowerService.INSTANCE.assess(player).status(),CombatPowerAssessment.Status.UNAVAILABLE,"unknown reward variant silently scored as registered sword");
+            boolean rejected = false;
+            try { CombatPowerRuntime.previewScorer(player); } catch (RuntimeException expectedFailure) { rejected = true; }
+            helper.assertTrue(rejected,"adaptive preview guessed missing gear history");
+        } finally {
+            player.getAttribute(Attributes.MAX_HEALTH).removeModifier(borrowed); player.removeAllEffects();
+            CombatPowerPolicyManager.INSTANCE.apply(previous,null,null);
+            player.server.getPlayerList().remove(player); other.server.getPlayerList().remove(other);
+            channels.forEach(io.netty.channel.embedded.EmbeddedChannel::finishAndReleaseAll);
+        }
+    }
     @GameTest(templateNamespace = "mythictrpg_power", template = "empty", timeoutTicks = 300)
     public static void actualRewardProviderDoesNotFollowWornGear(GameTestHelper helper) {
         helper.startSequence().thenWaitUntil(() -> helper.assertTrue(CombatPowerRuntime.captureReady(helper.getLevel().getServer()), "power fence startup"))

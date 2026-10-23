@@ -37,6 +37,7 @@ public final class RecordedRumorReadTest {
         final Map<String, ReputationSettings.Rule> policies = new HashMap<>();
         RumorSavedData data = new RumorSavedData(); RumorLedger ledger; CourierEngine engine; ReputationLedger reputation;
         WorldRecordingService store; RumorRecordingCapture capture; boolean reputationReady; long tick;
+        String memoryMode = "RUMOR_TEST";
         Rig(Path root) throws Exception {
             this.root = root; Files.createDirectories(root); data.recordingEnabled(true); resetEngine();
             check(engine.bind(PLAYER, BIRD) && engine.bind(OTHER, OTHER_BIRD), "explicit actual courier bindings created");
@@ -52,7 +53,7 @@ public final class RecordedRumorReadTest {
                 public boolean available(UUID courier, UUID subject) { return true; }
                 public boolean witnessed(UUID courier, CourierEngine.Event event, CourierSettings.Rule rule) { return true; }
                 public boolean receiverAvailable(String god) { return availableRecipients.contains(god); }
-            }, () -> tick);
+            }, () -> tick, memoryMode);
         }
         void checkpoint() throws Exception {
             // Existing SavedData restore path confirms precisely this serialized checkpoint.
@@ -131,7 +132,42 @@ public final class RecordedRumorReadTest {
         Path root = Files.createTempDirectory(Files.createDirectories(base), "rumor-read-");
         exactAndAudience(root.resolve("audience")); lateReception(root.resolve("late")); assessmentAndRevocation(root.resolve("current"));
         paginationAndFailure(root.resolve("pages")); restart(root.resolve("restart"));
+        ordinaryGameplay(root.resolve("personal"));
         System.out.println("RecordedRumorReadTest: " + checks + " checks passed; actual game ledgers/SQLite fixtures=" + root);
+    }
+    private static void ordinaryGameplay(Path path) throws Exception {
+        try (var r = new Rig(path)) {
+            UUID trial = r.event(PLAYER, Set.of(PLAYER), "시험에서만 들은 소문");
+            r.memoryMode = "PERSONAL"; r.resetEngine();
+            UUID ordinary = r.event(PLAYER, Set.of(PLAYER), "일반 플레이에서 들은 소문");
+            var s = session(r, gate(r, G, Set.of(PLAYER)), "PERSONAL");
+            var page = read(r, s, "", Optional.empty(), 8, 16384);
+            check(page.entries().size() == 1 && page.entries().getFirst().source().sourceId().equals(ordinary.toString()),
+                    "PERSONAL archive exposes its real received source, never the earlier test source");
+            check(read(r, session(r, gate(r, G, Set.of(PLAYER, OUTSIDE)), "PERSONAL"), "", Optional.empty(), 8, 16384)
+                    .entries().isEmpty(), "ordinary gameplay preserves listener disclosure checks");
+            check(read(r, session(r, gate(r, H, Set.of(PLAYER)), "PERSONAL"), "", Optional.empty(), 8, 16384)
+                    .entries().isEmpty(), "ordinary gameplay preserves actual recipient receipt requirement");
+            r.reputationReady = true; r.assess(ordinary, G, ReputationLedger.Outcome.ACCEPTED);
+            var accepted = read(r, s, "", Optional.empty(), 8, 16384);
+            check(accepted.entries().getFirst().assessment().outcome().orElseThrow() == ReputationLedger.Outcome.ACCEPTED,
+                    "ordinary native read includes current game assessment");
+            r.assess(ordinary, G, ReputationLedger.Outcome.RECOVERED);
+            check(!s.current(accepted), "ordinary recovery immediately invalidates an issued adverse assessment");
+            var recovered = read(r, s, "", Optional.empty(), 8, 16384);
+            check(recovered.entries().getFirst().assessment().outcome().orElseThrow() == ReputationLedger.Outcome.RECOVERED,
+                    "ordinary native read carries real recovery without changing original source");
+            await(r.store.closeAsync()); r.checkpoint(); r.openStore();
+            check(await(r.capture.capture(r.data.recordingSnapshot().orElseThrow())).complete(),
+                    "mixed PERSONAL and test immutable provenance replays after database reopen");
+            var reloaded = read(r, session(r, gate(r, G, Set.of(PLAYER)), "PERSONAL"), "", Optional.empty(), 8, 16384);
+            check(reloaded.entries().size() == 1 && reloaded.entries().getFirst().source().sourceId().equals(ordinary.toString()),
+                    "PERSONAL provenance remains exact after persisted game/archive reload");
+            r.memoryMode = "RUMOR_TEST"; r.resetEngine();
+            var testOnly = read(r, session(r, gate(r, G, Set.of(PLAYER)), "RUMOR_TEST"), "", Optional.empty(), 8, 16384);
+            check(testOnly.entries().size() == 1 && testOnly.entries().getFirst().source().sourceId().equals(trial.toString()),
+                    "switching to trial mode preserves original test origin without relabeling gameplay evidence");
+        }
     }
     private static void exactAndAudience(Path path) throws Exception {
         try (var r = new Rig(path)) {

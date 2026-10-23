@@ -82,7 +82,31 @@ public final class RoomDialoguePatchTest {
         }
         var tooLongGuard=validGuard.deepCopy();tooLongGuard.getAsJsonObject("e0").addProperty("beforeAction","x".repeat(201));rejects(()->plan.requirePreserved(tooLongGuard));
         for (String scenario : List.of("ACCEPT", "UNCHANGED", "DRIFT", "INVALID_PATCH", "INVALID_CHECK", "HTTP_FAILURE")) wire(scenario);
+        observedSupportReplanning();
         System.out.println("RoomDialoguePatchTest: " + checks + " checks passed; fake HTTP only");
+    }
+    private static void observedSupportReplanning() {
+        var source=new ArrayList<>(evidence());
+        var scene=JsonParser.parseString(source.get(1).content()).getAsJsonObject();
+        scene.add("observedActionBoundary",JSON.toJsonTree(Map.of("confirmed",List.of("수확 동작"))));
+        source.set(1,new AiDialogueModels.OllamaMessage("user",scene.toString()));
+        var original=new AiDialogueModels.StructuredAiResult(List.of(new AiDialogueModels.Speech("test:one","너는 성실한 농부구나.",List.of("player"))),"keep-topic",List.of(new AiDialogueModels.Proposal("example","t","s",List.of(),Map.of())),"E_CALM");
+        var issue=new RoomDialogueGrounding.Review(false,List.of(new RoomDialogueGrounding.Issue(RoomDialogueGrounding.Code.UNSUPPORTED_FACT,"너는 성실한 농부구나.","성품은 미확인")));
+        var plan=RoomDialoguePatch.plan(source,original,issue);
+        check(ObservedSupportRepair.applies(plan),"observed fact repair only");
+        check(!ObservedSupportRepair.applies(RoomDialoguePatch.plan(evidence(),original,issue)),"ordinary path unchanged");
+        check(ObservedSupportRepair.applies(RoomDialoguePatch.plan(source,original,review("너는 성실한 농부구나."))),"same consulted scene cannot bypass replanning by inconsistent review code");
+        var shared=SupportProfilePrompt.enrich(source,Map.of("tendencies",List.of("내실·생활 성장")));
+        check(!ObservedSupportRepair.applies(RoomDialoguePatch.plan(shared,original,issue)),"cumulative consented support is not restricted to one observed action");
+        String prompt=JSON.toJson(ObservedSupportRepair.messages(plan));
+        check(!prompt.contains("너는 성실한 농부구나.")&&!prompt.contains("성품은 미확인"),"rejected draft and review are not generation evidence");
+        check(prompt.contains("observedActionBoundary"),"frozen source retained");
+        var output=JsonParser.parseString("{\"speech\":[{\"text\":\"네가 밀을 수확하는 모습을 보았지.\"}]}").getAsJsonObject();
+        var fixed=ObservedSupportRepair.apply(plan,output);
+        check(fixed.proposals().equals(original.proposals())&&fixed.currentTopic().equals(original.currentTopic())&&fixed.currentEmotion().equals(original.currentEmotion()),"replanning cannot change proposals or metadata");
+        check(fixed.speech().getFirst().speakerId().equals("test:one")&&fixed.speech().getFirst().audienceParticipantIds().equals(List.of("player")),"routing fixed outside LLM");
+        var injected=output.deepCopy();injected.addProperty("speakerId","foreign");rejects(()->ObservedSupportRepair.apply(plan,injected));
+        var empty=JsonParser.parseString("{\"speech\":[]}").getAsJsonObject();rejects(()->ObservedSupportRepair.apply(plan,empty));
     }
     private static void wire(String scenario) throws Exception {
         var calls = new AtomicInteger(); var error = new AtomicReference<Throwable>();

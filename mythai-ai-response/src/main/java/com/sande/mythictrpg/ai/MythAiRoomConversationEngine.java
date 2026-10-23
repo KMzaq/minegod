@@ -3,6 +3,7 @@ package com.sande.mythictrpg.ai;
 import com.google.gson.Gson;
 import com.sande.mythai.response.memory.DialogueMemoryBridge;
 import com.sande.mythai.response.memory.RoomMemoryBridge;
+import com.sande.mythai.response.memory.RecordedForegroundMemory;
 import com.sande.mythictrpg.ai.api.RoomConversationEngine;
 import com.sande.mythictrpg.ai.api.RoomDialogueEvent;
 import com.sande.mythictrpg.ai.api.RoomEvidenceReference;
@@ -25,9 +26,15 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
     private final AiTestContentRegistryBridge registry = new AiTestContentRegistryBridge();
     private final RoomResponseTokens tokens = new RoomResponseTokens();
     private final Map<UUID, Delivery> deliveries = new HashMap<>();
+    private final Map<UUID, ActionDecision> actionDecisions = new HashMap<>();
+    private record ActionDecision(Request request, Result reply, RoomResponseTokens.Token token,
+            AiTestContentRegistryBridge.ContentSnapshot content, AiTestDialogueAdapter.RoomPrompt prompt,
+            DialogueMemoryBridge.Turn memory, List<AiDialogueModels.OllamaMessage> messages) { }
     private final Map<UUID, List<RoomDialogueEvent>> identityPublications = new HashMap<>();
     private final Map<UUID, StoryConversationContextBridge> stories = new HashMap<>();
     private final Map<UUID, Evidence> evidence = new HashMap<>();
+    private final Map<UUID,com.sande.mythictrpg.understanding.SupportSharing.Grant> supportGrants=new HashMap<>();
+    private record SupportPrepared(DialogueMemoryBridge.Turn memory,Optional<com.sande.mythictrpg.understanding.SupportSharing.Grant> grant) { }
     private final Map<String, UUID> splitTokens = new HashMap<>();
     private final Map<ActivityKey, String> activities = new HashMap<>();
     private final RoomEmotionState emotions = new RoomEmotionState();
@@ -35,7 +42,18 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
     private record ActivityKey(UUID room, long revision, ResourceLocation god) { }
     private record Delivery(Request request, Result result, DialogueMemoryBridge.Turn memory) { }
     private record Evidence(Request request, List<RoomEvidenceReference> references, Set<UUID> sources) { }
-    private record Memories(DialogueMemoryBridge.Turn legacy, RoomMemoryBridge.Recall heard) { }
+    private record Memories(DialogueMemoryBridge.Turn legacy, RoomMemoryBridge.Recall heard,
+            Optional<RecordedForegroundMemory.Prepared> nativeSpeech) {
+        Memories(DialogueMemoryBridge.Turn legacy, RoomMemoryBridge.Recall heard) { this(legacy, heard, Optional.empty()); }
+    }
+    private CompletableFuture<Memories> prepareMemories(MinecraftServer server, ServerPlayer player, Request request, long number) {
+        if (com.sande.mythictrpg.recording.server.RecordingRuntime.nativeDialogueEnabled(server))
+            return DialogueMemoryBridge.beginNativeRoomAsync(player, request, number)
+                    .thenCombine(RecordedForegroundMemory.prepareForDialogue(server, request),
+                            (observations, nativeSpeech) -> new Memories(observations, RoomMemoryBridge.Recall.EMPTY, nativeSpeech));
+        return DialogueMemoryBridge.beginRoomAsync(player, request, number, false)
+                .thenCombine(RoomMemoryBridge.recall(player, request), Memories::new);
+    }
     private MythAiRoomConversationEngine() {
         RoomMemoryBridge.installEvidenceValidator((server,request,ref) -> {
             if (ActivityRoomExperience.KIND.equals(ref.kind()))
@@ -81,8 +99,10 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
         var token = tokens.issue(request.roomId(), request.revision(), request.turnId());
         emotions.begin(request);
         deliveries.remove(request.roomId());
+        actionDecisions.remove(request.roomId());
         identityPublications.remove(request.roomId());
         evidence.remove(request.roomId());
+        supportGrants.remove(request.roomId());
         try {
             var story = StoryConversationContextBridge.capture(player, request);
             stories.put(request.roomId(), story);
@@ -94,8 +114,7 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                 if (!current(player, token)) { result.complete(Result.failed(request, "STALE_ROOM")); return; }
                 try {
                     var safe = enrichContext(pruneHistory(request,player), story, candidates);
-                    DialogueMemoryBridge.beginRoomAsync(player, safe, token.sequence())
-                            .thenCombine(RoomMemoryBridge.recall(player,safe),Memories::new).whenComplete((prepared, failure) -> server.execute(() -> {
+                    prepareMemories(server, player, safe, token.sequence()).whenComplete((prepared, failure) -> server.execute(() -> {
                         if (!current(player, token)) { result.complete(Result.failed(request, "STALE_ROOM")); return; }
                         var memory = prepared == null ? null : prepared.legacy();
                         // Story disclosure dependencies are portable references below, not session-bound closures.
@@ -113,9 +132,18 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                             com.sande.mythictrpg.MythicTrpg.LOGGER.warn("Room social recovery selection unavailable; dialogue continues",unavailable);
                         }
                         try {
+                            var nativePayload = prepared.nativeSpeech().flatMap(value -> value.payloadFor(server, safe));
+                            if (prepared.nativeSpeech().isPresent() && nativePayload.isEmpty()) {
+                                result.complete(Result.failed(request, "NATIVE_MEMORY_STALE")); return;
+                            }
+                            var heardVariants = nativePayload.map(value -> List.of(value.text())).orElse(prepared.heard().promptVariants());
                             var content = RoomKnowledgeContext.load(safe);
                             var activityExperience = ActivityRoomExperience.capture(server, safe);
                             var refs = new ArrayList<RoomEvidenceReference>(story.evidenceReferences());
+                            nativePayload.ifPresent(value -> refs.add(value.evidence()));
+                            log(player, request, "SCOPED_MEMORY_ROUTE", com.sande.mythictrpg.recording.server.RecordingRuntime.retrievalState(server)
+                                    + ";native=" + nativePayload.isPresent() + ";observations=" + memory.observations().events().size()
+                                    + ";observationStatus=" + memory.experience().view().reason());
                             activityExperience.ifPresent(snapshot -> refs.addAll(snapshot.references()));
                             refs.add(RoomKnowledgeContext.evidence(safe,content));
                             var staticRelations = new LinkedHashMap<String,List<String>>();
@@ -136,6 +164,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                             evidence.put(request.roomId(),new Evidence(safe,List.copyOf(refs),Set.copyOf(sources)));
                             if (!currentEvidence(player,request.roomId())) { result.complete(Result.failed(request,"EVIDENCE_REVOKED"));return; }
                             var promptRequest = safe;
+                            if (com.sande.mythictrpg.recording.server.RecordingRuntime.nativeDialogueEnabled(server) && nativePayload.isEmpty())
+                                promptRequest = appendOwnContext(promptRequest, "\n[RECORDED_RECALL_STATUS]\nNo usable excerpt was selected within this turn's bounded lookup. This is not evidence that no earlier conversation, correction or event exists. Continue the current conversation; do not invent missing memories.\n");
                             if (activityExperience.isPresent()) promptRequest = appendOwnContext(promptRequest,
                                     NpcActivityPrompt.experience(safe, activityExperience.orElseThrow().view()));
                             var emotionContext = emotions.context(safe);
@@ -145,12 +175,13 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                                     +"Do not swap directions, attribute one target's tags to another, or invent historical causes. "
                                     +"CURRENT_GOD_ATTITUDES separately describes the current game-owned state.\n"+JSON.toJson(staticRelations));
                             if (request.secondary()) {
-                                react(player, request, promptRequest, token, content, memory, prepared.heard().promptVariants(), result);
+                                react(player, request, promptRequest, token, content, memory, heardVariants, result);
                                 return;
                             }
                             var activityKey = new ActivityKey(request.roomId(), request.revision(), request.speakerGodId());
                             var prompt = new AiTestDialogueAdapter.RoomPrompt(promptRequest, memory, Map.of(request.speakerGodId(), content),
-                                    activities.getOrDefault(activityKey, ""), prepared.heard().promptVariants());
+                                    activities.getOrDefault(activityKey, ""), heardVariants,
+                                    com.sande.mythictrpg.recording.server.RecordingRuntime.nativeDialogueEnabled(server));
                             activities.put(activityKey, prompt.activity());
                             classify(player, request, token, content, prompt, memory, result);
                         } catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
@@ -216,25 +247,66 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
             var fast = prompt.fastIntent();
             if (fast != null) {
                 log(player, request, "CLASSIFICATION_POLICY", "clear social turn; existing heuristic route");
-                generate(player, request, token, content, prompt, memory,
-                        RoomDialogueGrounding.Attempt.initial(prompt.generation(fast)), result); return;
+                generateWithOptionalSupport(player, request, token, content, prompt, memory, fast, result); return;
             }
-            log(player, request, "CLASSIFICATION_INPUT", JSON.toJson(prompt.classificationMessages()));
-            client().submitIntent(UUID.randomUUID(), prompt.classificationMessages(), AiDialogueConfig.INSTANCE.settings())
+            var classification=DialogueSupportReading.classification(player,request.currentText(),prompt.classificationMessages());
+            log(player, request, "CLASSIFICATION_INPUT", JSON.toJson(classification));
+            client().submitIntent(UUID.randomUUID(), classification, AiDialogueConfig.INSTANCE.settings())
                     .completion().whenComplete((classified, failure) -> player.server.execute(() -> afterEvidenceRefresh(player, request, token, result, () -> {
                         if (!current(player, token)) { result.complete(Result.failed(request, "STALE_ROOM")); return; }
                         var intent = failure == null && classified != null && classified.value() != null
                                 ? classified.value() : ConversationIntent.heuristicFallback();
                         log(player, request, "CLASSIFICATION_RESULT", JSON.toJson(intent));
-                        try { generate(player, request, token, content, prompt, memory,
-                                RoomDialogueGrounding.Attempt.initial(prompt.generation(intent)), result); }
+                        try { generateWithOptionalSupport(player, request, token, content, prompt, memory, intent, result); }
                         catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
                     })));
         } catch (RuntimeException unavailable) {
-            try { generate(player, request, token, content, prompt, memory,
-                    RoomDialogueGrounding.Attempt.initial(prompt.generation(ConversationIntent.heuristicFallback())), result); }
+            try { generateWithOptionalSupport(player, request, token, content, prompt, memory, ConversationIntent.heuristicFallback(), result); }
             catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
         }
+    }
+
+    private void generateWithOptionalSupport(ServerPlayer player, Request request, RoomResponseTokens.Token token,
+            AiTestContentRegistryBridge.ContentSnapshot content, AiTestDialogueAdapter.RoomPrompt prompt,
+            DialogueMemoryBridge.Turn base, ConversationIntent intent, CompletableFuture<Result> result) {
+        DialogueSupportReading.capture(player,request,intent);
+        var consultation = com.sande.mythictrpg.ai.intent.SupportConsultation.forTurn(intent, request.currentText(),
+                request.secondary(), request.publicRoom(), request.godIds().size());
+        var shared=consultation.use()==com.sande.mythictrpg.ai.intent.SupportConsultation.Use.SELF_ASSESSMENT
+                ||consultation.use()==com.sande.mythictrpg.ai.intent.SupportConsultation.Use.PERSONALIZED_SUGGESTION
+                ?com.sande.mythictrpg.understanding.SupportSharing.prepare(player,request)
+                :CompletableFuture.completedFuture(Optional.<com.sande.mythictrpg.understanding.SupportSharing.Grant>empty());
+        DialogueMemoryBridge.consultSupportAsync(player, prompt.request(), base, consultation)
+                .thenCombine(shared,SupportPrepared::new)
+                .whenComplete((selected, failure) -> player.server.execute(() -> afterEvidenceRefresh(player, request, token, result, () -> {
+                    if (result.isDone()) return;
+                    var memory = failure == null && selected != null ? selected.memory() : base;
+                    if (!current(player, token) || !DialogueMemoryBridge.roomTurnCurrent(player, memory)) {
+                        result.complete(Result.failed(request, "STALE_ROOM_OR_MEMORY")); return;
+                    }
+                    try {
+                        var prior = evidence.get(request.roomId());
+                        if (prior == null) { result.complete(Result.failed(request, "EVIDENCE_REVOKED")); return; }
+                        var refs = new ArrayList<>(prior.references());
+                        refs.addAll(com.sande.mythictrpg.ai.experiencecontract.ExperienceRoomEvidence.references(
+                                player.server, prompt.request(), memory.experience(), memory.observations().ids()));
+                        evidence.put(request.roomId(), new Evidence(prior.request(), List.copyOf(refs), prior.sources()));
+                        if (!currentEvidence(player, request.roomId())) {
+                            result.complete(Result.failed(request, "EVIDENCE_REVOKED")); return;
+                        }
+                        log(player, request, "SUPPORT_CONSULTATION", "use=" + consultation.use()
+                                + ";observations=" + memory.observations().events().size()
+                                + ";status=" + memory.experience().view().reason());
+                        var enriched = prompt.withMemory(memory);
+                        var messages=enriched.generation(intent);
+                        if(failure==null&&selected!=null&&selected.grant().isPresent()&&selected.grant().get().current(request)) {
+                            var grant=selected.grant().get();var withSupport=SupportProfilePrompt.enrich(messages,grant.context());
+                            if(withSupport!=messages){supportGrants.put(request.roomId(),grant);messages=withSupport;}
+                        }
+                        generate(player, request, token, content, enriched, memory,
+                                RoomDialogueGrounding.Attempt.initial(messages), result);
+                    } catch (RuntimeException invalid) { result.complete(promptFailure(player, request, invalid)); }
+                })));
     }
 
     private Result promptFailure(ServerPlayer player, Request request, RuntimeException failure) {
@@ -248,10 +320,55 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
             AiTestContentRegistryBridge.ContentSnapshot content, AiTestDialogueAdapter.RoomPrompt prompt,
             DialogueMemoryBridge.Turn memory, RoomDialogueGrounding.Attempt attempt,
             CompletableFuture<Result> result) {
+        generate(player,request,token,content,prompt,memory,attempt,result,null);
+    }
+    @Override public boolean supportsActionResultDialogue() { return true; }
+    @Override public CompletableFuture<Result> respondToActionResults(Request request,Result decision) {
+        var server=ServerLifecycleHooks.getCurrentServer();
+        if(server==null||!server.isSameThread())return CompletableFuture.completedFuture(Result.failed(request,"NO_GAME_THREAD"));
+        var pending=actionDecisions.remove(request.roomId());
+        var player=server.getPlayerList().getPlayer(request.playerId());
+        if(pending==null||player==null||!pending.reply().equals(decision)||!RoomActionNarration.sameTurn(pending.request(),request)
+                ||!current(player,pending.token())||!ConversationRooms.INSTANCE.actionOutcomesCurrent(player,request))
+            return CompletableFuture.completedFuture(Result.failed(request,"STALE_ACTION_DECISION"));
+        var result=new CompletableFuture<Result>();
+        try {
+            var refreshedContent=RoomKnowledgeContext.load(request);
+            var proof=evidence.get(request.roomId());
+            if(proof==null)throw new IllegalStateException("Missing original action evidence");
+            var refs=new ArrayList<>(proof.references());
+            refs.add(RoomKnowledgeContext.evidence(request,refreshedContent));
+            var promptRequest=request;
+            var activityExperience=ActivityRoomExperience.capture(server,request);
+            if(activityExperience.isPresent()) {
+                refs.addAll(activityExperience.orElseThrow().references());
+                promptRequest=appendOwnContext(promptRequest,NpcActivityPrompt.experience(request,activityExperience.orElseThrow().view()));
+            }
+            emotions.begin(request);
+            var emotionContext=emotions.context(request);
+            if(!emotionContext.isBlank())promptRequest=appendOwnContext(promptRequest,emotionContext);
+            var relations=new LinkedHashMap<String,List<String>>();
+            for(var target:request.godIds())if(!target.equals(request.speakerGodId())) {
+                var tags=RoomKnowledgeContext.directionalRelationTags(request,target);
+                if(!tags.isEmpty())relations.put(target.toString(),tags);
+            }
+            if(!relations.isEmpty())promptRequest=appendOwnContext(promptRequest,
+                    "\n[STATIC_DIRECTIONAL_GOD_RELATIONS]\nAuthored background from this speaker to each target; do not swap directions or invent historical causes.\n"+JSON.toJson(relations));
+            evidence.put(request.roomId(),new Evidence(request,List.copyOf(refs),proof.sources()));
+            var messages=RoomActionNarration.messages(pending.messages(),promptRequest,refreshedContent);
+            generate(player,request,pending.token(),refreshedContent,pending.prompt(),pending.memory(),
+                    RoomDialogueGrounding.Attempt.initial(messages).withoutUnderstanding(),result,decision);
+        }catch(RuntimeException failure){result.complete(Result.failed(request,"ACTION_NARRATION_UNAVAILABLE"));}
+        return result;
+    }
+    private void generate(ServerPlayer player, Request request, RoomResponseTokens.Token token,
+            AiTestContentRegistryBridge.ContentSnapshot content, AiTestDialogueAdapter.RoomPrompt prompt,
+            DialogueMemoryBridge.Turn memory, RoomDialogueGrounding.Attempt attempt,
+            CompletableFuture<Result> result, Result settledDecision) {
         if (result.isDone()) return;
         if (!attempt.repaired() && !attempt.understandingPrepared()) {
             prepareUnderstanding(player,request,token,memory,attempt,result,
-                    prepared->generate(player,request,token,content,prompt,memory,prepared,result)); return;
+                    prepared->generate(player,request,token,content,prompt,memory,prepared,result,settledDecision)); return;
         }
         var messages = attempt.generationMessages();
         if (!current(player, token) || !DialogueMemoryBridge.roomTurnCurrent(player, memory)) {
@@ -271,21 +388,27 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
                             }
                             if (RoomKnowledgeContext.load(request).generation()
                                     != content.generation()) { result.complete(Result.failed(request, "CONTENT_RELOADED")); return; }
-                            var output = generated.value();
+                            var raw = generated.value();
+                            var output = settledDecision==null?raw:new AiDialogueModels.StructuredAiResult(
+                                    raw.speech(),raw.currentTopic(),List.of(),raw.currentEmotion());
                             log(player, request, "GENERATION_RESULT", JSON.toJson(output));
                             if (prompt.needsRepair(output)) {
                                 if (attempt.repaired()) { result.complete(Result.failed(request, "RESPONSE_REJECTED")); return; }
                                 generate(player, request, token, content, prompt, memory,
-                                        attempt.repairStructure(output, prompt.validationIssue(output)), result); return;
+                                        attempt.repairStructure(output, prompt.validationIssue(output)), result,settledDecision); return;
                             }
                             var speech = prompt.speech(output).stream().map(s -> new Speech(ResourceLocation.parse(s.speakerId()), s.text())).toList();
                             if (speech.isEmpty()) { result.complete(Result.failed(request, "EMPTY_RESPONSE")); return; }
                             reviewDraft(player, request, token, memory, attempt, output, result,
-                                    repair -> generate(player, request, token, content, prompt, memory, repair, result), () -> {
+                                    repair -> generate(player, request, token, content, prompt, memory, repair, result,settledDecision), () -> {
                                 var controls = controls(output.proposals());
                                 var allowed = prompt.admittedProposals(output.proposals());
                                 var proposals = normalizeProposals(player, request, allowed);
-                                var reply = reply(request,speech,proposals,controls,output.proposals());
+                                var reply = settledDecision==null?reply(request,speech,proposals,controls,output.proposals()):
+                                        new Result(request.roomId(),request.revision(),request.turnId(),speech,"[]",settledDecision.controls(),"",
+                                                settledDecision.storyContextId(),settledDecision.storyStatementAliases());
+                                if(settledDecision==null&&!proposals.isEmpty())actionDecisions.put(request.roomId(),
+                                        new ActionDecision(request,reply,token,content,prompt,memory,attempt.evidenceMessages()));
                                 deliveries.put(request.roomId(), new Delivery(request, reply, memory));
                                 emotions.stage(request, reply, output.currentEmotion());
                                 result.complete(reply);
@@ -449,6 +572,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
 
     private boolean currentEvidence(ServerPlayer player,UUID room) {
         var proof=evidence.get(room);
+        var shared=supportGrants.get(room);
+        if(shared!=null&&(proof==null||!shared.current(proof.request())))return false;
         return proof==null || RoomMemoryBridge.evidenceCurrent(player.server,proof.request(),proof.references(),proof.sources());
     }
 
@@ -458,6 +583,7 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
         var server=ServerLifecycleHooks.getCurrentServer();
         var proof=evidence.get(event.roomId());
         if(server==null||!server.isSameThread()||proof==null
+                ||supportGrants.containsKey(event.roomId())&&!supportGrants.get(event.roomId()).current(proof.request())
                 ||!RoomMemoryBridge.evidenceCurrent(server,proof.request(),proof.references(),proof.sources()))
             throw new IllegalStateException("Publication evidence revoked");
         var refs=new LinkedHashSet<RoomEvidenceReference>(event.evidenceRefs());refs.addAll(proof.references());
@@ -664,6 +790,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
     }
 
     @Override public void invalidate(UUID roomId) {
+        actionDecisions.remove(roomId);
+        supportGrants.remove(roomId);
         emotions.invalidate(roomId);
         tokens.invalidate(roomId); deliveries.remove(roomId); identityPublications.remove(roomId); stories.remove(roomId);evidence.remove(roomId);
         activities.keySet().removeIf(key -> key.room().equals(roomId));
@@ -671,6 +799,8 @@ public final class MythAiRoomConversationEngine implements RoomConversationEngin
         DialogueMemoryBridge.invalidateRoom(roomId);
     }
     @Override public void stop() {
+        actionDecisions.clear();
+        supportGrants.clear();
         emotions.clear();
         tokens.clear(); deliveries.clear(); identityPublications.clear(); stories.clear(); evidence.clear();splitTokens.clear(); activities.clear();
         RoomMemoryBridge.close();

@@ -30,7 +30,7 @@ public final class JsonVoiceStyleRepository {
 
     public synchronized void load() {
         try {
-            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE);
+            BundledJsonData.ensureServerCopy(file, BUNDLED_RESOURCE, "{\"schemaVersion\":1,\"styles\":[]}\n");
             try (Reader reader = Files.newBufferedReader(file)) {
                 styles = parse(GSON.fromJson(reader, RawStore.class));
             }
